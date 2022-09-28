@@ -1,0 +1,66 @@
+** Nome da estrutura **
+Nome
+1el_SM8
+_____________________________________________________
+
+** Coordenadas da estrutura **
+x (m)	y (m)	z (m)
+0.0	0.0	0.0
+10.0	0.0	0.0
+10.0	10.0	0.0
+0.0	10.0	0.0
+_____________________________________________________
+
+** Nos **
+Id	x (m)	y (m)	z (m)	Sup	Carga conc	Desl
+0	0.0	0.0	0.0	5	null	null
+1	10.0	0.0	0.0	-1	null	null
+2	20.0	0.0	0.0	5	null	null
+3	0.0	10.0	0.0	-1	null	null
+4	20.0	10.0	0.0	-1	null	null
+5	0.0	20.0	0.0	5	null	null
+6	10.0	20.0	0.0	-1	null	null
+7	20.0	20.0	0.0	-1	null	null
+_____________________________________________________
+
+** Elementos **
+Id	Tipo	No1	No2	No3	Mat	Sec
+0	SM8	0	1	2	4	7	6	5	3	0	0
+_____________________________________________________
+
+** Materiais **
+Id	E (GPa)	v	fu (MPa)
+0	200.0	0.2	500.0
+_____________________________________________________
+
+** Secoes **
+Id	Espessura (mm)
+0	100.0
+_____________________________________________________
+
+** Apoios **
+Id	No	Rx	Ry	Rz	Tetax	Tetay	Tetaz
+0	5	1	1	1	1	1	1
+1	0	1	1	1	1	1	1
+2	2	1	1	1	1	1	1
+_____________________________________________________
+
+** Cargas concentradas **
+Id	No	Fx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)
+0	7	0.0	0.0	1000.0	0.0	0.0	0.0
+_____________________________________________________
+
+** Cargas distribuidas **
+Id	Elem	Tipo	Valor inicial (kN)	Valor final (kN)	Dist inicial (mm)	Dist final (mm)
+_____________________________________________________
+
+** Deslocamentos aplicados **
+Id	No	Fx	Fy	Fz	Mx	My	Mz
+_____________________________________________________
+
+** Desenho **
+Pos des x (m)	Pos des y (m)	Centro x (m)	Centro y (m)	Dim x (m)	Dim y (m)	Tetax	Tetay	Tetaz
+0	0	326	293	36.4	36.4	0.0	0.0	0.0
+_____________________________________________________
+
+$
