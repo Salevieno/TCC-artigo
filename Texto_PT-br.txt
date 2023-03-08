@@ -1,0 +1,237 @@
+* Formatos de elementos *
+Retangular
+Circular
+Poligono
+
+* Tipos de elementos *
+KR1
+KR2
+MR1
+MR2
+R4
+Q4
+T3G
+T6G
+SM
+SM8
+KP3
+SM_C
+SM_H
+
+* Passo a passo *
+1. Tipo de elemento:
+2. Criar nos:
+3. Malha: 
+4. Elementos com materiais: 
+5. Elementos com secoes: 
+6. Apoios: 
+7. Cargas concentradas: 
+8. Cargas distribuidas: 
+9. Deslocamentos nodais: 
+Pronta para analise:
+
+* Informacoes da lista de materiais *
+Nome
+E (GPa)
+v
+fu (MPa)
+
+* Informacoes da lista de secoes *
+Nome
+Espessura (mm)
+
+* Informacoes dos apoios *
+Nome
+Rx
+Ry
+Rz
+Tetax
+Tetay
+Tetaz
+
+* Informacoes das cargas concentradas *
+Nome
+Fx (kN)
+Fy (kN)
+Fz (kN)
+Mx (kN)
+My (kN)
+Mz (kN)
+
+* Informacoes das cargas distribuidas *
+Nome
+Tipo
+Pini (kN/m)
+Pfin (kN/m)
+Distini (m)
+Distfin (m)
+
+* Informacoes dos deslocamentos nodais *
+Nome
+desl x (m)
+desl y (m)
+desl z (m)
+rot x
+rot y
+rot z
+
+* Nomes dos botoes *
+Ligar ima
+Desligar ima
+Atribuir aos elementos
+Atribuir aos nos
++escala
+-escala
+Concluir
+Limpar
+
+* Nomes dos menus *
+Arquivo
+Estrutura
+Visual
+Analise
+Resultados
+Especial
+
+* Nomes dos itens do menu Arquivo *
+Salvar arquivo
+Carregar arquivo
+
+* Nomes dos itens do menu Estrutura *
+Definir tipo dos elementos
+Criar nos
+Criar malha
+Criar materiais
+Criar secoes
+Criar cargas concentradas
+Criar cargas distribuidas
+Criar deslocamentos nodais
+Colocar materias
+Colocar secoes
+Colocar apoios
+Colocar cargas concentradas
+Colocar cargas distribuidas
+Colocar deslocamentos nodais
+
+* Nomes dos itens do submenu Criar nos *
+Digitar
+Clicar
+
+* Nomes dos itens do submenu Criar malha *
+Cartesiana
+Radial
+
+* Nomes dos itens do menu Visual *
+Nos
+Elementos
+Graus de liberdade
+Numeros dos nos
+Numeros dos elementos
+Materiais
+Secoes
+Contorno dos elementos
+Apoios
+Cargas concentradas
+Cargas distribuidas
+Deslocamentos nodais
+Valores das cargas
+Reacoes
+
+* Nomes dos itens do menu Analise *
+Rodar analise
+Opcoes
+
+* Nomes dos itens do menu Resultados *
+Estrutura deformada
+Deslocamentos
+Tensoes
+Deformacoes
+Forcas internas
+Salvar resultados
+Salvar curva carga-desl
+
+* Nomes dos itens do menu Especial *
+Estrela
+
+* Nomes dos itens do menu Ajuda *
+Sobre o programa
+
+* Nomes dos itens do submenu Diagramas de deslocamentos *
+ux
+uy
+uz
+tetax
+tetay
+tetaz
+
+* Nomes dos itens do submenu Diagramas de esforcos internos *
+Fx
+Fy
+Fz
+Mx
+My
+Mz
+
+* Nomes dos itens do submenu Diagramas de tensoes *
+Sigma x
+Sigma y
+Sigma z
+Tau xy
+Tau xz
+Tau yz
+
+* Nomes dos itens do submenu Diagramas de deformacoes *
+Deformacao x
+Deformacao y
+Deformacao z
+Deformacao xy
+Deformacao xz
+Deformacao yz
+
+* Nomes dos itens do submenu Cargas Concentradas *
+Desenhos
+Valores
+
+* Nomes dos itens do submenu Cargas Distribuidas *
+Desenhos
+Valores
+
+* Nomes dos itens do submenu Deslocamentos Nodais *
+Desenhos
+Valores
+
+* Nomes dos itens do submenu Reacoes *
+Desenhos
+Valores
+
+* Nomes das secoes do arquivo de entrada *
+Nome da estrutura
+Coordenadas da estrutura
+Nos
+Elementos
+Materiais
+Secoes
+Apoios
+Cargas concentradas
+Cargas distribuidas
+Deslocamentos aplicados
+Desenho
+
+* Instrucoes *
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Instrucoes 1.
+Select the section and click on the members, then click 'Assign section'.
+Select the support and click on the node, then click 'Assign sup'.
+Selecione o diagrama desejado no menu 'Resultados'.
+Passe o mouse sobre a estrutura para ver os resultados naquele ponto.
+_
