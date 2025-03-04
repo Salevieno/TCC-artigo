@@ -358,11 +358,23 @@ public abstract class MenuFunctions
 	}
 	
 	/* File menu functions */
-	public static void SaveFile(String FileName, String[][] AllText, String Language, MyCanvas MainCanvas, Structure Struct, Nodes[] Node, Element[] Elem,
+	public static void SaveFile(String FileName, MyCanvas MainCanvas, Structure Struct, Nodes[] Node, Element[] Elem,
 			Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, List<Material> UserDefinedMat, List<Section> UserDefinedSec)
 	{
 		Struct.setName(FileName);
-		String[] InputSections = Util.LoadAllText(AllText, Language, 11);
+		String[] InputSections = new String[] {
+			    "Nome da estrutura",
+			    "Coordenadas da estrutura",
+			    "Nos",
+			    "Elementos",
+			    "Materiais",
+			    "Secoes",
+			    "Apoios",
+			    "Cargas concentradas",
+			    "Cargas distribuidas",
+			    "Deslocamentos aplicados",
+			    "Desenho"
+			};
 		String[][] InputVariables = new String[11][];
 		InputVariables[0] = new String[] {"Nome"};
 		InputVariables[1] = new String[] {"x (m)	y (m)	z (m)"};
@@ -1578,7 +1590,7 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static void DrawOnListsPanel(Dimension jpListSize, String[][] AllText, String Language, boolean[] AssignmentIsOn, DrawingOnAPanel DP)
+	public static void DrawOnListsPanel(Dimension jpListSize, boolean[] AssignmentIsOn, DrawingOnAPanel DP)
 	{
 		Object[] TypesInfo = MenuFunctions.GetTypesInfo();
 		List<Material> matType = (List<Material>) TypesInfo[1];
@@ -1589,32 +1601,68 @@ public abstract class MenuFunctions
 		double[][] NodalDispType = (double[][]) TypesInfo[6];
 		if (AssignmentIsOn[0] & matType != null)
 		{
-			String[] MatNames = Util.LoadAllText(AllText, Language, 14);
+			String[] MatNames = new String[] {
+				    "Nome",
+				    "E (GPa)",
+				    "v",
+				    "fu (MPa)"
+				};
 //			TODO DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", matType);
 		}
 		if (AssignmentIsOn[1] & SecType != null)
 		{
-			String[] SecNames = Util.LoadAllText(AllText, Language, 15);
+			String[] SecNames = new String[] {"Nome", "Espessura (mm)"};
 //			DP.DrawLists(jpListSize, SelectedSec, SecNames, "Sections list", "Sec", SecType);
 		}
 		if (AssignmentIsOn[2] & SupType != null)
 		{
-			String[] SupNames = Util.LoadAllText(AllText, Language, 16);
+			String[] SupNames = new String[] {
+				    "Nome",
+				    "Rx",
+				    "Ry",
+				    "Rz",
+				    "Tetax",
+				    "Tetay",
+				    "Tetaz"
+				};
 			DP.DrawLists(jpListSize, SelectedSup, SupNames, "Supports list", "Sup", SupType);
 		}
 		if (AssignmentIsOn[3] & ConcLoadType != null)
 		{
-			String[] ConcLoadNames = Util.LoadAllText(AllText, Language, 17);
+			String[] ConcLoadNames = new String[] {
+				    "Nome",
+				    "Fx (kN)",
+				    "Fy (kN)",
+				    "Fz (kN)",
+				    "Mx (kN)",
+				    "My (kN)",
+				    "Mz (kN)"
+				};
 			DP.DrawLists(jpListSize, SelectedConcLoad, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType);
 		}
 		if (AssignmentIsOn[4] & DistLoadType != null)
 		{
-			String[] DistLoadNames = Util.LoadAllText(AllText, Language, 18);
+			String[] DistLoadNames = new String[] {
+				    "Nome",
+				    "Tipo",
+				    "Pini (kN/m)",
+				    "Pfin (kN/m)",
+				    "Distini (m)",
+				    "Distfin (m)"
+				};
 			DP.DrawLists(jpListSize, SelectedDistLoad, DistLoadNames, "Dist loads list", "Dist load", DistLoadType);
 		}
 		if (AssignmentIsOn[5] & NodalDispType != null)
 		{
-			String[] NodalDispNames = Util.LoadAllText(AllText, Language, 19);
+			String[] NodalDispNames = new String[] {
+				    "Nome",
+				    "desl x (m)",
+				    "desl y (m)",
+				    "desl z (m)",
+				    "rot x",
+				    "rot y",
+				    "rot z"
+				};
 			DP.DrawLists(jpListSize, SelectedNodalDisp, NodalDispNames, "Nodal disps list", "Nodal disp", NodalDispType);
 		}
 	}

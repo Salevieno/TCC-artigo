@@ -41,7 +41,6 @@ import Main.Analysis;
 import Main.MenuFunctions;
 import Utilidades.Util;
 import Utilidades.UtilComponents;
-import Utilidades.UtilText;
 import structure.ElemType;
 import structure.Element;
 import structure.Material;
@@ -102,9 +101,6 @@ public class Menus extends JFrame
 	/* Global variables */	
 	MyCanvas MainCanvas, LDCanvas, LegendCanvas, ListsCanvas;
 	DrawingOnAPanel DP;
-	Analysis Anal;
-	String Language;
-	String[][] AllText;
 
 	int[] FrameTopLeftPos;
     int[] MainPanelPos;	// LDPanelPos, LegendPanelPos
@@ -161,16 +157,6 @@ public class Menus extends JFrame
 		SubMenuStresses = new JMenuItem[6];			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
 		SubMenuStrains = new JMenuItem[6];			// ex, ey, ez, gxy, gxz, gyz
 		SubMenuInternalForces = new JMenuItem[6];	// Fx, Fy, Fz, Mx, My, Mz
-		Language = "Pt-br";
-		String fileName = null;
-		if (Language.equals("Pt-br"))
-		{
-			fileName = "Texto_PT-br.txt";
-		} else if (Language.equals("En"))
-		{
-			fileName = "Texto_En.txt";
-		}
-		AllText = UtilText.ReadTextFile(fileName);
 		StepIsComplete = new boolean[9];		// 0 = Elem type; 1 = Struct Coords; 2 = Nodes and Elems; 3 = Mat; 4 = Sec; 5 = Sup; 6 = Conc loads; 7 = Dist loads; 8 = Nodal disps
 	}
 	
@@ -265,7 +251,7 @@ public class Menus extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				//StructureMenuCreateMesh("Cartesian", ElemType, ElemShape, Anal);
-				StructureMenuCreateMesh(MeshType.radial, Anal);
+				StructureMenuCreateMesh(MeshType.radial);
 			}
 		});
 	    jb[3].addActionListener(new ActionListener()
@@ -515,7 +501,16 @@ public class Menus extends JFrame
 		uToolbarPanel.setBackground(ColorPalette[2]);
 		uToolbarPanel.setPreferredSize(new Dimension(580, 30));
 
-		String[] ButtonNames = Util.LoadAllText(AllText, Language, 20);
+		String[] ButtonNames = new String[] {
+			    "Ligar ima",
+			    "Desligar ima",
+			    "Atribuir aos elementos",
+			    "Atribuir aos nos",
+			    "+escala",
+			    "-escala",
+			    "Concluir",
+			    "Limpar"
+			};
 		UpperToolbarButton = new JButton[ButtonNames.length];
 		int[] ButtonLength = new int[] {62, 80, 138, 100, 50, 52, 50, 50};
 		Color ButtonBgColor = ColorPalette[8];
@@ -1131,7 +1126,14 @@ public class Menus extends JFrame
 	public void AddMenus()
 	{
 		/* Defining menu bars */
-		String[] MenuNames = Util.LoadAllText(AllText, Language, 0);	
+		String[] MenuNames = new String[] {
+			    "Arquivo",
+			    "Estrutura",
+			    "Visual",
+			    "Analise",
+			    "Resultados",
+			    "Especial"
+			};	
 		menuBar = new JMenuBar();
 		FileMenu = new JMenu(MenuNames[0]);			// File
 		StructureMenu = new JMenu(MenuNames[1]);	// Structure
@@ -1170,7 +1172,7 @@ public class Menus extends JFrame
 			{
 				SaveLoadFile SLF = new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos);
 				String FileName = SLF.run().getText();
-				MenuFunctions.SaveFile(FileName, AllText, Language, MainCanvas, MenuFunctions.Struct, MenuFunctions.Node, MenuFunctions.Elem,
+				MenuFunctions.SaveFile(FileName, MainCanvas, MenuFunctions.Struct, MenuFunctions.Node, MenuFunctions.Elem,
 						MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
 						MenuFunctions.secTypes);
 			}
@@ -1220,7 +1222,22 @@ public class Menus extends JFrame
 	public void AddStructureMenuItems()
 	{
 		/* Defining items in the menu Structure */
-	    String[] StructureMenuItemsNames = Util.LoadAllText(AllText, Language, 2);
+	    String[] StructureMenuItemsNames = new String[] {
+	    	    "Definir tipo dos elementos",
+	    	    "Criar nos",
+	    	    "Criar malha",
+	    	    "Criar materiais",
+	    	    "Criar secoes",
+	    	    "Criar cargas concentradas",
+	    	    "Criar cargas distribuidas",
+	    	    "Criar deslocamentos nodais",
+	    	    "Colocar materiais",
+	    	    "Colocar secoes",
+	    	    "Colocar apoios",
+	    	    "Colocar cargas concentradas",
+	    	    "Colocar cargas distribuidas",
+	    	    "Colocar deslocamentos nodais"
+	    	};
 		DefineElemType = new JMenuItem(StructureMenuItemsNames[0], KeyEvent.VK_E);
 		CreateNodes = new JMenu(StructureMenuItemsNames[1]);
 		CreateMesh = new JMenu(StructureMenuItemsNames[2]);
@@ -1384,7 +1401,7 @@ public class Menus extends JFrame
 		StructureMenu.add(AssignNodalDisp);
 
 		/* Defining subitems in the menu CreateNodes */
-		String[] CreateNodesMenuNames = Util.LoadAllText(AllText, Language, 28);
+		String[] CreateNodesMenuNames = new String[] {"Digitar", "Clicar"};
 		TypeNodes = new JMenuItem(CreateNodesMenuNames[0], KeyEvent.VK_C);
 		ClickNodes = new JMenuItem(CreateNodesMenuNames[1], KeyEvent.VK_C);
 		TypeNodes.addActionListener(new ActionListener()
@@ -1439,7 +1456,7 @@ public class Menus extends JFrame
 		CreateNodes.add(TypeNodes);
 		
 		/* Defining subitems in the menu CreateMesh */
-		String[] CreateMeshMenuNames = Util.LoadAllText(AllText, Language, 21);
+		String[] CreateMeshMenuNames = MeshType.valuesAsString();
 		CartesianMesh = new JMenuItem(CreateMeshMenuNames[0], KeyEvent.VK_C);
 		RadialMesh = new JMenuItem(CreateMeshMenuNames[1], KeyEvent.VK_R);
 		CartesianMesh.addActionListener(new ActionListener()
@@ -1447,7 +1464,7 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuCreateMesh(MeshType.cartesian, Anal);
+				StructureMenuCreateMesh(MeshType.cartesian);
 			}
 		});
 		RadialMesh.addActionListener(new ActionListener()
@@ -1455,7 +1472,7 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuCreateMesh(MeshType.radial, Anal);
+				StructureMenuCreateMesh(MeshType.radial);
 			}
 		});
 		CartesianMesh.setForeground(ColorPalette[5]);
@@ -1467,8 +1484,22 @@ public class Menus extends JFrame
 	public void AddViewMenuItems()
 	{
 		/* Defining items in the menu View */
-	    String[] ViewMenuItemsNames;
-		ViewMenuItemsNames = Util.LoadAllText(AllText, Language, 3);
+	    String[] ViewMenuItemsNames = new String[] {
+			    "Nos",
+			    "Elementos",
+			    "Graus de liberdade",
+			    "Numeros dos nos",
+			    "Numeros dos elementos",
+			    "Materiais",
+			    "Secoes",
+			    "Contorno dos elementos",
+			    "Apoios",
+			    "Cargas concentradas",
+			    "Cargas distribuidas",
+			    "Deslocamentos nodais",
+			    "Valores das cargas",
+			    "Reacoes"
+			};
 		NodeView = new JMenuItem(ViewMenuItemsNames[0]);
 		ElemView = new JMenuItem(ViewMenuItemsNames[1]);
 		DOFNumberView = new JMenuItem(ViewMenuItemsNames[2], KeyEvent.VK_D);
@@ -1632,8 +1663,7 @@ public class Menus extends JFrame
 
 		/* Defining subitems in the menu ReactionsView */
 
-	    String[] ReactionsViewMenuNames;
-		ReactionsViewMenuNames = Util.LoadAllText(AllText, Language, 10);
+	    String[] ReactionsViewMenuNames = new String[] {"Desenhos", "Valores"};
 		ReactionArrows = new JMenuItem(ReactionsViewMenuNames[0], KeyEvent.VK_C);
 		ReactionValues = new JMenuItem(ReactionsViewMenuNames[1], KeyEvent.VK_C);
 		ReactionArrows.setForeground(ColorPalette[5]);
@@ -1663,8 +1693,7 @@ public class Menus extends JFrame
 	public void AddAnalysisMenuItems()
 	{
 		/* Defining items in the menu Analysis */
-	    String[] AnalysisMenuItemsNames;
-		AnalysisMenuItemsNames = Util.LoadAllText(AllText, Language, 4);
+	    String[] AnalysisMenuItemsNames = new String[] {"Rodar análise", "Opções"};
 		RunAnalysis = new JMenuItem(AnalysisMenuItemsNames[0], KeyEvent.VK_R);
 		RunAnalysis.addActionListener(new ActionListener()
 		{
@@ -1734,8 +1763,15 @@ public class Menus extends JFrame
 	public void AddResultsMenuItems()
 	{
 		/* Defining items in the menu Results */
-	    String[] ResultsMenuItemsNames;
-		ResultsMenuItemsNames = Util.LoadAllText(AllText, Language, 5);
+	    String[] ResultsMenuItemsNames = new String[] {
+	    	    "Estrutura deformada",
+	    	    "Deslocamentos",
+	    	    "Tensoes",
+	    	    "Deformacoes",
+	    	    "Forcas internas",
+	    	    "Salvar resultados",
+	    	    "Salvar curva carga-desl"
+	    	};
 		DeformedShape = new JMenuItem(ResultsMenuItemsNames[0], KeyEvent.VK_D);
 		DisplacementContours = new JMenu(ResultsMenuItemsNames[1]);
 		StressContours = new JMenu(ResultsMenuItemsNames[2]);
@@ -1805,7 +1841,14 @@ public class Menus extends JFrame
 		for (int d = 0; d <= SubMenuDisp.length - 1; d += 1)
 		{
 			int d2 = d;
-			String[] DisplacementContourMenuNames = Util.LoadAllText(AllText, Language, 26);
+			String[] DisplacementContourMenuNames = new String[] {
+				    "ux",
+				    "uy",
+				    "uz",
+				    "tetax",
+				    "tetay",
+				    "tetaz"
+				};
 			SubMenuDisp[d] = new JMenuItem(DisplacementContourMenuNames[d]);
 			SubMenuDisp[d].addActionListener(new ActionListener()
 			{
@@ -1828,7 +1871,14 @@ public class Menus extends JFrame
 		for (int s = 0; s <= SubMenuStresses.length - 1; s += 1)
 		{
 			int s2 = s;
-			String[] StressContoursMenuNames = Util.LoadAllText(AllText, Language, 8);
+			String[] StressContoursMenuNames = new String[] {
+				    "Sigma x",
+				    "Sigma y",
+				    "Sigma z",
+				    "Tau xy",
+				    "Tau xz",
+				    "Tau yz"
+				};
 			SubMenuStresses[s] = new JMenuItem(StressContoursMenuNames[s]);
 			SubMenuStresses[s].addActionListener(new ActionListener()
 			{
@@ -1851,7 +1901,14 @@ public class Menus extends JFrame
 		for (int s = 0; s <= SubMenuStrains.length - 1; s += 1)
 		{
 			int s2 = s;
-			String[] StrainContoursMenuNames = Util.LoadAllText(AllText, Language, 7);
+			String[] StrainContoursMenuNames = new String[] {
+				    "Deformacao x",
+				    "Deformacao y",
+				    "Deformacao z",
+				    "Deformacao xy",
+				    "Deformacao xz",
+				    "Deformacao yz"
+				};
 			SubMenuStrains[s] = new JMenuItem(StrainContoursMenuNames[s]);
 			SubMenuStrains[s].addActionListener(new ActionListener()
 			{
@@ -1874,7 +1931,14 @@ public class Menus extends JFrame
 		for (int f = 0; f <= SubMenuInternalForces.length - 1; f += 1)
 		{
 			int f2 = f;
-			String[] InternalForcesContoursMenuNames = Util.LoadAllText(AllText, Language, 6);
+			String[] InternalForcesContoursMenuNames = new String[] {
+				    "Fx",
+				    "Fy",
+				    "Fz",
+				    "Mx",
+				    "My",
+				    "Mz"
+				} ;
 			SubMenuInternalForces[f] = new JMenuItem(InternalForcesContoursMenuNames[f]);
 			SubMenuInternalForces[f].addActionListener(new ActionListener()
 			{
@@ -1897,8 +1961,7 @@ public class Menus extends JFrame
 	public void AddEspecialMenuItems()
 	{
 		/* Defining items in the menu Especial */
-	    String[] EspecialMenuItemsNames;
-		EspecialMenuItemsNames = Util.LoadAllText(AllText, Language, 27);
+	    String[] EspecialMenuItemsNames = new String[] {"Estrela"};
 		Star = new JMenuItem(EspecialMenuItemsNames[0], KeyEvent.VK_S);
 		Star.setForeground(ColorPalette[7]);
 		EspecialMenu.add(Star);
@@ -1918,7 +1981,7 @@ public class Menus extends JFrame
 	// End of adding menus and menu items
 
 	/* ok */	
-	public void StructureMenuCreateMesh(MeshType meshType, Analysis Anal)
+	public void StructureMenuCreateMesh(MeshType meshType)
 	{
 		JLabel[] Labels = new JLabel[2];
 		JButton[] Buttons = new JButton[] {new JButton ("Ok"), new JButton ("Cancel")};
@@ -2089,7 +2152,7 @@ public class Menus extends JFrame
 	    {
 	        super.paintComponent(g);
 	        DP = new DrawingOnAPanel(g, ListsCanvas, MenuFunctions.Struct.getCenter());
-	        MenuFunctions.DrawOnListsPanel(jpLists.getSize(), AllText, Language, new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn}, DP);
+	        MenuFunctions.DrawOnListsPanel(jpLists.getSize(), new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn}, DP);
 			repaint();
 	    }
     }
