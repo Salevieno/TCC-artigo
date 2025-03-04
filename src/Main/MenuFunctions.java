@@ -2,7 +2,9 @@ package Main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import GUI.DrawingOnAPanel;
 import Output.Results;
@@ -10,8 +12,10 @@ import Utilidades.Util;
 import Utilidades.UtilComponents;
 import structure.ConcLoads;
 import structure.DistLoads;
+import structure.ElemShape;
 import structure.ElemType;
 import structure.Element;
+import structure.Material;
 import structure.MeshType;
 import structure.MyCanvas;
 import structure.NodalDisps;
@@ -58,12 +62,18 @@ public abstract class MenuFunctions
 	public static double[] DiagramScales;
 	
 	public static String SelectedElemType;
-	public static double[][] MatType, SecType, ConcLoadType, DistLoadType, NodalDispType;
+	public static List<Material> matTypes ;
+	public static double[][] SecType, ConcLoadType, DistLoadType, NodalDispType;
 	private static int[][] SupType;
 	public static boolean NonlinearMat;
 	public static boolean NonlinearGeo;
 	
 	private static int[] NodeSelectionWindowInitialPos, ElemSelectionWindowInitialPos;
+	
+	static
+	{
+		matTypes = new ArrayList<>() ;
+	}
 	
 	public static void Initialization()
 	{	
@@ -129,7 +139,7 @@ public abstract class MenuFunctions
 	
 	public static Object[] GetTypesInfo()
 	{
-		return new Object[] {SelectedElemType, MatType, SecType, SupType, ConcLoadType, DistLoadType, NodalDispType};
+		return new Object[] {SelectedElemType, matTypes, SecType, SupType, ConcLoadType, DistLoadType, NodalDispType};
 	}
 
 	public static int[] ClosestGridNodePos(MyCanvas canvas, int[] MousePos)
@@ -345,7 +355,8 @@ public abstract class MenuFunctions
 	}
 	
 	/* File menu functions */
-	public static void SaveFile(String FileName, String[][] AllText, String Language, MyCanvas MainCanvas, Structure Struct, Nodes[] Node, Element[] Elem, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, double[][] UserDefinedMat, double[][] UserDefinedSec)
+	public static void SaveFile(String FileName, String[][] AllText, String Language, MyCanvas MainCanvas, Structure Struct, Nodes[] Node, Element[] Elem,
+			Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, List<Material> UserDefinedMat, double[][] UserDefinedSec)
 	{
 		Struct.setName(FileName);
 		String[] InputSections = Util.LoadAllText(AllText, Language, 11);
@@ -407,13 +418,13 @@ public abstract class MenuFunctions
 		}
 		if (UserDefinedMat != null)
 		{
-			values[4] = new Object[UserDefinedMat.length][4];
-			for (int mat = 0; mat <= UserDefinedMat.length - 1; mat += 1)
+			values[4] = new Object[UserDefinedMat.size()][4];
+			for (int mat = 0; mat <= UserDefinedMat.size() - 1; mat += 1)
 			{
 				values[4][mat][0] = mat;
-				values[4][mat][1] = UserDefinedMat[mat][0];
-				values[4][mat][2] = UserDefinedMat[mat][1];
-				values[4][mat][3] = UserDefinedMat[mat][2];
+				values[4][mat][1] = UserDefinedMat.get(mat).getE();
+				values[4][mat][2] = UserDefinedMat.get(mat).getV();
+				values[4][mat][3] = UserDefinedMat.get(mat).getG();
 			}
 		}
 		if (UserDefinedSec != null)
@@ -512,11 +523,15 @@ public abstract class MenuFunctions
 				Struct.setCoords(StructCoords);
 				Struct.setCenter(Util.MatrixAverages(Struct.getCoords()));
 
-				MatType = new double[Input[4].length - 3][];
+//				MatType = new double[Input[4].length - 3][];
+				List<Material> matTypes = new ArrayList<>() ;
 				for (int mat = 0; mat <= Input[4].length - 4; mat += 1)
 				{
 					String[] Line = Input[4][mat + 2].split("	");
-					MatType[mat] = new double[] {Double.parseDouble(Line[1]), Double.parseDouble(Line[2]), Double.parseDouble(Line[3])};
+					Material newMaterial = new Material(Double.parseDouble(Line[1]), Double.parseDouble(Line[2]), Double.parseDouble(Line[3])) ;
+					matTypes.add(newMaterial) ;
+//					MatType[mat] = new double[] {Double.parseDouble(Line[1]), Double.parseDouble(Line[2]), Double.parseDouble(Line[3])};
+					
 				}
 				SecType = new double[Input[5].length - 3][];
 				for (int sec = 0; sec <= Input[5].length - 4; sec += 1)
@@ -547,7 +562,7 @@ public abstract class MenuFunctions
 						ElemNodes = Util.AddElem(ElemNodes, Integer.parseInt(Line[elemnode + 2]));
 					}
 					NewElem.setExternalNodes(ElemNodes);
-					NewElem.setMat(MatType[Integer.parseInt(Line[NumberOfElemNodes + 2])]);
+					NewElem.setMat(matTypes.get(Integer.parseInt(Line[NumberOfElemNodes + 2])));
 					NewElem.setSec(SecType[Integer.parseInt(Line[NumberOfElemNodes + 3])]);
 					Elem = Util.AddElem(Elem, NewElem);
 				}
@@ -603,7 +618,7 @@ public abstract class MenuFunctions
 				System.out.println("Arquivo de input nâo encontrado");
 			}
 		}
-		UtilComponents.PrintStructure(FileName, Node, Elem, MatType, SecType, Sup, ConcLoad, DistLoad, NodalDisp);
+		UtilComponents.PrintStructure(FileName, Node, Elem, matTypes, SecType, Sup, ConcLoad, DistLoad, NodalDisp);
 	}
 
 	/* Structure menu functions */
@@ -618,15 +633,15 @@ public abstract class MenuFunctions
 		StructureCreationIsOn = !StructureCreationIsOn;
 	}
 	
- 	public static void AddMaterialToElements(int[] Elems, double[] Mat)
+ 	public static void AddMaterialToElements(int[] Elems, Material mat)
 	{
-		if (Elem != null & Elems != null & Mat != null)
+		if (Elem != null & Elems != null & mat != null)
 		{
 			for (int i = 0; i <= Elems.length - 1; i += 1)
 			{
 				if (-1 < Elems[i])
 				{
-					Elem[Elems[i]].setMat(Mat);
+					Elem[Elems[i]].setMat(mat);
 				}
 			}
 			SelectedElems = null;
@@ -766,9 +781,9 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static void DefineMaterialTypes(double[][] Materials)
+	public static void setMaterials(List<Material> Materials)
 	{
-		MatType = Materials;
+		matTypes = Materials;
 	}
 
 	public static void DefineSectionTypes(double[][] Sections)
@@ -1183,7 +1198,9 @@ public abstract class MenuFunctions
 	}
 
 	/* Especial menu functions */
-	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType, double[] CurrentMatType, double[] CurrentSecType, int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
+	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType, Material CurrentMatType,
+			List<Material> matTypes,
+			double[] CurrentSecType, int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
 	{
 		/* Tipo de elemento, materiais, seçõs, apoios e cargas jâ estâo definidos */
 		
@@ -1199,10 +1216,11 @@ public abstract class MenuFunctions
 			SelectedElems = Util.AddElem(SelectedElems, elem);
 		}
 		AddMaterialToElements(SelectedElems, CurrentMatType);
-		Element.setMatColors(MatType);
+		Element.createMatColors(matTypes);
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
 		{
-			Elem[elem].setMatColor(Element.MatColors[Util.FindID(MatType, Elem[elem].getMat())]);
+			int matColorID = matTypes.indexOf(Elem[elem].getMat()) ;
+			Elem[elem].setMatColor(Element.matColors[matColorID]);
 		}
 
 		/* 4. Atribuir seçõs */
@@ -1223,11 +1241,11 @@ public abstract class MenuFunctions
 		/* 6. Atribuir cargas */
 		if (ConcLoadConfig == 1)
 		{
-			if (Elem[0].getShape().equals("Rectangular"))
+			if (Elem[0].getShape().equals(ElemShape.rectangular))
 			{
 				SelectedNodes = Util.AddElem(SelectedNodes, (MeshSizes[1] / 2 * (MeshSizes[0] + 1) + MeshSizes[0] / 2));
 			}
-			else if (Elem[0].getShape().equals("R8"))
+			else if (Elem[0].getShape().equals(ElemShape.r8))
 			{
 				SelectedNodes = Util.AddElem(SelectedNodes, (MeshSizes[1] / 2 * (2 * MeshSizes[0] + 1 + MeshSizes[0] + 1) + MeshSizes[0]));
 			}
@@ -1261,7 +1279,13 @@ public abstract class MenuFunctions
 		MeshType meshType = MeshType.valueOf(((String) InputData[1]).toLowerCase());
 		String[] EspecialElemTypes = (String[]) InputData[2];
 		int[][] EspecialMeshSizes = (int[][]) InputData[3];
-		MatType = (double[][]) InputData[4];
+		
+		double[][] inputMatTypes = (double[][]) InputData[4] ;
+		for (int i = 0 ; i <= inputMatTypes.length - 1 ; i += 1)
+		{
+			matTypes.add(new Material(inputMatTypes[i][0], inputMatTypes[i][1], inputMatTypes[i][2])) ;
+		}
+		
 		SecType = (double[][]) InputData[5];
 		ConcLoadType = (double[][]) InputData[6];
 		DistLoadType = (double[][]) InputData[7];
@@ -1271,7 +1295,7 @@ public abstract class MenuFunctions
 		int ConcLoadConfig = 1;
 		int DistLoadConfig = 1;
 		
-		int[] NumPar = new int[] {EspecialElemTypes.length, EspecialMeshSizes.length, MatType.length, SecType.length, SupConfig.length, ConcLoadType.length, DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
+		int[] NumPar = new int[] {EspecialElemTypes.length, EspecialMeshSizes.length, matTypes.size(), SecType.length, SupConfig.length, ConcLoadType.length, DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
 		int[] Par = new int[NumPar.length];
 		if (ConcLoadType.length == 0)
 		{
@@ -1297,7 +1321,7 @@ public abstract class MenuFunctions
 			int supConfig = SupConfig[Par[4]];
 			int SelConcLoad = Par[5];
 			int SelDistLoad = Par[6];
-			Object[] Structure = CreatureStructure(EspecialCoords, meshType, MeshSize, elemType, MatType[Mat], SecType[Sec], supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
+			Object[] Structure = CreatureStructure(EspecialCoords, meshType, MeshSize, elemType, matTypes.get(Mat), matTypes, SecType[Sec], supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
 			Supports[] Sup = (Supports[]) Structure[2];
 			ConcLoads[] ConcLoad = (ConcLoads[]) Structure[3];
 			DistLoads[] DistLoad = (DistLoads[]) Structure[4];
@@ -1549,16 +1573,16 @@ public abstract class MenuFunctions
 	public static void DrawOnListsPanel(Dimension jpListSize, String[][] AllText, String Language, boolean[] AssignmentIsOn, DrawingOnAPanel DP)
 	{
 		Object[] TypesInfo = MenuFunctions.GetTypesInfo();
-		double[][] MatType = (double[][]) TypesInfo[1];
+		List<Material> matType = (List<Material>) TypesInfo[1];
 		double[][] SecType = (double[][]) TypesInfo[2];
 		int[][] SupType = (int[][]) TypesInfo[3];
 		double[][] ConcLoadType = (double[][]) TypesInfo[4];
 		double[][] DistLoadType = (double[][]) TypesInfo[5];
 		double[][] NodalDispType = (double[][]) TypesInfo[6];
-		if (AssignmentIsOn[0] & MatType != null)
+		if (AssignmentIsOn[0] & matType != null)
 		{
 			String[] MatNames = Util.LoadAllText(AllText, Language, 14);
-			DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", MatType);
+//			TODO DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", matType);
 		}
 		if (AssignmentIsOn[1] & SecType != null)
 		{
@@ -1718,7 +1742,9 @@ public abstract class MenuFunctions
 		}						
 	}
 	
-	public static void DrawResults(MyCanvas canvas, Structure Struct, Nodes[] Node, Element[] Elem, int[] SelectedElems, int selectedvar, boolean ShowElemContour, boolean ShowDeformedStructure, double[] DiagramsScales, boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces, boolean NonlinearMat, boolean NonlinearGeo, DrawingOnAPanel DP)
+	public static void DrawResults(MyCanvas canvas, Structure Struct, Nodes[] Node, Element[] Elem, int[] SelectedElems, int selectedvar,
+			boolean ShowElemContour, boolean ShowDeformedStructure, double[] DiagramsScales, boolean ShowDisplacementContour, boolean ShowStressContour,
+			boolean ShowStrainContour, boolean ShowInternalForces, boolean NonlinearMat, boolean NonlinearGeo, DrawingOnAPanel DP)
 	{
 		if (-1 < selectedvar & Node != null & Elem != null)
 		{
@@ -1836,7 +1862,7 @@ public abstract class MenuFunctions
 		if (AssignmentIsOn[0] & !MouseIsInMainCanvas)
 		{
 			SelectedMat += WheelRot;
-			SelectedMat = Math.min(Math.max(SelectedMat, 0), MatType.length - 1);
+			SelectedMat = Math.min(Math.max(SelectedMat, 0), matTypes.size() - 1);
 		}
 		if (AssignmentIsOn[1] & !MouseIsInMainCanvas)
 		{
@@ -1879,7 +1905,7 @@ public abstract class MenuFunctions
 		Struct = new Structure(null, null, null);
 		Node = null;
 		Elem = null;
-		MatType = null;
+		matTypes = null;
 		SecType = null;
 		Sup = null;
 		ConcLoadType = null ;

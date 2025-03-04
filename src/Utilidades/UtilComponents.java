@@ -1,10 +1,12 @@
 package Utilidades;
 
 import java.util.Arrays;
+import java.util.List;
 
 import structure.ConcLoads;
 import structure.DistLoads;
 import structure.Element;
+import structure.Material;
 import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
@@ -44,24 +46,12 @@ public abstract class UtilComponents
 		}
 	}
 	
-	public static void PrintMat(double[] Mat)
-	{
-		for (int i = 0; i <= Mat.length - 1; i += 1)
-		{
-			System.out.print(Mat[i] + "	");
-		}
-		System.out.println();
-	}
-	
-	public static void PrintAllMat(double[][] Mat)
+	public static void PrintAllMat(List<Material> mats)
 	{
 		System.out.println();
 		System.out.println("Mats");
 		System.out.println("E (GPa)	v");
-		for (int mat = 0; mat <= Mat.length - 1; mat += 1)
-		{
-			PrintMat(Mat[mat]);
-		}
+		mats.forEach(System.out::println);
 	}
 	
 	public static void PrintSec(double[] Sec)
@@ -173,7 +163,7 @@ public abstract class UtilComponents
 		}
 	}
 	
-	public static void PrintStructure(String StructureName, Nodes[] Node, Element[] Elem, double[][] Mat, double[][] Sec, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	public static void PrintStructure(String StructureName, Nodes[] Node, Element[] Elem, List<Material> mats, double[][] Sec, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(StructureName);
@@ -185,9 +175,9 @@ public abstract class UtilComponents
 		{
 			PrintAllElems(Elem);
 		}
-		if (Mat != null)
+		if (mats != null)
 		{
-			PrintAllMat(Mat);
+			PrintAllMat(mats);
 		}
 		if (Sec != null)
 		{

@@ -1820,7 +1820,8 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawContours3D(Element[] Elem, Nodes[] Node, int[] SelectedElems, double[] RealStructCenter, boolean showelemcontour, boolean condition, double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem)
+	public void DrawContours3D(Element[] Elem, Nodes[] Node, int[] SelectedElems, double[] RealStructCenter, boolean showelemcontour, boolean condition,
+			double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem)
 	{
 		int Ninterpoints = 0;
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1862,7 +1863,7 @@ public class DrawingOnAPanel
 
 			/* Get displacements on contour */
 			double[] ContourValue = new double[ContourCoords.length];
-			if (Elem[elem].getShape().equals("Rectangular") | Elem[elem].getShape().equals("R8"))
+			if (Elem[elem].getShape().equals(ElemShape.rectangular) | Elem[elem].getShape().equals(ElemShape.r8))
 			{
 				double L = 2 * Elem[elem].calcHalfSize(Node)[0];
 				double H = 2 * Elem[elem].calcHalfSize(Node)[1];
@@ -1899,7 +1900,7 @@ public class DrawingOnAPanel
 					ContourCoords[point][2] = ContourValue[point] * Defscale;
 				}
 			}
-			else if (Elem[elem].getShape().equals("Triangular"))
+			else if (Elem[elem].getShape().equals(ElemShape.triangular))
 			{			
 				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
 				{

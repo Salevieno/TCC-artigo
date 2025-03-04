@@ -17,7 +17,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -42,6 +44,7 @@ import Utilidades.UtilComponents;
 import Utilidades.UtilText;
 import structure.ElemType;
 import structure.Element;
+import structure.Material;
 import structure.MeshType;
 import structure.MyCanvas;
 import structure.Nodes;
@@ -566,7 +569,7 @@ public class Menus extends JFrame
 			{
 				if (MatAssignmentIsOn)
 				{
-					MenuFunctions.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.MatType[MenuFunctions.SelectedMat]);
+					MenuFunctions.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.matTypes.get(MenuFunctions.SelectedMat));
 				}
 				if (SecAssignmentIsOn)
 				{
@@ -625,10 +628,11 @@ public class Menus extends JFrame
 					
 					if (MatAssignmentIsOn)
 					{
-						Element.setMatColors(MenuFunctions.MatType);
+						Element.createMatColors(MenuFunctions.matTypes);
 						for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
 						{
-							MenuFunctions.Elem[elem].setMatColor(Element.MatColors[Util.FindID(MenuFunctions.MatType, MenuFunctions.Elem[elem].getMat())]);
+							int colorID = MenuFunctions.matTypes.indexOf(MenuFunctions.Elem[elem].getMat()) ;
+							MenuFunctions.Elem[elem].setMatColor(Element.matColors[colorID]);
 						}
 					}
 					if (SecAssignmentIsOn)
@@ -747,7 +751,7 @@ public class Menus extends JFrame
 		return NodeInfoPanel;
 	}
 	
-	private JPanel createElemInfoPanel(Element Elem)
+	private JPanel createElemInfoPanel(Element elem)
 	{
 		JPanel ElemInfoPanel = new JPanel(new GridLayout(0,1));
 		Color TextColor = ColorPalette[4];
@@ -757,19 +761,19 @@ public class Menus extends JFrame
 		ElemInfoPanel.setSize(defaultPanelSize);		
 
 		String NodesText = "";
-		for (int node = 0; node <= Elem.getExternalNodes().length - 1; node += 1)
+		for (int node = 0; node <= elem.getExternalNodes().length - 1; node += 1)
 		{
-			NodesText += String.valueOf(Elem.getExternalNodes()[node] + " ");
+			NodesText += String.valueOf(elem.getExternalNodes()[node] + " ");
 		}
 		String MatText = null;
-		if (Elem.getMat() != null)
+		if (elem.getMat() != null)
 		{
-			MatText = String.valueOf(Util.Round(Elem.getMat()[0], 2)) + " MPa v = " + String.valueOf(Util.Round(Elem.getMat()[1], 1)) + " G = " + String.valueOf(Util.Round(Elem.getMat()[2], 2)) + " Mpa";
+			MatText = String.valueOf(Util.Round(elem.getMat().getE(), 2)) + " MPa v = " + String.valueOf(Util.Round(elem.getMat().getV(), 1)) + " G = " + String.valueOf(Util.Round(elem.getMat().getG(), 2)) + " Mpa";
 		}
 		String SecText = null;
-		if (Elem.getSec() != null)
+		if (elem.getSec() != null)
 		{
-			SecText = String.valueOf(Util.Round(Elem.getSec()[0], 0)) + " mm";
+			SecText = String.valueOf(Util.Round(elem.getSec()[0], 0)) + " mm";
 		}
 		
 		JLabel iLabel = new JLabel("Informaçõs do elemento");
@@ -777,7 +781,7 @@ public class Menus extends JFrame
 		iLabel.setForeground(TextColor);
 		
 		JLabel[] iInfo = new JLabel[4];
-		iInfo[0] = new JLabel(" Elem: " + String.valueOf(Elem.getID()));
+		iInfo[0] = new JLabel(" Elem: " + String.valueOf(elem.getID()));
 		iInfo[1] = new JLabel(" Nâs: " + NodesText);
 		iInfo[2] = new JLabel(" Material: E = " + MatText);
 		iInfo[3] = new JLabel(" Seââo: t = " + SecText);
@@ -1013,7 +1017,7 @@ public class Menus extends JFrame
 
 		Object[] TypesInfo = MenuFunctions.GetTypesInfo();
 		String SelectedElemType = (String) TypesInfo[0];
-		double[][] MatTypes = (double[][]) TypesInfo[1];
+		List<Material> MatTypes = (List<Material>) TypesInfo[1];
 		double[][] SecTypes = (double[][]) TypesInfo[2];
 		double[][] ConcLoadTypes = (double[][]) TypesInfo[4];
 		double[][] DistLoadTypes = (double[][]) TypesInfo[5];
@@ -1164,7 +1168,7 @@ public class Menus extends JFrame
 			{
 				SaveLoadFile SLF = new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos);
 				String FileName = SLF.run().getText();
-				MenuFunctions.SaveFile(FileName, AllText, Language, MainCanvas, MenuFunctions.Struct, MenuFunctions.Node, MenuFunctions.Elem, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.MatType, MenuFunctions.SecType);
+				MenuFunctions.SaveFile(FileName, AllText, Language, MainCanvas, MenuFunctions.Struct, MenuFunctions.Node, MenuFunctions.Elem, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes, MenuFunctions.SecType);
 			}
 		});
 		Load.addActionListener(new ActionListener()
@@ -1940,7 +1944,13 @@ public class Menus extends JFrame
 		JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
 		int[][] ButtonSizes = new int[][] {{100, 20}, {30, 20}, {30, 20}, {30, 20}};
 		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Materials", "Mat", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		MenuFunctions.DefineMaterialTypes(CI.run());
+		double[][] createdMaterials = CI.run() ;
+		List<Material> mats = new ArrayList<>() ;
+		for (int i = 0 ; i <= createdMaterials.length - 1 ; i += 1)
+		{
+			mats.add(new Material(createdMaterials[i][0], createdMaterials[i][1], createdMaterials[i][2])) ;
+		}
+		MenuFunctions.setMaterials(mats);
 		EnableButtons();
 	}
 	
@@ -2194,7 +2204,7 @@ public class Menus extends JFrame
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					UtilComponents.PrintStructure(StructureMenu.getName(), MenuFunctions.Node, MenuFunctions.Elem, MenuFunctions.MatType, MenuFunctions.SecType, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					UtilComponents.PrintStructure(StructureMenu.getName(), MenuFunctions.Node, MenuFunctions.Elem, MenuFunctions.matTypes, MenuFunctions.SecType, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
 			}
