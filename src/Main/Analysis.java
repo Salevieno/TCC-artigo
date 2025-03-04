@@ -10,6 +10,7 @@ import structure.Material;
 import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
+import structure.Section;
 import structure.Supports;
 
 public abstract class Analysis
@@ -331,7 +332,7 @@ public abstract class Analysis
     	return FreeDOFTypes;
 	}
 	
-	public static double[][] NumIntegration(Nodes[] Node, Element Elem, Material Mat, double[] Sec, int[][] DOFsPerNode, boolean NonlinearMat, boolean NonlinearGeo, double[] strain, int NPoints)
+	public static double[][] NumIntegration(Nodes[] Node, Element Elem, Material mat, Section sec, int[][] DOFsPerNode, boolean NonlinearMat, boolean NonlinearGeo, double[] strain, int NPoints)
 	{
 		double[] Points = null;
 		double[] Weights = null;
@@ -344,7 +345,7 @@ public abstract class Analysis
 			}
 		}
 		double[][] k = new double[NDOFs][NDOFs];
-		double[][] D = Element.BendingConstitutiveMatrix(Mat, NonlinearMat, strain);
+		double[][] D = Element.BendingConstitutiveMatrix(mat, NonlinearMat, strain);
 		if (NPoints == 1)
 		{
 			Points = new double[] {0};
@@ -366,23 +367,23 @@ public abstract class Analysis
 		{
 			double a = Math.abs(Node[Elem.getExternalNodes()[2]].getOriginalCoords()[0] - Node[Elem.getExternalNodes()[0]].getOriginalCoords()[0]) / 2;
 			double b = Math.abs(Node[Elem.getExternalNodes()[2]].getOriginalCoords()[1] - Node[Elem.getExternalNodes()[0]].getOriginalCoords()[1]) / 2;
-			double[][] Db = Elem.BendingConstitutiveMatrix(Mat, NonlinearMat, strain);
-			double[][] Ds = Element.ShearConstitutiveMatrix2(Mat, Sec);
+			double[][] Db = Element.BendingConstitutiveMatrix(mat, NonlinearMat, strain);
+			double[][] Ds = Element.ShearConstitutiveMatrix2(mat, sec);
 			for (int pe = 0; pe <= NPoints - 1; pe += 1)
 			{
 				for (int pn = 0; pn <= NPoints - 1; pn += 1)
 				{
 					double e = Points[pe], n = Points[pn];
-					if (Elem.getType().equals("SM"))
+					if (Elem.getType().equals(ElemType.SM))
 					{
 						for (int pw = 0; pw <= NPoints - 1; pw += 1)
 						{
 							double w = Points[pw];							
-							double t = Sec[0] / 1000.0;
-							double[][] Bb1 = Elem.Bb(e, n, w, Node, Sec, NonlinearGeo, 1);
-							double[][] Bb2 = Elem.Bb(e, n, w, Node, Sec, NonlinearGeo, 2);
-							double[][] Bs1 = Elem.Bs(e, n, w, Node, Sec, 1);
-							double[][] Bs2 = Elem.Bs(e, n, w, Node, Sec, 2);
+							double t = sec.getT() / 1000.0;
+							double[][] Bb1 = Elem.Bb(e, n, w, Node, sec, NonlinearGeo, 1);
+							double[][] Bb2 = Elem.Bb(e, n, w, Node, sec, NonlinearGeo, 2);
+							double[][] Bs1 = Elem.Bs(e, n, w, Node, sec, 1);
+							double[][] Bs2 = Elem.Bs(e, n, w, Node, sec, 2);
 							double[][] Bb = Util.AddMatrix(Bb1, Bb2);
 							double[][] Bs = Util.AddMatrix(Bs1, Bs2);
 							
@@ -393,7 +394,7 @@ public abstract class Analysis
 					}
 					else
 					{
-						double[][] B = Elem.SecondDerivativesb(e, n, Node, Sec, NonlinearGeo);
+						double[][] B = Elem.SecondDerivativesb(e, n, Node, sec, NonlinearGeo);
 						k = Util.AddMatrix(k, Util.MultMatrix(Util.Transpose(B), Util.MultMatrix(D, B)));
 					}
 				}

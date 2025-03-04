@@ -1,16 +1,17 @@
 package Main;
 
 import structure.Nodes;
+import structure.Section;
 
 public class ElementStiffnessMatrix
 {	
-	public static double[][] KR1StiffnessMatrix(double[] ElemSize, double[][] Db, double[] Sec)
+	public static double[][] KR1StiffnessMatrix(double[] ElemSize, double[][] Db, Section sec)
     {
 		double[][] k = new double[12][12];
 		double a = ElemSize[0];
 		double b = ElemSize[1];		
     	double v = Db[0][1] / Db[0][0];													// Coeficiente de Poisson
-    	double t = Sec[0] / 1000.0;
+    	double t = sec.getT() / 1000.0;
     	double[][][] coef = new double[12][12][4];
     	coef[0][0] = new double[] {6, 6, 1, 21};
     	coef[0][1] = new double[] {6 * a, 0, a, 3 * a};
@@ -102,13 +103,13 @@ public class ElementStiffnessMatrix
     }
 	
 	
-	public static double[][] KR2StiffnessMatrix(double[] ElemSize, double[][] Db, double[] Sec)
+	public static double[][] KR2StiffnessMatrix(double[] ElemSize, double[][] Db, Section sec)
 	{
 		double[][] k = new double[16][16];							
 		double a = ElemSize[0];
 		double b = ElemSize[1];	
     	double v = Db[0][1] / Db[0][0];	// Coeficiente de Poisson						// Matriz de rigidez
-    	double t = Sec[0] / 1000.0;
+    	double t = sec.getT() / 1000.0;
     	double[] term = new double[] {b / (140.0 * Math.pow(a, 3)), a / (140.0 * Math.pow(b, 3)), v / (300.0 * a*b), (1 - v) / (300.0 * a*b)};
     	double[][][] coef = new double[16][16][4];
     	coef[0][0] = new double[] {156, 156, 216, 216};
@@ -259,13 +260,13 @@ public class ElementStiffnessMatrix
 	}
 	
 	
-	public static double[][] MR1StiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, double[] Sec)
+	public static double[][] MR1StiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, Section sec)
 	{
     	double v = Db[0][1] / Db[0][0];													// Coeficiente de Poisson					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
 		double[][] k = new double[12][12];
-    	double t = Sec[0] / 1000.0;
+    	double t = sec.getT() / 1000.0;
 
     	double[] termb = new double[] {1, (1 - v) / 2};
     	double[] terms = new double[] {1};
@@ -441,13 +442,13 @@ public class ElementStiffnessMatrix
 	}
 
 	
-	public static double[][] MR2StiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, double[] Sec)
+	public static double[][] MR2StiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, Section sec)
 	{
 		double[][] k = new double[12][12];
     	double v = Db[0][1] / Db[0][0];													// Coeficiente de Poisson					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-    	double t = Sec[0] / 1000.0;
+    	double t = sec.getT() / 1000.0;
 
     	double[] termb = new double[] {1, (1 - v) / 2};
     	double[] terms = new double[] {1};
@@ -845,7 +846,7 @@ public class ElementStiffnessMatrix
 	}
 	
 	
-	public static double[][] Q4StiffnessMatrix(Nodes[] Node, int[] ExternalNodes, double[] ElemSize, double[][] Db, double[] Sec, boolean NonlinearGeo)
+	public static double[][] Q4StiffnessMatrix(Nodes[] Node, int[] ExternalNodes, double[] ElemSize, double[][] Db, Section sec, boolean NonlinearGeo)
 	{
 		double[][] k = new double[8][8];
 		double x1 = Node[ExternalNodes[0]].getOriginalCoords()[0], x2 = Node[ExternalNodes[1]].getOriginalCoords()[0], x3 = Node[ExternalNodes[2]].getOriginalCoords()[0], x4 = Node[ExternalNodes[3]].getOriginalCoords()[0];
@@ -866,7 +867,7 @@ public class ElementStiffnessMatrix
 		
 		double a = Math.abs(Node[ExternalNodes[2]].getOriginalCoords()[0] - Node[ExternalNodes[0]].getOriginalCoords()[0]) / 2;
 		double b = Math.abs(Node[ExternalNodes[2]].getOriginalCoords()[1] - Node[ExternalNodes[0]].getOriginalCoords()[1]) / 2;
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 			
 		k[0] = new double[] {(((2*Db[2][2]+Db[2][0]+Db[0][2]+Db[0][0])*x3+(Db[2][2]+Db[2][0]+Db[0][2]+Db[0][0])*x2+(-3*Db[2][2]-2*Db[2][0]-2*Db[0][2]-2*Db[0][0])*x1)*y4+((-2*Db[2][2]-Db[2][0]-Db[0][2]-Db[0][0])*x4+(Db[2][2]+Db[2][0]+Db[0][2]+2*Db[0][0])*x2+(Db[2][2]-Db[0][0])*x1)*y3+((-Db[2][2]-Db[2][0]-Db[0][2]-Db[0][0])*x4+(-Db[2][2]-Db[2][0]-Db[0][2]-2*Db[0][0])*x3+(2*Db[2][2]+2*Db[2][0]+2*Db[0][2]+3*Db[0][0])*x1)*y2+((3*Db[2][2]+2*Db[2][0]+2*Db[0][2]+2*Db[0][0])*x4+(Db[0][0]-Db[2][2])*x3+(-2*Db[2][2]-2*Db[2][0]-2*Db[0][2]-3*Db[0][0])*x2)*y1)/48,	(((Db[2][2]+2*Db[2][1]+Db[0][2]+Db[0][1])*x3+(Db[2][2]+Db[2][1]+Db[0][2]+Db[0][1])*x2+(-2*Db[2][2]-3*Db[2][1]-2*Db[0][2]-2*Db[0][1])*x1)*y4+((-Db[2][2]-2*Db[2][1]-Db[0][2]-Db[0][1])*x4+(Db[2][2]+Db[2][1]+2*Db[0][2]+Db[0][1])*x2+(Db[2][1]-Db[0][2])*x1)*y3+((-Db[2][2]-Db[2][1]-Db[0][2]-Db[0][1])*x4+(-Db[2][2]-Db[2][1]-2*Db[0][2]-Db[0][1])*x3+(2*Db[2][2]+2*Db[2][1]+3*Db[0][2]+2*Db[0][1])*x1)*y2+((2*Db[2][2]+3*Db[2][1]+2*Db[0][2]+2*Db[0][1])*x4+(Db[0][2]-Db[2][1])*x3+(-2*Db[2][2]-2*Db[2][1]-3*Db[0][2]-2*Db[0][1])*x2)*y1)/48,	(((Db[2][2]-Db[2][0]+Db[0][2]-Db[0][0])*x3+(-Db[2][0]-Db[0][0])*x2+(-Db[2][2]+2*Db[2][0]-Db[0][2]+2*Db[0][0])*x1)*y4+((-Db[2][2]+Db[2][0]-Db[0][2]+Db[0][0])*x4+(Db[2][2]-Db[2][0]+2*Db[0][2]-2*Db[0][0])*x2+(Db[0][0]-Db[0][2])*x1)*y3+((Db[2][0]+Db[0][0])*x4+(-Db[2][2]+Db[2][0]-2*Db[0][2]+2*Db[0][0])*x3+(Db[2][2]-2*Db[2][0]+2*Db[0][2]-3*Db[0][0])*x1)*y2+((Db[2][2]-2*Db[2][0]+Db[0][2]-2*Db[0][0])*x4+(Db[0][2]-Db[0][0])*x3+(-Db[2][2]+2*Db[2][0]-2*Db[0][2]+3*Db[0][0])*x2)*y1)/48,	-(((Db[2][2]-Db[2][1]+Db[0][2]-Db[0][1])*x3+(Db[2][2]+Db[0][2])*x2+(-2*Db[2][2]+Db[2][1]-2*Db[0][2]+Db[0][1])*x1)*y4+((-Db[2][2]+Db[2][1]-Db[0][2]+Db[0][1])*x4+(Db[2][2]-Db[2][1]+2*Db[0][2]-2*Db[0][1])*x2+(Db[0][1]-Db[0][2])*x1)*y3+((-Db[2][2]-Db[0][2])*x4+(-Db[2][2]+Db[2][1]-2*Db[0][2]+2*Db[0][1])*x3+(2*Db[2][2]-Db[2][1]+3*Db[0][2]-2*Db[0][1])*x1)*y2+((2*Db[2][2]-Db[2][1]+2*Db[0][2]-Db[0][1])*x4+(Db[0][2]-Db[0][1])*x3+(-2*Db[2][2]+Db[2][1]-3*Db[0][2]+2*Db[0][1])*x2)*y1)/48,	-(((Db[2][2]+2*Db[2][0]+Db[0][2]+Db[0][0])*x3+(-Db[2][2]-2*Db[2][0]-Db[0][2]-Db[0][0])*x1)*y4+((-Db[2][2]-2*Db[2][0]-Db[0][2]-Db[0][0])*x4+(Db[2][2]+Db[2][0]+2*Db[0][2]+Db[0][0])*x2+(Db[2][0]-Db[0][2])*x1)*y3+((-Db[2][2]-Db[2][0]-2*Db[0][2]-Db[0][0])*x3+(Db[2][2]+Db[2][0]+2*Db[0][2]+Db[0][0])*x1)*y2+((Db[2][2]+2*Db[2][0]+Db[0][2]+Db[0][0])*x4+(Db[0][2]-Db[2][0])*x3+(-Db[2][2]-Db[2][0]-2*Db[0][2]-Db[0][0])*x2)*y1)/48,	-(((2*Db[2][2]+Db[2][1]+Db[0][2]+Db[0][1])*x3+(-2*Db[2][2]-Db[2][1]-Db[0][2]-Db[0][1])*x1)*y4+((-2*Db[2][2]-Db[2][1]-Db[0][2]-Db[0][1])*x4+(Db[2][2]+Db[2][1]+Db[0][2]+2*Db[0][1])*x2+(Db[2][2]-Db[0][1])*x1)*y3+((-Db[2][2]-Db[2][1]-Db[0][2]-2*Db[0][1])*x3+(Db[2][2]+Db[2][1]+Db[0][2]+2*Db[0][1])*x1)*y2+((2*Db[2][2]+Db[2][1]+Db[0][2]+Db[0][1])*x4+(Db[0][1]-Db[2][2])*x3+(-Db[2][2]-Db[2][1]-Db[0][2]-2*Db[0][1])*x2)*y1)/48,	-(((2*Db[2][2]-2*Db[2][0]+Db[0][2]-Db[0][0])*x3+(Db[2][2]+Db[0][2])*x2+(-3*Db[2][2]+2*Db[2][0]-2*Db[0][2]+Db[0][0])*x1)*y4+((-2*Db[2][2]+2*Db[2][0]-Db[0][2]+Db[0][0])*x4+(Db[2][2]-Db[2][0]+Db[0][2]-Db[0][0])*x2+(Db[2][2]-Db[2][0])*x1)*y3+((-Db[2][2]-Db[0][2])*x4+(-Db[2][2]+Db[2][0]-Db[0][2]+Db[0][0])*x3+(2*Db[2][2]-Db[2][0]+2*Db[0][2]-Db[0][0])*x1)*y2+((3*Db[2][2]-2*Db[2][0]+2*Db[0][2]-Db[0][0])*x4+(Db[2][0]-Db[2][2])*x3+(-2*Db[2][2]+Db[2][0]-2*Db[0][2]+Db[0][0])*x2)*y1)/48,	(((2*Db[2][2]-2*Db[2][1]+Db[0][2]-Db[0][1])*x3+(-Db[2][1]-Db[0][1])*x2+(-2*Db[2][2]+3*Db[2][1]-Db[0][2]+2*Db[0][1])*x1)*y4+((-2*Db[2][2]+2*Db[2][1]-Db[0][2]+Db[0][1])*x4+(Db[2][2]-Db[2][1]+Db[0][2]-Db[0][1])*x2+(Db[2][2]-Db[2][1])*x1)*y3+((Db[2][1]+Db[0][1])*x4+(-Db[2][2]+Db[2][1]-Db[0][2]+Db[0][1])*x3+(Db[2][2]-2*Db[2][1]+Db[0][2]-2*Db[0][1])*x1)*y2+((2*Db[2][2]-3*Db[2][1]+Db[0][2]-2*Db[0][1])*x4+(Db[2][1]-Db[2][2])*x3+(-Db[2][2]+2*Db[2][1]-Db[0][2]+2*Db[0][1])*x2)*y1)/48} ;
 		k[1] = new double[] {(((Db[2][2]+Db[2][0]+2*Db[1][2]+Db[1][0])*x3+(Db[2][2]+Db[2][0]+Db[1][2]+Db[1][0])*x2+(-2*Db[2][2]-2*Db[2][0]-3*Db[1][2]-2*Db[1][0])*x1)*y4+((-Db[2][2]-Db[2][0]-2*Db[1][2]-Db[1][0])*x4+(Db[2][2]+2*Db[2][0]+Db[1][2]+Db[1][0])*x2+(Db[1][2]-Db[2][0])*x1)*y3+((-Db[2][2]-Db[2][0]-Db[1][2]-Db[1][0])*x4+(-Db[2][2]-2*Db[2][0]-Db[1][2]-Db[1][0])*x3+(2*Db[2][2]+3*Db[2][0]+2*Db[1][2]+2*Db[1][0])*x1)*y2+((2*Db[2][2]+2*Db[2][0]+3*Db[1][2]+2*Db[1][0])*x4+(Db[2][0]-Db[1][2])*x3+(-2*Db[2][2]-3*Db[2][0]-2*Db[1][2]-2*Db[1][0])*x2)*y1)/48,	(((Db[2][2]+Db[2][1]+Db[1][2]+2*Db[1][1])*x3+(Db[2][2]+Db[2][1]+Db[1][2]+Db[1][1])*x2+(-2*Db[2][2]-2*Db[2][1]-2*Db[1][2]-3*Db[1][1])*x1)*y4+((-Db[2][2]-Db[2][1]-Db[1][2]-2*Db[1][1])*x4+(2*Db[2][2]+Db[2][1]+Db[1][2]+Db[1][1])*x2+(Db[1][1]-Db[2][2])*x1)*y3+((-Db[2][2]-Db[2][1]-Db[1][2]-Db[1][1])*x4+(-2*Db[2][2]-Db[2][1]-Db[1][2]-Db[1][1])*x3+(3*Db[2][2]+2*Db[2][1]+2*Db[1][2]+2*Db[1][1])*x1)*y2+((2*Db[2][2]+2*Db[2][1]+2*Db[1][2]+3*Db[1][1])*x4+(Db[2][2]-Db[1][1])*x3+(-3*Db[2][2]-2*Db[2][1]-2*Db[1][2]-2*Db[1][1])*x2)*y1)/48,	(((Db[2][2]-Db[2][0]+Db[1][2]-Db[1][0])*x3+(-Db[2][0]-Db[1][0])*x2+(-Db[2][2]+2*Db[2][0]-Db[1][2]+2*Db[1][0])*x1)*y4+((-Db[2][2]+Db[2][0]-Db[1][2]+Db[1][0])*x4+(2*Db[2][2]-2*Db[2][0]+Db[1][2]-Db[1][0])*x2+(Db[2][0]-Db[2][2])*x1)*y3+((Db[2][0]+Db[1][0])*x4+(-2*Db[2][2]+2*Db[2][0]-Db[1][2]+Db[1][0])*x3+(2*Db[2][2]-3*Db[2][0]+Db[1][2]-2*Db[1][0])*x1)*y2+((Db[2][2]-2*Db[2][0]+Db[1][2]-2*Db[1][0])*x4+(Db[2][2]-Db[2][0])*x3+(-2*Db[2][2]+3*Db[2][0]-Db[1][2]+2*Db[1][0])*x2)*y1)/48,	-(((Db[2][2]-Db[2][1]+Db[1][2]-Db[1][1])*x3+(Db[2][2]+Db[1][2])*x2+(-2*Db[2][2]+Db[2][1]-2*Db[1][2]+Db[1][1])*x1)*y4+((-Db[2][2]+Db[2][1]-Db[1][2]+Db[1][1])*x4+(2*Db[2][2]-2*Db[2][1]+Db[1][2]-Db[1][1])*x2+(Db[2][1]-Db[2][2])*x1)*y3+((-Db[2][2]-Db[1][2])*x4+(-2*Db[2][2]+2*Db[2][1]-Db[1][2]+Db[1][1])*x3+(3*Db[2][2]-2*Db[2][1]+2*Db[1][2]-Db[1][1])*x1)*y2+((2*Db[2][2]-Db[2][1]+2*Db[1][2]-Db[1][1])*x4+(Db[2][2]-Db[2][1])*x3+(-3*Db[2][2]+2*Db[2][1]-2*Db[1][2]+Db[1][1])*x2)*y1)/48,	-(((Db[2][2]+Db[2][0]+Db[1][2]+2*Db[1][0])*x3+(-Db[2][2]-Db[2][0]-Db[1][2]-2*Db[1][0])*x1)*y4+((-Db[2][2]-Db[2][0]-Db[1][2]-2*Db[1][0])*x4+(2*Db[2][2]+Db[2][0]+Db[1][2]+Db[1][0])*x2+(Db[1][0]-Db[2][2])*x1)*y3+((-2*Db[2][2]-Db[2][0]-Db[1][2]-Db[1][0])*x3+(2*Db[2][2]+Db[2][0]+Db[1][2]+Db[1][0])*x1)*y2+((Db[2][2]+Db[2][0]+Db[1][2]+2*Db[1][0])*x4+(Db[2][2]-Db[1][0])*x3+(-2*Db[2][2]-Db[2][0]-Db[1][2]-Db[1][0])*x2)*y1)/48,	-(((Db[2][2]+Db[2][1]+2*Db[1][2]+Db[1][1])*x3+(-Db[2][2]-Db[2][1]-2*Db[1][2]-Db[1][1])*x1)*y4+((-Db[2][2]-Db[2][1]-2*Db[1][2]-Db[1][1])*x4+(Db[2][2]+2*Db[2][1]+Db[1][2]+Db[1][1])*x2+(Db[1][2]-Db[2][1])*x1)*y3+((-Db[2][2]-2*Db[2][1]-Db[1][2]-Db[1][1])*x3+(Db[2][2]+2*Db[2][1]+Db[1][2]+Db[1][1])*x1)*y2+((Db[2][2]+Db[2][1]+2*Db[1][2]+Db[1][1])*x4+(Db[2][1]-Db[1][2])*x3+(-Db[2][2]-2*Db[2][1]-Db[1][2]-Db[1][1])*x2)*y1)/48,	-(((Db[2][2]-Db[2][0]+2*Db[1][2]-2*Db[1][0])*x3+(Db[2][2]+Db[1][2])*x2+(-2*Db[2][2]+Db[2][0]-3*Db[1][2]+2*Db[1][0])*x1)*y4+((-Db[2][2]+Db[2][0]-2*Db[1][2]+2*Db[1][0])*x4+(Db[2][2]-Db[2][0]+Db[1][2]-Db[1][0])*x2+(Db[1][2]-Db[1][0])*x1)*y3+((-Db[2][2]-Db[1][2])*x4+(-Db[2][2]+Db[2][0]-Db[1][2]+Db[1][0])*x3+(2*Db[2][2]-Db[2][0]+2*Db[1][2]-Db[1][0])*x1)*y2+((2*Db[2][2]-Db[2][0]+3*Db[1][2]-2*Db[1][0])*x4+(Db[1][0]-Db[1][2])*x3+(-2*Db[2][2]+Db[2][0]-2*Db[1][2]+Db[1][0])*x2)*y1)/48,	(((Db[2][2]-Db[2][1]+2*Db[1][2]-2*Db[1][1])*x3+(-Db[2][1]-Db[1][1])*x2+(-Db[2][2]+2*Db[2][1]-2*Db[1][2]+3*Db[1][1])*x1)*y4+((-Db[2][2]+Db[2][1]-2*Db[1][2]+2*Db[1][1])*x4+(Db[2][2]-Db[2][1]+Db[1][2]-Db[1][1])*x2+(Db[1][2]-Db[1][1])*x1)*y3+((Db[2][1]+Db[1][1])*x4+(-Db[2][2]+Db[2][1]-Db[1][2]+Db[1][1])*x3+(Db[2][2]-2*Db[2][1]+Db[1][2]-2*Db[1][1])*x1)*y2+((Db[2][2]-2*Db[2][1]+2*Db[1][2]-3*Db[1][1])*x4+(Db[1][1]-Db[1][2])*x3+(-Db[2][2]+2*Db[2][1]-Db[1][2]+2*Db[1][1])*x2)*y1)/48} ;
@@ -889,12 +890,12 @@ public class ElementStiffnessMatrix
 	}
 	
 	
-	public static double[][] R4StiffnessMatrix(double[] ElemSize, double[][] Db, double[] Sec)
+	public static double[][] R4StiffnessMatrix(double[] ElemSize, double[][] Db, Section sec)
 	{
 		double[][] k = new double[8][8];					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 		
 		k[0] = new double[] {((4*Db[0][0]*Math.pow(b, 2)+(3*Db[2][0]+3*Db[0][2])*a*b+4*Db[2][2]*Math.pow(a, 2))*t)/(12*a*b),	((4*Db[0][2]*Math.pow(b, 2)+(3*Db[2][2]+3*Db[0][1])*a*b+4*Db[2][1]*Math.pow(a, 2))*t)/(12*a*b),	-((4*Db[0][0]*Math.pow(b, 2)+(3*Db[2][0]-3*Db[0][2])*a*b-2*Db[2][2]*Math.pow(a, 2))*t)/(12*a*b),	-((4*Db[0][2]*Math.pow(b, 2)+(3*Db[2][2]-3*Db[0][1])*a*b-2*Db[2][1]*Math.pow(a, 2))*t)/(12*a*b),	-((2*Db[0][0]*Math.pow(b, 2)+(3*Db[2][0]+3*Db[0][2])*a*b+2*Db[2][2]*Math.pow(a, 2))*t)/(12*a*b),	-((2*Db[0][2]*Math.pow(b, 2)+(3*Db[2][2]+3*Db[0][1])*a*b+2*Db[2][1]*Math.pow(a, 2))*t)/(12*a*b),	((2*Db[0][0]*Math.pow(b, 2)+(3*Db[2][0]-3*Db[0][2])*a*b-4*Db[2][2]*Math.pow(a, 2))*t)/(12*a*b),	((2*Db[0][2]*Math.pow(b, 2)+(3*Db[2][2]-3*Db[0][1])*a*b-4*Db[2][1]*Math.pow(a, 2))*t)/(12*a*b)} ;
 		k[1] = new double[] {((4*Db[2][0]*Math.pow(b, 2)+(3*Db[2][2]+3*Db[1][0])*a*b+4*Db[1][2]*Math.pow(a, 2))*t)/(12*a*b),	((4*Db[2][2]*Math.pow(b, 2)+(3*Db[2][1]+3*Db[1][2])*a*b+4*Db[1][1]*Math.pow(a, 2))*t)/(12*a*b),	-((4*Db[2][0]*Math.pow(b, 2)+(3*Db[1][0]-3*Db[2][2])*a*b-2*Db[1][2]*Math.pow(a, 2))*t)/(12*a*b),	-((4*Db[2][2]*Math.pow(b, 2)+(3*Db[1][2]-3*Db[2][1])*a*b-2*Db[1][1]*Math.pow(a, 2))*t)/(12*a*b),	-((2*Db[2][0]*Math.pow(b, 2)+(3*Db[2][2]+3*Db[1][0])*a*b+2*Db[1][2]*Math.pow(a, 2))*t)/(12*a*b),	-((2*Db[2][2]*Math.pow(b, 2)+(3*Db[2][1]+3*Db[1][2])*a*b+2*Db[1][1]*Math.pow(a, 2))*t)/(12*a*b),	((2*Db[2][0]*Math.pow(b, 2)+(3*Db[1][0]-3*Db[2][2])*a*b-4*Db[1][2]*Math.pow(a, 2))*t)/(12*a*b),	((2*Db[2][2]*Math.pow(b, 2)+(3*Db[1][2]-3*Db[2][1])*a*b-4*Db[1][1]*Math.pow(a, 2))*t)/(12*a*b)} ;
@@ -951,13 +952,13 @@ public class ElementStiffnessMatrix
 	}
 	
 	
-	public static double[][] SMStiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, double[] Sec)
+	public static double[][] SMStiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, Section sec)
 	{
 		double[][] kb = new double[20][20], ks = new double[20][20];
 		double[][] k = new double[20][20];					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 		
 		kb[0] = new double[] {((20*Db[0][0]*b*b*b*b+(28*Db[2][2]+5*Db[1][0]+5*Db[0][1])*a*a*b*b+20*Db[1][1]*a*a*a*a)*t*t*t)/(240*a*a*a*b*b*b),	((10*Db[0][0]*b*b+(2*Db[2][2]+5*Db[1][0])*a*a)*t*t*t)/(120*a*a*b),	(((2*Db[2][2]+5*Db[0][1])*b*b+10*Db[1][1]*a*a)*t*t*t)/(120*a*b*b),	((2*Db[2][2]-Db[1][0])*t*t*t)/(48*b),	((2*Db[2][2]-Db[0][1])*t*t*t)/(48*a),	-((20*Db[0][0]*b*b*b*b+(28*Db[2][2]+5*Db[1][0]+5*Db[0][1])*a*a*b*b-10*Db[1][1]*a*a*a*a)*t*t*t)/(240*a*a*a*b*b*b),	((5*Db[0][0]*b*b+Db[2][2]*a*a)*t*t*t)/(60*a*a*b),	-(((2*Db[2][2]+5*Db[0][1])*b*b-5*Db[1][1]*a*a)*t*t*t)/(120*a*b*b),	((2*Db[2][2]+Db[1][0])*t*t*t)/(48*b),	-((2*Db[2][2]-Db[0][1])*t*t*t)/(48*a),	-((10*Db[0][0]*b*b*b*b+(-28*Db[2][2]-5*Db[1][0]-5*Db[0][1])*a*a*b*b+10*Db[1][1]*a*a*a*a)*t*t*t)/(240*a*a*a*b*b*b),	((5*Db[0][0]*b*b-2*Db[2][2]*a*a)*t*t*t)/(120*a*a*b),	-((2*Db[2][2]*b*b-5*Db[1][1]*a*a)*t*t*t)/(120*a*b*b),	-((2*Db[2][2]+Db[1][0])*t*t*t)/(48*b),	-((2*Db[2][2]+Db[0][1])*t*t*t)/(48*a),	((10*Db[0][0]*b*b*b*b+(-28*Db[2][2]-5*Db[1][0]-5*Db[0][1])*a*a*b*b-20*Db[1][1]*a*a*a*a)*t*t*t)/(240*a*a*a*b*b*b),	((5*Db[0][0]*b*b+(-2*Db[2][2]-5*Db[1][0])*a*a)*t*t*t)/(120*a*a*b),	((Db[2][2]*b*b+5*Db[1][1]*a*a)*t*t*t)/(60*a*b*b),	-((2*Db[2][2]-Db[1][0])*t*t*t)/(48*b),	((2*Db[2][2]+Db[0][1])*t*t*t)/(48*a)} ;
 		kb[1] = new double[] {((10*Db[0][0]*b*b+(2*Db[2][2]+5*Db[0][1])*a*a)*t*t*t)/(120*a*a*b),	((5*Db[0][0]*b*b+2*Db[2][2]*a*a)*t*t*t)/(45*a*b),	(Db[0][1]*t*t*t)/12,	-((2*Db[0][0]*b*b+Db[2][2]*a*a)*t*t*t)/(72*a*b),	-(Db[0][1]*t*t*t)/24,	-((5*Db[0][0]*b*b+Db[2][2]*a*a)*t*t*t)/(60*a*a*b),	((5*Db[0][0]*b*b-Db[2][2]*a*a)*t*t*t)/(90*a*b),	0,	((2*Db[0][0]*b*b+Db[2][2]*a*a)*t*t*t)/(72*a*b),	0,	-((5*Db[0][0]*b*b-2*Db[2][2]*a*a)*t*t*t)/(120*a*a*b),	((5*Db[0][0]*b*b+2*Db[2][2]*a*a)*t*t*t)/(180*a*b),	0,	((Db[0][0]*b*b-Db[2][2]*a*a)*t*t*t)/(72*a*b),	0,	((5*Db[0][0]*b*b+(-2*Db[2][2]-5*Db[0][1])*a*a)*t*t*t)/(120*a*a*b),	((5*Db[0][0]*b*b-4*Db[2][2]*a*a)*t*t*t)/(90*a*b),	0,	-((Db[0][0]*b*b-Db[2][2]*a*a)*t*t*t)/(72*a*b),	(Db[0][1]*t*t*t)/24} ;
@@ -1013,13 +1014,13 @@ public class ElementStiffnessMatrix
 	}
 	
 	
-	public static double[][] SM8StiffnessMatrix( double[] ElemSize, double[][] Db, double[][] Ds, double[] Sec)
+	public static double[][] SM8StiffnessMatrix( double[] ElemSize, double[][] Db, double[][] Ds, Section sec)
 	{
 		double[][] kb = new double[28][28], ks = new double[28][28];
 		double[][] k = new double[28][28];					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 		
 		/*
 		kb[0] = new double[] {((20*Db[0][0]*Math.pow(b, 4)+(28*Db[2][2]+5*Db[1][0]+5*Db[0][1])*Math.pow(a, 2)*Math.pow(b, 2)+20*Db[1][1]*Math.pow(a, 4))*Math.pow(t, 3))/(20160*Math.pow(a, 3)*Math.pow(b, 3)),	((10*Db[0][0]*Math.pow(b, 2)+(2*Db[2][2]+5*Db[1][0])*Math.pow(a, 2))*Math.pow(t, 3))/(10080*Math.pow(a, 2)*b),	(((2*Db[2][2]+5*Db[0][1])*Math.pow(b, 2)+10*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(10080*a*Math.pow(b, 2)),	((40*Db[0][0]*Math.pow(b, 2)+(25*Db[1][0]-6*Db[2][2])*Math.pow(a, 2))*Math.pow(t, 3))/(60480*Math.pow(a, 2)*b),	-(((6*Db[2][2]-25*Db[0][1])*Math.pow(b, 2)-40*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(60480*a*Math.pow(b, 2)),	-((20*Db[0][0]*Math.pow(b, 2)+(12*Db[2][2]+5*Db[1][0])*Math.pow(a, 2))*Math.pow(t, 3))/(15120*Math.pow(a, 2)*b),	0,	-((20*Db[0][0]*Math.pow(b, 4)+(28*Db[2][2]+5*Db[1][0]+5*Db[0][1])*Math.pow(a, 2)*Math.pow(b, 2)-10*Db[1][1]*Math.pow(a, 4))*Math.pow(t, 3))/(20160*Math.pow(a, 3)*Math.pow(b, 3)),	((5*Db[0][0]*Math.pow(b, 2)+Db[2][2]*Math.pow(a, 2))*Math.pow(t, 3))/(5040*Math.pow(a, 2)*b),	-(((2*Db[2][2]+5*Db[0][1])*Math.pow(b, 2)-5*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(10080*a*Math.pow(b, 2)),	((40*Db[0][0]*Math.pow(b, 2)+(-6*Db[2][2]-5*Db[1][0])*Math.pow(a, 2))*Math.pow(t, 3))/(60480*Math.pow(a, 2)*b),	(((6*Db[2][2]-25*Db[0][1])*Math.pow(b, 2)+20*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(60480*a*Math.pow(b, 2)),	0,	(((12*Db[2][2]+5*Db[0][1])*Math.pow(b, 2)-10*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(15120*a*Math.pow(b, 2)),	-((10*Db[0][0]*Math.pow(b, 4)+(-28*Db[2][2]-5*Db[1][0]-5*Db[0][1])*Math.pow(a, 2)*Math.pow(b, 2)+10*Db[1][1]*Math.pow(a, 4))*Math.pow(t, 3))/(20160*Math.pow(a, 3)*Math.pow(b, 3)),	((5*Db[0][0]*Math.pow(b, 2)-2*Db[2][2]*Math.pow(a, 2))*Math.pow(t, 3))/(10080*Math.pow(a, 2)*b),	-((2*Db[2][2]*Math.pow(b, 2)-5*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(10080*a*Math.pow(b, 2)),	((20*Db[0][0]*Math.pow(b, 2)+(6*Db[2][2]+5*Db[1][0])*Math.pow(a, 2))*Math.pow(t, 3))/(60480*Math.pow(a, 2)*b),	(((6*Db[2][2]+5*Db[0][1])*Math.pow(b, 2)+20*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(60480*a*Math.pow(b, 2)),	-((10*Db[0][0]*Math.pow(b, 2)+(-12*Db[2][2]-5*Db[1][0])*Math.pow(a, 2))*Math.pow(t, 3))/(15120*Math.pow(a, 2)*b),	0,	((10*Db[0][0]*Math.pow(b, 4)+(-28*Db[2][2]-5*Db[1][0]-5*Db[0][1])*Math.pow(a, 2)*Math.pow(b, 2)-20*Db[1][1]*Math.pow(a, 4))*Math.pow(t, 3))/(20160*Math.pow(a, 3)*Math.pow(b, 3)),	((5*Db[0][0]*Math.pow(b, 2)+(-2*Db[2][2]-5*Db[1][0])*Math.pow(a, 2))*Math.pow(t, 3))/(10080*Math.pow(a, 2)*b),	((Db[2][2]*Math.pow(b, 2)+5*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(5040*a*Math.pow(b, 2)),	((20*Db[0][0]*Math.pow(b, 2)+(6*Db[2][2]-25*Db[1][0])*Math.pow(a, 2))*Math.pow(t, 3))/(60480*Math.pow(a, 2)*b),	-(((6*Db[2][2]+5*Db[0][1])*Math.pow(b, 2)-40*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(60480*a*Math.pow(b, 2)),	0,	-(((12*Db[2][2]+5*Db[0][1])*Math.pow(b, 2)+20*Db[1][1]*Math.pow(a, 2))*Math.pow(t, 3))/(15120*a*Math.pow(b, 2))} ;
@@ -1153,12 +1154,12 @@ public class ElementStiffnessMatrix
 	}
 	
 	
-	public static double[][] KP3StiffnessMatrix(double[] ElemSize, double[][] Db, double[] Sec)
+	public static double[][] KP3StiffnessMatrix(double[] ElemSize, double[][] Db, Section sec)
 	{
 		double[][] k = new double[12][12];					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 		
 		k[0] = new double[] {(195*Db[0][0]*b*b*b*b+(252*Db[2][2]+63*Db[1][0]+63*Db[0][1])*a*a*b*b+195*Db[1][1]*a*a*a*a)/(175*a*a*a*b*b*b),	(390*Db[0][0]*b*b*b*b+(175*Db[0][2]-175*Db[2][0])*a*b*b*b+(84*Db[2][2]+231*Db[1][0]+21*Db[0][1])*a*a*b*b+110*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	(110*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+231*Db[0][1])*a*a*b*b+(175*Db[1][2]-175*Db[2][1])*a*a*a*b+390*Db[1][1]*a*a*a*a)/(350*a*a*a*b*b),	-(390*Db[0][0]*b*b*b*b+(504*Db[2][2]+126*Db[1][0]+126*Db[0][1])*a*a*b*b-135*Db[1][1]*a*a*a*a)/(350*a*a*a*b*b*b),	(390*Db[0][0]*b*b*b*b+(175*Db[2][0]-175*Db[0][2])*a*b*b*b+(84*Db[2][2]+21*Db[1][0]+21*Db[0][1])*a*a*b*b-65*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	-(110*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+231*Db[0][1])*a*a*b*b+(175*Db[2][1]+175*Db[1][2])*a*a*a*b-135*Db[1][1]*a*a*a*a)/(350*a*a*a*b*b),	-(135*Db[0][0]*b*b*b*b+(-504*Db[2][2]-126*Db[1][0]-126*Db[0][1])*a*a*b*b+135*Db[1][1]*a*a*a*a)/(350*a*a*a*b*b*b),	(135*Db[0][0]*b*b*b*b+(175*Db[2][0]+175*Db[0][2])*a*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+65*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	(65*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+(175*Db[2][1]+175*Db[1][2])*a*a*a*b+135*Db[1][1]*a*a*a*a)/(350*a*a*a*b*b),	(135*Db[0][0]*b*b*b*b+(-504*Db[2][2]-126*Db[1][0]-126*Db[0][1])*a*a*b*b-390*Db[1][1]*a*a*a*a)/(350*a*a*a*b*b*b),	(135*Db[0][0]*b*b*b*b+(-175*Db[2][0]-175*Db[0][2])*a*b*b*b+(-84*Db[2][2]-231*Db[1][0]-21*Db[0][1])*a*a*b*b-110*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	-(65*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+(175*Db[1][2]-175*Db[2][1])*a*a*a*b-390*Db[1][1]*a*a*a*a)/(350*a*a*a*b*b)} ;
 		k[1] = new double[] {(390*Db[0][0]*b*b*b*b+(175*Db[2][0]-175*Db[0][2])*a*b*b*b+(84*Db[2][2]+21*Db[1][0]+231*Db[0][1])*a*a*b*b+110*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	(520*Db[0][0]*b*b*b*b+(175*Db[2][0]+175*Db[0][2])*a*b*b*b+(224*Db[2][2]+56*Db[1][0]+56*Db[0][1])*a*a*b*b+40*Db[1][1]*a*a*a*a)/(350*a*b*b*b),	(220*Db[0][0]*b*b*b*b+(140*Db[2][0]+140*Db[0][2])*a*b*b*b+(28*Db[2][2]+7*Db[1][0]+847*Db[0][1])*a*a*b*b+(140*Db[2][1]+140*Db[1][2])*a*a*a*b+220*Db[1][1]*a*a*a*a)/(700*a*a*b*b),	-(390*Db[0][0]*b*b*b*b+(175*Db[2][0]-175*Db[0][2])*a*b*b*b+(84*Db[2][2]+21*Db[1][0]+21*Db[0][1])*a*a*b*b-65*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	(260*Db[0][0]*b*b*b*b+(175*Db[2][0]-175*Db[0][2])*a*b*b*b+(-56*Db[2][2]-14*Db[1][0]-14*Db[0][1])*a*a*b*b-30*Db[1][1]*a*a*a*a)/(350*a*b*b*b),	-(220*Db[0][0]*b*b*b*b+(140*Db[2][0]+140*Db[0][2])*a*b*b*b+(28*Db[2][2]+7*Db[1][0]+77*Db[0][1])*a*a*b*b+(140*Db[2][1]+140*Db[1][2])*a*a*a*b-130*Db[1][1]*a*a*a*a)/(700*a*a*b*b),	-(135*Db[0][0]*b*b*b*b+(175*Db[2][0]+175*Db[0][2])*a*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+65*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	(90*Db[0][0]*b*b*b*b+(175*Db[2][0]+175*Db[0][2])*a*b*b*b+(56*Db[2][2]+14*Db[1][0]+14*Db[0][1])*a*a*b*b+30*Db[1][1]*a*a*a*a)/(350*a*b*b*b),	(130*Db[0][0]*b*b*b*b+(140*Db[2][0]+140*Db[0][2])*a*b*b*b+(-28*Db[2][2]-7*Db[1][0]-7*Db[0][1])*a*a*b*b+(140*Db[2][1]+140*Db[1][2])*a*a*a*b+130*Db[1][1]*a*a*a*a)/(700*a*a*b*b),	(135*Db[0][0]*b*b*b*b+(175*Db[2][0]+175*Db[0][2])*a*b*b*b+(-84*Db[2][2]-21*Db[1][0]-231*Db[0][1])*a*a*b*b-110*Db[1][1]*a*a*a*a)/(350*a*a*b*b*b),	(180*Db[0][0]*b*b*b*b+(175*Db[2][0]-175*Db[0][2])*a*b*b*b+(-224*Db[2][2]-56*Db[1][0]-56*Db[0][1])*a*a*b*b-40*Db[1][1]*a*a*a*a)/(350*a*b*b*b),	-(130*Db[0][0]*b*b*b*b+(140*Db[2][0]+140*Db[0][2])*a*b*b*b+(-28*Db[2][2]-7*Db[1][0]-77*Db[0][1])*a*a*b*b+(140*Db[2][1]+140*Db[1][2])*a*a*a*b-220*Db[1][1]*a*a*a*a)/(700*a*a*b*b)} ;
@@ -1184,13 +1185,13 @@ public class ElementStiffnessMatrix
 	}
 
 	
-	public static double[][] SM_HStiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, double[] Sec)
+	public static double[][] SM_HStiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, Section sec)
 	{
 		double[][] kb = new double[20][20], ks = new double[20][20];
 		double[][] k = new double[20][20];					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 		
 		/*
 		kb[0] = new double[] {((65*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+21*Db[0][1])*a*a*b*b+65*Db[1][1]*a*a*a*a)*t*t*t)/(58800*a*a*a*b*b*b),	((390*Db[0][0]*b*b*b*b+(84*Db[2][2]+231*Db[1][0]+21*Db[0][1])*a*a*b*b+110*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*b*b*b),	((110*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+231*Db[0][1])*a*a*b*b+390*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b),	-((2*Db[2][2]-Db[1][0])*t*t*t)/(4032*b),	-((2*Db[2][2]-Db[0][1])*t*t*t)/(4032*a),	-((130*Db[0][0]*b*b*b*b+(168*Db[2][2]+42*Db[1][0]+42*Db[0][1])*a*a*b*b-45*Db[1][1]*a*a*a*a)*t*t*t)/(117600*a*a*a*b*b*b),	((390*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+21*Db[0][1])*a*a*b*b-65*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*b*b*b),	-((110*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+231*Db[0][1])*a*a*b*b-135*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b),	-((2*Db[2][2]+Db[1][0])*t*t*t)/(4032*b),	((2*Db[2][2]-Db[0][1])*t*t*t)/(4032*a),	-((15*Db[0][0]*b*b*b*b+(-56*Db[2][2]-14*Db[1][0]-14*Db[0][1])*a*a*b*b+15*Db[1][1]*a*a*a*a)*t*t*t)/(39200*a*a*a*b*b*b),	((135*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+65*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*b*b*b),	((65*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+135*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b),	((2*Db[2][2]+Db[1][0])*t*t*t)/(4032*b),	((2*Db[2][2]+Db[0][1])*t*t*t)/(4032*a),	((45*Db[0][0]*b*b*b*b+(-168*Db[2][2]-42*Db[1][0]-42*Db[0][1])*a*a*b*b-130*Db[1][1]*a*a*a*a)*t*t*t)/(117600*a*a*a*b*b*b),	((135*Db[0][0]*b*b*b*b+(-84*Db[2][2]-231*Db[1][0]-21*Db[0][1])*a*a*b*b-110*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*b*b*b),	-((65*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b-390*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b),	((2*Db[2][2]-Db[1][0])*t*t*t)/(4032*b),	-((2*Db[2][2]+Db[0][1])*t*t*t)/(4032*a)} ;
@@ -1294,13 +1295,13 @@ public class ElementStiffnessMatrix
 	}
 
 	
-	public static double[][] SM_CStiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, double[] Sec)
+	public static double[][] SM_CStiffnessMatrix(double[] ElemSize, double[][] Db, double[][] Ds, Section sec)
 	{
 		double[][] kb = new double[24][24], ks = new double[24][24];
 		double[][] k = new double[24][24];					
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 		
 		/*
 		kb[0] = new double[] {((65*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+21*Db[0][1])*a*a*b*b+65*Db[1][1]*a*a*a*a)*t*t*t)/(58800*a*a*a*b*b*b),	((390*Db[0][0]*b*b*b*b+(84*Db[2][2]+231*Db[1][0]+21*Db[0][1])*a*a*b*b+110*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	((110*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+231*Db[0][1])*a*a*b*b+390*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	((220*Db[0][0]*b*b*b*b+(28*Db[2][2]+77*Db[1][0]+77*Db[0][1])*a*a*b*b+220*Db[1][1]*a*a*a*a)*t*t*t)/(705600*a*a*a*b*b*b),	-((2*Db[2][2]-Db[1][0])*t*t*t)/(4032*b),	-((2*Db[2][2]-Db[0][1])*t*t*t)/(4032*a),	-((130*Db[0][0]*b*b*b*b+(168*Db[2][2]+42*Db[1][0]+42*Db[0][1])*a*a*b*b-45*Db[1][1]*a*a*a*a)*t*t*t)/(117600*a*a*a*b*b*b),	((390*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+21*Db[0][1])*a*a*b*b-65*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	-((110*Db[0][0]*b*b*b*b+(84*Db[2][2]+21*Db[1][0]+231*Db[0][1])*a*a*b*b-135*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	((220*Db[0][0]*b*b*b*b+(28*Db[2][2]+7*Db[1][0]+77*Db[0][1])*a*a*b*b-130*Db[1][1]*a*a*a*a)*t*t*t)/(705600*a*a*a*b*b*b),	-((2*Db[2][2]+Db[1][0])*t*t*t)/(4032*b),	((2*Db[2][2]-Db[0][1])*t*t*t)/(4032*a),	-((15*Db[0][0]*b*b*b*b+(-56*Db[2][2]-14*Db[1][0]-14*Db[0][1])*a*a*b*b+15*Db[1][1]*a*a*a*a)*t*t*t)/(39200*a*a*a*b*b*b),	((135*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+65*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	((65*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b+135*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	-((130*Db[0][0]*b*b*b*b+(-28*Db[2][2]-7*Db[1][0]-7*Db[0][1])*a*a*b*b+130*Db[1][1]*a*a*a*a)*t*t*t)/(705600*a*a*a*b*b*b),	((2*Db[2][2]+Db[1][0])*t*t*t)/(4032*b),	((2*Db[2][2]+Db[0][1])*t*t*t)/(4032*a),	((45*Db[0][0]*b*b*b*b+(-168*Db[2][2]-42*Db[1][0]-42*Db[0][1])*a*a*b*b-130*Db[1][1]*a*a*a*a)*t*t*t)/(117600*a*a*a*b*b*b),	((135*Db[0][0]*b*b*b*b+(-84*Db[2][2]-231*Db[1][0]-21*Db[0][1])*a*a*b*b-110*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	-((65*Db[0][0]*b*b*b*b+(-84*Db[2][2]-21*Db[1][0]-21*Db[0][1])*a*a*b*b-390*Db[1][1]*a*a*a*a)*t*t*t)/(352800*a*a*a*b*b*b),	-((130*Db[0][0]*b*b*b*b+(-28*Db[2][2]-77*Db[1][0]-7*Db[0][1])*a*a*b*b-220*Db[1][1]*a*a*a*a)*t*t*t)/(705600*a*a*a*b*b*b),	((2*Db[2][2]-Db[1][0])*t*t*t)/(4032*b),	-((2*Db[2][2]+Db[0][1])*t*t*t)/(4032*a)} ;

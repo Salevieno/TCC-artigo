@@ -10,6 +10,7 @@ import structure.Material;
 import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
+import structure.Section;
 import structure.Supports;
 
 public abstract class UtilComponents
@@ -54,24 +55,12 @@ public abstract class UtilComponents
 		mats.forEach(System.out::println);
 	}
 	
-	public static void PrintSec(double[] Sec)
-	{
-		for (int i = 0; i <= Sec.length - 1; i += 1)
-		{
-			System.out.print(Sec[i] + "	");
-		}
-		System.out.println();
-	}
-	
-	public static void PrintAllSec(double[][] Sec)
+	public static void PrintAllSec(List<Section> secs)
 	{
 		System.out.println();
 		System.out.println("Secs");
 		System.out.println("thick (mm)");
-		for (int sec = 0; sec <= Sec.length - 1; sec += 1)
-		{
-			PrintSec(Sec[sec]);
-		}
+		secs.forEach(System.out::println);
 	}
 	
 	public static void PrintSup(Supports Sup)
@@ -163,7 +152,7 @@ public abstract class UtilComponents
 		}
 	}
 	
-	public static void PrintStructure(String StructureName, Nodes[] Node, Element[] Elem, List<Material> mats, double[][] Sec, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	public static void PrintStructure(String StructureName, Nodes[] Node, Element[] Elem, List<Material> mats, List<Section> secs, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(StructureName);
@@ -179,9 +168,9 @@ public abstract class UtilComponents
 		{
 			PrintAllMat(mats);
 		}
-		if (Sec != null)
+		if (secs != null)
 		{
-			PrintAllSec(Sec);
+			PrintAllSec(secs);
 		}
 		if (Sup != null)
 		{

@@ -12,14 +12,19 @@ public class Element
 	private int ID;
 	private ElemType type;			// Type of element
 	private ElemShape Shape;
+	
+	
 	private int[] DOFs;				// All DOFs present in the element
 	private int[][] DOFsPerNode;	// DOFs in each node of the element
+	
+	
 	private int[] ExternalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
 	private int[] InternalNodes;	// Nodes inside the element
-//	private double[] Mat;			// Material
 	private Material mat ;
-	private double[] Sec;			// Section
+	private Section sec;
 	private DistLoads[] DistLoads;	// Distributed loads in the node
+	
+	
 	private int[] StrainTypes;		// All strain types present in the element
 	private double[] Disp;			// Displacements on the element
 	private double[] Stress;		// Stresses on the element
@@ -38,13 +43,13 @@ public class Element
 	private Color MatColor;
 	private Color SecColor;
 	
-	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, Material mat, double[] Sec, ElemType type)
+	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, Material mat, Section sec, ElemType type)
 	{
 		this.ID = ID;
 		this.ExternalNodes = ExternalNodes;
 		this.InternalNodes = InternalNodes;
 		this.mat = mat;
-		this.Sec = Sec;
+		this.sec = sec;
 		DistLoads = null;
 		StrainTypes = null;
 		Disp = null;
@@ -63,7 +68,7 @@ public class Element
 	public int[] getExternalNodes() {return ExternalNodes;}
 	public int[] getInternalNodes() {return InternalNodes;}
 	public Material getMat() {return mat;}
-	public double[] getSec() {return Sec;}
+	public Section getSec() {return sec;}
 	public DistLoads[] getDistLoads() {return DistLoads;}
 	public double[] getDisp() {return Disp;}
 	public double[] getStress() {return Stress;}
@@ -82,7 +87,7 @@ public class Element
 	public void setExternalNodes(int[] N) {ExternalNodes = N;}
 	public void setInternalNodes(int[] N) {InternalNodes = N;}
 	public void setMat(Material M) {mat = M;}
-	public void setSec(double[] S) {Sec = S;}
+	public void setSec(Section S) {sec = S;}
 	public void setDistLoads(DistLoads[] D) {DistLoads = D;}
 	public void setDisp(double[] D) {Disp = D;}
 	public void setStress(double[] S) {Stress = S;}
@@ -291,9 +296,9 @@ public class Element
 		matColors = Util.RandomColors(MaterialTypes.size());
 	}
 
-	public static void setSecColors(double[][] SectionTypes)
+	public static void setSecColors(List<Section> SectionTypes)
 	{
-		SecColors = Util.RandomColors(SectionTypes.length);
+		SecColors = Util.RandomColors(SectionTypes.size());
 	}	
 	
 	public double[][] NaturalCoordsShapeFunctions(double e, double n, Nodes[] Node)
@@ -658,14 +663,14 @@ public class Element
     	return N;
     }
 	
-    public double[][] SecondDerivativesb(double e, double n, Nodes[] Node, double[] Sec, boolean NonlinearGeo)
+    public double[][] SecondDerivativesb(double e, double n, Nodes[] Node, Section sec, boolean NonlinearGeo)
     {
     	// Calcula as derivadas segundas das funçõs de forma em um dado ponto (e, n). Unidades 1/mâ e 1/m.
     	double[][] B = null;
 		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
 		double b = ElemSize[1];
-		double t = Sec[0] / 1000.0;
+		double t = sec.getT() / 1000.0;
 		double z ;
 		
 		switch (type)
@@ -791,10 +796,10 @@ public class Element
     	return B;
     }    
     
-	public double[][] Bb(double e, double n, double w, Nodes[] Node, double[] Sec, boolean NonlinearGeo, int option)
+	public double[][] Bb(double e, double n, double w, Nodes[] Node, Section sec, boolean NonlinearGeo, int option)
 	{
     	double[][] Bb1 = null,  Bb2 = null;
-    	double t = Sec[0] / 1000.0;
+    	double t = sec.getT() / 1000.0;
 		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
 		double b = ElemSize[1];
@@ -821,10 +826,10 @@ public class Element
     	}
 	}    
     
-    public double[][] Bs(double e, double n, double w, Nodes[] Node, double[] Sec, int option)
+    public double[][] Bs(double e, double n, double w, Nodes[] Node, Section sec, int option)
 	{
 		double[][] Bs1 = null,  Bs2 = null;
-    	double t = Sec[0] / 1000.0;
+    	double t = sec.getT() / 1000.0;
 		double a1 = 4 / (3.0 * Math.pow(t, 2));
 		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
@@ -958,12 +963,12 @@ public class Element
     	return D;
     }
     
-    public double[][] ShearConstitutiveMatrix(Material mat, double[] Sec)
+    public double[][] ShearConstitutiveMatrix(Material mat, Section sec)
     {
     	double[][] C = new double[2][2];
     	double E = mat.getE() * Math.pow(10, 6) ;
     	double v = mat.getV();
-    	double t = Sec[0] / 1000.0;
+    	double t = sec.getT() / 1000.0;
     	double k = 5 / 6.0;
 		double G = E / (2 * (1 + v));
 		C[0][0] = G * k * t; C[0][1] = 0;
@@ -971,7 +976,7 @@ public class Element
 		return C;
     }
     
-    public static double[][] ShearConstitutiveMatrix2(Material mat, double[] Sec)
+    public static double[][] ShearConstitutiveMatrix2(Material mat, Section sec)
     {
     	double[][] C = new double[2][2];
     	double E = mat.getE() * Math.pow(10, 6) ;
@@ -988,20 +993,20 @@ public class Element
     	double[][] k = null;
 		double[] ElemSize = calcHalfSize(Node);
 		double[][] Db = BendingConstitutiveMatrix(mat, NonlinearMat, Strain);
-		double[][] Ds = ShearConstitutiveMatrix2(mat, Sec);
+		double[][] Ds = ShearConstitutiveMatrix2(mat, sec);
 		
 		switch (type)
 		{
-			case KR1: k = ElementStiffnessMatrix.KR1StiffnessMatrix(ElemSize, Db, Sec); break ;
-			case KR2: k = ElementStiffnessMatrix.KR2StiffnessMatrix(ElemSize, Db, Sec); break ;
-			case MR1: k = ElementStiffnessMatrix.MR1StiffnessMatrix(ElemSize, Db, Ds, Sec); break ;
-			case MR2: k = ElementStiffnessMatrix.MR2StiffnessMatrix(ElemSize, Db, Ds, Sec); break ;
-			case R4: k = ElementStiffnessMatrix.R4StiffnessMatrix(ElemSize, Db, Sec); break ;
-			case Q4: k = ElementStiffnessMatrix.Q4StiffnessMatrix(Node, ExternalNodes, ElemSize, Db, Sec, NonlinearGeo); break ;
+			case KR1: k = ElementStiffnessMatrix.KR1StiffnessMatrix(ElemSize, Db, sec); break ;
+			case KR2: k = ElementStiffnessMatrix.KR2StiffnessMatrix(ElemSize, Db, sec); break ;
+			case MR1: k = ElementStiffnessMatrix.MR1StiffnessMatrix(ElemSize, Db, Ds, sec); break ;
+			case MR2: k = ElementStiffnessMatrix.MR2StiffnessMatrix(ElemSize, Db, Ds, sec); break ;
+			case R4: k = ElementStiffnessMatrix.R4StiffnessMatrix(ElemSize, Db, sec); break ;
+			case Q4: k = ElementStiffnessMatrix.Q4StiffnessMatrix(Node, ExternalNodes, ElemSize, Db, sec, NonlinearGeo); break ;
 			case T3G: 
 				
 	        	double[][] D = BendingConstitutiveMatrix(mat, NonlinearMat, Strain);
-	        	double thick = Sec[0] / 1000.0;							// Espessura
+	        	double thick = sec.getT() / 1000.0;
 				double Area;
 	    		if (!NonlinearGeo)
 	        	{
@@ -1021,7 +1026,7 @@ public class Element
 	        		double[][] DefCoords = Util.GetElemNodesDefPos(Node, ExternalNodes);
 	        		Area = Util.TriArea(DefCoords);
 	        	}
-	    	    double[][] B = SecondDerivativesb(0, 0, Node, Sec, NonlinearGeo);
+	    	    double[][] B = SecondDerivativesb(0, 0, Node, sec, NonlinearGeo);
 	    	    k = Util.MultMatrix(Util.MultMatrix(Util.Transpose(B), D), B);
 	    	    for (int i = 0; i <= k.length - 1; i += 1)
 	        	{
@@ -1035,15 +1040,15 @@ public class Element
 	    	    
 			case T6G: break ;
 	    	    
-			case SM: k = ElementStiffnessMatrix.SMStiffnessMatrix(ElemSize, Db, Ds, Sec); break;
+			case SM: k = ElementStiffnessMatrix.SMStiffnessMatrix(ElemSize, Db, Ds, sec); break;
     		
     		/*double[][] kb = NumIntegration(Node, Elem, UserDefinedMat[Elem.getMat()], UserDefinedSec[Elem.getSec()], DOFsPerNode, NonlinearMat, NonlinearGeo, strain, 3);
     		double[][] ks = NumIntegration(Node, Elem, UserDefinedMat[Elem.getMat()], UserDefinedSec[Elem.getSec()], DOFsPerNode, NonlinearMat, NonlinearGeo, strain, 3);
     		k = Util.AddMatrix(kb,  ks);*/
-			case SM8: k = ElementStiffnessMatrix.SM8StiffnessMatrix(ElemSize, Db, Ds, Sec); break;
-			case KP3: k = ElementStiffnessMatrix.KP3StiffnessMatrix(ElemSize, Db, Sec); break;
-			case SM_C: k = ElementStiffnessMatrix.SM_CStiffnessMatrix(ElemSize, Db, Ds, Sec); break;
-			case SM_H: k = ElementStiffnessMatrix.SM_HStiffnessMatrix(ElemSize, Db, Ds, Sec); break;
+			case SM8: k = ElementStiffnessMatrix.SM8StiffnessMatrix(ElemSize, Db, Ds, sec); break;
+			case KP3: k = ElementStiffnessMatrix.KP3StiffnessMatrix(ElemSize, Db, sec); break;
+			case SM_C: k = ElementStiffnessMatrix.SM_CStiffnessMatrix(ElemSize, Db, Ds, sec); break;
+			case SM_H: k = ElementStiffnessMatrix.SM_HStiffnessMatrix(ElemSize, Db, Ds, sec); break;
 			
 		}
 		
@@ -1058,25 +1063,25 @@ public class Element
     	return k;
     }
     
-    public double[] StrainsOnPoint(Nodes[] Node, double e, double n, double[] U, double[] Sec, boolean NonlinearGeo)
+    public double[] StrainsOnPoint(Nodes[] Node, double e, double n, double[] U, Section sec, boolean NonlinearGeo)
 	{
 		double[] strain = new double[3];
 		
 		double[] u = DispVec(Node, U);
 		//double[][] B = ElementStuff.SecondDerivativesb(e, n, Node, Elem, ElemTypes, Sec, NonlinearGeo);
-		double[][] B = SecondDerivativesb(e, n, Node, Sec, NonlinearGeo);		
+		double[][] B = SecondDerivativesb(e, n, Node, sec, NonlinearGeo);		
 		strain = Util.MultMatrixVector(B, u);
 		
 		return strain;
 	}
     
-    public double[] ForcesOnPoint(Nodes[] Node, int[] StrainsOnElem, Material mat, double[] Sec, boolean NonlinearMat, double e, double n, double[] U, boolean NonlinearGeo)
+    public double[] ForcesOnPoint(Nodes[] Node, int[] StrainsOnElem, Material mat, Section sec, boolean NonlinearMat, double e, double n, double[] U, boolean NonlinearGeo)
 	{
 		double[] forces = new double[3];
-		double thick = Sec[0] / 1000.0;
-    	double[] strain = StrainsOnPoint(Node, e, n, U, Sec, NonlinearGeo);
+		double thick = sec.getT() / 1000.0;
+    	double[] strain = StrainsOnPoint(Node, e, n, U, sec, NonlinearGeo);
     	double[][] Db = BendingConstitutiveMatrix(mat, NonlinearMat, strain);
-    	double[][] Ds = ShearConstitutiveMatrix(mat, Sec);
+    	double[][] Ds = ShearConstitutiveMatrix(mat, sec);
 
     	double[] strainb = new double[] {strain[0], strain[1], strain[2]};
     	forces = Util.MultMatrixVector(Db, strainb);
@@ -1091,12 +1096,12 @@ public class Element
 		return forces;
 	}
 
-    public double[] StressesOnPoint(Nodes[] Node, Element Elem, double e, double n, Material mat, int[][] DOFsOnNode, double[] U, double[] Sec, boolean NonlinearMat, boolean NonlinearGeo)
+    public double[] StressesOnPoint(Nodes[] Node, Element Elem, double e, double n, Material mat, int[][] DOFsOnNode, double[] U, Section sec, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		double[] strain = new double[3];
 		double[] sigma = new double[3];
 		
-		strain = StrainsOnPoint(Node, e, n, U, Sec, NonlinearGeo);
+		strain = StrainsOnPoint(Node, e, n, U, sec, NonlinearGeo);
     	double[][] D = Element.BendingConstitutiveMatrix(mat, NonlinearMat, strain);
 		sigma = Util.MultMatrixVector(D, strain);
 		
@@ -1164,7 +1169,7 @@ public class Element
 		}
 		for (int node = 0; node <= Nnodes - 1; node += 1)
 		{
-			strains[node] = StrainsOnPoint(Node, e[node], n[node], U, Sec, NonlinearGeo);
+			strains[node] = StrainsOnPoint(Node, e[node], n[node], U, sec, NonlinearGeo);
 		}
 		for (int node = 0; node <= Nnodes - 1; node += 1)
 		{
@@ -1195,7 +1200,7 @@ public class Element
 		}
     	double strainvec[] = StrainVec(Node, U, NonlinearGeo);
     	double[][] Db = BendingConstitutiveMatrix(mat, NonlinearMat, strainvec);
-    	double[][] Ds = ShearConstitutiveMatrix(mat, Sec);
+    	double[][] Ds = ShearConstitutiveMatrix(mat, sec);
     	double[][] D;
     	
     	if (3 < DOFs.length)
@@ -1224,7 +1229,7 @@ public class Element
 		
     	for (int node = 0; node <= Nnodes - 1; node += 1)
 		{
-    		strains[node] = StrainsOnPoint(Node, e[node], n[node], U, Sec, NonlinearGeo);
+    		strains[node] = StrainsOnPoint(Node, e[node], n[node], U, sec, NonlinearGeo);
 		}
     	for (int node = 0; node <= Nnodes - 1; node += 1)
 		{
@@ -1261,7 +1266,7 @@ public class Element
 		}
     	for (int node = 0; node <= Nnodes - 1; node += 1)
 		{
-    		forces[node] = ForcesOnPoint(Node, StrainsOnElem, mat, Sec, NonlinearMat, e[node], n[node], U, NonlinearGeo);
+    		forces[node] = ForcesOnPoint(Node, StrainsOnElem, mat, sec, NonlinearMat, e[node], n[node], U, NonlinearGeo);
         }
     	for (int node = 0; node <= Nnodes - 1; node += 1)
 		{

@@ -1,16 +1,23 @@
 package structure;
 
+import Main.InputFunctions;
+
 public class Material
 {
 	private double E;
 	private double v;
 	private double G;	
 	
-	public Material(double e, double v, double G)
+	public Material(double E, double v, double G)
 	{
-		E = e;
+		this.E = E;
 		this.v = v;
 		this.G = G;
+	}
+	
+	public static Material loadFromJson(String filename)
+	{
+		return (Material) InputFunctions.loadFromJson(filename, Material.class) ;
 	}
 	
 	public double getE()

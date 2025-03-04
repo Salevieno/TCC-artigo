@@ -48,6 +48,7 @@ import structure.Material;
 import structure.MeshType;
 import structure.MyCanvas;
 import structure.Nodes;
+import structure.Section;
 import structure.Structure;
 import structure.StructureShape;
 
@@ -573,7 +574,7 @@ public class Menus extends JFrame
 				}
 				if (SecAssignmentIsOn)
 				{
-					MenuFunctions.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.SecType[MenuFunctions.SelectedSec]);
+					MenuFunctions.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.secTypes.get(MenuFunctions.SelectedSec));
 				}
 				if (DistLoadsAssignmentIsOn)
 				{
@@ -637,10 +638,11 @@ public class Menus extends JFrame
 					}
 					if (SecAssignmentIsOn)
 					{
-						Element.setSecColors(MenuFunctions.SecType);
+						Element.setSecColors(MenuFunctions.secTypes);
 						for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
 						{
-							MenuFunctions.Elem[elem].setSecColor(Element.SecColors[Util.FindID(MenuFunctions.SecType, MenuFunctions.Elem[elem].getSec())]);
+							int colorID = MenuFunctions.secTypes.indexOf(MenuFunctions.Elem[elem].getSec()) ;
+							MenuFunctions.Elem[elem].setSecColor(Element.SecColors[colorID]);
 						}
 					}
 				}
@@ -773,7 +775,7 @@ public class Menus extends JFrame
 		String SecText = null;
 		if (elem.getSec() != null)
 		{
-			SecText = String.valueOf(Util.Round(elem.getSec()[0], 0)) + " mm";
+			SecText = String.valueOf(Util.Round(elem.getSec().getT(), 0)) + " mm";
 		}
 		
 		JLabel iLabel = new JLabel("Informaçõs do elemento");
@@ -1018,7 +1020,7 @@ public class Menus extends JFrame
 		Object[] TypesInfo = MenuFunctions.GetTypesInfo();
 		String SelectedElemType = (String) TypesInfo[0];
 		List<Material> MatTypes = (List<Material>) TypesInfo[1];
-		double[][] SecTypes = (double[][]) TypesInfo[2];
+		List<Section> SecTypes = (List<Section>) TypesInfo[2];
 		double[][] ConcLoadTypes = (double[][]) TypesInfo[4];
 		double[][] DistLoadTypes = (double[][]) TypesInfo[5];
 		double[][] NodalDispTypes = (double[][]) TypesInfo[6];
@@ -1168,7 +1170,9 @@ public class Menus extends JFrame
 			{
 				SaveLoadFile SLF = new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos);
 				String FileName = SLF.run().getText();
-				MenuFunctions.SaveFile(FileName, AllText, Language, MainCanvas, MenuFunctions.Struct, MenuFunctions.Node, MenuFunctions.Elem, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes, MenuFunctions.SecType);
+				MenuFunctions.SaveFile(FileName, AllText, Language, MainCanvas, MenuFunctions.Struct, MenuFunctions.Node, MenuFunctions.Elem,
+						MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
+						MenuFunctions.secTypes);
 			}
 		});
 		Load.addActionListener(new ActionListener()
@@ -1960,7 +1964,13 @@ public class Menus extends JFrame
 		JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
 		int[][] ButtonSizes = new int[][] {{100, 20}, {50, 20}, {30, 20}, {50, 20}};
 		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Cross sections", "Sec", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		MenuFunctions.DefineSectionTypes(CI.run());
+		double[][] createdSections = CI.run() ;
+		List<Section> secs = new ArrayList<>() ;
+		for (int i = 0 ; i <= createdSections.length - 1 ; i += 1)
+		{
+			secs.add(new Section(createdSections[i][0])) ;
+		}
+		MenuFunctions.setSections(secs);
 		EnableButtons();
 	}
 	
@@ -2204,7 +2214,7 @@ public class Menus extends JFrame
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					UtilComponents.PrintStructure(StructureMenu.getName(), MenuFunctions.Node, MenuFunctions.Elem, MenuFunctions.matTypes, MenuFunctions.SecType, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					UtilComponents.PrintStructure(StructureMenu.getName(), MenuFunctions.Node, MenuFunctions.Elem, MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
 			}
