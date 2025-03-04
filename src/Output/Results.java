@@ -38,7 +38,7 @@ public abstract class Results
         }
 	}
 
-	public static void SaveStructure(String filename, String[] sections, String[][] vars, Object[][][] values)
+	public static void SaveStructureToTxt(String filename, String[] sections, String[][] vars, Object[][][] values)
 	{
 		try
 		{	

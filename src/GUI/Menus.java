@@ -1418,7 +1418,7 @@ public class Menus extends JFrame
 				{
 					EnableButtons();			
 					MenuFunctions.Struct.setCoords(StructCoords);
-					MenuFunctions.Struct.setCenter(Util.MatrixAverages(MenuFunctions.Struct.getCoords()));
+					MenuFunctions.Struct.setCenter(Util.MatrixAveragesToPoint3D(MenuFunctions.Struct.getCoords()));
 					MenuFunctions.Struct.setMinCoords(new double[] {Util.FindMinInPos(MenuFunctions.Struct.getCoords(), 0), Util.FindMinInPos(MenuFunctions.Struct.getCoords(), 1), Util.FindMinInPos(MenuFunctions.Struct.getCoords(), 2)});
 					MenuFunctions.Struct.setMaxCoords(new double[] {Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 0), Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 1), Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 2)});
 					MainCanvas.setDim(new double[] {1.2 * MenuFunctions.Struct.getMaxCoords()[0], 1.2 * MenuFunctions.Struct.getMaxCoords()[1], 0});

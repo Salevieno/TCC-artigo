@@ -1,0 +1,29 @@
+plugins
+{
+    id 'java'  // Java plugin
+    id 'application'  // For running the application (if applicable)
+}
+
+repositories
+{
+    mavenCentral()  // Fetch dependencies from Maven Central
+}
+
+dependencies
+{
+    implementation 'org.openjfx:javafx-controls:17'  // Example dependency (JavaFX)
+    // Add other dependencies as needed
+}
+
+application
+{
+    mainClass = 'src.Main.MainTCC'  // main class path
+}
+
+tasks.withType(JavaExec) {
+    // Adjust the JavaFX SDK path for your system
+    jvmArgs = [
+        '--module-path', 'C:/path/to/javafx-sdk-17/lib',  // Update the path to your JavaFX SDK location
+        '--add-modules', 'javafx.controls,javafx.fxml'  // Add JavaFX modules you need
+    ]
+}

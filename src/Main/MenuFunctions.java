@@ -517,7 +517,7 @@ public abstract class MenuFunctions
 		values[10][0][6] = Util.Round(MainCanvas.getAngles()[0], 8);
 		values[10][0][7] = Util.Round(MainCanvas.getAngles()[1], 8);
 		values[10][0][8] = Util.Round(MainCanvas.getAngles()[2], 8);
-		Results.SaveStructure(FileName, InputSections, InputVariables, values);		// Save the structure in an input file (.txt)
+		Results.SaveStructureToTxt(FileName, InputSections, InputVariables, values);		// Save the structure in an input file (.txt)
 	}
 
 	public static void LoadFile(String Path, String FileName)
@@ -536,7 +536,7 @@ public abstract class MenuFunctions
 					StructCoords = Util.AddElem(StructCoords, NewCoord);
 				}
 				Struct.setCoords(StructCoords);
-				Struct.setCenter(Util.MatrixAverages(Struct.getCoords()));
+				Struct.setCenter(Util.MatrixAveragesToPoint3D(Struct.getCoords()));
 
 				List<Material> matTypes = new ArrayList<>() ;
 				for (int mat = 0; mat <= Input[4].length - 4; mat += 1)
@@ -1807,22 +1807,22 @@ public abstract class MenuFunctions
 			if (ShowDisplacementContour)
 			{
 				canvas.setTitle("Deslocamentos (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, Struct.getCenter(), ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getDispMin()[selectedvar], Struct.getDispMax()[selectedvar], "Displacement", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getDispMin()[selectedvar], Struct.getDispMax()[selectedvar], "Displacement", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowStressContour)
 			{
 				canvas.setTitle("Tensâes (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, Struct.getCenter(), ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStressMin()[selectedvar], Struct.getStressMax()[selectedvar], "Stress", selectedvar,  NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStressMin()[selectedvar], Struct.getStressMax()[selectedvar], "Stress", selectedvar,  NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowStrainContour)
 			{
 				canvas.setTitle("Deformaçõs (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, Struct.getCenter(), ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStrainMin()[selectedvar], Struct.getStrainMax()[selectedvar], "Strain", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStrainMin()[selectedvar], Struct.getStrainMax()[selectedvar], "Strain", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowInternalForces)
 			{
 				canvas.setTitle("Forâas internas (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, Struct.getCenter(), ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getInternalForcesMin()[selectedvar], Struct.getInternalForcesMax()[selectedvar], "Force", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getInternalForcesMin()[selectedvar], Struct.getInternalForcesMax()[selectedvar], "Force", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 		}
 	}
@@ -1871,8 +1871,8 @@ public abstract class MenuFunctions
 			{
 				StructCoords[StructCoords.length - 1] = StructCoords[0];
 			}
-			Struct.setCenter(Util.MatrixAverages(Struct.getCoords()));
-			MainCanvas.setCenter(Util.ConvertToDrawingCoords(Struct.getCenter(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(), MainCanvas.getDrawingPos()));
+			Struct.setCenter(Util.MatrixAveragesToPoint3D(Struct.getCoords()));
+			MainCanvas.setCenter(Util.ConvertToDrawingCoords(Struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(), MainCanvas.getDrawingPos()));
 			ShowStructure = true;
 		}
 	}
@@ -1882,7 +1882,7 @@ public abstract class MenuFunctions
 		if (Node != null)
 		{
 			SelectedNodes = null;
-			SelectedNodes = Util.NodesSelection(MainCanvas, Struct.getCenter(), Node, MousePos, MainPanelPos, SelectedNodes, NodeSelectionWindowInitialPos, Elem[0].getDOFs(), DiagramScales, ShowNodeSelectionWindow, ShowDeformedStructure);
+			SelectedNodes = Util.NodesSelection(MainCanvas, Struct.getCenter().asArray(), Node, MousePos, MainPanelPos, SelectedNodes, NodeSelectionWindowInitialPos, Elem[0].getDOFs(), DiagramScales, ShowNodeSelectionWindow, ShowDeformedStructure);
 			int NodeMouseIsOn = Util.NodeMouseIsOn(Node, MousePos, MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(), MainCanvas.getDrawingPos(), 4, ShowDeformedStructure);
 			if (NodeMouseIsOn == -1 | (ShowNodeSelectionWindow & -1 < NodeMouseIsOn))
 			{
@@ -1897,8 +1897,8 @@ public abstract class MenuFunctions
 		if (Elem != null)
 		{
 			SelectedElems = null;
-			SelectedElems = Util.ElemsSelection(MainCanvas, Struct.getCenter(), Node, Elem, MousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
-			int ElemMouseIsOn = Util.ElemMouseIsOn(Node, Elem, MousePos, Struct.getCenter(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(), MainCanvas.getCenter(), MainCanvas.getDrawingPos(), ShowDeformedStructure);
+			SelectedElems = Util.ElemsSelection(MainCanvas, Struct.getCenter().asArray(), Node, Elem, MousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
+			int ElemMouseIsOn = Util.ElemMouseIsOn(Node, Elem, MousePos, Struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(), MainCanvas.getCenter(), MainCanvas.getDrawingPos(), ShowDeformedStructure);
 			if (ElemMouseIsOn == -1 | (ShowElemSelectionWindow & -1 < ElemMouseIsOn))
 			{
 				ShowElemSelectionWindow = !ShowElemSelectionWindow;

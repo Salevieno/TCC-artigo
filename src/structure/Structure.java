@@ -1,7 +1,9 @@
 package structure;
 
 import java.awt.Color;
+
 import Main.Analysis;
+import Main.Point3D;
 import Utilidades.Util;
 
 public class Structure
@@ -9,11 +11,11 @@ public class Structure
 	private String Name;
 	private StructureShape Shape;
 	private double[][] Coords;	// Structure edge coordinates [x, y, z]
-	private double[] Center;	// Structure center coordinates [x, y, z]
+	private Point3D center;	// Structure center coordinates [x, y, z]
 	private double[] MinCoords;	// Structure minimum coordinates [x, y, z]
 	private double[] MaxCoords;	// Structure minimum coordinates [x, y, z]
 	private double[] Size;		// Structure size in the directions of the axis [x, y, z]
-	
+
 	private double[][] K;		// Stiffness matrix
 	private double[] P;			// Load vector
 	private double[] U;			// Displacement vector
@@ -38,10 +40,10 @@ public class Structure
 		this.Name = Name;
 		this.Shape = Shape;
 		this.Coords = Coords;
-		Center = null;
+		center = null;
 		if (Coords != null)
 		{
-			Center = Util.MatrixAverages(Coords);
+			center = Util.MatrixAveragesToPoint3D(Coords);
 		}
 		MinCoords = null;
 		MaxCoords = null;
@@ -52,7 +54,7 @@ public class Structure
 	public String getName() {return Name;}
 	public StructureShape getShape() {return Shape;}
 	public double[][] getCoords() {return Coords;}
-	public double[] getCenter() {return Center;}
+	public Point3D getCenter() {return center;}
 	public double[] getMinCoords() {return MinCoords;}
 	public double[] getMaxCoords() {return MaxCoords;}
 	public double[] getSize() {return Size;}
@@ -73,7 +75,7 @@ public class Structure
 	public void setName(String N) {Name = N;}
 	public void setShape(StructureShape S) {Shape = S;}
 	public void setCoords(double[][] C) {Coords = C;}
-	public void setCenter(double[] C) {Center = C;}
+	public void setCenter(Point3D C) {center = C;}
 	public void setMinCoords(double[] MinC) {MinCoords = MinC;}
 	public void setMaxCoords(double[] MaxC) {MaxCoords = MaxC;}
 	public void setSize(double[] S) {Size = S;}

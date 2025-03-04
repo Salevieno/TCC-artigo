@@ -16,6 +16,7 @@ import java.util.Arrays;
 import javax.swing.ImageIcon;
 
 import Main.Analysis;
+import Main.Point3D;
 import Utilidades.Util;
 import structure.ConcLoads;
 import structure.DistLoads;
@@ -35,10 +36,10 @@ public class DrawingOnAPanel
     private Font BoldTextFont = new Font("SansSerif", Font.BOLD, 20);
 	private int stdStroke = 1;
 	private MyCanvas canvas;
-	private double[] RealStructCenter;
+	private Point3D RealStructCenter;
 	private Graphics2D G;		
 	
-	public DrawingOnAPanel(Graphics g, MyCanvas canvas, double[] RealStructCenter)
+	public DrawingOnAPanel(Graphics g, MyCanvas canvas, Point3D RealStructCenter)
 	{
 		G = (Graphics2D) g;
 		this.canvas = canvas;
@@ -521,7 +522,7 @@ public class DrawingOnAPanel
     	RealCoords[4] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaop)};
     	RealCoords[5] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaop)};
     	
-		double[] RealCanvasCenter = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
          	RealCoords[c] = Util.RotateCoord(RealCoords[c], Pos, theta);
@@ -532,7 +533,7 @@ public class DrawingOnAPanel
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
-    		DrawingCoords[c] = Util.ConvertToDrawingCoords2(RealCoords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+    		DrawingCoords[c] = Util.ConvertToDrawingCoords2Point3D(RealCoords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
@@ -558,7 +559,7 @@ public class DrawingOnAPanel
     	RealCoords[4] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaop)};
     	RealCoords[5] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaop)};
     	
-		double[] RealCanvasCenter = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
          	RealCoords[c] = Util.RotateCoord(RealCoords[c], Pos, theta);
@@ -569,7 +570,7 @@ public class DrawingOnAPanel
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
-    		DrawingCoords[c] = Util.ConvertToDrawingCoords2(RealCoords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+    		DrawingCoords[c] = Util.ConvertToDrawingCoords2Point3D(RealCoords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
@@ -1003,7 +1004,7 @@ public class DrawingOnAPanel
 		for (int node = 0; node <= Node.length - 1; node += 1)
 		{
 			int[][] DrawingCoords = new int[Node.length][];
-			DrawingCoords[node] = Util.ConvertToDrawingCoords2(Util.GetNodePos(Node[node], deformed), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node[node], deformed), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			DrawText(new int[] {(int)(DrawingCoords[node][0] + Offset), (int)(DrawingCoords[node][1] + 1.1*Util.TextHeight(FontSize))}, Integer.toString(node), "Left", 0, "Bold", FontSize, NodeColor);		
 		}	
 	}
@@ -1033,7 +1034,7 @@ public class DrawingOnAPanel
 		for (int node = 0; node <= Node.length - 1; node += 1)
 		{
 			int[][] DrawingNodePos = new int[Node.length][];
-			DrawingNodePos[node] = Util.ConvertToDrawingCoords2(Util.GetNodePos(Node[node], deformed), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			DrawingNodePos[node] = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node[node], deformed), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			for (int dof = 0; dof <= Node[node].dofs.length - 1; dof += 1)
 			{
 				double angle = 2 * Math.PI * dof / Node[node].dofs.length;
@@ -1145,7 +1146,7 @@ public class DrawingOnAPanel
 		int[] Ycoords = new int[coords.length];
 		for (int c = 0; c <= Xcoords.length - 1; c += 1)
 		{
-			int[] Coord = Util.ConvertToDrawingCoords2(coords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			int[] Coord = Util.ConvertToDrawingCoords2Point3D(coords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			Xcoords[c] = Coord[0];
 			Ycoords[c] = Coord[1];
 		}
@@ -1211,18 +1212,18 @@ public class DrawingOnAPanel
 	{
 		int size = 6;
 		int thick = 1;
-		double[] Center = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int node = 0; node <= Node.length - 1; node += 1)
 		{
 			int[][] DrawingCoords = new int[Node.length][3];
 			if (deformed)
 			{
 				double[] DeformedCoords = Util.ScaledDefCoords(Node[node].getOriginalCoords(), Node[node].getDisp(), DOFsPerNode, Defscale);
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			else
 			{
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2(Util.RotateCoord(Util.GetNodePos(Node[node], deformed), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node[node], deformed), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			DrawCircle(DrawingCoords[node], size, thick, false, true, Color.black, NodeColor);
 			if (SelectedNodes != null)
@@ -1284,7 +1285,7 @@ public class DrawingOnAPanel
 	public void DrawElements3D(Nodes[] Node, Element[] Elem, int[] SelectedElems, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double Defscale)
 	{
 		int thick = 1;
-		double[] RealCanvasCenter = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
 		{
 			int[] Nodes = Elem[elem].getExternalNodes();
@@ -1313,12 +1314,12 @@ public class DrawingOnAPanel
 				if (showdeformed)
 				{
 					double[] DeformedCoords = Util.ScaledDefCoords(Node[Nodes[node]].getOriginalCoords(), Node[Nodes[node]].getDisp(), ElemDOFs, Defscale);
-					DrawingCoord[node] = Util.ConvertToDrawingCoords2(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				else
 				{
 					double[] OriginalCoords = Util.GetNodePos(Node[Nodes[node]], showdeformed);
-					DrawingCoord[node] = Util.ConvertToDrawingCoords2(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				xCoords[node] = DrawingCoord[node][0];
 				yCoords[node] = DrawingCoord[node][1];
@@ -1380,13 +1381,13 @@ public class DrawingOnAPanel
 	{
 		int size = 6;
 		int thick = 2;
-		double[] Center = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int s = 0; s <= Sup.length - 1; s += 1)
 		{
 			int node = Sup[s].getNode();
 			int[][] Coords = new int[Node.length][];
 			int suptype = Util.SupType(Sup[s].getDoFs());
-			Coords[node] = Util.ConvertToDrawingCoords2(Util.RotateCoord(Node[node].getOriginalCoords(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			Coords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Node[node].getOriginalCoords(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			if (suptype == 0)
 			{
 				double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1], -canvas.getAngles()[2]};
@@ -1503,7 +1504,7 @@ public class DrawingOnAPanel
 					}
 					if (ShowValues)
 					{
-						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2(RealDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(RealDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 						DrawLoadValues(new int[] {DrawingDefCoords[0], DrawingDefCoords[1], 0}, ElemDOFs, dof, LoadIntensity, ConcLoadsColor);
 					}
 				}
@@ -1523,8 +1524,8 @@ public class DrawingOnAPanel
 			int[] nodes = Elem[elem].getExternalNodes();
 			double[] RealLeftBotDefCoords = Util.ScaledDefCoords(Node[nodes[3]].getOriginalCoords(), Util.GetNodePos(Node[nodes[3]], condition), DOFsPerNode, Defscale);
 			double[] RealRightTopDefCoords = Util.ScaledDefCoords(Node[nodes[1]].getOriginalCoords(), Util.GetNodePos(Node[nodes[1]], condition), DOFsPerNode, Defscale);
-			//int[] DrawingLeftBotCoords = Util.ConvertToDrawingCoords2(RealLeftBotDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-			//int[] DrawingRightTopCoords = Util.ConvertToDrawingCoords2(RealRightTopDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			//int[] DrawingLeftBotCoords = Util.ConvertToDrawingCoords2Point3D(RealLeftBotDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			//int[] DrawingRightTopCoords = Util.ConvertToDrawingCoords2Point3D(RealRightTopDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			if (DistLoads[l].getType() == 0)
 			{
 				
@@ -1551,12 +1552,12 @@ public class DrawingOnAPanel
 		int MaxArrowSize = 40;
 		//int thickness = 2;
 		double MaxLoad = Util.FindMaxNodalDisp(NodalDisps);
-		double[] Center = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int l = 0; l <= NodalDisps.length - 1; l += 1)
 		{
 			int node = NodalDisps[l].getNode();
 			double[] RealDefCoords = Util.RotateCoord(Util.ScaledDefCoords(Node[node].getOriginalCoords(), Util.GetNodePos(Node[node], condition), DOFsPerNode, Defscale), Center, canvas.getAngles());
-			//int[] DrawingDefCoords = Util.ConvertToDrawingCoords2(RealDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			//int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(RealDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			for (int dof = 0; dof <= DOFsPerNode.length - 1; dof += 1)
 			{
 				double LoadIntensity = NodalDisps[l].getDisps()[DOFsPerNode[dof]];
@@ -1615,7 +1616,7 @@ public class DrawingOnAPanel
 						{
 							RealTextPos[2] += -0.5*Math.signum(LoadIntensity);
 						}
-						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2(Util.RotateCoord(RealTextPos, RealStructCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());						
+						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealTextPos, RealStructCenter.asArray(), canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());						
 						DrawLoadValues(DrawingDefCoords, ElemDOFs, r, LoadIntensity, ReactionsColor);
 					}
 				}
@@ -1635,8 +1636,8 @@ public class DrawingOnAPanel
 	
 	public void DrawElemDetails(ElemType elemType)
 	{
-		RealStructCenter = new double[] {5, 5, 0};
-		double[] Center = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		RealStructCenter = new Point3D(5, 5, 0);
+		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		ElemShape elemShape = Element.typeToShape(elemType);
 		Nodes[] Node = null;
 		Element Elem = null;
@@ -1679,7 +1680,7 @@ public class DrawingOnAPanel
 			Node[7] = new Nodes(3, new double[] {9, 5, 0});
 			Elem = new Element(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, null, null, null, elemType);
 		}
-		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2(Util.RotateCoord(RealStructCenter, Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealStructCenter.asArray(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		int textSize = 16;
 		Color textColor = Util.ColorPalette()[8];
 		
@@ -1820,7 +1821,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawContours3D(Element[] Elem, Nodes[] Node, int[] SelectedElems, double[] RealStructCenter, boolean showelemcontour, boolean condition,
+	public void DrawContours3D(Element[] Elem, Nodes[] Node, int[] SelectedElems, boolean showelemcontour, boolean condition,
 			double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem)
 	{
 		int Ninterpoints = 0;
@@ -1913,13 +1914,13 @@ public class DrawingOnAPanel
 			/* Draw the contour */
 			int[][] DrawingCoords = new int[ContourCoords.length][3];
 			int[] xCoords = new int[ContourCoords.length], yCoords = new int[ContourCoords.length];
-			double[] Center = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			int thick = 1;
 			Color[] colors = new Color[ContourCoords.length];
 			Arrays.fill(colors, new Color(0, 100, 55));
 			for (int point = 0; point <= ContourCoords.length - 1; point += 1)
 			{
-				DrawingCoords[point] = Util.ConvertToDrawingCoords2(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 				xCoords[point] = DrawingCoords[point][0];
 				yCoords[point] = DrawingCoords[point][1];
 				colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, ColorSystem);

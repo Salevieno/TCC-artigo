@@ -1,7 +1,4 @@
-package Main;
-
-import structure.Nodes;
-import structure.Section;
+package structure;
 
 public class ElementStiffnessMatrix
 {	

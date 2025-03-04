@@ -15,6 +15,7 @@ import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import Main.Point3D;
 import Main.ReadInput;
 import structure.ConcLoads;
 import structure.DistLoads;
@@ -96,63 +97,6 @@ public abstract class Util
 		return Math.sqrt(Math.pow(Point2[0] - Point1[0], 2) + Math.pow(Point2[1] - Point1[1], 2));
 	}
 
-	public static int FindTextPos(String[][] AllText, String Category)
-	{
-		for (int i = 0; i <= AllText.length - 1; i += 1)
-		{
-			if (Category.equals(AllText[i][0]))
-			{
-				return i;
-			}
-		}
-		return -1;
-	}
-	
-	public static String[] LoadAllText(String[][] AllText, String Language, int cat)
-	{
-		String[] NewText = null;
-		String[] Category = new String[29];
-		if (Language.equals("Pt-br"))
-		{
-			Category[0] = "* Nomes dos menus *";
-			Category[1] = "* Nomes dos itens do menu Arquivo *";
-			Category[2] = "* Nomes dos itens do menu Estrutura *";
-			Category[3] = "* Nomes dos itens do menu Visual *";
-			Category[4] = "* Nomes dos itens do menu Analise *";
-			Category[5] = "* Nomes dos itens do menu Resultados *";
-			Category[6] = "* Nomes dos itens do submenu Diagramas de esforcos internos *";
-			Category[7] = "* Nomes dos itens do submenu Diagramas de deformacoes *";
-			Category[8] = "* Nomes dos itens do submenu Diagramas de tensoes *";
-			Category[9] = "* Nomes dos itens do submenu Cargas Concentradas *";
-			Category[10] = "* Nomes dos itens do submenu Reacoes *";
-			Category[11] = "* Nomes das secoes do arquivo de entrada *";
-			Category[12] = "* Instrucoes *";
-			Category[13] = "* Tipos de elementos *";
-			Category[14] = "* Informacoes da lista de materiais *";
-			Category[15] = "* Informacoes da lista de secoes *";
-			Category[16] = "* Informacoes dos apoios *";
-			Category[17] = "* Informacoes das cargas concentradas *";
-			Category[18] = "* Informacoes das cargas distribuidas *";
-			Category[19] = "* Informacoes dos deslocamentos nodais *";
-			Category[20] = "* Nomes dos botoes *";
-			Category[21] = "* Nomes dos itens do submenu Criar malha *";
-			Category[22] = "* Passo a passo *";
-			Category[23] = "* Nomes dos itens do submenu Cargas Distribuidas *";
-			Category[24] = "* Nomes dos itens do submenu Deslocamentos Nodais *";
-			Category[25] = "* Formatos de elementos *";
-			Category[26] = "* Nomes dos itens do submenu Diagramas de deslocamentos *";
-			Category[27] = "* Nomes dos itens do menu Especial *";
-			Category[28] = "* Nomes dos itens do submenu Criar nos *";
-		}
-		else if (Language.equals("En"))
-		{
-			Category = new String[] {"* Menu names *"};
-		}
-		NewText = AllText[FindTextPos(AllText, Category[cat])];
-		NewText = Arrays.copyOfRange(NewText, 1, NewText.length - 1);
-		return NewText;
-	}
-	
 	public static int[] CalculateNumberOfGridPoints(double[] CanvasDim)
 	{
 		int[] NPointsMin = new int[] {6, 6}, NPointsMax = new int[] {46, 46};
@@ -171,6 +115,11 @@ public abstract class Util
 	{
 		return new double[] {(OriginalCoords[0] - DrawingPos[0] - CanvasCenter[0])*CanvasDim[0]/CanvasSize[0] + CoordsCenter[0], -(OriginalCoords[1] - DrawingPos[1] - CanvasCenter[1])*CanvasDim[1]/CanvasSize[1] + CoordsCenter[1]};
 	}
+
+	public static double[] ConvertToRealCoordsPoint3D(int[] OriginalCoords, Point3D CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
+	{
+		return new double[] {(OriginalCoords[0] - DrawingPos[0] - CanvasCenter[0])*CanvasDim[0]/CanvasSize[0] + CoordsCenter.x, -(OriginalCoords[1] - DrawingPos[1] - CanvasCenter[1])*CanvasDim[1]/CanvasSize[1] + CoordsCenter.y};
+	}
 	
 	public static int[] ConvertToDrawingCoords(double[] OriginalCoords, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos)
 	{
@@ -180,6 +129,11 @@ public abstract class Util
 	public static int[] ConvertToDrawingCoords2(double[] OriginalCoords, double[] CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
 	{
 		return new int[] {(int) (DrawingPos[0] + CanvasCenter[0] + (OriginalCoords[0] - CoordsCenter[0])/CanvasDim[0]*CanvasSize[0]), (int) (DrawingPos[1] + CanvasCenter[1] - (OriginalCoords[1] - CoordsCenter[1])/CanvasDim[1]*CanvasSize[1])};
+	}
+
+	public static int[] ConvertToDrawingCoords2Point3D(double[] OriginalCoords, Point3D CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
+	{
+		return new int[] {(int) (DrawingPos[0] + CanvasCenter[0] + (OriginalCoords[0] - CoordsCenter.x)/CanvasDim[0]*CanvasSize[0]), (int) (DrawingPos[1] + CanvasCenter[1] - (OriginalCoords[1] - CoordsCenter.y)/CanvasDim[1]*CanvasSize[1])};
 	}
 	
 	public static int ConvertToDrawingSize(int[] CanvasPos, int[] PanelPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double size)
@@ -1276,6 +1230,11 @@ public abstract class Util
 		return coord;
 	}
 	
+	public static double[] RotateCoordPoint3D(double[] OriCoord, Point3D RefPoint, double[] angle)
+	{
+		return RotateCoord(OriCoord, RefPoint.asArray(), angle) ;
+	}
+	
     public static int[][] MatrixDoubleToInt(double[][] matrix)
     {
     	int[][] newmatrix = new int[matrix.length][];
@@ -1365,6 +1324,12 @@ public abstract class Util
 			avr[i] = avr[i] / (double)values.length;
 		}
 		return avr;
+	}
+	
+	public static Point3D MatrixAveragesToPoint3D(double[][] values)
+	{
+		double[] avrArray = MatrixAverages(values) ;
+		return new Point3D(avrArray[0], avrArray[1], avrArray[2]);
 	}
 	
 	public static String[] FitText(String inputstring, int NumberOfChars)
