@@ -31,7 +31,7 @@ public class Structure
 	private double[] SumReactions;
 	private double[][][][] LoadDisp;
 	
-	public static Color color = Util.ColorPalette()[5]; // Color
+	public static Color color = Util.ColorPalette()[5];
 	
 	public Structure(String Name, StructureShape Shape, double[][] Coords)
 	{
