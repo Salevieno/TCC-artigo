@@ -5,7 +5,7 @@ import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemShape;
 import structure.ElemType;
-import structure.Elements;
+import structure.Element;
 import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
@@ -46,7 +46,7 @@ public abstract class Analysis
 		double MinYCoord = Util.FindMinInPos(PolygonCoords, 1), MaxYCoord = Util.FindMaxInPos(PolygonCoords, 1);
 		double L = MaxXCoord - MinXCoord, H = MaxYCoord - MinYCoord;
 		double dx = L / NumberElem[0], dy = H / NumberElem[1];
-		ElemShape elemShape = Elements.typeToShape(elemType);
+		ElemShape elemShape = Element.typeToShape(elemType);
 		if (elemShape.equals(ElemShape.rectangular) | elemShape.equals(ElemShape.triangular))
 		{
 			Node = new Nodes[(NumberElem[0] + 1)*(NumberElem[1] + 1)];
@@ -100,14 +100,14 @@ public abstract class Analysis
 		return Node;
 	}
 	
-	public static Elements[] CreateRadialMesh(Nodes[] Node, int noffsets, ElemType elemType)
+	public static Element[] CreateRadialMesh(Nodes[] Node, int noffsets, ElemType elemType)
 	{
-		Elements[] Elem = null;
-		ElemShape elemShape = Elements.typeToShape(elemType);
+		Element[] Elem = null;
+		ElemShape elemShape = Element.typeToShape(elemType);
 		if (elemShape.equals(ElemShape.rectangular))
 		{
 			int nNodesPerCicle = (Node.length - 1) / noffsets;
-	        Elem = new Elements[(int) (nNodesPerCicle * (noffsets - 0.5))];
+	        Elem = new Element[(int) (nNodesPerCicle * (noffsets - 0.5))];
 	        int cont = 0;
 	        for (int i = 0; i <= noffsets - 1; i += 1)
 			{
@@ -117,22 +117,22 @@ public abstract class Analysis
 	    		    for (int j = 0; j <= nNodesPerCicle - 2; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i*nNodesPerCicle + j, i*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j};
-	        		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	        		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    	elemnodes = new int[] {(i + 1)*nNodesPerCicle - 1, i * nNodesPerCicle, (i + 1)*nNodesPerCicle, (i + 2)*nNodesPerCicle - 1};
-	    		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	    		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	    		    cont += 1;
 			    }
 			    else
 			    {
 			    	elemnodes = new int[] {(i + 1) * nNodesPerCicle - 1, i * nNodesPerCicle, i * nNodesPerCicle + 1, Node.length - 1};
-	    		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	    		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	    		    cont += 1;
 	    		    for (int j = 1; j <= nNodesPerCicle / 2 - 1; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i * nNodesPerCicle + 2 * j - 1, i * nNodesPerCicle + 2 * j, i * nNodesPerCicle + 2 * j + 1, Node.length - 1};
-	        		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	        		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    }
@@ -147,7 +147,7 @@ public abstract class Analysis
 		    //    |2\1|  
 		    //  2.|__\|.4
 			int nNodesPerCicle = (Node.length - 1) / noffsets;
-	        Elem = new Elements[(int) (2*nNodesPerCicle*(noffsets - 0.5))];
+	        Elem = new Element[(int) (2*nNodesPerCicle*(noffsets - 0.5))];
 	        int cont = 0;
 	        for (int i = 0; i <= noffsets - 1; i += 1)
 			{
@@ -157,17 +157,17 @@ public abstract class Analysis
 	    		    for (int j = 0; j <= nNodesPerCicle - 2; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i*nNodesPerCicle + j, i*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j};
-	        		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	        		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	        		    cont += 1;
 	        		    elemnodes = new int[] {i*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j};
-	        		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	        		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    	elemnodes = new int[] {(i + 1)*nNodesPerCicle - 1, (i + 1)*nNodesPerCicle, (i + 2)*nNodesPerCicle - 1};
-	    		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	    		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	    		    cont += 1;
 			    	elemnodes = new int[] {(i + 1)*nNodesPerCicle - 1, i*nNodesPerCicle, (i + 1)*nNodesPerCicle};
-	    		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	    		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	    		    cont += 1;
 			    }
 			    else
@@ -175,11 +175,11 @@ public abstract class Analysis
 	    		    for (int j = 0; j <= nNodesPerCicle - 2; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i*nNodesPerCicle + j, i*nNodesPerCicle + j + 1, Node.length - 1};
-	        		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	        		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    	elemnodes = new int[] {i*nNodesPerCicle + nNodesPerCicle - 1, i*nNodesPerCicle, Node.length - 1};
-	    		    Elem[cont] = new Elements(cont, elemnodes, null, null, null, elemType);
+	    		    Elem[cont] = new Element(cont, elemnodes, null, null, null, elemType);
 	    		    cont += 1;
 			    }
 			}
@@ -188,10 +188,10 @@ public abstract class Analysis
         return Elem;
 	}
 	
-	public static Elements[] CreateCartesianMesh(Nodes[] Node, int[] NElems, ElemType elemType)
+	public static Element[] CreateCartesianMesh(Nodes[] Node, int[] NElems, ElemType elemType)
 	{
-		Elements[] Elem = null;
-		ElemShape elemShape = Elements.typeToShape(elemType);
+		Element[] Elem = null;
+		ElemShape elemShape = Element.typeToShape(elemType);
 		if (elemShape.equals(ElemShape.rectangular))
 		{
 			// Elements
@@ -200,14 +200,14 @@ public abstract class Analysis
 		    //    |    |  
 		    //   1|____|2
 			int[] NNodes = new int[] {NElems[0] + 1, NElems[1] + 1};
-	        Elem = new Elements[NElems[0]*NElems[1]];
+	        Elem = new Element[NElems[0]*NElems[1]];
 			for (int j = 0; j <= NElems[1] - 1; j += 1)
 			{
 				for (int i = 0; i <= NElems[0] - 1; i += 1)
 				{
 					int ElemID = i + j*NElems[0];
 					int[] ElemNodes = new int[] {i + j*NNodes[0], i + j*NNodes[0] + 1, (j + 1)*NNodes[0] + i + 1, (j + 1)*NNodes[0] + i};
-		        	Elem[ElemID] = new Elements(ElemID, ElemNodes, null, null, null, elemType);
+		        	Elem[ElemID] = new Element(ElemID, ElemNodes, null, null, null, elemType);
 				}
 			}
 		}
@@ -221,7 +221,7 @@ public abstract class Analysis
 		    //   1|________|3
 			//		  2
 			int[] NNodes = new int[] {2 * NElems[0] + 1, 2 * NElems[1] + 1};
-	        Elem = new Elements[NElems[0] * NElems[1]];
+	        Elem = new Element[NElems[0] * NElems[1]];
 			for (int j = 0; j <= NElems[1] - 1; j += 1)
 			{
 				for (int i = 0; i <= NElems[0] - 1; i += 1)
@@ -230,7 +230,7 @@ public abstract class Analysis
 					int[] ElemNodes = new int[] {2*i + 2*j*NNodes[0] - j*NElems[0], 					2*i + 2*j*NNodes[0] - j*NElems[0] + 1, 						2*i + 2*j*NNodes[0] - j*NElems[0] + 2,
 												 2*i + (2*j + 1)*NNodes[0] - j*NElems[0] - i + 1, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*NElems[0] + 2, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*NElems[0] + 1,
 												 2*i + (2*j + 2)*NNodes[0] - (j + 1)*NElems[0],		 	2*i + (2*j + 1)*NNodes[0] - j*NElems[0] - i};
-		        	Elem[ElemID] = new Elements(ElemID, ElemNodes, null, null, null, elemType);
+		        	Elem[ElemID] = new Element(ElemID, ElemNodes, null, null, null, elemType);
 				}
 			}
 		}
@@ -244,7 +244,7 @@ public abstract class Analysis
 		    //   1|________|3
 			//		  2
 			int[] NNodes = new int[] {2 * NElems[0] + 1, 2 * NElems[1] + 1};
-	        Elem = new Elements[NElems[0]*NElems[1]];
+	        Elem = new Element[NElems[0]*NElems[1]];
 			for (int j = 0; j <= NElems[1] - 1; j += 1)
 			{
 				for (int i = 0; i <= NElems[0] - 1; i += 1)
@@ -253,7 +253,7 @@ public abstract class Analysis
 					int[] ElemExtNodes = new int[] {2*i + 2*j*NNodes[0], 2*i + 2*j*NNodes[0] + 1, 2*i + 2*j*NNodes[0] + 2,
 													2*i + (2*j + 1)*NNodes[0] + 2, 2*i + (2*j + 2)*NNodes[0] + 2, 2*i + (2*j + 2)*NNodes[0] + 1, 2*i + (2*j + 2)*NNodes[0], 2*i + (2*j + 1)*NNodes[0]};
 					int[] ElemIntNodes = new int[] {2*i + (2*j + 1)*NNodes[0] + 1};
-					Elem[ElemID] = new Elements(ElemID, ElemExtNodes, ElemIntNodes, null, null, elemType);
+					Elem[ElemID] = new Element(ElemID, ElemExtNodes, ElemIntNodes, null, null, elemType);
 				}
 			}
 		}
@@ -264,7 +264,7 @@ public abstract class Analysis
 		    //    |\  | 
 		    //    |2\1|  
 		    //  2.|__\|.4
-			Elem = new Elements[2 * NElems[0] * NElems[1]];
+			Elem = new Element[2 * NElems[0] * NElems[1]];
 			int NumRows = NElems[0];
 		    for (int j = 0; j <= NumRows - 1; j += 1)
 		    {
@@ -274,15 +274,15 @@ public abstract class Analysis
 		        	int ElemID = 2 * i + j*NumberElemInCol;
 		        	int[] elemnodes1 = new int[] {i + j * (NElems[0] + 1), i + j * (NElems[0] + 1) + 1, i + (j + 1) * (NElems[1] + 1)};
 		        	int[] elemnodes2 = new int[] {i + (j + 1) * (NElems[1] + 1) + 1, i + (j + 1) * (NElems[1] + 1), i + j * (NElems[0] + 1) + 1};
-		        	Elem[ElemID] = new Elements(ElemID, elemnodes1, null, null, null, elemType);
-		        	Elem[ElemID + 1] = new Elements(ElemID + 1, elemnodes2, null, null, null, elemType);
+		        	Elem[ElemID] = new Element(ElemID, elemnodes1, null, null, null, elemType);
+		        	Elem[ElemID + 1] = new Element(ElemID + 1, elemnodes2, null, null, null, elemType);
 		        }
 		    }
 		}
 		return Elem;
 	}
 	
-	public static int CalcNFreeDoFs(Nodes[] Node, Elements[] Elem, Supports[] Sup)
+	public static int CalcNFreeDoFs(Nodes[] Node, Element[] Elem, Supports[] Sup)
 	{
 		int NFreeDoFs = 0;
         
@@ -312,7 +312,7 @@ public abstract class Analysis
     	return NFreeDoFs;
 	}
 	
-	public static int[] DefineFreeDoFTypes(Nodes[] Node, Elements[] Elem, Supports[] Sup)
+	public static int[] DefineFreeDoFTypes(Nodes[] Node, Element[] Elem, Supports[] Sup)
 	{
 		int[] FreeDOFTypes = null;
         
@@ -330,7 +330,7 @@ public abstract class Analysis
     	return FreeDOFTypes;
 	}
 	
-	public static double[][] NumIntegration(Nodes[] Node, Elements Elem, double[] Mat, double[] Sec, int[][] DOFsPerNode, boolean NonlinearMat, boolean NonlinearGeo, double[] strain, int NPoints)
+	public static double[][] NumIntegration(Nodes[] Node, Element Elem, double[] Mat, double[] Sec, int[][] DOFsPerNode, boolean NonlinearMat, boolean NonlinearGeo, double[] strain, int NPoints)
 	{
 		double[] Points = null;
 		double[] Weights = null;
@@ -407,7 +407,7 @@ public abstract class Analysis
 		}
 	}
 	
-	public static double[][] StructureStiffnessMatrix(int NFreeDOFs, Nodes[] Node, Elements[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo)
+	public static double[][] StructureStiffnessMatrix(int NFreeDOFs, Nodes[] Node, Element[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo)
     {
         double[][] K = new double[NFreeDOFs][NFreeDOFs];
         		
@@ -445,7 +445,7 @@ public abstract class Analysis
         return K;
     }
 	
-	public static double[] LoadVector(Nodes[] Node, Elements[] Elem, int NFreeDOFs, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
+	public static double[] LoadVector(Nodes[] Node, Element[] Elem, int NFreeDOFs, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
 	{
 		double[] P = new double[NFreeDOFs];
 		if (ConcLoad != null)
@@ -540,7 +540,7 @@ public abstract class Analysis
 		return P;
 	}
 	
-    public static double DispOnPoint(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] u)
+    public static double DispOnPoint(Nodes[] Node, Element Elem, double e, double n, int dof, double[] u)
     {
     	double[] N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
     	//System.out.println(Arrays.toString(N));
@@ -549,20 +549,20 @@ public abstract class Analysis
     	return Util.MultVector(N, u);
     }
 
-    public static double StrainOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] s)
+    public static double StrainOnElemContour(Nodes[] Node, Element Elem, double e, double n, int dof, double[] s)
     {
     	double[] N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
     	return Util.MultVector(N, s);
     }
     
-    public static double StressOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] s)
+    public static double StressOnElemContour(Nodes[] Node, Element Elem, double e, double n, int dof, double[] s)
     {
     	double[] N;
     	N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
     	return Util.MultVector(N, s);
     }
     
-    public static double ForceOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] p)
+    public static double ForceOnElemContour(Nodes[] Node, Element Elem, double e, double n, int dof, double[] p)
     {
     	double[] N;
     	N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
@@ -594,7 +594,7 @@ public abstract class Analysis
     	return NodeDisp;
     }
 
-	public static Reactions[] Reactions(Nodes[] Node, Elements[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
+	public static Reactions[] Reactions(Nodes[] Node, Element[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
 		Reactions[] R = new Reactions[Sup.length];
 		for (int node = 0; node <= Sup.length - 1; node += 1)
@@ -619,7 +619,7 @@ public abstract class Analysis
 		return sumReactions;
 	}
 	
-	public static double[] NodeForces(int node, Nodes[] Node, Elements[] Elem, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
+	public static double[] NodeForces(int node, Nodes[] Node, Element[] Elem, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
 		double[] forces = new double[6];
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)

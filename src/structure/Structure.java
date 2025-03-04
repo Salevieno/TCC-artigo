@@ -141,7 +141,7 @@ public class Structure
     	}
     	return nodeDOF;
     }
-	public void RecordResults(Nodes[] Node, Elements[] Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
+	public void RecordResults(Nodes[] Node, Element[] Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		double[][][] ElemStrains = new double[Elem.length][][];
 	    double[][][] ElemStresses = new double[Elem.length][][];

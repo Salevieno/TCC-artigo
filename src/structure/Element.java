@@ -6,10 +6,11 @@ import java.util.Arrays;
 import Main.ElementStiffnessMatrix;
 import Utilidades.Util;
 
-public class Elements
+public class Element
 {
 	private int ID;
-	private String Shape;
+	private ElemType type;			// Type of element
+	private ElemShape Shape;
 	private int[] DOFs;				// All DOFs present in the element
 	private int[][] DOFsPerNode;	// DOFs in each node of the element
 	private int[] ExternalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
@@ -22,7 +23,6 @@ public class Elements
 	private double[] Stress;		// Stresses on the element
 	private double[] Strain;		// Strains on the element
 	private double[] IntForces;		// External forces on the element
-	private ElemType type;			// Type of element
 	
 	public static Color color = Util.ColorPalette()[10];
 	public static Color[] MatColors;
@@ -36,7 +36,7 @@ public class Elements
 	private Color MatColor;
 	private Color SecColor;
 	
-	public Elements(int ID, int[] ExternalNodes, int[] InternalNodes, double[] Mat, double[] Sec, ElemType type)
+	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, double[] Mat, double[] Sec, ElemType type)
 	{
 		this.ID = ID;
 		this.ExternalNodes = ExternalNodes;
@@ -54,7 +54,7 @@ public class Elements
 	}
 
 	public int getID() {return ID;}
-	public String getShape() {return Shape;}
+	public ElemShape getShape() {return Shape;}
 	public int[] getDOFs() {return DOFs;}
 	public int[][] getDOFsPerNode() {return DOFsPerNode;}
 	public int[] getStrainTypes() {return StrainTypes;}
@@ -73,7 +73,7 @@ public class Elements
 	public Color getMatColor () {return MatColor;}
 	public Color getSecColor () {return SecColor;}
 	public void setID(int I) {ID = I;}
-	public void setShape(String S) {Shape = S;}
+	public void setShape(ElemShape S) {Shape = S;}
 	public void setDOFs(int[] D) {DOFs = D;}
 	public void setDOFsPerNode(int[][] D) {DOFsPerNode = D;}
 	public void setStrainTypes(int[] ST) {StrainTypes = ST;}
@@ -113,7 +113,7 @@ public class Elements
 		switch (type)
 		{
 			case KR1, MR1, MR2:
-				Shape = "Rectangular";
+				Shape = ElemShape.rectangular;
 				nodesPerElem = 4;
 				DOFs = new int[] {2, 3, 4};					// uz, tetax, tetay
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -122,7 +122,7 @@ public class Elements
 				break ;
 			
 			case KR2:
-				Shape = "Rectangular";
+				Shape = ElemShape.rectangular;
 				nodesPerElem = 4;
 				DOFs = new int[] {2, 3, 4, 6};				// uz, tetax, tetay, cd (cross derivative)
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -131,7 +131,7 @@ public class Elements
 				break;
 				
 			case R4:
-				Shape = "Rectangular";
+				Shape = ElemShape.rectangular;
 				nodesPerElem = 4;
 				DOFs = new int[] {0, 1};					// ux, uy
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -140,7 +140,7 @@ public class Elements
 				break;
 				
 			case Q4:
-				Shape = "Quad";
+				Shape = ElemShape.quad;
 				nodesPerElem = 4;
 				DOFs = new int[] {0, 1};					// ux, uy
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -149,7 +149,7 @@ public class Elements
 				break;
 				
 			case T3G:
-				Shape = "Triangular";
+				Shape = ElemShape.triangular;
 				nodesPerElem = 3;
 				DOFs = new int[] {0, 1};					// ux, uy
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -158,7 +158,7 @@ public class Elements
 				break;
 				
 			case T6G:
-				Shape = "Triangular";
+				Shape = ElemShape.triangular;
 				nodesPerElem = 6;
 				DOFs = new int[] {0, 1};					// ux, uy
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -167,7 +167,7 @@ public class Elements
 				break;
 				
 			case SM:
-				Shape = "Rectangular";
+				Shape = ElemShape.rectangular;
 				nodesPerElem = 4;
 				DOFs = new int[] {2, 3, 4, 7, 8};			// uz, tetax, tetay, phix, phiy
 				StrainTypes = new int[] {0, 1, 3, 4, 5};	// ex, ey, gxy, gxz, gyz
@@ -176,7 +176,7 @@ public class Elements
 				break;
 				
 			case SM8:
-				Shape = "R8";
+				Shape = ElemShape.r8;
 				DOFs = new int[] {2, 3, 4, 7, 8};			// uz, tetax, tetay, phix, phiy
 				StrainTypes = new int[] {0, 1, 3, 4, 5};	// ex, ey, gxy, gxz, gyz
 				//DOFsPerNode = new int[][] {{2, 3, 4, 7, 8}, {7, 8}, {2, 3, 4, 7, 8}, {7, 8}, {2, 3, 4, 7, 8}, {7, 8}, {2, 3, 4, 7, 8}, {7, 8}};
@@ -184,7 +184,7 @@ public class Elements
 				break;
 				
 			case KP3:
-				Shape = "Rectangular";
+				Shape = ElemShape.rectangular;
 				nodesPerElem = 4;
 				DOFs = new int[] {2, 3, 4};					// uz, tetax, tetay
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -193,7 +193,7 @@ public class Elements
 				break;
 				
 			case SM_C:
-				Shape = "Rectangular";
+				Shape = ElemShape.rectangular;
 				nodesPerElem = 4;
 				DOFs = new int[] {2, 3, 4, 6, 7, 8};		// uz, tetax, tetay, cd (cross derivative), phix, phiy
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -202,7 +202,7 @@ public class Elements
 				break;
 				
 			case SM_H:
-				Shape = "Rectangular";
+				Shape = ElemShape.rectangular;
 				nodesPerElem = 4;
 				DOFs = new int[] {2, 3, 4, 7, 8};			// uz, tetax, tetay, phix, phiy
 				StrainTypes = new int[] {0, 1, 3};			// ex, ey, gxy
@@ -223,15 +223,15 @@ public class Elements
 		return new Object[] {Shape, DOFs, StrainTypes, DOFsPerNode};
 	}
 
-	public double[] Size(Nodes[] Node)
+	public double[] calcHalfSize(Nodes[] Node)
 	{
 		double[] size = new double[2];
-		if (Shape.equals("Rectangular"))
+		if (Shape.equals(ElemShape.rectangular))
 		{
 			size[0] = Math.abs(Node[ExternalNodes[2]].getOriginalCoords()[0] - Node[ExternalNodes[0]].getOriginalCoords()[0]) / 2;
 			size[1] = Math.abs(Node[ExternalNodes[2]].getOriginalCoords()[1] - Node[ExternalNodes[0]].getOriginalCoords()[1]) / 2;
 		}
-		else if (Shape.equals("R8") | Shape.equals("R9"))
+		else if (Shape.equals(ElemShape.r8) | Shape.equals(ElemShape.r9))
 		{
 			size[0] = Math.abs(Node[ExternalNodes[4]].getOriginalCoords()[0] - Node[ExternalNodes[0]].getOriginalCoords()[0]) / 2;
 			size[1] = Math.abs(Node[ExternalNodes[4]].getOriginalCoords()[1] - Node[ExternalNodes[0]].getOriginalCoords()[1]) / 2;
@@ -239,31 +239,15 @@ public class Elements
 		return size;
 	}
 
-	public int NumberOfNodes(String Shape)
+	public static int shapeToNumberNodes(ElemShape shape, ElemType type)
 	{
-		if (Shape.equals("Rectangular"))
+		switch (shape)
 		{
-			return 4;
-		}
-		else if (Shape.equals("Triangular"))
-		{
-			if (type.equals("T6G"))
-			{
-				return 6;
-			}
-			else
-			{
-				return 3;
-			}
-		}
-		else if (Shape.equals("R8"))
-		{
-			return 8;
-		}
-		else
-		{
-			System.out.println("Shape is not valid at Elements -> NumberOfNodes");
-			return -1;
+			case rectangular: return 4 ;
+			case triangular: return type.equals(ElemType.T3G) ? 3 : 6 ;
+			case r8: return 8;
+			case quad, r9: return -1 ;
+			default: System.out.println("Shape is not valid at Elements -> NumberOfNodes"); return -1;
 		}
 	}
 	
@@ -329,7 +313,7 @@ public class Elements
     {
     	// Calcula as fun��es de forma em um dado ponto (e, n). Unidades 1/m� e 1/m.
     	double[][] N = null;
-		double[] ElemSize = Size(Node);
+		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
 		double b = ElemSize[1];	
 		
@@ -691,7 +675,7 @@ public class Elements
     {
     	// Calcula as derivadas segundas das fun��es de forma em um dado ponto (e, n). Unidades 1/m� e 1/m.
     	double[][] B = null;
-		double[] ElemSize = Size(Node);
+		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
 		double b = ElemSize[1];
 		double t = Sec[0] / 1000.0;
@@ -824,7 +808,7 @@ public class Elements
 	{
     	double[][] Bb1 = null,  Bb2 = null;
     	double t = Sec[0] / 1000.0;
-		double[] ElemSize = Size(Node);
+		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
 		double b = ElemSize[1];
     	
@@ -855,7 +839,7 @@ public class Elements
 		double[][] Bs1 = null,  Bs2 = null;
     	double t = Sec[0] / 1000.0;
 		double a1 = 4 / (3.0 * Math.pow(t, 2));
-		double[] ElemSize = Size(Node);
+		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
 		double b = ElemSize[1];	
     	if (type.equals(ElemType.SM))
@@ -893,7 +877,7 @@ public class Elements
     public double[][] LoadVector(Nodes[] Node)
 	{
 		double[][] Q = null;
-		double[] ElemSize = Size(Node);
+		double[] ElemSize = calcHalfSize(Node);
 		double a = ElemSize[0];
 		double b = ElemSize[1];
 		
@@ -1011,7 +995,7 @@ public class Elements
     {
     	// Calcula a matriz de rigidez do elemento
     	double[][] k = null;
-		double[] ElemSize = Size(Node);
+		double[] ElemSize = calcHalfSize(Node);
 		double[][] Db = BendingConstitutiveMatrix(Mat, NonlinearMat, Strain);
 		double[][] Ds = ShearConstitutiveMatrix2(Mat, Sec);
 		
@@ -1116,7 +1100,7 @@ public class Elements
 		return forces;
 	}
 
-    public double[] StressesOnPoint(Nodes[] Node, Elements Elem, double e, double n, double[] Mat, int[][] DOFsOnNode, double[] U, double[] Sec, boolean NonlinearMat, boolean NonlinearGeo)
+    public double[] StressesOnPoint(Nodes[] Node, Element Elem, double e, double n, double[] Mat, int[][] DOFsOnNode, double[] U, double[] Sec, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		double[] strain = new double[3];
 		double[] sigma = new double[3];

@@ -21,7 +21,7 @@ import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemShape;
 import structure.ElemType;
-import structure.Elements;
+import structure.Element;
 import structure.MyCanvas;
 import structure.NodalDisps;
 import structure.Nodes;
@@ -806,7 +806,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawElemInfo(Elements Elem, int[] Pos)
+	public void DrawElemInfo(Element Elem, int[] Pos)
 	{
 		String Title = "Elem info";
 		int L = 200, H = 10;
@@ -1008,7 +1008,7 @@ public class DrawingOnAPanel
 		}	
 	}
 	
-	public void DrawElemNumbers(Nodes[] Node, Elements[] Elem, Color NodeColor, boolean deformed)
+	public void DrawElemNumbers(Nodes[] Node, Element[] Elem, Color NodeColor, boolean deformed)
 	{
 		int FontSize = 13;
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1238,7 +1238,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawElements(Elements[] Elem, Nodes[] Node, int[] SelectedElems, boolean showcontour, boolean condition)
+	public void DrawElements(Element[] Elem, Nodes[] Node, int[] SelectedElems, boolean showcontour, boolean condition)
 	{
 		int thick = 1;
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1281,7 +1281,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawElements3D(Nodes[] Node, Elements[] Elem, int[] SelectedElems, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double Defscale)
+	public void DrawElements3D(Nodes[] Node, Element[] Elem, int[] SelectedElems, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double Defscale)
 	{
 		int thick = 1;
 		double[] RealCanvasCenter = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
@@ -1511,7 +1511,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawDistLoads3D (Nodes[] Node, Elements[] Elem, DistLoads[] DistLoads, boolean ShowValues, Color DistLoadsColor, boolean condition, int[] DOFsPerNode, double Defscale)
+	public void DrawDistLoads3D (Nodes[] Node, Element[] Elem, DistLoads[] DistLoads, boolean ShowValues, Color DistLoadsColor, boolean condition, int[] DOFsPerNode, double Defscale)
 	{
 		int[] NArrows = new int[] {4, 4};
 		int MaxArrowSize = 1;
@@ -1637,9 +1637,9 @@ public class DrawingOnAPanel
 	{
 		RealStructCenter = new double[] {5, 5, 0};
 		double[] Center = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-		ElemShape elemShape = Elements.typeToShape(elemType);
+		ElemShape elemShape = Element.typeToShape(elemType);
 		Nodes[] Node = null;
-		Elements Elem = null;
+		Element Elem = null;
 		if (elemShape.equals(ElemShape.rectangular))
 		{
 			Node = new Nodes[4];
@@ -1647,7 +1647,7 @@ public class DrawingOnAPanel
 			Node[1] = new Nodes(1, new double[] {9, 1, 0});
 			Node[2] = new Nodes(2, new double[] {9, 9, 0});
 			Node[3] = new Nodes(3, new double[] {1, 9, 0});
-			Elem = new Elements(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
+			Elem = new Element(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
 		}
 		else if (elemShape.equals(ElemShape.quad))
 		{
@@ -1656,7 +1656,7 @@ public class DrawingOnAPanel
 			Node[1] = new Nodes(1, new double[] {9, 3, 0});
 			Node[2] = new Nodes(2, new double[] {7, 9, 0});
 			Node[3] = new Nodes(3, new double[] {3, 7, 0});
-			Elem = new Elements(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
+			Elem = new Element(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
 		}
 		else if (elemShape.equals(ElemShape.triangular))
 		{
@@ -1664,7 +1664,7 @@ public class DrawingOnAPanel
 			Node[0] = new Nodes(0, new double[] {1, 1, 0});
 			Node[1] = new Nodes(1, new double[] {9, 5, 0});
 			Node[2] = new Nodes(2, new double[] {1, 9, 0});
-			Elem = new Elements(0, new int[] {0, 1, 2}, null, null, null, elemType);
+			Elem = new Element(0, new int[] {0, 1, 2}, null, null, null, elemType);
 		}
 		else if (elemShape.equals(ElemShape.r8))
 		{
@@ -1677,7 +1677,7 @@ public class DrawingOnAPanel
 			Node[5] = new Nodes(3, new double[] {5, 9, 0});
 			Node[6] = new Nodes(3, new double[] {1, 5, 0});
 			Node[7] = new Nodes(3, new double[] {9, 5, 0});
-			Elem = new Elements(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, null, null, null, elemType);
+			Elem = new Element(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, null, null, null, elemType);
 		}
 		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2(Util.RotateCoord(RealStructCenter, Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		int textSize = 16;
@@ -1697,12 +1697,12 @@ public class DrawingOnAPanel
 			}
 		}
 		DrawNodes3D(Node, null, Nodes.color, false, Node[0].getDOFType(), 1);
-		DrawElements3D(Node, new Elements[] {Elem}, null, false, false, true, false, 1);
+		DrawElements3D(Node, new Element[] {Elem}, null, false, false, true, false, 1);
 		DrawDOFNumbers(Node, Nodes.color, false);
 		DrawDOFSymbols(Node, Nodes.color, false);
 		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)}, elemType.toString(), "Center", 0, "Bold", textSize, textColor);
 		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1]}, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), "Center", 0, "Bold", textSize, textColor);
-		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deforma��es: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
+		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deformaçõs: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
 	}
 	
 	public void DrawGrid(int[] InitPos, int[] FinalPos, int NumSpacing, Color color)
@@ -1784,7 +1784,7 @@ public class DrawingOnAPanel
 		}
 	}
 
-	public void DrawContours(Elements[] Elem, Nodes[] Node, int[] SelectedElems, boolean showcontour, boolean condition, double[] values, double minvalue, double maxvalue, String ColorSystem)
+	public void DrawContours(Element[] Elem, Nodes[] Node, int[] SelectedElems, boolean showcontour, boolean condition, double[] values, double minvalue, double maxvalue, String ColorSystem)
 	{
 		int thick = 1;
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1820,7 +1820,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawContours3D(Elements[] Elem, Nodes[] Node, int[] SelectedElems, double[] RealStructCenter, boolean showelemcontour, boolean condition, double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem)
+	public void DrawContours3D(Element[] Elem, Nodes[] Node, int[] SelectedElems, double[] RealStructCenter, boolean showelemcontour, boolean condition, double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem)
 	{
 		int Ninterpoints = 0;
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1864,8 +1864,8 @@ public class DrawingOnAPanel
 			double[] ContourValue = new double[ContourCoords.length];
 			if (Elem[elem].getShape().equals("Rectangular") | Elem[elem].getShape().equals("R8"))
 			{
-				double L = 2 * Elem[elem].Size(Node)[0];
-				double H = 2 * Elem[elem].Size(Node)[1];
+				double L = 2 * Elem[elem].calcHalfSize(Node)[0];
+				double H = 2 * Elem[elem].calcHalfSize(Node)[1];
 				double[] CenterCoords = Elem[elem].getCenterCoords();
 				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
 				{

@@ -1,17 +1,17 @@
 package Main;
 /*
- * Os menus estão como variáveis globais pq são chamados em mais de uma função (são criados em uma função e set enable em outras)
- * A gente tem que pegar um mousemovementListener pra ele só pegar a posição do mouse quando o mouse se mover
- * Otimizar a solução do sistema linear
- * Ajeitar criação dos borders em Menus -> Menus
+ * Os menus estÃ¢o como variÃ¢veis globais pq sÃ¢o chamados em mais de uma funÃ¢Ã¢o (sÃ¢o criados em uma funÃ¢Ã¢o e set enable em outras)
+ * A gente tem que pegar um mousemovementListener pra ele sÃ¢ pegar a posiÃ¢Ã¢o do mouse quando o mouse se mover
+ * Otimizar a soluÃ¢Ã¢o do sistema linear
+ * Ajeitar criaÃ¢Ã¢o dos borders em Menus -> Menus
  * Adicionar importar resultados
- * Retângulos de 8 nós
+ * RetÃ¢ngulos de 8 nÃ³s
  * 
- * Função round tá sendo chamada pra arredondar números que são NaN o tempo todo desde o começo do programa
+ * FunÃ¢Ã¢o round tÃ¢ sendo chamada pra arredondar nÃ¢meros que sÃ¢o NaN o tempo todo desde o comeÃ¢o do programa
  * Adicionar poros
- * Mostrar mensagem "análise em andamento"
- * Mostrar mensagem "estrutura instável"
- * Abrir a janela de seleção só quando o mouse é arrastado
+ * Mostrar mensagem "anÃ¢lise em andamento"
+ * Mostrar mensagem "estrutura instÃ¢vel"
+ * Abrir a janela de seleÃ¢Ã¢o sÃ¢ quando o mouse Ã¢ arrastado
  * 
  * 
  * 

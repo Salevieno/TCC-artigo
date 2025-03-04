@@ -11,7 +11,7 @@ import Utilidades.UtilComponents;
 import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemType;
-import structure.Elements;
+import structure.Element;
 import structure.MeshType;
 import structure.MyCanvas;
 import structure.NodalDisps;
@@ -38,7 +38,7 @@ public abstract class MenuFunctions
 	
 	public static Structure Struct;
 	public static Nodes[] Node;
-	public static Elements[] Elem;
+	public static Element[] Elem;
 	public static Supports[] Sup;
 	public static ConcLoads[] ConcLoad;
 	public static DistLoads[] DistLoad;
@@ -345,7 +345,7 @@ public abstract class MenuFunctions
 	}
 	
 	/* File menu functions */
-	public static void SaveFile(String FileName, String[][] AllText, String Language, MyCanvas MainCanvas, Structure Struct, Nodes[] Node, Elements[] Elem, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, double[][] UserDefinedMat, double[][] UserDefinedSec)
+	public static void SaveFile(String FileName, String[][] AllText, String Language, MyCanvas MainCanvas, Structure Struct, Nodes[] Node, Element[] Elem, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, double[][] UserDefinedMat, double[][] UserDefinedSec)
 	{
 		Struct.setName(FileName);
 		String[] InputSections = Util.LoadAllText(AllText, Language, 11);
@@ -539,8 +539,8 @@ public abstract class MenuFunctions
 				{
 					String[] Line = Input[3][elem + 2].split("	");
 					ElemType elemType = ElemType.valueOf(Line[1].toUpperCase()) ;
-					Elements NewElem = new Elements(Integer.parseInt(Line[0]), null, null, null, null, elemType);
-					int NumberOfElemNodes = NewElem.NumberOfNodes(NewElem.getShape());
+					Element NewElem = new Element(Integer.parseInt(Line[0]), null, null, null, null, elemType);
+					int NumberOfElemNodes = Element.shapeToNumberNodes(NewElem.getShape(), elemType);
 					int[] ElemNodes = null;
 					for (int elemnode = 0; elemnode <= NumberOfElemNodes - 1; elemnode += 1)
 					{
@@ -600,14 +600,14 @@ public abstract class MenuFunctions
 			}
 			else
 			{
-				System.out.println("Arquivo de input n�o encontrado");
+				System.out.println("Arquivo de input nâo encontrado");
 			}
 		}
 		UtilComponents.PrintStructure(FileName, Node, Elem, MatType, SecType, Sup, ConcLoad, DistLoad, NodalDisp);
 	}
 
 	/* Structure menu functions */
-	public static void DefineElemType(String ElemType)
+	public static void setElemType(String ElemType)
 	{
 		SelectedElemType = ElemType;
 	}
@@ -976,11 +976,11 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static double[] RunAnalysis(Structure struct, Nodes[] Node, Elements[] Elem, Supports[] Sup, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
+	public static double[] RunAnalysis(Structure struct, Nodes[] Node, Element[] Elem, Supports[] Sup, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
 	{
 		/*
-		 * NIter = N�mero de itera��es em cada passo (para convergir)
-		 * NLoadSteps = N�mero de incrementos de carga (n�mero de passos)
+		 * NIter = Nâmero de iteraçõs em cada passo (para convergir)
+		 * NLoadSteps = Nâmero de incrementos de carga (nâmero de passos)
 		 * MaxLoadFactor = Fator de carga final (valor multiplicando a carga)
 		 * */
 		long AnalysisTime = System.currentTimeMillis();
@@ -1019,7 +1019,7 @@ public abstract class MenuFunctions
 			}
 		}
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
-		System.out.println("Tempo de an�lise = " + AnalysisTime / 1000.0 + " seg");
+		System.out.println("Tempo de anâlise = " + AnalysisTime / 1000.0 + " seg");
 		if (((Double)struct.getU()[0]).isNaN())
 		{
 			System.out.println("Displacement results are NaN at Menus -> RunAnalysis");
@@ -1185,9 +1185,9 @@ public abstract class MenuFunctions
 	/* Especial menu functions */
 	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType, double[] CurrentMatType, double[] CurrentSecType, int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
 	{
-		/* Tipo de elemento, materiais, se��es, apoios e cargas j� est�o definidos */
+		/* Tipo de elemento, materiais, seçõs, apoios e cargas jâ estâo definidos */
 		
-		/* 1. Criar pol�gono */
+		/* 1. Criar polâgono */
 		Struct = new Structure(null, null, StructCoords);
 		
 		/* 2. Criar malha */
@@ -1199,26 +1199,26 @@ public abstract class MenuFunctions
 			SelectedElems = Util.AddElem(SelectedElems, elem);
 		}
 		AddMaterialToElements(SelectedElems, CurrentMatType);
-		Elements.setMatColors(MatType);
+		Element.setMatColors(MatType);
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
 		{
-			Elem[elem].setMatColor(Elements.MatColors[Util.FindID(MatType, Elem[elem].getMat())]);
+			Elem[elem].setMatColor(Element.MatColors[Util.FindID(MatType, Elem[elem].getMat())]);
 		}
 
-		/* 4. Atribuir se��es */
+		/* 4. Atribuir seçõs */
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
 		{
 			SelectedElems = Util.AddElem(SelectedElems, elem);
 		}
 		AddSectionsToElements(SelectedElems, CurrentSecType);
-		Elements.setSecColors(SecType);
+		Element.setSecColors(SecType);
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
 		{
-			Elem[elem].setSecColor(Elements.SecColors[Util.FindID(SecType, Elem[elem].getSec())]);
+			Elem[elem].setSecColor(Element.SecColors[Util.FindID(SecType, Elem[elem].getSec())]);
 		}
 		
 		/* 5. Atribuir apoios */
-		Sup = Util.AddEspecialSupports(Node, Elements.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
+		Sup = Util.AddEspecialSupports(Node, Element.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
 
 		/* 6. Atribuir cargas */
 		if (ConcLoadConfig == 1)
@@ -1245,7 +1245,7 @@ public abstract class MenuFunctions
 			AddDistLoads();
 		}
 		
-		/* 7. Calcular par�metros para a an�lise */
+		/* 7. Calcular parâmetros para a anâlise */
 		CalcAnalysisParameters();
 		
 		SelectedNodes = null;
@@ -1284,7 +1284,7 @@ public abstract class MenuFunctions
 		int NumberOfRuns = Util.ProdVec(NumPar);
 
 		ElemType elemType = ElemType.valueOf(EspecialElemTypes[Par[0]].toUpperCase());
-		String[] Sections = new String[] {"An�lise		Elem	Malha (nx x ny)	Mat		Sec		Apoio		Carga		Min deslocamento (m)		Max deslocamento (m)		Desl. sob a carga (m)		Tempo (seg)"};
+		String[] Sections = new String[] {"Anâlise		Elem	Malha (nx x ny)	Mat		Sec		Apoio		Carga		Min deslocamento (m)		Max deslocamento (m)		Desl. sob a carga (m)		Tempo (seg)"};
 		String[][][] vars = new String[Sections.length][][];		
 		Object[] EspecialResults = null;
 		
@@ -1307,7 +1307,7 @@ public abstract class MenuFunctions
 			System.out.println("DistLoad: " + Arrays.toString(DistLoad));
 			System.out.println("NodalDisp: " + Arrays.toString(NodalDisp));
 			
-			System.out.print("An�lise num " + run + ": ");
+			System.out.print("Anâlise num " + run + ": ");
 			//UtilComponents.PrintStructure(MeshType, Node, Elem, EspecialMat, EspecialSec, Sup, ConcLoads, DistLoads, NodalDisps);
 
 			boolean NonlinearMat = true;
@@ -1702,7 +1702,7 @@ public abstract class MenuFunctions
 								Yaxisvalues[node] = Elem[elemID].getIntForces()[dof];
 							}
 						}
-						DP.Draw2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]), "Resultados na se��o", "x var", "y var", Xaxisvalues, Yaxisvalues, Util.FindMin(Xaxisvalues), Util.FindMin(Yaxisvalues), Util.FindMaxAbs(Xaxisvalues), Util.FindMaxAbs(Yaxisvalues), 2, 2, ColorPalette[5], ColorPalette[10]);
+						DP.Draw2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]), "Resultados na seââo", "x var", "y var", Xaxisvalues, Yaxisvalues, Util.FindMin(Xaxisvalues), Util.FindMin(Yaxisvalues), Util.FindMaxAbs(Xaxisvalues), Util.FindMaxAbs(Yaxisvalues), 2, 2, ColorPalette[5], ColorPalette[10]);
 					}
 					else if (-1 < SelectedNodes[0])
 					{
@@ -1718,7 +1718,7 @@ public abstract class MenuFunctions
 		}						
 	}
 	
-	public static void DrawResults(MyCanvas canvas, Structure Struct, Nodes[] Node, Elements[] Elem, int[] SelectedElems, int selectedvar, boolean ShowElemContour, boolean ShowDeformedStructure, double[] DiagramsScales, boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces, boolean NonlinearMat, boolean NonlinearGeo, DrawingOnAPanel DP)
+	public static void DrawResults(MyCanvas canvas, Structure Struct, Nodes[] Node, Element[] Elem, int[] SelectedElems, int selectedvar, boolean ShowElemContour, boolean ShowDeformedStructure, double[] DiagramsScales, boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces, boolean NonlinearMat, boolean NonlinearGeo, DrawingOnAPanel DP)
 	{
 		if (-1 < selectedvar & Node != null & Elem != null)
 		{
@@ -1729,17 +1729,17 @@ public abstract class MenuFunctions
 			}
 			else if (ShowStressContour)
 			{
-				canvas.setTitle("Tens�es (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
+				canvas.setTitle("Tensâes (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
 				DP.DrawContours3D(Elem, Node, SelectedElems, Struct.getCenter(), ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStressMin()[selectedvar], Struct.getStressMax()[selectedvar], "Stress", selectedvar,  NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowStrainContour)
 			{
-				canvas.setTitle("Deforma��es (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
+				canvas.setTitle("Deformaçõs (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
 				DP.DrawContours3D(Elem, Node, SelectedElems, Struct.getCenter(), ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStrainMin()[selectedvar], Struct.getStrainMax()[selectedvar], "Strain", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowInternalForces)
 			{
-				canvas.setTitle("For�as internas (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
+				canvas.setTitle("Forâas internas (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
 				DP.DrawContours3D(Elem, Node, SelectedElems, Struct.getCenter(), ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getInternalForcesMin()[selectedvar], Struct.getInternalForcesMax()[selectedvar], "Force", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 		}

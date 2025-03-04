@@ -19,7 +19,7 @@ import Main.ReadInput;
 import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemShape;
-import structure.Elements;
+import structure.Element;
 import structure.MeshType;
 import structure.MyCanvas;
 import structure.NodalDisps;
@@ -221,7 +221,7 @@ public abstract class Util
 		return DeformedCoords;
 	}
 	
-	public static int ElemMouseIsOn(Nodes[] Node, Elements[] Elem, int[] MousePos, double[] StructCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
+	public static int ElemMouseIsOn(Nodes[] Node, Element[] Elem, int[] MousePos, double[] StructCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
 	{
 		double[] RealMousePos = ConvertToRealCoords2(MousePos, StructCenter, CanvasPos, CanvasSize, CanvasDim, CanvasCenter, CanvasPos);
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -590,15 +590,15 @@ public abstract class Util
 		}
  	}
 
- 	public static Elements[] AddElem(Elements[] OriginalArray, Elements NewElem)
+ 	public static Element[] AddElem(Element[] OriginalArray, Element NewElem)
  	{
  		if (OriginalArray == null)
 		{
-			return new Elements[] {NewElem};
+			return new Element[] {NewElem};
 		}
 		else
 		{
-			Elements[] NewArray = new Elements[OriginalArray.length + 1];
+			Element[] NewArray = new Element[OriginalArray.length + 1];
 			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
 			{
 				NewArray[i] = OriginalArray[i];
@@ -1205,7 +1205,7 @@ public abstract class Util
 		{
 			RefPoint = AddElem(RefPoint, 0);
 		}
-		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de refer�ncia (RefPoint)
+		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referância (RefPoint)
 		// Rotation around z
 		coord[0] = (int) ((oriCoord[0] - RefPoint[0]) * Math.cos(angle[2]) - (oriCoord[1] - RefPoint[1]) * Math.sin(angle[2]));
 		coord[1] = (int) ((oriCoord[0] - RefPoint[0]) * Math.sin(angle[2]) + (oriCoord[1] - RefPoint[1]) * Math.cos(angle[2]));
@@ -1253,7 +1253,7 @@ public abstract class Util
 		{
 			RefPoint = AddElem(RefPoint, 0);
 		}
-		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de refer�ncia (RefPoint)
+		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referância (RefPoint)
 		// Rotation around z
 		coord[0] = (oriCoord[0] - RefPoint[0]) * Math.cos(angle[2]) - (oriCoord[1] - RefPoint[1]) * Math.sin(angle[2]);
 		coord[1] = (oriCoord[0] - RefPoint[0]) * Math.sin(angle[2]) + (oriCoord[1] - RefPoint[1]) * Math.cos(angle[2]);
@@ -1616,10 +1616,10 @@ public abstract class Util
 		}
 	}
 
-	public static boolean MouseIsOnElem(Nodes[] Node, Elements Elem, double[] MousePos, int[] CanvasPos, int[] CanvasSize, int[] DrawingPos, boolean condition)
+	public static boolean MouseIsOnElem(Nodes[] Node, Element Elem, double[] MousePos, int[] CanvasPos, int[] CanvasSize, int[] DrawingPos, boolean condition)
 	{
-		String ElemShape = Elem.getShape();
-		if (ElemShape.equals("Rectangular"))
+		ElemShape elemShape = Elem.getShape();
+		if (elemShape.equals(ElemShape.rectangular))
 		{
 			double x0 = GetNodePos(Node[Elem.getExternalNodes()[0]], condition)[0];
 			double y0 = GetNodePos(Node[Elem.getExternalNodes()[0]], condition)[1];
@@ -1636,7 +1636,7 @@ public abstract class Util
 				return false;
 			}
 		}
-		else if (ElemShape.equals("Triangular"))
+		else if (elemShape.equals(ElemShape.triangular))
 		{
 		    double[] v1 = GetNodePos(Node[Elem.getExternalNodes()[0]], condition);
 		    double[] v2 = GetNodePos(Node[Elem.getExternalNodes()[1]], condition);
@@ -1656,7 +1656,7 @@ public abstract class Util
 				return false;
 			}
 		}
-		else if (ElemShape.equals("R8"))
+		else if (elemShape.equals(ElemShape.r8))
 		{
 			double x0 = GetNodePos(Node[Elem.getExternalNodes()[0]], condition)[0];
 			double y0 = GetNodePos(Node[Elem.getExternalNodes()[0]], condition)[1];
@@ -1830,7 +1830,7 @@ public abstract class Util
 		}
 	}
 	
-	public static int[] ElemsInsideWindow(Nodes[] Node, Elements[] Elem, double[] RealStructCenter, int[] WindowTopLeft, int[] WindowBotRight, int[] PanelPos, int[] CanvasPos, int[] CanvasCenter, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double Defscale, boolean condition)
+	public static int[] ElemsInsideWindow(Nodes[] Node, Element[] Elem, double[] RealStructCenter, int[] WindowTopLeft, int[] WindowBotRight, int[] PanelPos, int[] CanvasPos, int[] CanvasCenter, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double Defscale, boolean condition)
 	{
 		int[] ElemsInsideWindow = null;
 		int[] ElemDOFs = Elem[0].getDOFs();
@@ -1868,7 +1868,7 @@ public abstract class Util
 		}
 	}
 	
-	public static boolean AllElemsHaveMat(Elements[] Elem)
+	public static boolean AllElemsHaveMat(Element[] Elem)
 	{
 		if (Elem != null)
 		{
@@ -1888,7 +1888,7 @@ public abstract class Util
 		}
 	}
 	
-	public static boolean AllElemsHaveSec(Elements[] Elem)
+	public static boolean AllElemsHaveSec(Element[] Elem)
 	{
 		if (Elem != null)
 		{
@@ -1908,7 +1908,7 @@ public abstract class Util
 		}
 	}
 	
-	public static boolean AllElemsHaveElemType(Elements[] Elem)
+	public static boolean AllElemsHaveElemType(Element[] Elem)
 	{
 		boolean allElemsHaveMat = true;
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1921,7 +1921,7 @@ public abstract class Util
 		return allElemsHaveMat;
 	}
 	
-	public static int[] DefineDOFsOnNode(Elements[] Elem)
+	public static int[] DefineDOFsOnNode(Element[] Elem)
 	{
 		int[] DOFsOnNode = null;  
 		int[][] DOFsPerNode = (int[][]) Elem[0].GetProp()[3];
@@ -2663,7 +2663,7 @@ public abstract class Util
 		return Maxvalue;
 	}
 
-	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Nodes[] Node, Elements[] Elem, int[] MousePos, int[] DPPos, int[] SelectedElems, int[] SelWindowInitPos, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
+	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Nodes[] Node, Element[] Elem, int[] MousePos, int[] DPPos, int[] SelectedElems, int[] SelWindowInitPos, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
 	{
 		int ElemMouseIsOn = ElemMouseIsOn(Node, Elem, MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos(), ShowDeformedStructure);
 		if (ShowSelWindow)

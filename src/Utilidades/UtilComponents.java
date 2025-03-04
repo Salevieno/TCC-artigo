@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import structure.ConcLoads;
 import structure.DistLoads;
-import structure.Elements;
+import structure.Element;
 import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
@@ -17,7 +17,7 @@ public abstract class UtilComponents
 		System.out.println(Node.getID() + "	" + Arrays.toString(Node.getOriginalCoords()) + "	" + Arrays.toString(Node.getDisp()) + "	" + Node.getSup() + "	" + Arrays.toString(Node.getConcLoads()) + "	" + Arrays.toString(Node.getNodalDisps()));
 	}
 
-	public static void PrintElem(Elements Elem)
+	public static void PrintElem(Element Elem)
 	{
 		System.out.println(Elem.getID() + "	" + Arrays.toString(Elem.getExternalNodes()) + "		" + Elem.getMat() + "	" + Elem.getSec() + "	" + Arrays.toString(Elem.getDistLoads()));
 	}
@@ -33,7 +33,7 @@ public abstract class UtilComponents
 		}
 	}
 	
-	public static void PrintAllElems(Elements[] Elem)
+	public static void PrintAllElems(Element[] Elem)
 	{
 		System.out.println();
 		System.out.println("Elems");
@@ -173,7 +173,7 @@ public abstract class UtilComponents
 		}
 	}
 	
-	public static void PrintStructure(String StructureName, Nodes[] Node, Elements[] Elem, double[][] Mat, double[][] Sec, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	public static void PrintStructure(String StructureName, Nodes[] Node, Element[] Elem, double[][] Mat, double[][] Sec, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(StructureName);
