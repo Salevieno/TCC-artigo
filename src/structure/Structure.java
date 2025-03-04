@@ -6,8 +6,8 @@ import Utilidades.Util;
 
 public class Structure
 {
-	private String Name;		// ID
-	private String Shape;		// Structure shape
+	private String Name;
+	private StructureShape Shape;
 	private double[][] Coords;	// Structure edge coordinates [x, y, z]
 	private double[] Center;	// Structure center coordinates [x, y, z]
 	private double[] MinCoords;	// Structure minimum coordinates [x, y, z]
@@ -32,9 +32,8 @@ public class Structure
 	private double[][][][] LoadDisp;
 	
 	public static Color color = Util.ColorPalette()[5]; // Color
-	private static String[] StructShapes = new String[] {"Rectangular", "Circular", "Polygonal"};
 	
-	public Structure(String Name, String Shape, double[][] Coords)
+	public Structure(String Name, StructureShape Shape, double[][] Coords)
 	{
 		this.Name = Name;
 		this.Shape = Shape;
@@ -51,7 +50,7 @@ public class Structure
 	}
 
 	public String getName() {return Name;}
-	public String getShape() {return Shape;}
+	public StructureShape getShape() {return Shape;}
 	public double[][] getCoords() {return Coords;}
 	public double[] getCenter() {return Center;}
 	public double[] getMinCoords() {return MinCoords;}
@@ -72,7 +71,7 @@ public class Structure
 	public double[] getSumReactions() {return SumReactions;}
 	public double[][][][] getLoadDisp() {return LoadDisp;}
 	public void setName(String N) {Name = N;}
-	public void setShape(String S) {Shape = S;}
+	public void setShape(StructureShape S) {Shape = S;}
 	public void setCoords(double[][] C) {Coords = C;}
 	public void setCenter(double[] C) {Center = C;}
 	public void setMinCoords(double[] MinC) {MinCoords = MinC;}
@@ -93,7 +92,6 @@ public class Structure
 	public void setSumReactions(double[] S) {SumReactions = S;}
 	public void setLoadDisp(double[][][][] L) {LoadDisp = L;}
 	
-	public static String[] getStructureShapes() {return StructShapes;}
 	public int[][] NodeDOF(Nodes[] Node, Supports[] Sup)
     {
         int[][] nodeDOF = new int[Node.length][];

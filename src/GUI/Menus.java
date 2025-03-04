@@ -45,6 +45,7 @@ import structure.MeshType;
 import structure.MyCanvas;
 import structure.Nodes;
 import structure.Structure;
+import structure.StructureShape;
 
 /*
  Pr�ximas adi��es
@@ -1406,19 +1407,18 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				String[] StructShapes = Structure.getStructureShapes();
 				JLabel[] Labels = new JLabel[] {};
-				JButton[] Buttons = new JButton[StructShapes.length];
-				boolean[] Enabled = new boolean[StructShapes.length];
+				JButton[] Buttons = new JButton[StructureShape.values().length];
+				boolean[] Enabled = new boolean[StructureShape.values().length];
 				for (int b = 0; b <= Buttons.length - 1; b += 1)
 				{
-					Buttons[b] = new JButton (StructShapes[b]);
+					Buttons[b] = new JButton (StructureShape.values()[b].toString());
 				}
 				int[][] ButtonSizes = new int[Buttons.length][];
 				Arrays.fill(ButtonSizes, new int[] {30, 20});
 				Arrays.fill(Enabled, true);
 				InputPanelType2 CIT = new InputPanelType2((JFrame) getParent(), "Structure shape", FrameTopLeftPos, Labels, Buttons, Enabled, ButtonSizes);
-				MenuFunctions.CreateStructureOnClick(CIT.run());
+				MenuFunctions.CreateStructureOnClick(StructureShape.valueOf(CIT.run()));
 				MenuFunctions.SnipToGridIsOn = false;
 				UpperToolbarButton[0].setEnabled(true);
 				UpperToolbarButton[0].setVisible(true);

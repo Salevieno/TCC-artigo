@@ -25,6 +25,7 @@ import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
 import structure.Structure;
+import structure.StructureShape;
 import structure.Supports;
 
 public class DrawingOnAPanel
@@ -1136,37 +1137,36 @@ public class DrawingOnAPanel
 		}
 	}
 
-	public void DrawStructureContour3D(String Structshape, double[][] Coords, Color StructureColor)
+	public void DrawStructureContour3D(double[][] coords, Color structureColor)
 	{
 		int thick = 2;
-		int[] Xcoords = new int[Coords.length];
-		int[] Ycoords = new int[Coords.length];
+		int[] Xcoords = new int[coords.length];
+		int[] Ycoords = new int[coords.length];
 		for (int c = 0; c <= Xcoords.length - 1; c += 1)
 		{
-			int[] Coord = Util.ConvertToDrawingCoords2(Coords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+			int[] Coord = Util.ConvertToDrawingCoords2(coords[c], RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			Xcoords[c] = Coord[0];
 			Ycoords[c] = Coord[1];
 		}
-		DrawPolygon(Xcoords, Ycoords, thick, true, true, StructureColor, StructureColor);
+		DrawPolygon(Xcoords, Ycoords, thick, true, true, structureColor, structureColor);
 	}
 	
-	public void DrawElemAddition(double[][] InitCoords, int[] MousePos, int MemberThickness, String Structshape, Color color)
+	public void DrawElemAddition(double[][] InitCoords, int[] MousePos, int MemberThickness, StructureShape structshape, Color color)
 	{
-		String[] StructShapes = Structure.getStructureShapes();
 		int[] InitPoint = new int[] {(int) InitCoords[0][0], (int) InitCoords[0][1]};
 		int[] mousePos = new int[] {(int) MousePos[0], (int) MousePos[1]};
-		if (Structshape.equals(StructShapes[0]))	// Rectangular
+		if (structshape.equals(StructureShape.rectangular))
 		{
 			DrawLine(InitPoint, new int[] {mousePos[0], InitPoint[1]}, MemberThickness, color);
 			DrawLine(InitPoint, new int[] {InitPoint[0], mousePos[1]}, MemberThickness, color);
 			DrawLine(new int[] {mousePos[0], InitPoint[1]}, mousePos, MemberThickness, color);
 			DrawLine(new int[] {InitPoint[0], mousePos[1]}, mousePos, MemberThickness, color);
 		}
-		else if (Structshape.equals(StructShapes[1]))	// Circular
+		else if (structshape.equals(StructureShape.circular))
 		{
 			DrawCircle(InitPoint, (int)(2*Util.dist(mousePos, InitPoint)), MemberThickness, true, true, Color.black, color);
 		}
-		else if (Structshape.equals(StructShapes[2]))	// Polygonal
+		else if (structshape.equals(StructureShape.polygonal))
 		{
 			int[] FinalPoint = new int[] {(int) InitCoords[InitCoords.length - 1][0], (int) InitCoords[InitCoords.length - 1][1]};
 			int[] xCoords = new int[InitCoords.length], yCoords = new int[InitCoords.length];

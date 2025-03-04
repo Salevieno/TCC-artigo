@@ -17,6 +17,7 @@ import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
 import structure.Structure;
+import structure.StructureShape;
 import structure.Supports;
 
 public abstract class MenuFunctions
@@ -150,7 +151,7 @@ public abstract class MenuFunctions
 		return GridNodePos;
 	}
 
-	public static double[][] GetCoord(String Structshape, MyCanvas canvas, double[][] Coords, int[] MousePos, String[] StructShapes, boolean SnipToGridIsOn)
+	public static double[][] GetCoord(StructureShape structshape, MyCanvas canvas, double[][] Coords, int[] MousePos, boolean SnipToGridIsOn)
 	{
 		int[] NewDrawingCoord;
 		double[][] NewCoord;
@@ -168,13 +169,13 @@ public abstract class MenuFunctions
 		}
 		else
 		{
-			if (Structshape.equals(StructShapes[0]))		// Rectangular
+			if (structshape.equals(StructureShape.rectangular))
 			{
 	    		Coords = Util.AddElem(Coords, new double[] {Coords[0][0], NewDrawingCoord[1]});
 	    		Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord[0], NewDrawingCoord[1]});
 	    		Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord[0], Coords[0][1]});
 			}
-			else if (Structshape.equals(StructShapes[1]))		// Circular
+			else if (structshape.equals(StructureShape.circular))
 			{
 				double[] Center = new double[] {Coords[0][0], Coords[0][1], 0};
 				double[] Point2 = new double[] {NewDrawingCoord[0], NewDrawingCoord[1], 0};
@@ -187,7 +188,7 @@ public abstract class MenuFunctions
 					Coords = Util.AddElem(Coords, new double[] {Center[0] + r*Math.cos(angle), Center[1] + r*Math.sin(angle), 0});
 				}
 			}
-			else if (Structshape.equals(StructShapes[2]))	// Polygonal
+			else if (structshape.equals(StructureShape.polygonal))
 			{
 	    		Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord[0], NewDrawingCoord[1]});
 			}
@@ -609,9 +610,9 @@ public abstract class MenuFunctions
 		SelectedElemType = ElemType;
 	}
 
-	public static void CreateStructureOnClick(String StructureShape)
+	public static void CreateStructureOnClick(StructureShape structureShape)
 	{
-		Struct.setShape(StructureShape);
+		Struct.setShape(structureShape);
 		StructureCreationIsOn = !StructureCreationIsOn;
 	}
 	
@@ -1473,7 +1474,7 @@ public abstract class MenuFunctions
 		DrawCanvasElements(jpMainSize, MainCanvas, DP, ShowCanvas, ShowGrid, ShowMousePos, MainPanelPos);
 		if (ShowStructure & Struct.getCoords() != null & Elem == null)
 		{
-			DP.DrawStructureContour3D(Struct.getShape(), Struct.getCoords(), Structure.color);
+			DP.DrawStructureContour3D(Struct.getCoords(), Structure.color);
 		}
 		
 		DP.DrawCircle(MainCanvasCenter, 10, 1, false, true, ColorPalette[0], ColorPalette[7]);
@@ -1745,20 +1746,19 @@ public abstract class MenuFunctions
 	/* Mouse functions */
 	public static void StructureCreation(int[] MainPanelPos, MyCanvas MainCanvas)
 	{
-		String[] StructShapes = Structure.getStructureShapes();
 		double[][] StructCoords = Struct.getCoords();
 		   
 		if (Util.MouseIsInside(MousePos, new int[2], MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
 	    {
-			if (Struct.getShape().equals(StructShapes[0]) | Struct.getShape().equals(StructShapes[1]))		// Rectangle or circle
+			if (Struct.getShape().equals(StructureShape.rectangular) | Struct.getShape().equals(StructureShape.circular))
 			{
 				if (StructCoords != null)
 				{
     				StructureCreationIsOn = false;
 				}
-				StructCoords = GetCoord(Struct.getShape(), MainCanvas, StructCoords, MousePos, StructShapes, SnipToGridIsOn);
+				StructCoords = GetCoord(Struct.getShape(), MainCanvas, StructCoords, MousePos, SnipToGridIsOn);
 			}
-			else if (Struct.getShape().equals(StructShapes[2]))										// Polygon
+			else if (Struct.getShape().equals(StructureShape.polygonal))
 			{
 				int prec = 10;
 				if (StructCoords != null)
@@ -1768,7 +1768,7 @@ public abstract class MenuFunctions
 	    				StructureCreationIsOn = false;
 					}
 				}
-				StructCoords = GetCoord(Struct.getShape(), MainCanvas, StructCoords, MousePos, StructShapes, SnipToGridIsOn);
+				StructCoords = GetCoord(Struct.getShape(), MainCanvas, StructCoords, MousePos, SnipToGridIsOn);
 			}
 			else
 			{
@@ -1783,7 +1783,7 @@ public abstract class MenuFunctions
 			{
 				StructCoords[c] = Util.ConvertToRealCoords(new int[] {(int) StructCoords[c][0], (int) StructCoords[c][1], 0}, MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim());
 			}
-			if (Struct.getShape().equals(StructShapes[2]))
+			if (Struct.getShape().equals(StructureShape.polygonal))
 			{
 				StructCoords[StructCoords.length - 1] = StructCoords[0];
 			}
