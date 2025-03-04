@@ -98,17 +98,17 @@ public class Elements
 	{
 		/* Element List
 		 * 
-		 * KR1, MR1 e MR2: Retângulo de Kirchhoff 1 e Retângulo de Mindlin 1 e 2 (Placa)
-		 * KR2: Retângulo de Kirchhoff 2 (Placa)
-		 * R4: Retângulo de 4 nós (Chapa)
-		 * Q4: Quadrilátero de 4 nós (Chapa)
-		 * T3G: Triângulo de 3 pontos de Gauss (Chapa)
-		 * T6G: Triângulo de 6 pontos de Gauss (Chapa)
-		 * SM: Retângulo de alta ordem 5 dof (Placa)
-		 * SM8: Retângulo de 8 nós de alta ordem 5 dof
-		 * KP3: Retângulo de 4 nós com funções de Hermite 3a ordem
-		 * SM_C: Retângulo de 4 nós com funções de Hermite 3a ordem e derivada cruzada
-		 * SM_H: Retângulo de 4 nós com funções de Hermite 3a ordem
+		 * KR1, MR1 e MR2: Retï¿½ngulo de Kirchhoff 1 e Retï¿½ngulo de Mindlin 1 e 2 (Placa)
+		 * KR2: Retï¿½ngulo de Kirchhoff 2 (Placa)
+		 * R4: Retï¿½ngulo de 4 nï¿½s (Chapa)
+		 * Q4: Quadrilï¿½tero de 4 nï¿½s (Chapa)
+		 * T3G: Triï¿½ngulo de 3 pontos de Gauss (Chapa)
+		 * T6G: Triï¿½ngulo de 6 pontos de Gauss (Chapa)
+		 * SM: Retï¿½ngulo de alta ordem 5 dof (Placa)
+		 * SM8: Retï¿½ngulo de 8 nï¿½s de alta ordem 5 dof
+		 * KP3: Retï¿½ngulo de 4 nï¿½s com funï¿½ï¿½es de Hermite 3a ordem
+		 * SM_C: Retï¿½ngulo de 4 nï¿½s com funï¿½ï¿½es de Hermite 3a ordem e derivada cruzada
+		 * SM_H: Retï¿½ngulo de 4 nï¿½s com funï¿½ï¿½es de Hermite 3a ordem
 		 * 
 		 * */
 		if (Type.equals(ElemTypes[0]) | Type.equals(ElemTypes[2]) | Type.equals(ElemTypes[3]))	// KR1, MR1 e MR2
@@ -340,7 +340,7 @@ public class Elements
 	
 	public double[][] NaturalCoordsShapeFunctions(double e, double n, Nodes[] Node)
     {
-    	// Calcula as funções de forma em um dado ponto (e, n). Unidades 1/m² e 1/m.
+    	// Calcula as funï¿½ï¿½es de forma em um dado ponto (e, n). Unidades 1/mï¿½ e 1/m.
     	double[][] N = null;
 		double[] ElemSize = Size(Node);
 		double a = ElemSize[0];
@@ -666,7 +666,7 @@ public class Elements
 
 	public double[][] RealCoordsShapeFunctions(double[][] NodesCoords, double[] PointCoords)
     {
-    	// Calcula as funções de forma de um elemento dadas as suas coordenadas reais. Unidades 1/m² e 1/m.
+    	// Calcula as funï¿½ï¿½es de forma de um elemento dadas as suas coordenadas reais. Unidades 1/mï¿½ e 1/m.
     	double[][] N = null;
     	if (Type.equals(ElemTypes[6]))
     	{
@@ -695,7 +695,7 @@ public class Elements
 	
     public double[][] SecondDerivativesb(double e, double n, Nodes[] Node, double[] Sec, boolean NonlinearGeo)
     {
-    	// Calcula as derivadas segundas das funções de forma em um dado ponto (e, n). Unidades 1/m² e 1/m.
+    	// Calcula as derivadas segundas das funï¿½ï¿½es de forma em um dado ponto (e, n). Unidades 1/mï¿½ e 1/m.
     	double[][] B = null;
 		double[] ElemSize = Size(Node);
 		double a = ElemSize[0];
@@ -958,7 +958,7 @@ public class Elements
 
     public double[][] BendingConstitutiveMatrix(double[] Mat, boolean NonlinearMat, double[] strain)
     {
-    	// Calcula a matriz com propriedades elásticas do elemento. Unidade: N.m
+    	// Calcula a matriz com propriedades elï¿½sticas do elemento. Unidade: N.m
     	double E = Mat[0] * Math.pow(10, 6), v = Mat[1], fu = Mat[2] * Math.pow(10, 3);	
     	double[][] D = new double[3][3];
     	if (NonlinearMat)

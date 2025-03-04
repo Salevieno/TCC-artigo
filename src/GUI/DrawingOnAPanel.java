@@ -1701,7 +1701,7 @@ public class DrawingOnAPanel
 		DrawDOFSymbols(Node, Nodes.color, false);
 		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)}, ElemType, "Center", 0, "Bold", textSize, textColor);
 		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1]}, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), "Center", 0, "Bold", textSize, textColor);
-		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deformações: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
+		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deformaï¿½ï¿½es: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
 	}
 	
 	public void DrawGrid(int[] InitPos, int[] FinalPos, int NumSpacing, Color color)
@@ -1819,7 +1819,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawContours3D(Elements[] Elem, Nodes[] Node, int[] SelectedElems, double[] RealStructCenter, boolean showelemcontour, boolean condition, double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, Analysis Anal, String ColorSystem)
+	public void DrawContours3D(Elements[] Elem, Nodes[] Node, int[] SelectedElems, double[] RealStructCenter, boolean showelemcontour, boolean condition, double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem)
 	{
 		int Ninterpoints = 0;
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1877,22 +1877,22 @@ public class DrawingOnAPanel
 						if (ResultType.equals("Displacement"))
 						{
 							double[] disp = Elem[elem].getDisp();
-							ContourValue[point] = Anal.DispOnPoint(Node, Elem[elem], e, n, selecteddof, disp);
+							ContourValue[point] = Analysis.DispOnPoint(Node, Elem[elem], e, n, selecteddof, disp);
 						}
 						else if (ResultType.equals("Strain"))
 						{
 							double[] strain = Elem[elem].getStrain();
-							ContourValue[point] = Anal.StrainOnElemContour(Node, Elem[elem], e, n, selecteddof, strain);
+							ContourValue[point] = Analysis.StrainOnElemContour(Node, Elem[elem], e, n, selecteddof, strain);
 						}
 						else if (ResultType.equals("Stress"))
 						{
 							double[] stress = Elem[elem].getStress();
-							ContourValue[point] = Anal.StressOnElemContour(Node, Elem[elem], e, n, selecteddof, stress);
+							ContourValue[point] = Analysis.StressOnElemContour(Node, Elem[elem], e, n, selecteddof, stress);
 						}
 						else if (ResultType.equals("Force"))
 						{
 							double[] force = Elem[elem].getIntForces();
-							ContourValue[point] = Anal.ForceOnElemContour(Node, Elem[elem], e, n, selecteddof, force);
+							ContourValue[point] = Analysis.ForceOnElemContour(Node, Elem[elem], e, n, selecteddof, force);
 						}
 					}
 					ContourCoords[point][2] = ContourValue[point] * Defscale;
@@ -1904,7 +1904,7 @@ public class DrawingOnAPanel
 				{
 					double[] natCoords = Util.InNaturalCoordsTriangle(EdgeCoords, ContourCoords[point]);
 					double[] u = Elem[elem].getDisp();
-					ContourValue[point] = Anal.DispOnPoint(Node, Elem[elem], natCoords[0], natCoords[1], selecteddof, u);
+					ContourValue[point] = Analysis.DispOnPoint(Node, Elem[elem], natCoords[0], natCoords[1], selecteddof, u);
 				}
 			}
 

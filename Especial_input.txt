@@ -14,7 +14,7 @@ KR1
 _
 
 ** Quantidade de elementos em cada direcao **
-20,20
+10,10
 _
 
 ** Propriedades dos materiais **

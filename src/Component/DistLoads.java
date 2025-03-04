@@ -28,4 +28,10 @@ public class DistLoads
 	public void setElem(int E) {Elem = E;}
 	public void setType(int T) {Type = T;}
 	public void setIntensity(double I) {Intensity = I;}
+
+	@Override
+	public String toString() {
+		return "DistLoads [ID=" + ID + ", Elem=" + Elem + ", Type=" + Type + ", Intensity=" + Intensity + "]";
+	}
+
 }

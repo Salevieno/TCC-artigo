@@ -1,6 +1,7 @@
 package Component;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 import Utilidades.Util;
 
@@ -24,4 +25,10 @@ public class ConcLoads
 	public void setID(int I) {ID = I;}
 	public void setNode(int N) {Node = N;}
 	public void setLoads(double[] L) {Loads = L;}
+
+	@Override
+	public String toString() {
+		return "ConcLoads [ID=" + ID + ", Node=" + Node + ", Loads=" + Arrays.toString(Loads) + "]";
+	}
+
 }

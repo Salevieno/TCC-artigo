@@ -27,18 +27,15 @@ import Utilidades.UtilComponents;
 import Utilidades.UtilText;
 
 /*
- Próximas adições
+ Prï¿½ximas adiï¿½ï¿½es
  *Ajustar o desenho de momento 3D
  *
- *Mnemonics do menu não funcionam
+ *Mnemonics do menu nï¿½o funcionam
  *Selecionar elemento retangular clicando dentro
  */
 
 public class Menus extends JFrame
-{	
-	/**
-	 * 
-	 */
+{
 	private static final long serialVersionUID = 1L;
 	/* Container and panel variables */
 	Container cp;    
@@ -70,7 +67,7 @@ public class Menus extends JFrame
 	JMenuItem Star;
 	
 	JButton AssignMaterialButton, AssignSectionButton, AssignSupButton, AssignConcLoadButton, AssignDistLoadButton, AssignNodalDispButton;
-	JButton[] UpperToolbarButton;	// 0: Ligar ímã, 1: Desligar ímã, 2: Atribuir material, 3: Atribuir seção, 4: Atribuir apoios, 5: Atribuir cargas conc, 6: Atribuir cargas dist, 7: Atribuir desl nodais, 8: +escala, 9: -escala
+	JButton[] UpperToolbarButton;	// 0: Ligar ï¿½mï¿½, 1: Desligar ï¿½mï¿½, 2: Atribuir material, 3: Atribuir seï¿½ï¿½o, 4: Atribuir apoios, 5: Atribuir cargas conc, 6: Atribuir cargas dist, 7: Atribuir desl nodais, 8: +escala, 9: -escala
 	JTextArea xPos;
 	JTextArea yPos;
 	
@@ -93,7 +90,7 @@ public class Menus extends JFrame
 	private Color[] ColorPalette;
 	
 	public Menus()
-	{		
+	{
 		Initialization();
 		MenuFunctions.Initialization();
 		AddMenus();
@@ -128,7 +125,7 @@ public class Menus extends JFrame
 		jpLists.setSize(new Dimension(10, 100));
 		
 	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
-	    MainPanelPos = new int[] {FrameTopLeftPos[0] + 7 * Toolbar1ButtonSize[0] + 8, FrameTopLeftPos[1] + 76 + 8, 0};				// O segredo para a posição do mouse funcionar
+	    MainPanelPos = new int[] {FrameTopLeftPos[0] + 7 * Toolbar1ButtonSize[0] + 8, FrameTopLeftPos[1] + 76 + 8, 0};				// O segredo para a posiï¿½ï¿½o do mouse funcionar
 	    MainCanvas = new MyCanvas (new int[] {575, 25, 0}, new int[] {(int) (0.4 * jpMain.getWidth()), (int) (0.8 * jpMain.getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);	    
 	    LDCanvas = new MyCanvas (new int[] {50, 25, 0}, new int[] {(int) (0.0 * jpMain.getWidth()), (int) (0.0 * jpMain.getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);
 	    LegendCanvas = new MyCanvas (new int[] {50, 25, 0}, new int[] {(int) (0.0 * jpMain.getWidth()), (int) (0.0 * jpMain.getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);
@@ -155,7 +152,7 @@ public class Menus extends JFrame
 	
 	private JPanel createToolbar1()
 	{
-		/* Botões no primeiro painel*/
+		/* Botï¿½es no primeiro painel*/
 		JPanel toolbar1Panel = new JPanel();		
 	    JButton[] jb = new JButton[28];
 	    String[] ButtonNames = new String[jb.length];
@@ -166,30 +163,30 @@ public class Menus extends JFrame
 	    ButtonNames[1] = "Exemplo";
 	    ButtonNames[2] = "Criar malha";
 	    ButtonNames[3] = "Criar materiais";
-	    ButtonNames[4] = "Criar seções";
+	    ButtonNames[4] = "Criar seï¿½ï¿½es";
 	    ButtonNames[5] = "Criar cargas concentradas";
-	    ButtonNames[6] = "Criar cargas distribuídas";
+	    ButtonNames[6] = "Criar cargas distribuï¿½das";
 	    ButtonNames[7] = "Criar deslocamentos nodais";
 	    ButtonNames[8] = "Adicionar materiais aos elementos";
-	    ButtonNames[9] = "Adicionar seções aos elementos";
-	    ButtonNames[10] = "Adicionar apoios aos nós";
-	    ButtonNames[11] = "Adicionar cargas concentradas aos nós";
-	    ButtonNames[12] = "Adicionar cargas distribuídas aos elementos";
-	    ButtonNames[13] = "Adicionar deslocamentos nodais aos nós";
+	    ButtonNames[9] = "Adicionar seï¿½ï¿½es aos elementos";
+	    ButtonNames[10] = "Adicionar apoios aos nï¿½s";
+	    ButtonNames[11] = "Adicionar cargas concentradas aos nï¿½s";
+	    ButtonNames[12] = "Adicionar cargas distribuï¿½das aos elementos";
+	    ButtonNames[13] = "Adicionar deslocamentos nodais aos nï¿½s";
 	    ButtonNames[14] = "Mostrar graus de liberdade";
-	    ButtonNames[15] = "Mostrar números dos nós";
-	    ButtonNames[16] = "Mostrar números dos elementos";
+	    ButtonNames[15] = "Mostrar nï¿½meros dos nï¿½s";
+	    ButtonNames[16] = "Mostrar nï¿½meros dos elementos";
 	    ButtonNames[17] = "Mostrar materiais dos elementos";
-	    ButtonNames[18] = "Mostrar seções dos elementos";
-	    ButtonNames[19] = "Mostrar nós";
+	    ButtonNames[18] = "Mostrar seï¿½ï¿½es dos elementos";
+	    ButtonNames[19] = "Mostrar nï¿½s";
 	    ButtonNames[20] = "Mostrar elementos";
 	    ButtonNames[21] = "Mostrar contornos dos elementos";
 	    ButtonNames[22] = "Mostrar apoios";
 	    ButtonNames[23] = "Mostrar cargas concentradas";
-	    ButtonNames[24] = "Mostrar cargas distribuídas";
+	    ButtonNames[24] = "Mostrar cargas distribuï¿½das";
 	    ButtonNames[25] = "Mostrar deslocamentos nodais";
-	    ButtonNames[26] = "Mostrar valores das cargas e reações";
-	    ButtonNames[27] = "Mostrar reações";
+	    ButtonNames[26] = "Mostrar valores das cargas e reaï¿½ï¿½es";
+	    ButtonNames[27] = "Mostrar reaï¿½ï¿½es";
 	    for (int b = 0; b <= jb.length - 1; b += 1)
 	    {
 			jb[b] = Util.AddButton(null, new int[2], new int[] {32, 32}, 12, new int[] {0, 0, 0, 0}, ButtonBGColor);
@@ -457,7 +454,7 @@ public class Menus extends JFrame
 		toolbar1Panel.setLayout(new GridLayout(5, 0));
 		toolbar1Panel.setBackground(ColorPalette[1]);
 		
-		String[] ResultsNames = new String[]{"Deslocamentos", "Tensões", "Deformações", "Forças Internas"};
+		String[] ResultsNames = new String[]{"Deslocamentos", "Tensï¿½es", "Deformaï¿½ï¿½es", "Forï¿½as Internas"};
 		JComboBox<String> cbResults = new JComboBox<>(ResultsNames);
 		cbResults.setFocusable(false);
 		toolbar1Panel.add(cbResults);
@@ -711,15 +708,15 @@ public class Menus extends JFrame
 			}
 		}
 		
-		JLabel iLabel = new JLabel("Informações do nó");
+		JLabel iLabel = new JLabel("Informaï¿½ï¿½es do nï¿½");
 		NodeInfoPanel.add(iLabel);
 		iLabel.setForeground(TextColor);
 		
 		JLabel[] iInfo = new JLabel[4];
-		iInfo[0] = new JLabel(" Nó: " + String.valueOf(Node.getID()));
+		iInfo[0] = new JLabel(" Nï¿½: " + String.valueOf(Node.getID()));
 		iInfo[1] = new JLabel(" Original pos: " + OriginalCoords);
 		iInfo[2] = new JLabel(" Deslocamentos: " + DeformedCoords);
-		iInfo[3] = new JLabel(" Forças: " + ConcLoads);
+		iInfo[3] = new JLabel(" Forï¿½as: " + ConcLoads);
 		for (int i = 0; i <= iInfo.length - 1; i += 1)
 		{
 			NodeInfoPanel.add(iInfo[i]);
@@ -753,15 +750,15 @@ public class Menus extends JFrame
 			SecText = String.valueOf(Util.Round(Elem.getSec()[0], 0)) + " mm";
 		}
 		
-		JLabel iLabel = new JLabel("Informações do elemento");
+		JLabel iLabel = new JLabel("Informaï¿½ï¿½es do elemento");
 		ElemInfoPanel.add(iLabel);
 		iLabel.setForeground(TextColor);
 		
 		JLabel[] iInfo = new JLabel[4];
 		iInfo[0] = new JLabel(" Elem: " + String.valueOf(Elem.getID()));
-		iInfo[1] = new JLabel(" Nós: " + NodesText);
+		iInfo[1] = new JLabel(" Nï¿½s: " + NodesText);
 		iInfo[2] = new JLabel(" Material: E = " + MatText);
-		iInfo[3] = new JLabel(" Seção: t = " + SecText);
+		iInfo[3] = new JLabel(" Seï¿½ï¿½o: t = " + SecText);
 		
 		for (int i = 0; i <= iInfo.length - 1; i += 1)
 		{
@@ -796,10 +793,10 @@ public class Menus extends JFrame
 		Label[1] = "2. Estrutura";
 		Label[2] = "3. Malha";
 		Label[3] = "4. Elementos com materiais";
-		Label[4] = "5. Elementos com seções";
+		Label[4] = "5. Elementos com seï¿½ï¿½es";
 		Label[5] = "6. Apoios";
 		Label[6] = "7. Cargas concentradas";
-		Label[7] = "8. Cargas distribuídas";
+		Label[7] = "8. Cargas distribuï¿½das";
 		Label[8] = "9. Deslocamentos nodais";
 		JLabel FirstLabel = new JLabel("Passo a passo", 2);
 		FirstLabel.setForeground(TextColor);
@@ -822,7 +819,7 @@ public class Menus extends JFrame
 		}
 		if (ReadyForAnalysis)
 		{
-			jpInstruction.add(new JLabel("Pronta para análise!"));
+			jpInstruction.add(new JLabel("Pronta para anï¿½lise!"));
 		}
 	}
 	
@@ -1153,36 +1150,41 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.ResetStructure();
-				SaveLoadFile SLF = new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos);
-				String FileName = SLF.run().getText();
-				MenuFunctions.LoadFile("", FileName);
-				MainCanvas.setDim(new double[] {1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 0), 1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 1)});
-				ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady();
-				if (ReadyForAnalysis)
-				{
-					RunAnalysis.setEnabled(true);
-				}
-				ShowCanvas = true;
-				ShowGrid = true;
-				ShowMousePos = true;
-				MenuFunctions.NodeView();
-				MenuFunctions.ElemView();
-				MenuFunctions.ElemContourView();
-				MenuFunctions.SupView();
-				MenuFunctions.ConcLoadsView();
-				MenuFunctions.DistLoadsView();
-				MenuFunctions.NodalDispsView();
-				StepIsComplete = MenuFunctions.CheckSteps();
-				DisableButtons();
-				EnableButtons();
-				updateInstructionPanel();
+				loadStructure() ;
 			}
 		});
 		Save.setForeground(ColorPalette[3]);
 		Load.setForeground(ColorPalette[3]);
 		FileMenu.add(Save);
 		FileMenu.add(Load);
+	}
+	
+	public void loadStructure()
+	{
+		MenuFunctions.ResetStructure();
+		SaveLoadFile SLF = new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos);
+		String FileName = SLF.run().getText();
+		MenuFunctions.LoadFile("", FileName);
+		MainCanvas.setDim(new double[] {1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 0), 1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 1)});
+		ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady();
+		if (ReadyForAnalysis)
+		{
+			RunAnalysis.setEnabled(true);
+		}
+		ShowCanvas = true;
+		ShowGrid = true;
+		ShowMousePos = true;
+		MenuFunctions.NodeView();
+		MenuFunctions.ElemView();
+		MenuFunctions.ElemContourView();
+		MenuFunctions.SupView();
+		MenuFunctions.ConcLoadsView();
+		MenuFunctions.DistLoadsView();
+		MenuFunctions.NodalDispsView();
+		StepIsComplete = MenuFunctions.CheckSteps();
+		DisableButtons();
+		EnableButtons();
+		updateInstructionPanel();
 	}
 	
 	public void AddStructureMenuItems()
@@ -1643,7 +1645,7 @@ public class Menus extends JFrame
 			{
 				if (ReadyForAnalysis)
 				{
-					String[] ButtonNames = new String[] {"Linear elástica", "Geometria não-linear", "Material não-linear", "Ambos não-lineares"};
+					String[] ButtonNames = new String[] {"Linear elï¿½stica", "Geometria nï¿½o-linear", "Material nï¿½o-linear", "Ambos nï¿½o-lineares"};
 					JLabel[] Labels = new JLabel[] {};
 					JButton[] Buttons = new JButton[4];
 					boolean[] Enabled = new boolean[4];
@@ -1896,11 +1898,11 @@ public class Menus extends JFrame
 		Arrays.fill(ButtonSizes, new int[] {30, 20});
 		if (MeshType.equals("Cartesian"))
 		{
-			Labels = new JLabel[] {new JLabel ("N° pontos em x"), new JLabel ("N° pontos em y")};
+			Labels = new JLabel[] {new JLabel ("Nï¿½ pontos em x"), new JLabel ("Nï¿½ pontos em y")};
 		}
 		else if (MeshType.equals("Radial"))
 		{
-			Labels = new JLabel[] {new JLabel ("N° camadas"), new JLabel ("N° pontos por camada")};
+			Labels = new JLabel[] {new JLabel ("Nï¿½ camadas"), new JLabel ("Nï¿½ pontos por camada")};
 		}
 		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Propriedades da malha", "Malha", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
 		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(CI.run());

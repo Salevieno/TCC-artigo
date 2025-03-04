@@ -1,19 +1,17 @@
 package Main;
 
-import java.util.Arrays;
-
 import Component.ConcLoads;
 import Component.DistLoads;
 import Component.Elements;
 import Component.NodalDisps;
 import Component.Nodes;
+import Component.Reactions;
 import Component.Supports;
 import Utilidades.Util;
-import Component.Reactions;
 
-public class Analysis
+public abstract class Analysis
 {		
-	public Nodes[] CreateRadialNodes(double[][] PolygonCoords, int noffsets, int[] nintermediatepoints)
+	public static Nodes[] CreateRadialNodes(double[][] PolygonCoords, int noffsets, int[] nintermediatepoints)
 	{
 		// Calculate number of nodes in each column
 		Nodes[] Node = null;
@@ -39,7 +37,7 @@ public class Analysis
 	    return Node;
 	}
 	
-	public Nodes[] CreateCartesianNodes(double[][] PolygonCoords, int[] NumberElem, String ElemType)
+	public static Nodes[] CreateCartesianNodes(double[][] PolygonCoords, int[] NumberElem, String ElemType)
 	{
 		Nodes[] Node = null;
 		double MinXCoord = Util.FindMinInPos(PolygonCoords, 0), MaxXCoord = Util.FindMaxInPos(PolygonCoords, 0);
@@ -100,7 +98,7 @@ public class Analysis
 		return Node;
 	}
 	
-	public Elements[] CreateRadialMesh(Nodes[] Node, int noffsets, String ElemType)
+	public static Elements[] CreateRadialMesh(Nodes[] Node, int noffsets, String ElemType)
 	{
 		Elements[] Elem = null;
 		String ElemShape = Elements.DefineShape(ElemType);
@@ -186,7 +184,7 @@ public class Analysis
         return Elem;
 	}
 	
-	public Elements[] CreateCartesianMesh(Nodes[] Node, int[] NElems, String ElemType)
+	public static Elements[] CreateCartesianMesh(Nodes[] Node, int[] NElems, String ElemType)
 	{
 		Elements[] Elem = null;
 		String ElemShape = Elements.DefineShape(ElemType);
@@ -280,7 +278,7 @@ public class Analysis
 		return Elem;
 	}
 	
-	public int CalcNFreeDoFs(Nodes[] Node, Elements[] Elem, Supports[] Sup)
+	public static int CalcNFreeDoFs(Nodes[] Node, Elements[] Elem, Supports[] Sup)
 	{
 		int NFreeDoFs = 0;
         
@@ -310,7 +308,7 @@ public class Analysis
     	return NFreeDoFs;
 	}
 	
-	public int[] DefineFreeDoFTypes(Nodes[] Node, Elements[] Elem, Supports[] Sup)
+	public static int[] DefineFreeDoFTypes(Nodes[] Node, Elements[] Elem, Supports[] Sup)
 	{
 		int[] FreeDOFTypes = null;
         
@@ -328,7 +326,7 @@ public class Analysis
     	return FreeDOFTypes;
 	}
 	
-	public double[][] NumIntegration(Nodes[] Node, Elements Elem, double[] Mat, double[] Sec, int[][] DOFsPerNode, boolean NonlinearMat, boolean NonlinearGeo, double[] strain, int NPoints)
+	public static double[][] NumIntegration(Nodes[] Node, Elements Elem, double[] Mat, double[] Sec, int[][] DOFsPerNode, boolean NonlinearMat, boolean NonlinearGeo, double[] strain, int NPoints)
 	{
 		double[] Points = null;
 		double[] Weights = null;
@@ -405,7 +403,7 @@ public class Analysis
 		}
 	}
 	
-	public double[][] StructureStiffnessMatrix(int NFreeDOFs, Nodes[] Node, Elements[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo)
+	public static double[][] StructureStiffnessMatrix(int NFreeDOFs, Nodes[] Node, Elements[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo)
     {
         double[][] K = new double[NFreeDOFs][NFreeDOFs];
         		
@@ -443,7 +441,7 @@ public class Analysis
         return K;
     }
 	
-	public double[] LoadVector(Nodes[] Node, Elements[] Elem, int NFreeDOFs, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
+	public static double[] LoadVector(Nodes[] Node, Elements[] Elem, int NFreeDOFs, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
 	{
 		double[] P = new double[NFreeDOFs];
 		if (ConcLoad != null)
@@ -538,7 +536,7 @@ public class Analysis
 		return P;
 	}
 	
-    public double DispOnPoint(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] u)
+    public static double DispOnPoint(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] u)
     {
     	double[] N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
     	//System.out.println(Arrays.toString(N));
@@ -547,27 +545,27 @@ public class Analysis
     	return Util.MultVector(N, u);
     }
 
-    public double StrainOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] s)
+    public static double StrainOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] s)
     {
     	double[] N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
     	return Util.MultVector(N, s);
     }
     
-    public double StressOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] s)
+    public static double StressOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] s)
     {
     	double[] N;
     	N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
     	return Util.MultVector(N, s);
     }
     
-    public double ForceOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] p)
+    public static double ForceOnElemContour(Nodes[] Node, Elements Elem, double e, double n, int dof, double[] p)
     {
     	double[] N;
     	N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
     	return Util.MultVector(N, p);
     }
     
-	public double[][] GetNodeDisplacements(Nodes[] Node, double[] u)
+	public static double[][] GetNodeDisplacements(Nodes[] Node, double[] u)
     {
         int NumDim = 6;
         double[][] NodeDisp = new double[Node.length][Node[0].getOriginalCoords().length];
@@ -592,7 +590,7 @@ public class Analysis
     	return NodeDisp;
     }
 
-	public Reactions[] Reactions(Nodes[] Node, Elements[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
+	public static Reactions[] Reactions(Nodes[] Node, Elements[] Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
 		Reactions[] R = new Reactions[Sup.length];
 		for (int node = 0; node <= Sup.length - 1; node += 1)
@@ -604,7 +602,7 @@ public class Analysis
 		return R;
 	}
 	
-	public double[] SumReactions(Reactions[] Reactions)
+	public static double[] SumReactions(Reactions[] Reactions)
 	{
 		double[] sumReactions = new double[6];
 		for (int dof = 0; dof <= sumReactions.length - 1; dof += 1)
@@ -617,7 +615,7 @@ public class Analysis
 		return sumReactions;
 	}
 	
-	public double[] NodeForces(int node, Nodes[] Node, Elements[] Elem, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
+	public static double[] NodeForces(int node, Nodes[] Node, Elements[] Elem, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
 		double[] forces = new double[6];
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)

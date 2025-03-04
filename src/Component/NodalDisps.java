@@ -1,6 +1,7 @@
 package Component;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 import Utilidades.Util;
 
@@ -24,4 +25,10 @@ public class NodalDisps
 	public void setID(int I) {ID = I;}
 	public void setNode(int N) {Node = N;}
 	public void setDisps(double[] L) {Disps = L;}
+
+	@Override
+	public String toString() {
+		return "NodalDisps [ID=" + ID + ", Node=" + Node + ", Disps=" + Arrays.toString(Disps) + "]";
+	}
+
 }

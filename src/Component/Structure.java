@@ -143,7 +143,7 @@ public class Structure
     	}
     	return nodeDOF;
     }
-	public void RecordResults(Nodes[] Node, Elements[] Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo, Analysis Anal)
+	public void RecordResults(Nodes[] Node, Elements[] Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		double[][][] ElemStrains = new double[Elem.length][][];
 	    double[][][] ElemStresses = new double[Elem.length][][];
@@ -166,7 +166,7 @@ public class Structure
 				}
 			}
 		}
-        int[] DOFTypesOnNode = Anal.DefineFreeDoFTypes(Node, Elem, Sup);
+        int[] DOFTypesOnNode = Analysis.DefineFreeDoFTypes(Node, Elem, Sup);
 		DispMin = Util.FindMinDisps(U, Elem[0].getDOFs(), DOFTypesOnNode);
 		DispMax = Util.FindMaxDisps(U, Elem[0].getDOFs(), DOFTypesOnNode);
 		StrainMin = Util.FindMinElemProp(ElemStrains, Elem.length, Elem[0].getStrainTypes().length);
@@ -183,12 +183,12 @@ public class Structure
 		}
 		for (int node = 0; node <= Node.length - 1; node += 1)
 	    {
-			if (Anal.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U) != null)
+			if (Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U) != null)
 			{
-		    	Node[node].AddConcLoads(Anal.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U));
+		    	Node[node].AddConcLoads(Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U));
 			}
 	    }
-		Reactions = Anal.Reactions(Node, Elem, Sup, NonlinearMat, NonlinearGeo, U);
-		SumReactions = Anal.SumReactions(Reactions);		
+		Reactions = Analysis.Reactions(Node, Elem, Sup, NonlinearMat, NonlinearGeo, U);
+		SumReactions = Analysis.SumReactions(Reactions);		
 	}
 }
