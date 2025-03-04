@@ -15,17 +15,17 @@ import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 
-import Component.ConcLoads;
-import Component.DistLoads;
-import Component.Elements;
-import Component.MyCanvas;
-import Component.NodalDisps;
-import Component.Nodes;
-import Component.Reactions;
-import Component.Structure;
-import Component.Supports;
 import Main.Analysis;
 import Utilidades.Util;
+import structure.ConcLoads;
+import structure.DistLoads;
+import structure.Elements;
+import structure.MyCanvas;
+import structure.NodalDisps;
+import structure.Nodes;
+import structure.Reactions;
+import structure.Structure;
+import structure.Supports;
 
 public class DrawingOnAPanel
 {

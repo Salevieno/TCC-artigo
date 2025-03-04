@@ -1,6 +1,6 @@
 package Main;
 
-import Component.Nodes;
+import structure.Nodes;
 
 public class ElementStiffnessMatrix
 {	

@@ -1,4 +1,4 @@
-package Component;
+package structure;
 
 public class MyCanvas
 {

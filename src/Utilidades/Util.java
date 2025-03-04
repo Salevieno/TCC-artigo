@@ -11,18 +11,20 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Arrays;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import Component.ConcLoads;
-import Component.DistLoads;
-import Component.Elements;
-import Component.MyCanvas;
-import Component.NodalDisps;
-import Component.Nodes;
-import Component.Reactions;
-import Component.Supports;
 import Main.ReadInput;
+import structure.ConcLoads;
+import structure.DistLoads;
+import structure.Elements;
+import structure.MeshType;
+import structure.MyCanvas;
+import structure.NodalDisps;
+import structure.Nodes;
+import structure.Reactions;
+import structure.Supports;
 
 public abstract class Util 
 {
@@ -1202,7 +1204,7 @@ public abstract class Util
 		{
 			RefPoint = AddElem(RefPoint, 0);
 		}
-		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referência (RefPoint)
+		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referï¿½ncia (RefPoint)
 		// Rotation around z
 		coord[0] = (int) ((oriCoord[0] - RefPoint[0]) * Math.cos(angle[2]) - (oriCoord[1] - RefPoint[1]) * Math.sin(angle[2]));
 		coord[1] = (int) ((oriCoord[0] - RefPoint[0]) * Math.sin(angle[2]) + (oriCoord[1] - RefPoint[1]) * Math.cos(angle[2]));
@@ -1250,7 +1252,7 @@ public abstract class Util
 		{
 			RefPoint = AddElem(RefPoint, 0);
 		}
-		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referência (RefPoint)
+		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referï¿½ncia (RefPoint)
 		// Rotation around z
 		coord[0] = (oriCoord[0] - RefPoint[0]) * Math.cos(angle[2]) - (oriCoord[1] - RefPoint[1]) * Math.sin(angle[2]);
 		coord[1] = (oriCoord[0] - RefPoint[0]) * Math.sin(angle[2]) + (oriCoord[1] - RefPoint[1]) * Math.cos(angle[2]);
@@ -2068,13 +2070,13 @@ public abstract class Util
 		return sup;
 	}
 	
-	public static Supports[] AddEspecialSupports(Nodes[] Node, String ElemShape, String MeshType, int[] NElem, int SupConfig)
+	public static Supports[] AddEspecialSupports(Nodes[] Node, String ElemShape, MeshType meshType, int[] NElem, int SupConfig)
 	{
 		int SupType = -1;
 		Supports[] sup = null;
 		int[] LeftNodes = null, RightNodes = null, TopNodes = null, BottomNodes = null;
 		int[][] SupTypes = Supports.Types;
-		if (MeshType.equals("Cartesian"))
+		if (meshType.equals(MeshType.cartesian))
 		{
 			if (ElemShape.equals("Rectangular"))
 			{
@@ -2250,7 +2252,7 @@ public abstract class Util
 				sup = AddSupports(Node, sup, Arrays.copyOfRange(BottomNodes, 1, BottomNodes.length - 1), SupTypes[SupType]);
 			}
 		}
-		else if (MeshType.equals("Radial"))
+		else if (meshType.equals(MeshType.radial))
 		{
 			
 		}

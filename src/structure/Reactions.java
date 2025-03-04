@@ -1,18 +1,19 @@
-package Component;
+package structure;
 
 import java.awt.Color;
-import java.util.Arrays;
 
 import Utilidades.Util;
 
-public class ConcLoads
+public class Reactions
 {
 	private int ID;
 	private int Node;		// Node
 	private double[] Loads;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
 
-	public static Color color = Util.ColorPalette()[7];
-	public ConcLoads(int ID, int Node, double[] Loads)
+	public static Color color = Util.ColorPalette()[8];
+	public static double[] SumReactions = new double[6];
+	
+	public Reactions(int ID, int Node, double[] Loads)
 	{
 		this.ID = ID;
 		this.Node = Node;
@@ -26,9 +27,8 @@ public class ConcLoads
 	public void setNode(int N) {Node = N;}
 	public void setLoads(double[] L) {Loads = L;}
 
-	@Override
-	public String toString() {
-		return "ConcLoads [ID=" + ID + ", Node=" + Node + ", Loads=" + Arrays.toString(Loads) + "]";
+	public static void setSumReactions(double[] sumReactions)
+	{
+		SumReactions = sumReactions;
 	}
-
 }

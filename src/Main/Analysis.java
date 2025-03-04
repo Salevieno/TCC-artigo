@@ -1,13 +1,13 @@
 package Main;
 
-import Component.ConcLoads;
-import Component.DistLoads;
-import Component.Elements;
-import Component.NodalDisps;
-import Component.Nodes;
-import Component.Reactions;
-import Component.Supports;
 import Utilidades.Util;
+import structure.ConcLoads;
+import structure.DistLoads;
+import structure.Elements;
+import structure.NodalDisps;
+import structure.Nodes;
+import structure.Reactions;
+import structure.Supports;
 
 public abstract class Analysis
 {		

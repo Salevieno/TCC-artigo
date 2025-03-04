@@ -3,19 +3,21 @@ package Main;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Arrays;
-import Component.ConcLoads;
-import Component.DistLoads;
-import Component.Elements;
-import Component.MyCanvas;
-import Component.NodalDisps;
-import Component.Nodes;
-import Component.Reactions;
-import Component.Structure;
-import Component.Supports;
+
 import GUI.DrawingOnAPanel;
 import Output.Results;
 import Utilidades.Util;
 import Utilidades.UtilComponents;
+import structure.ConcLoads;
+import structure.DistLoads;
+import structure.Elements;
+import structure.MeshType;
+import structure.MyCanvas;
+import structure.NodalDisps;
+import structure.Nodes;
+import structure.Reactions;
+import structure.Structure;
+import structure.Supports;
 
 public abstract class MenuFunctions
 {	
@@ -722,37 +724,42 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static void StructureMenuCreateMesh(String MeshType, int[][] Mesh, String ElemType)
+	public static void StructureMenuCreateMesh(MeshType meshType, int[][] Mesh, String ElemType)
 	{
 		Sup = null;
 		ConcLoad = null;
 		DistLoad = null;
 		NodalDisp = null;
 		
-		if (ElemType != null)
+		if (ElemType == null)
 		{
-			int noffsets = Mesh[0][0];
-		    int[] nintermediatepoints = new int[noffsets];
-			Arrays.fill(nintermediatepoints, Mesh[0][1]);
-			if (MeshType.equals("Cartesian"))
-			{
+			System.out.println("\nElement shape is null at Menus -> StructureMenuCreateMesh") ;
+			return ;
+		}
+
+		int noffsets = Mesh[0][0];
+	    int[] nintermediatepoints = new int[noffsets];
+		Arrays.fill(nintermediatepoints, Mesh[0][1]);
+		switch (meshType)
+		{
+			case cartesian:
 				Node = Analysis.CreateCartesianNodes(Struct.getCoords(), new int[] {noffsets, nintermediatepoints[0]}, ElemType);
 				Elem = Analysis.CreateCartesianMesh(Node, new int[] {noffsets, nintermediatepoints[0]}, ElemType);
-			}
-			else if (MeshType.equals("Radial"))
-			{
+				break ;
+				
+			case radial:
 				Node = Analysis.CreateRadialNodes(Struct.getCoords(), noffsets, nintermediatepoints);
 				Elem = Analysis.CreateRadialMesh(Node, noffsets, ElemType);
-			}
-			for (int elem = 0; elem <= Elem.length - 1; elem += 1)
-			{
-	        	Elem[elem].setUndeformedCoords(Node);
-	        	Elem[elem].setCenterCoords();
-			}
+				break ;
+				
+			default:
+				System.out.println("\nMesh type not defined at Menus -> StructureMenuCreateMesh") ;
+				return ;
 		}
-		else
+		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
 		{
-			System.out.println("Element shape is null at Menus -> StructureMenuCreateMesh");
+        	Elem[elem].setUndeformedCoords(Node);
+        	Elem[elem].setCenterCoords();
 		}
 	}
 	
@@ -1173,7 +1180,7 @@ public abstract class MenuFunctions
 	}
 
 	/* Especial menu functions */
-	public static Object[] CreatureStructure(double[][] StructCoords, String MeshType, int[] MeshSizes, String ElemType, double[] CurrentMatType, double[] CurrentSecType, int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
+	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, String ElemType, double[] CurrentMatType, double[] CurrentSecType, int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
 	{
 		/* Tipo de elemento, materiais, se��es, apoios e cargas j� est�o definidos */
 		
@@ -1181,7 +1188,7 @@ public abstract class MenuFunctions
 		Struct = new Structure(null, null, StructCoords);
 		
 		/* 2. Criar malha */
-		StructureMenuCreateMesh(MeshType, new int[][] {MeshSizes}, ElemType);
+		StructureMenuCreateMesh(meshType, new int[][] {MeshSizes}, ElemType);
 		
 		/* 3. Atribuir materiais */
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1208,7 +1215,7 @@ public abstract class MenuFunctions
 		}
 		
 		/* 5. Atribuir apoios */
-		Sup = Util.AddEspecialSupports(Node, Elements.DefineShape(ElemType), MeshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
+		Sup = Util.AddEspecialSupports(Node, Elements.DefineShape(ElemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
 
 		/* 6. Atribuir cargas */
 		if (ConcLoadConfig == 1)
@@ -1248,7 +1255,7 @@ public abstract class MenuFunctions
 		/* Load input */
 		Object[] InputData = Util.LoadEspecialInput();
 		double[][] EspecialCoords = (double[][]) InputData[0];
-		String MeshType = (String) InputData[1];
+		MeshType meshType = MeshType.valueOf(((String) InputData[1]).toLowerCase());
 		String[] EspecialElemTypes = (String[]) InputData[2];
 		int[][] EspecialMeshSizes = (int[][]) InputData[3];
 		MatType = (double[][]) InputData[4];
@@ -1287,7 +1294,7 @@ public abstract class MenuFunctions
 			int supConfig = SupConfig[Par[4]];
 			int SelConcLoad = Par[5];
 			int SelDistLoad = Par[6];
-			Object[] Structure = CreatureStructure(EspecialCoords, MeshType, MeshSize, ElemType, MatType[Mat], SecType[Sec], supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
+			Object[] Structure = CreatureStructure(EspecialCoords, meshType, MeshSize, ElemType, MatType[Mat], SecType[Sec], supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
 			Supports[] Sup = (Supports[]) Structure[2];
 			ConcLoads[] ConcLoad = (ConcLoads[]) Structure[3];
 			DistLoads[] DistLoad = (DistLoads[]) Structure[4];

@@ -1,5 +1,13 @@
 package GUI;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,20 +19,32 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import Component.Structure;
-import Component.Nodes;
-import Component.Elements;
-import Component.MyCanvas;
 import Main.Analysis;
 import Main.MenuFunctions;
 import Utilidades.Util;
 import Utilidades.UtilComponents;
 import Utilidades.UtilText;
+import structure.Elements;
+import structure.MeshType;
+import structure.MyCanvas;
+import structure.Nodes;
+import structure.Structure;
 
 /*
  Pr�ximas adi��es
@@ -239,7 +259,7 @@ public class Menus extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				//StructureMenuCreateMesh("Cartesian", ElemType, ElemShape, Anal);
-				StructureMenuCreateMesh("Radial", Anal);
+				StructureMenuCreateMesh(MeshType.radial, Anal);
 			}
 		});
 	    jb[3].addActionListener(new ActionListener()
@@ -1419,7 +1439,7 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuCreateMesh("Cartesian", Anal);
+				StructureMenuCreateMesh(MeshType.cartesian, Anal);
 			}
 		});
 		RadialMesh.addActionListener(new ActionListener()
@@ -1427,7 +1447,7 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuCreateMesh("Radial", Anal);
+				StructureMenuCreateMesh(MeshType.radial, Anal);
 			}
 		});
 		CartesianMesh.setForeground(ColorPalette[5]);
@@ -1890,23 +1910,23 @@ public class Menus extends JFrame
 	// End of adding menus and menu items
 
 	/* ok */	
-	public void StructureMenuCreateMesh(String MeshType, Analysis Anal)
+	public void StructureMenuCreateMesh(MeshType meshType, Analysis Anal)
 	{
 		JLabel[] Labels = new JLabel[2];
 		JButton[] Buttons = new JButton[] {new JButton ("Ok"), new JButton ("Cancel")};
 		int[][] ButtonSizes = new int[Buttons.length][];
 		Arrays.fill(ButtonSizes, new int[] {30, 20});
-		if (MeshType.equals("Cartesian"))
+		if (meshType.equals("Cartesian"))
 		{
 			Labels = new JLabel[] {new JLabel ("N� pontos em x"), new JLabel ("N� pontos em y")};
 		}
-		else if (MeshType.equals("Radial"))
+		else if (meshType.equals("Radial"))
 		{
 			Labels = new JLabel[] {new JLabel ("N� camadas"), new JLabel ("N� pontos por camada")};
 		}
 		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Propriedades da malha", "Malha", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
 		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(CI.run());
-		MenuFunctions.StructureMenuCreateMesh(MeshType, UserDefinedMesh, MenuFunctions.SelectedElemType);
+		MenuFunctions.StructureMenuCreateMesh(meshType, UserDefinedMesh, MenuFunctions.SelectedElemType);
 		MenuFunctions.NodeView();
 		MenuFunctions.ElemView();
 		StepIsComplete = MenuFunctions.CheckSteps();
