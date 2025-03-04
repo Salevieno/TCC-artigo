@@ -2,10 +2,10 @@ package structure;
 
 import java.awt.Color;
 
-import Main.Analysis;
-import Main.Point3D;
-import Output.Results;
-import Utilidades.Util;
+import main.Analysis;
+import main.Point3D;
+import output.Results;
+import utilidades.Util;
 
 public class Structure
 {

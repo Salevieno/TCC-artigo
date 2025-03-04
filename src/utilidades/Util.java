@@ -1,4 +1,4 @@
-package Utilidades;
+package utilidades;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,8 +15,8 @@ import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import Main.Point3D;
-import Main.ReadInput;
+import main.Point3D;
+import main.ReadInput;
 import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemShape;

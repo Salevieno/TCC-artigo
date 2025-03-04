@@ -1,11 +1,11 @@
-package Output;
+package output;
 
-import Main.Analysis;
-import Utilidades.Util;
+import main.Analysis;
 import structure.Element;
 import structure.Nodes;
 import structure.Reactions;
 import structure.Supports;
+import utilidades.Util;
 
 public class Results
 {

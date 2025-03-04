@@ -1,4 +1,4 @@
-package Main;
+package main;
 /*
  * Os menus estâo como variâveis globais pq sâo chamados em mais de uma funââo (sâo criados em uma funââo e set enable em outras)
  * A gente tem que pegar um mousemovementListener pra ele sâ pegar a posiââo do mouse quando o mouse se mover

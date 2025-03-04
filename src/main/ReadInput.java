@@ -1,11 +1,11 @@
-package Main;
+package main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import Utilidades.Util;
+import utilidades.Util;
 
 public abstract class ReadInput 
 {

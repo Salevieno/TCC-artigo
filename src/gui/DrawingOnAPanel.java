@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,9 +15,8 @@ import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 
-import Main.Analysis;
-import Main.Point3D;
-import Utilidades.Util;
+import main.Analysis;
+import main.Point3D;
 import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemShape;
@@ -29,6 +28,7 @@ import structure.Nodes;
 import structure.Reactions;
 import structure.StructureShape;
 import structure.Supports;
+import utilidades.Util;
 
 public class DrawingOnAPanel
 {

@@ -5,10 +5,11 @@
 	Next improvements:
 	 **/
 
-package Main;
+package main;
 
 import javax.swing.JFrame;
-import GUI.Menus;
+
+import gui.Menus;
 
 public class MainTCC extends JFrame
 {

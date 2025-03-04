@@ -1,6 +1,5 @@
-package Main;
+package main;
 
-import Utilidades.Util;
 import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemShape;
@@ -12,6 +11,7 @@ import structure.Nodes;
 import structure.Reactions;
 import structure.Section;
 import structure.Supports;
+import utilidades.Util;
 
 public abstract class Analysis
 {		

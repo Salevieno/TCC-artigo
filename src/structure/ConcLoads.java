@@ -3,7 +3,7 @@ package structure;
 import java.awt.Color;
 import java.util.Arrays;
 
-import Utilidades.Util;
+import utilidades.Util;
 
 public class ConcLoads
 {

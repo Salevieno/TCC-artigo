@@ -2,7 +2,7 @@ package structure;
 
 import java.awt.Color;
 
-import Utilidades.Util;
+import utilidades.Util;
 
 public class Reactions
 {

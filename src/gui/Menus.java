@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -37,10 +37,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import Main.Analysis;
-import Main.MenuFunctions;
-import Utilidades.Util;
-import Utilidades.UtilComponents;
+import main.Analysis;
+import main.MenuFunctions;
 import structure.ElemType;
 import structure.Element;
 import structure.Material;
@@ -50,6 +48,8 @@ import structure.Nodes;
 import structure.Section;
 import structure.Structure;
 import structure.StructureShape;
+import utilidades.Util;
+import utilidades.UtilComponents;
 
 /*
  Prâximas adiçõs

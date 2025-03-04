@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import GUI.DrawingOnAPanel;
-import Output.Results;
-import Output.SaveOutput;
-import Utilidades.Util;
-import Utilidades.UtilComponents;
+import gui.DrawingOnAPanel;
+import output.Results;
+import output.SaveOutput;
 import structure.ConcLoads;
 import structure.DistLoads;
 import structure.ElemShape;
@@ -26,6 +24,8 @@ import structure.Section;
 import structure.Structure;
 import structure.StructureShape;
 import structure.Supports;
+import utilidades.Util;
+import utilidades.UtilComponents;
 
 public abstract class MenuFunctions
 {	

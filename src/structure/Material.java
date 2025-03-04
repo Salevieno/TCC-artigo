@@ -1,6 +1,6 @@
 package structure;
 
-import Main.InputFunctions;
+import main.InputFunctions;
 
 public class Material
 {
