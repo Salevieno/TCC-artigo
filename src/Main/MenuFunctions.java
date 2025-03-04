@@ -10,6 +10,7 @@ import Utilidades.Util;
 import Utilidades.UtilComponents;
 import structure.ConcLoads;
 import structure.DistLoads;
+import structure.ElemType;
 import structure.Elements;
 import structure.MeshType;
 import structure.MyCanvas;
@@ -537,7 +538,8 @@ public abstract class MenuFunctions
 				for (int elem = 0; elem <= Input[3].length - 4; elem += 1)
 				{
 					String[] Line = Input[3][elem + 2].split("	");
-					Elements NewElem = new Elements(Integer.parseInt(Line[0]), null, null, null, null, Line[1]);
+					ElemType elemType = ElemType.valueOf(Line[1].toUpperCase()) ;
+					Elements NewElem = new Elements(Integer.parseInt(Line[0]), null, null, null, null, elemType);
 					int NumberOfElemNodes = NewElem.NumberOfNodes(NewElem.getShape());
 					int[] ElemNodes = null;
 					for (int elemnode = 0; elemnode <= NumberOfElemNodes - 1; elemnode += 1)
@@ -725,14 +727,14 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static void StructureMenuCreateMesh(MeshType meshType, int[][] Mesh, String ElemType)
+	public static void StructureMenuCreateMesh(MeshType meshType, int[][] Mesh, ElemType elemType)
 	{
 		Sup = null;
 		ConcLoad = null;
 		DistLoad = null;
 		NodalDisp = null;
 		
-		if (ElemType == null)
+		if (elemType == null)
 		{
 			System.out.println("\nElement shape is null at Menus -> StructureMenuCreateMesh") ;
 			return ;
@@ -744,13 +746,13 @@ public abstract class MenuFunctions
 		switch (meshType)
 		{
 			case cartesian:
-				Node = Analysis.CreateCartesianNodes(Struct.getCoords(), new int[] {noffsets, nintermediatepoints[0]}, ElemType);
-				Elem = Analysis.CreateCartesianMesh(Node, new int[] {noffsets, nintermediatepoints[0]}, ElemType);
+				Node = Analysis.CreateCartesianNodes(Struct.getCoords(), new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				Elem = Analysis.CreateCartesianMesh(Node, new int[] {noffsets, nintermediatepoints[0]}, elemType);
 				break ;
 				
 			case radial:
 				Node = Analysis.CreateRadialNodes(Struct.getCoords(), noffsets, nintermediatepoints);
-				Elem = Analysis.CreateRadialMesh(Node, noffsets, ElemType);
+				Elem = Analysis.CreateRadialMesh(Node, noffsets, elemType);
 				break ;
 				
 			default:
@@ -1181,7 +1183,7 @@ public abstract class MenuFunctions
 	}
 
 	/* Especial menu functions */
-	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, String ElemType, double[] CurrentMatType, double[] CurrentSecType, int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
+	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType, double[] CurrentMatType, double[] CurrentSecType, int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
 	{
 		/* Tipo de elemento, materiais, se��es, apoios e cargas j� est�o definidos */
 		
@@ -1189,7 +1191,7 @@ public abstract class MenuFunctions
 		Struct = new Structure(null, null, StructCoords);
 		
 		/* 2. Criar malha */
-		StructureMenuCreateMesh(meshType, new int[][] {MeshSizes}, ElemType);
+		StructureMenuCreateMesh(meshType, new int[][] {MeshSizes}, elemType);
 		
 		/* 3. Atribuir materiais */
 		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -1216,7 +1218,7 @@ public abstract class MenuFunctions
 		}
 		
 		/* 5. Atribuir apoios */
-		Sup = Util.AddEspecialSupports(Node, Elements.DefineShape(ElemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
+		Sup = Util.AddEspecialSupports(Node, Elements.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
 
 		/* 6. Atribuir cargas */
 		if (ConcLoadConfig == 1)
@@ -1281,7 +1283,7 @@ public abstract class MenuFunctions
 		}
 		int NumberOfRuns = Util.ProdVec(NumPar);
 
-		String ElemType = EspecialElemTypes[Par[0]];
+		ElemType elemType = ElemType.valueOf(EspecialElemTypes[Par[0]].toUpperCase());
 		String[] Sections = new String[] {"An�lise		Elem	Malha (nx x ny)	Mat		Sec		Apoio		Carga		Min deslocamento (m)		Max deslocamento (m)		Desl. sob a carga (m)		Tempo (seg)"};
 		String[][][] vars = new String[Sections.length][][];		
 		Object[] EspecialResults = null;
@@ -1295,7 +1297,7 @@ public abstract class MenuFunctions
 			int supConfig = SupConfig[Par[4]];
 			int SelConcLoad = Par[5];
 			int SelDistLoad = Par[6];
-			Object[] Structure = CreatureStructure(EspecialCoords, meshType, MeshSize, ElemType, MatType[Mat], SecType[Sec], supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
+			Object[] Structure = CreatureStructure(EspecialCoords, meshType, MeshSize, elemType, MatType[Mat], SecType[Sec], supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
 			Supports[] Sup = (Supports[]) Structure[2];
 			ConcLoads[] ConcLoad = (ConcLoads[]) Structure[3];
 			DistLoads[] DistLoad = (DistLoads[]) Structure[4];
@@ -1540,7 +1542,7 @@ public abstract class MenuFunctions
 		}
 		if (ShowElemDetails)
 		{
-			DP.DrawElemDetails(SelectedElemType);
+			DP.DrawElemDetails(ElemType.valueOf(SelectedElemType.toUpperCase()));
 		}
 	}
 	

@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import Main.ReadInput;
 import structure.ConcLoads;
 import structure.DistLoads;
+import structure.ElemShape;
 import structure.Elements;
 import structure.MeshType;
 import structure.MyCanvas;
@@ -2070,7 +2071,7 @@ public abstract class Util
 		return sup;
 	}
 	
-	public static Supports[] AddEspecialSupports(Nodes[] Node, String ElemShape, MeshType meshType, int[] NElem, int SupConfig)
+	public static Supports[] AddEspecialSupports(Nodes[] Node, ElemShape elemShape, MeshType meshType, int[] NElem, int SupConfig)
 	{
 		int SupType = -1;
 		Supports[] sup = null;
@@ -2078,7 +2079,7 @@ public abstract class Util
 		int[][] SupTypes = Supports.Types;
 		if (meshType.equals(MeshType.cartesian))
 		{
-			if (ElemShape.equals("Rectangular"))
+			if (elemShape.equals(ElemShape.rectangular))
 			{
 				LeftNodes = new int[NElem[1] + 1];
 				for (int node = 0; node <= NElem[1]; node += 1)
@@ -2105,7 +2106,7 @@ public abstract class Util
 					TopNodes[node] = nodeID;
 				}
 			}
-			else if (ElemShape.equals("R8"))
+			else if (elemShape.equals(ElemShape.r8))
 			{
 				int Ne = 2 * NElem[0] + 1, No = NElem[0] + 1; // Number of nodes on the even and odd rows
 				LeftNodes = new int[2 * NElem[1] + 1];

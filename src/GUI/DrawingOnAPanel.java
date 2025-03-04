@@ -19,12 +19,13 @@ import Main.Analysis;
 import Utilidades.Util;
 import structure.ConcLoads;
 import structure.DistLoads;
+import structure.ElemShape;
+import structure.ElemType;
 import structure.Elements;
 import structure.MyCanvas;
 import structure.NodalDisps;
 import structure.Nodes;
 import structure.Reactions;
-import structure.Structure;
 import structure.StructureShape;
 import structure.Supports;
 
@@ -1632,40 +1633,40 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawElemDetails(String ElemType)
+	public void DrawElemDetails(ElemType elemType)
 	{
 		RealStructCenter = new double[] {5, 5, 0};
 		double[] Center = Util.ConvertToRealCoords2(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-		String ElemShape = Elements.DefineShape(ElemType);
+		ElemShape elemShape = Elements.typeToShape(elemType);
 		Nodes[] Node = null;
 		Elements Elem = null;
-		if (ElemShape.equals("Rectangular"))
+		if (elemShape.equals(ElemShape.rectangular))
 		{
 			Node = new Nodes[4];
 			Node[0] = new Nodes(0, new double[] {1, 1, 0});
 			Node[1] = new Nodes(1, new double[] {9, 1, 0});
 			Node[2] = new Nodes(2, new double[] {9, 9, 0});
 			Node[3] = new Nodes(3, new double[] {1, 9, 0});
-			Elem = new Elements(0, new int[] {0, 1, 2, 3}, null, null, null, ElemType);
+			Elem = new Elements(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
 		}
-		else if (ElemShape.equals("Quad"))
+		else if (elemShape.equals(ElemShape.quad))
 		{
 			Node = new Nodes[4];
 			Node[0] = new Nodes(0, new double[] {1, 1, 0});
 			Node[1] = new Nodes(1, new double[] {9, 3, 0});
 			Node[2] = new Nodes(2, new double[] {7, 9, 0});
 			Node[3] = new Nodes(3, new double[] {3, 7, 0});
-			Elem = new Elements(0, new int[] {0, 1, 2, 3}, null, null, null, ElemType);
+			Elem = new Elements(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
 		}
-		else if (ElemShape.equals("Triangular"))
+		else if (elemShape.equals(ElemShape.triangular))
 		{
 			Node = new Nodes[3];
 			Node[0] = new Nodes(0, new double[] {1, 1, 0});
 			Node[1] = new Nodes(1, new double[] {9, 5, 0});
 			Node[2] = new Nodes(2, new double[] {1, 9, 0});
-			Elem = new Elements(0, new int[] {0, 1, 2}, null, null, null, ElemType);
+			Elem = new Elements(0, new int[] {0, 1, 2}, null, null, null, elemType);
 		}
-		else if (ElemShape.equals("R8"))
+		else if (elemShape.equals(ElemShape.r8))
 		{
 			Node = new Nodes[8];
 			Node[0] = new Nodes(0, new double[] {1, 1, 0});
@@ -1676,7 +1677,7 @@ public class DrawingOnAPanel
 			Node[5] = new Nodes(3, new double[] {5, 9, 0});
 			Node[6] = new Nodes(3, new double[] {1, 5, 0});
 			Node[7] = new Nodes(3, new double[] {9, 5, 0});
-			Elem = new Elements(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, null, null, null, ElemType);
+			Elem = new Elements(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, null, null, null, elemType);
 		}
 		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2(Util.RotateCoord(RealStructCenter, Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 		int textSize = 16;
@@ -1699,7 +1700,7 @@ public class DrawingOnAPanel
 		DrawElements3D(Node, new Elements[] {Elem}, null, false, false, true, false, 1);
 		DrawDOFNumbers(Node, Nodes.color, false);
 		DrawDOFSymbols(Node, Nodes.color, false);
-		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)}, ElemType, "Center", 0, "Bold", textSize, textColor);
+		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)}, elemType.toString(), "Center", 0, "Bold", textSize, textColor);
 		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1]}, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), "Center", 0, "Bold", textSize, textColor);
 		DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deforma��es: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
 	}

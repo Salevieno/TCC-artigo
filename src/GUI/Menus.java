@@ -40,6 +40,7 @@ import Main.MenuFunctions;
 import Utilidades.Util;
 import Utilidades.UtilComponents;
 import Utilidades.UtilText;
+import structure.ElemType;
 import structure.Elements;
 import structure.MeshType;
 import structure.MyCanvas;
@@ -1232,14 +1233,13 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				String[] ElemTypes = Elements.getElemTypes();
 				JLabel[] Labels = new JLabel[] {};
-				JButton[] Buttons = new JButton[ElemTypes.length];
-				boolean[] Enabled = new boolean[ElemTypes.length];
+				JButton[] Buttons = new JButton[ElemType.values().length];
+				boolean[] Enabled = new boolean[ElemType.values().length];
 				Arrays.fill(Enabled, true);
 				for (int b = 0; b <= Buttons.length - 1; b += 1)
 				{
-					Buttons[b] = new JButton (ElemTypes[b]);
+					Buttons[b] = new JButton (ElemType.values()[b].toString());
 				}
 				int[][] ButtonSizes = new int[Buttons.length][];
 				Arrays.fill(ButtonSizes, new int[] {30, 20});
@@ -1916,17 +1916,17 @@ public class Menus extends JFrame
 		JButton[] Buttons = new JButton[] {new JButton ("Ok"), new JButton ("Cancel")};
 		int[][] ButtonSizes = new int[Buttons.length][];
 		Arrays.fill(ButtonSizes, new int[] {30, 20});
-		if (meshType.equals("Cartesian"))
+		if (meshType.equals(MeshType.cartesian))
 		{
 			Labels = new JLabel[] {new JLabel ("N� pontos em x"), new JLabel ("N� pontos em y")};
 		}
-		else if (meshType.equals("Radial"))
+		else if (meshType.equals(MeshType.radial))
 		{
 			Labels = new JLabel[] {new JLabel ("N� camadas"), new JLabel ("N� pontos por camada")};
 		}
 		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Propriedades da malha", "Malha", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
 		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(CI.run());
-		MenuFunctions.StructureMenuCreateMesh(meshType, UserDefinedMesh, MenuFunctions.SelectedElemType);
+		MenuFunctions.StructureMenuCreateMesh(meshType, UserDefinedMesh, ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()));
 		MenuFunctions.NodeView();
 		MenuFunctions.ElemView();
 		StepIsComplete = MenuFunctions.CheckSteps();
