@@ -7,21 +7,15 @@
 
 package main;
 
-import javax.swing.JFrame;
-
 import gui.Menus;
 
-public class MainTCC extends JFrame
-{
-	private static final long serialVersionUID = 1L;
+public class MainTCC
+{	
+	private static final Menus menus = new Menus() ;
 
 	public static void main (String[] args) 
 	{
-		/* Main program */
-		/**
-		Description:
-		Description of the program**/
-
-		new Menus();	// Open menus		
 	}
+	
+	public static Menus getMenus() { return menus ;}
 }

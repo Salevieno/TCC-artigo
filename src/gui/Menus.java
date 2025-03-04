@@ -75,8 +75,7 @@ public class Menus extends JFrame
 	JPanel jpMain, jpLD, jpLegend, jpLists, jpInstruction;
 	
 	JMenuBar menuBar;
-    JMenu FileMenu, StructureMenu, ViewMenu, AnalysisMenu, ResultsMenu, EspecialMenu;
-	JMenuItem Save, Load;
+    JMenu StructureMenu, ViewMenu, AnalysisMenu, ResultsMenu, EspecialMenu;
 	JMenuItem DefineElemType, CreateMesh, CreateNodes, CreateMaterials, CreateSections, CreateConcLoads, CreateDistLoads, CreateNodalDisp, AssignMaterials, AssignSections, AssignSupports, AssignConcLoads, AssignDistLoads, AssignNodalDisp;	
 	JMenuItem TypeNodes, ClickNodes;
 	JMenuItem DOFNumberView, NodeNumberView, ElemNumberView, MatView, SecView, NodeView, ElemView, ElemContourView, SupView, LoadsValuesView, ConcLoadsView, DistLoadsView, NodalDispsView, ReactionsView;
@@ -99,7 +98,7 @@ public class Menus extends JFrame
 	Dimension defaultPanelSize = new Dimension(260, 300);
 	
 	/* Global variables */	
-	MyCanvas MainCanvas, LDCanvas, LegendCanvas, ListsCanvas;
+	private static MyCanvas MainCanvas, LDCanvas, LegendCanvas, ListsCanvas;
 	DrawingOnAPanel DP;
 
 	int[] FrameTopLeftPos;
@@ -109,7 +108,7 @@ public class Menus extends JFrame
     boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
     boolean ReadyForAnalysis;
     boolean[] StepIsComplete;
-	private Color[] ColorPalette;
+	private static Color[] palette;
 	
 	public Menus()
 	{
@@ -132,18 +131,18 @@ public class Menus extends JFrame
 	{	
 		FrameTopLeftPos = new int[] {300, 200};
 		setLocation(FrameTopLeftPos[0], FrameTopLeftPos[1]);
-		ColorPalette = Util.ColorPalette();
+		palette = Util.ColorPalette();
 		int[] Toolbar1ButtonSize = new int[] {32, 32};
 		int[] LDPanelSize = new int[] {10, 100};
 		int[] LegendPanelSize = new int[] {10, 100};
 		Border jpLDBorder = BorderFactory.createTitledBorder("");
-		jpMain = initComponents(jpMain, new int[] {1350, 700}, ColorPalette[2], BorderFactory.createBevelBorder(BevelBorder.RAISED), "Main");	// Creates a JPanel inside the JFrame
+		jpMain = initComponents(jpMain, new int[] {1350, 700}, palette[2], BorderFactory.createBevelBorder(BevelBorder.RAISED), "Main");	// Creates a JPanel inside the JFrame
 		jpMain.setSize(new Dimension(1350, 700));
-		jpLegend = initComponents(jpLegend, LegendPanelSize, ColorPalette[3], BorderFactory.createTitledBorder(jpLDBorder, "Legenda", TitledBorder.CENTER, TitledBorder.CENTER), "Legend");	// Creates a JPanel inside the JFrame
+		jpLegend = initComponents(jpLegend, LegendPanelSize, palette[3], BorderFactory.createTitledBorder(jpLDBorder, "Legenda", TitledBorder.CENTER, TitledBorder.CENTER), "Legend");	// Creates a JPanel inside the JFrame
 		jpLegend.setSize(new Dimension(10, 100));
-		jpLD = initComponents(jpLD, LDPanelSize, ColorPalette[3], BorderFactory.createTitledBorder(jpLDBorder, "Curva carga deslocamento", TitledBorder.CENTER, TitledBorder.CENTER), "LD");	// Creates a JPanel inside the JFrame
+		jpLD = initComponents(jpLD, LDPanelSize, palette[3], BorderFactory.createTitledBorder(jpLDBorder, "Curva carga deslocamento", TitledBorder.CENTER, TitledBorder.CENTER), "LD");	// Creates a JPanel inside the JFrame
 		jpLD.setSize(new Dimension(0, 100));
-		jpLists = initComponents(jpLists, LDPanelSize, ColorPalette[2], BorderFactory.createBevelBorder(BevelBorder.RAISED), "Lists");	// Creates a JPanel inside the JFrame
+		jpLists = initComponents(jpLists, LDPanelSize, palette[2], BorderFactory.createBevelBorder(BevelBorder.RAISED), "Lists");	// Creates a JPanel inside the JFrame
 		jpLists.setSize(new Dimension(10, 100));
 		
 	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
@@ -160,6 +159,16 @@ public class Menus extends JFrame
 		StepIsComplete = new boolean[9];		// 0 = Elem type; 1 = Struct Coords; 2 = Nodes and Elems; 3 = Mat; 4 = Sec; 5 = Sup; 6 = Conc loads; 7 = Dist loads; 8 = Nodal disps
 	}
 	
+	public static Color[] getPalette() { return palette ;}
+	
+	public static MyCanvas getMainCanvas() { return MainCanvas ;}
+	
+	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos) ;}
+	
+	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
+	
+	public void setStepIsComplete(boolean[] StepIsComplete) {this.StepIsComplete = StepIsComplete ;}
+	
 	// Start of GUI
 	
 	private JPanel createToolbar1()
@@ -168,9 +177,9 @@ public class Menus extends JFrame
 		JPanel toolbar1Panel = new JPanel();		
 	    JButton[] jb = new JButton[28];
 	    String[] ButtonNames = new String[jb.length];
-	    Color ButtonBGColor = ColorPalette[1];
+	    Color ButtonBGColor = palette[1];
 		toolbar1Panel.setLayout(new GridLayout(4, 0));
-		toolbar1Panel.setBackground(ColorPalette[1]);
+		toolbar1Panel.setBackground(palette[1]);
 	    ButtonNames[0] = "Especial";
 	    ButtonNames[1] = "Exemplo";
 	    ButtonNames[2] = "Criar malha";
@@ -464,7 +473,7 @@ public class Menus extends JFrame
 		/* Listas no segundo painel*/
 		JPanel toolbar1Panel = new JPanel();
 		toolbar1Panel.setLayout(new GridLayout(5, 0));
-		toolbar1Panel.setBackground(ColorPalette[1]);
+		toolbar1Panel.setBackground(palette[1]);
 		
 		String[] ResultsNames = new String[]{"Deslocamentos", "Tensâes", "Deformaçõs", "Forâas Internas"};
 		JComboBox<String> cbResults = new JComboBox<>(ResultsNames);
@@ -498,7 +507,7 @@ public class Menus extends JFrame
 	{
 		JPanel uToolbarPanel = new JPanel();
 		uToolbarPanel.setLayout(new GridBagLayout());
-		uToolbarPanel.setBackground(ColorPalette[2]);
+		uToolbarPanel.setBackground(palette[2]);
 		uToolbarPanel.setPreferredSize(new Dimension(580, 30));
 
 		String[] ButtonNames = new String[] {
@@ -513,7 +522,7 @@ public class Menus extends JFrame
 			};
 		UpperToolbarButton = new JButton[ButtonNames.length];
 		int[] ButtonLength = new int[] {62, 80, 138, 100, 50, 52, 50, 50};
-		Color ButtonBgColor = ColorPalette[8];
+		Color ButtonBgColor = palette[8];
 		
 		for (int b = 0; b <= UpperToolbarButton.length - 1; b += 1)
 		{
@@ -702,9 +711,9 @@ public class Menus extends JFrame
 	private JPanel createNodeInfoPanel(Nodes Node)
 	{
 		JPanel NodeInfoPanel = new JPanel(new GridLayout(0,1));
-		Color TextColor = ColorPalette[4];
-		NodeInfoPanel.setBackground(ColorPalette[9]);
-		NodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[5]));
+		Color TextColor = palette[4];
+		NodeInfoPanel.setBackground(palette[9]);
+		NodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[5]));
 		NodeInfoPanel.setSize(defaultPanelSize);		
 
 		String OriginalCoords = "", DeformedCoords = "";
@@ -751,10 +760,10 @@ public class Menus extends JFrame
 	private JPanel createElemInfoPanel(Element elem)
 	{
 		JPanel ElemInfoPanel = new JPanel(new GridLayout(0,1));
-		Color TextColor = ColorPalette[4];
+		Color TextColor = palette[4];
 		
-		ElemInfoPanel.setBackground(ColorPalette[9]);
-		ElemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[5]));
+		ElemInfoPanel.setBackground(palette[9]);
+		ElemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[5]));
 		ElemInfoPanel.setSize(defaultPanelSize);		
 
 		String NodesText = "";
@@ -794,22 +803,22 @@ public class Menus extends JFrame
 	private JPanel createInstructionPanel()
 	{
 		jpInstruction = new JPanel(new GridLayout(0,1));
-		jpInstruction.setBackground(ColorPalette[3]);
-		jpInstruction.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Util.AddColor(ColorPalette[3], new double[] {50, 50, 50}), null, Util.AddColor(ColorPalette[3], new double[] {-50, -50, -50})));
+		jpInstruction.setBackground(palette[3]);
+		jpInstruction.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Util.AddColor(palette[3], new double[] {50, 50, 50}), null, Util.AddColor(palette[3], new double[] {-50, -50, -50})));
 		jpInstruction.setSize(defaultPanelSize);
 		updateInstructionPanel();
 		
 		return jpInstruction;
 	}
 	
-	private void updateInstructionPanel()
+	public void updateInstructionPanel()
 	{		
 		jpInstruction.removeAll();
 
         boolean[] StepIsComplete = MenuFunctions.CheckSteps();
         boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady();
         ImageIcon OkIcon = new ImageIcon("./Icons/OkIcon.png");
-		Color TextColor = ColorPalette[0];
+		Color TextColor = palette[0];
 		JLabel[] iStep = new JLabel[9];
 		String[] Label = new String[iStep.length];		
 		Label[0] = "1. Tipo de elemento";
@@ -849,7 +858,7 @@ public class Menus extends JFrame
 	private JPanel createMousePositionPanel()
 	{
 		JPanel mousePosPanel = new JPanel();
-		mousePosPanel.setBackground(ColorPalette[3]);
+		mousePosPanel.setBackground(palette[3]);
 		GridLayout gLayout = new GridLayout(1, 0);
 		gLayout.setHgap(10);
 		mousePosPanel.setLayout(gLayout);
@@ -860,12 +869,12 @@ public class Menus extends JFrame
 		
 		xPosTextArea.setEditable(false);
 		xPosTextArea.setMargin(new Insets(insets, insets, insets, insets));
-		xPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, ColorPalette[0]));
+		xPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, palette[0]));
 		xPosTextArea.setPreferredSize(new Dimension(30, 20));
 		
 		yPosTextArea.setEditable(false);
 		yPosTextArea.setMargin(new Insets(insets, insets, insets, insets));
-		yPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, ColorPalette[0]));
+		yPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, palette[0]));
 		yPosTextArea.setPreferredSize(new Dimension(30, 20));
 		
 		this.xPos = xPosTextArea;
@@ -883,8 +892,8 @@ public class Menus extends JFrame
 		JPanel N = new JPanel(new GridBagLayout());
 		utb = createUpperToolBar();
 		//utb.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		JPanel bp1 = createBlankPanel(new Dimension(7 * 32 + 4, 30), ColorPalette[2]);
-		JPanel bp2 = createBlankPanel(new Dimension(260, 30), ColorPalette[2]);
+		JPanel bp1 = createBlankPanel(new Dimension(7 * 32 + 4, 30), palette[2]);
+		JPanel bp2 = createBlankPanel(new Dimension(260, 30), palette[2]);
 		N.add(bp1);
 		N.add(utb);
 		N.add(bp2);
@@ -896,12 +905,12 @@ public class Menus extends JFrame
 	{
 		JPanel S = new JPanel(new GridLayout(1, 0));
 		mp = createMousePositionPanel();
-		mp.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		S.add(createBlankPanel(new Dimension(10, 20), ColorPalette[2]));
-		S.add(createBlankPanel(new Dimension(10, 20), ColorPalette[2]));
+		mp.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
+		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
 		S.add(mp);
-		S.add(createBlankPanel(new Dimension(10, 20), ColorPalette[2]));
-		S.add(createBlankPanel(new Dimension(10, 20), ColorPalette[2]));
+		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
+		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
 		
 		return S;
 	}
@@ -909,14 +918,14 @@ public class Menus extends JFrame
 	private JPanel createEastPanels()
 	{		
 		JPanel E = new JPanel(new GridLayout(0, 1));
-		bp1 = createBlankPanel(defaultPanelSize, ColorPalette[2]);
-		bp2 = createBlankPanel(defaultPanelSize, ColorPalette[2]);
-		bp3 = createBlankPanel(defaultPanelSize, ColorPalette[2]);
-		LDpanel = createBlankPanel(defaultPanelSize, ColorPalette[2]);
-		bp1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		bp2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		bp3.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		LDpanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
+		bp1 = createBlankPanel(defaultPanelSize, palette[2]);
+		bp2 = createBlankPanel(defaultPanelSize, palette[2]);
+		bp3 = createBlankPanel(defaultPanelSize, palette[2]);
+		LDpanel = createBlankPanel(defaultPanelSize, palette[2]);
+		bp1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		bp2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		bp3.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		LDpanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
 		E.add(bp1);
 		E.add(bp2);
 		E.add(bp3);
@@ -957,10 +966,10 @@ public class Menus extends JFrame
 		tb2.setVisible(false);
 		ListsPanel = Listsplot;
 		iPanel = createInstructionPanel();
-		tb1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		tb2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		ListsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
-		iPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
+		tb1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		tb2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		ListsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		iPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
 		W.add(tb1);
 		W.add(tb2);
 		W.add(ListsPanel);
@@ -1004,7 +1013,7 @@ public class Menus extends JFrame
 		this.setVisible(true);
 	}
 	
-	private void EnableButtons()
+	public void EnableButtons()
 	{
 		Object[] StructInfo = MenuFunctions.GetStructInfo();
 		Structure Struct = (Structure) StructInfo[0];
@@ -1075,7 +1084,7 @@ public class Menus extends JFrame
 		}
 	}
 	
-	private void DisableButtons()
+	public void DisableButtons()
 	{
 		AssignSupports.setEnabled(false);
 		AssignConcLoads.setEnabled(false);
@@ -1135,24 +1144,22 @@ public class Menus extends JFrame
 			    "Especial"
 			};	
 		menuBar = new JMenuBar();
-		FileMenu = new JMenu(MenuNames[0]);			// File
 		StructureMenu = new JMenu(MenuNames[1]);	// Structure
 		ViewMenu = new JMenu(MenuNames[2]);			// View
 		AnalysisMenu = new JMenu(MenuNames[3]);		// Analysis
 		ResultsMenu = new JMenu(MenuNames[4]);		// Results
 		EspecialMenu = new JMenu(MenuNames[5]);		// Especial
-		FileMenu.setMnemonic(KeyEvent.VK_A);
+		
 		StructureMenu.setMnemonic(KeyEvent.VK_S);
 		ViewMenu.setMnemonic(KeyEvent.VK_V);
 		ResultsMenu.setMnemonic(KeyEvent.VK_R);
 		EspecialMenu.setMnemonic(KeyEvent.VK_E);
-		menuBar.add(FileMenu);
+		menuBar.add(MenuFile.create());
 		menuBar.add(StructureMenu);
 		menuBar.add(ViewMenu);
 		menuBar.add(AnalysisMenu);
 		menuBar.add(ResultsMenu);
 		menuBar.add(EspecialMenu);
-		AddFileMenuItems(); 
 		AddStructureMenuItems();
 		AddViewMenuItems();
 		AddAnalysisMenuItems();
@@ -1160,64 +1167,7 @@ public class Menus extends JFrame
 		AddEspecialMenuItems();
 	}
 
-	public void AddFileMenuItems()
-	{
-		/* Defining items in the menu File */
-		Save = new JMenuItem("Save file", KeyEvent.VK_S);
-		Load = new JMenuItem("Load file", KeyEvent.VK_L);
-		Save.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				SaveLoadFile SLF = new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos);
-				String FileName = SLF.run().getText();
-				MenuFunctions.SaveFile(FileName, MainCanvas, MenuFunctions.Struct, MenuFunctions.Node, MenuFunctions.Elem,
-						MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
-						MenuFunctions.secTypes);
-			}
-		});
-		Load.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				loadStructure() ;
-			}
-		});
-		Save.setForeground(ColorPalette[3]);
-		Load.setForeground(ColorPalette[3]);
-		FileMenu.add(Save);
-		FileMenu.add(Load);
-	}
 	
-	public void loadStructure()
-	{
-		MenuFunctions.ResetStructure();
-		SaveLoadFile SLF = new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos);
-		String FileName = SLF.run().getText();
-		MenuFunctions.LoadFile("", FileName);
-		MainCanvas.setDim(new double[] {1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 0), 1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 1)});
-		ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady();
-		if (ReadyForAnalysis)
-		{
-			RunAnalysis.setEnabled(true);
-		}
-		ShowCanvas = true;
-		ShowGrid = true;
-		ShowMousePos = true;
-		MenuFunctions.NodeView();
-		MenuFunctions.ElemView();
-		MenuFunctions.ElemContourView();
-		MenuFunctions.SupView();
-		MenuFunctions.ConcLoadsView();
-		MenuFunctions.DistLoadsView();
-		MenuFunctions.NodalDispsView();
-		StepIsComplete = MenuFunctions.CheckSteps();
-		DisableButtons();
-		EnableButtons();
-		updateInstructionPanel();
-	}
 	
 	public void AddStructureMenuItems()
 	{
@@ -1371,20 +1321,20 @@ public class Menus extends JFrame
 		AssignConcLoads.setEnabled(false);
 		AssignDistLoads.setEnabled(false);
 		AssignNodalDisp.setEnabled(false);
-		DefineElemType.setForeground(ColorPalette[5]);
-		CreateNodes.setForeground(ColorPalette[5]);
-		CreateMesh.setForeground(ColorPalette[5]);
-		CreateMaterials.setForeground(ColorPalette[5]);
-		CreateSections.setForeground(ColorPalette[5]);
-		CreateConcLoads.setForeground(ColorPalette[5]);
-		CreateDistLoads.setForeground(ColorPalette[5]);
-		CreateNodalDisp.setForeground(ColorPalette[5]);
-		AssignMaterials.setForeground(ColorPalette[5]);
-		AssignSections.setForeground(ColorPalette[5]);
-		AssignSupports.setForeground(ColorPalette[5]);
-		AssignConcLoads.setForeground(ColorPalette[5]);
-		AssignDistLoads.setForeground(ColorPalette[5]);
-		AssignNodalDisp.setForeground(ColorPalette[5]);
+		DefineElemType.setForeground(palette[5]);
+		CreateNodes.setForeground(palette[5]);
+		CreateMesh.setForeground(palette[5]);
+		CreateMaterials.setForeground(palette[5]);
+		CreateSections.setForeground(palette[5]);
+		CreateConcLoads.setForeground(palette[5]);
+		CreateDistLoads.setForeground(palette[5]);
+		CreateNodalDisp.setForeground(palette[5]);
+		AssignMaterials.setForeground(palette[5]);
+		AssignSections.setForeground(palette[5]);
+		AssignSupports.setForeground(palette[5]);
+		AssignConcLoads.setForeground(palette[5]);
+		AssignDistLoads.setForeground(palette[5]);
+		AssignNodalDisp.setForeground(palette[5]);
 		StructureMenu.add(DefineElemType);
 		StructureMenu.add(CreateNodes);
 		StructureMenu.add(CreateMesh);
@@ -1450,8 +1400,8 @@ public class Menus extends JFrame
 				updateInstructionPanel();
 			}
 		});
-		TypeNodes.setForeground(ColorPalette[5]);
-		ClickNodes.setForeground(ColorPalette[5]);
+		TypeNodes.setForeground(palette[5]);
+		ClickNodes.setForeground(palette[5]);
 		CreateNodes.add(ClickNodes);
 		CreateNodes.add(TypeNodes);
 		
@@ -1475,8 +1425,8 @@ public class Menus extends JFrame
 				StructureMenuCreateMesh(MeshType.radial);
 			}
 		});
-		CartesianMesh.setForeground(ColorPalette[5]);
-		RadialMesh.setForeground(ColorPalette[5]);
+		CartesianMesh.setForeground(palette[5]);
+		RadialMesh.setForeground(palette[5]);
 		CreateMesh.add(CartesianMesh);
 		CreateMesh.add(RadialMesh);		
 	}
@@ -1631,20 +1581,20 @@ public class Menus extends JFrame
 				MenuFunctions.NodalDispsView();
 			}
 		});
-		DOFNumberView.setForeground(ColorPalette[5]);
-		NodeNumberView.setForeground(ColorPalette[5]);
-		ElemNumberView.setForeground(ColorPalette[5]);
-		MatView.setForeground(ColorPalette[5]);
-		SecView.setForeground(ColorPalette[5]);
-		NodeView.setForeground(ColorPalette[5]);
-		ElemView.setForeground(ColorPalette[5]);
-		ElemContourView.setForeground(ColorPalette[5]);
-		SupView.setForeground(ColorPalette[5]);
-		ConcLoadsView.setForeground(ColorPalette[5]);
-		DistLoadsView.setForeground(ColorPalette[5]);
-		NodalDispsView.setForeground(ColorPalette[5]);
-		LoadsValuesView.setForeground(ColorPalette[5]);
-		ReactionsView.setForeground(ColorPalette[5]);
+		DOFNumberView.setForeground(palette[5]);
+		NodeNumberView.setForeground(palette[5]);
+		ElemNumberView.setForeground(palette[5]);
+		MatView.setForeground(palette[5]);
+		SecView.setForeground(palette[5]);
+		NodeView.setForeground(palette[5]);
+		ElemView.setForeground(palette[5]);
+		ElemContourView.setForeground(palette[5]);
+		SupView.setForeground(palette[5]);
+		ConcLoadsView.setForeground(palette[5]);
+		DistLoadsView.setForeground(palette[5]);
+		NodalDispsView.setForeground(palette[5]);
+		LoadsValuesView.setForeground(palette[5]);
+		ReactionsView.setForeground(palette[5]);
 		DOFNumberView.setEnabled(false);
 		ViewMenu.add(DOFNumberView);
 		ViewMenu.add(NodeNumberView);
@@ -1666,8 +1616,8 @@ public class Menus extends JFrame
 	    String[] ReactionsViewMenuNames = new String[] {"Desenhos", "Valores"};
 		ReactionArrows = new JMenuItem(ReactionsViewMenuNames[0], KeyEvent.VK_C);
 		ReactionValues = new JMenuItem(ReactionsViewMenuNames[1], KeyEvent.VK_C);
-		ReactionArrows.setForeground(ColorPalette[5]);
-		ReactionValues.setForeground(ColorPalette[5]);
+		ReactionArrows.setForeground(palette[5]);
+		ReactionValues.setForeground(palette[5]);
 		ReactionArrows.addActionListener(new ActionListener()
 		{
 			@Override
@@ -1756,7 +1706,7 @@ public class Menus extends JFrame
 			}
 		});
 		RunAnalysis.setEnabled(false);
-		RunAnalysis.setForeground(ColorPalette[5]);
+		RunAnalysis.setForeground(palette[5]);
 		AnalysisMenu.add(RunAnalysis);
 	}
 	
@@ -1821,13 +1771,13 @@ public class Menus extends JFrame
 		InternalForcesContours.setEnabled(false);
 		SaveResults.setEnabled(false);
 		SaveLoadDispCurve.setEnabled(false);
-		DeformedShape.setForeground(ColorPalette[7]);
-		DisplacementContours.setForeground(ColorPalette[7]);
-		StressContours.setForeground(ColorPalette[7]);
-		StrainContours.setForeground(ColorPalette[7]);
-		InternalForcesContours.setForeground(ColorPalette[7]);
-		SaveResults.setForeground(ColorPalette[7]);
-		SaveLoadDispCurve.setForeground(ColorPalette[7]);
+		DeformedShape.setForeground(palette[7]);
+		DisplacementContours.setForeground(palette[7]);
+		StressContours.setForeground(palette[7]);
+		StrainContours.setForeground(palette[7]);
+		InternalForcesContours.setForeground(palette[7]);
+		SaveResults.setForeground(palette[7]);
+		SaveLoadDispCurve.setForeground(palette[7]);
 		ResultsMenu.add(DeformedShape);
 		ResultsMenu.add(DisplacementContours);
 		ResultsMenu.add(StressContours);
@@ -1863,7 +1813,7 @@ public class Menus extends JFrame
 				}
 			});
 			SubMenuDisp[d].setEnabled(false);
-			SubMenuDisp[d].setForeground(ColorPalette[7]);
+			SubMenuDisp[d].setForeground(palette[7]);
 			DisplacementContours.add(SubMenuDisp[d]);
 		}
 		
@@ -1893,7 +1843,7 @@ public class Menus extends JFrame
 				}
 			});
 			SubMenuStresses[s].setEnabled(false);
-			SubMenuStresses[s].setForeground(ColorPalette[7]);
+			SubMenuStresses[s].setForeground(palette[7]);
 			StressContours.add(SubMenuStresses[s]);
 		}
 		
@@ -1923,7 +1873,7 @@ public class Menus extends JFrame
 				}
 			});
 			SubMenuStrains[s].setEnabled(false);
-			SubMenuStrains[s].setForeground(ColorPalette[7]);
+			SubMenuStrains[s].setForeground(palette[7]);
 			StrainContours.add(SubMenuStrains[s]);
 		}
 		
@@ -1953,7 +1903,7 @@ public class Menus extends JFrame
 				}
 			});
 			SubMenuInternalForces[f].setEnabled(false);
-			SubMenuInternalForces[f].setForeground(ColorPalette[7]);
+			SubMenuInternalForces[f].setForeground(palette[7]);
 			InternalForcesContours.add(SubMenuInternalForces[f]);
 		}
 	}
@@ -1963,7 +1913,7 @@ public class Menus extends JFrame
 		/* Defining items in the menu Especial */
 	    String[] EspecialMenuItemsNames = new String[] {"Estrela"};
 		Star = new JMenuItem(EspecialMenuItemsNames[0], KeyEvent.VK_S);
-		Star.setForeground(ColorPalette[7]);
+		Star.setForeground(palette[7]);
 		EspecialMenu.add(Star);
 		Star.addActionListener(new ActionListener()
 		{
@@ -2387,4 +2337,20 @@ public class Menus extends JFrame
         
         return jPanel;
     }
+
+	
+	public void showCanvasOn()
+	{
+		ShowCanvas = true ;
+	}
+
+	public void showGrid()
+	{
+		ShowGrid = true ;
+	}
+
+	public void showMousePos()
+	{
+		ShowMousePos = true ;
+	}
 }
