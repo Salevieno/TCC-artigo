@@ -402,46 +402,6 @@ public abstract class Util
 		
 		return MinValues;
 	}
-
-	public static double[] FindMinDisps(double[] SetOfValues, int[] ElemDOFs, int[] DOFTypesOnNode)
-	{
-		double[] MinValue = new double[ElemDOFs.length];
-		for (int doftype = 0; doftype <= ElemDOFs.length - 1; doftype += 1)
-		{
-			for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-			{
-				if (ElemDOFs[doftype] == DOFTypesOnNode[v])
-				{
-					if (SetOfValues[v] < MinValue[doftype])
-					{
-						MinValue[doftype] = SetOfValues[v];
-					}
-				}
-			}
-		}
-		
-		return MinValue;
-	}
-	
-	public static double[] FindMaxDisps(double[] SetOfValues, int[] ElemDOFs, int[] DOFTypesOnNode)
-	{
-		double[] MaxValue = new double[ElemDOFs.length];
-		for (int doftype = 0; doftype <= ElemDOFs.length - 1; doftype += 1)
-		{
-			for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-			{
-				if (ElemDOFs[doftype] == DOFTypesOnNode[v])
-				{
-					if (MaxValue[doftype] < SetOfValues[v])
-					{
-						MaxValue[doftype] = SetOfValues[v];
-					}
-				}
-			}
-		}
-		
-		return MaxValue;
-	}
 	
 	public static double FindMinInPos(double[][] SetOfValues, int pos)
 	{
@@ -2591,42 +2551,6 @@ public abstract class Util
     	}
     	return x;
     }
-
-	public static double[] FindMinElemProp(double[][][] ElemProp, int NumElem, int NumPropTypes)
-	{
-		double[] Minvalue = Util.FindMinPerPos(ElemProp[0]);
-		for (int elem = 0; elem <= NumElem - 1; elem += 1)
-		{
-			double[] MinPerElem = Util.FindMinPerPos(ElemProp[elem]);
-			for (int strain = 0; strain <= NumPropTypes - 1; strain += 1)
-			{
-				if (MinPerElem[strain] < Minvalue[strain])
-				{
-					Minvalue[strain] = MinPerElem[strain];
-				}
-			}
-		}
-		
-		return Minvalue;
-	}
-	
-	public static double[] FindMaxElemProp(double[][][] ElemProp, int NumElem, int NumPropTypes)
-	{
-		double[] Maxvalue = Util.FindMaxPerPos(ElemProp[0]);
-		for (int elem = 0; elem <= NumElem - 1; elem += 1)
-		{
-			double[] MaxPerElem = Util.FindMaxPerPos(ElemProp[elem]);
-			for (int strain = 0; strain <= NumPropTypes - 1; strain += 1)
-			{
-				if (Maxvalue[strain] < MaxPerElem[strain])
-				{
-					Maxvalue[strain] = MaxPerElem[strain];
-				}
-			}
-		}
-		
-		return Maxvalue;
-	}
 
 	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Nodes[] Node, Element[] Elem, int[] MousePos, int[] DPPos, int[] SelectedElems, int[] SelWindowInitPos, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
 	{

@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import Main.Analysis;
 import Main.Point3D;
+import Output.Results;
 import Utilidades.Util;
 
 public class Structure
@@ -11,7 +12,7 @@ public class Structure
 	private String Name;
 	private StructureShape Shape;
 	private double[][] Coords;	// Structure edge coordinates [x, y, z]
-	private Point3D center;	// Structure center coordinates [x, y, z]
+	private Point3D center;
 	private double[] MinCoords;	// Structure minimum coordinates [x, y, z]
 	private double[] MaxCoords;	// Structure minimum coordinates [x, y, z]
 	private double[] Size;		// Structure size in the directions of the axis [x, y, z]
@@ -21,17 +22,7 @@ public class Structure
 	private double[] U;			// Displacement vector
 	
 	public int NFreeDOFs;
-	private double[] DispMin;
-	private double[] DispMax;
-	private double[] StrainMin;
-	private double[] StrainMax;
-	private double[] StressMin;
-	private double[] StressMax;
-	private double[] InternalForcesMin;
-	private double[] InternalForcesMax;
-	private Reactions[] Reactions;
-	private double[] SumReactions;
-	private double[][][][] LoadDisp;
+	private Results results ;
 	
 	public static Color color = Util.ColorPalette()[5];
 	
@@ -48,7 +39,7 @@ public class Structure
 		MinCoords = null;
 		MaxCoords = null;
 		Size = null;
-		//LoadDisp = new double[DOFsPerNode[0].length][Node.length][2][1];
+		results = new Results() ;
 	}
 
 	public String getName() {return Name;}
@@ -61,17 +52,7 @@ public class Structure
 	public double[][] getK() {return K;}
 	public double[] getP() {return P;}
 	public double[] getU() {return U;}
-	public double[] getDispMin() {return DispMin;}
-	public double[] getDispMax() {return DispMax;}
-	public double[] getStrainMin() {return StrainMin;}
-	public double[] getStrainMax() {return StrainMax;}
-	public double[] getStressMin() {return StressMin;}
-	public double[] getStressMax() {return StressMax;}
-	public double[] getInternalForcesMin() {return InternalForcesMin;}
-	public double[] getInternalForcesMax() {return InternalForcesMax;}
-	public Reactions[] getReactions() {return Reactions;}
-	public double[] getSumReactions() {return SumReactions;}
-	public double[][][][] getLoadDisp() {return LoadDisp;}
+	public Results getResults() {return results;}
 	public void setName(String N) {Name = N;}
 	public void setShape(StructureShape S) {Shape = S;}
 	public void setCoords(double[][] C) {Coords = C;}
@@ -82,17 +63,6 @@ public class Structure
 	public void setK(double[][] k) {K = k;}
 	public void setP(double[] p) {P = p;}
 	public void setU(double[] u) {U = u;}
-	public void setDispMin(double[] D) {DispMin = D;}
-	public void setDispMax(double[] D) {DispMax = D;}
-	public void setStrainMin(double[] S) {StrainMin = S;}
-	public void setStrainMax(double[] S) {StrainMax = S;}
-	public void setStressMin(double[] S) {StressMin = S;}
-	public void setStressMax(double[] S) {StressMax = S;}
-	public void setInternalForcesMin(double[] I) {InternalForcesMin = I;}
-	public void setInternalForcesMax(double[] I) {InternalForcesMax = I;}
-	public void setReactions(Reactions[] R) {Reactions = R;}
-	public void setSumReactions(double[] S) {SumReactions = S;}
-	public void setLoadDisp(double[][][][] L) {LoadDisp = L;}
 	
 	public int[][] NodeDOF(Nodes[] Node, Supports[] Sup)
     {
@@ -143,52 +113,5 @@ public class Structure
     	}
     	return nodeDOF;
     }
-	public void RecordResults(Nodes[] Node, Element[] Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
-	{
-		double[][][] ElemStrains = new double[Elem.length][][];
-	    double[][][] ElemStresses = new double[Elem.length][][];
-	    double[][][] ElemInternalForces = new double[Elem.length][][];
-		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
-		{
-			int NNodesOnElem = Elem[elem].getExternalNodes().length;
-			ElemStrains[elem] = new double[NNodesOnElem][Elem[elem].getStrainTypes().length];
-			ElemStresses[elem] = new double[NNodesOnElem][Elem[elem].getStrainTypes().length];
-			ElemInternalForces[elem] = new double[NNodesOnElem][Elem[elem].getStrainTypes().length];
-			for (int elemnode = 0; elemnode <= NNodesOnElem - 1; elemnode += 1)
-			{
-				int NumberOfDOFsOnNode = Node[Elem[elem].getExternalNodes()[elemnode]].getDOFType().length;
-				for (int dof = 0; dof <= Elem[elem].getStrainTypes().length - 1; dof += 1)
-				{
-					int ID = elemnode * NumberOfDOFsOnNode + dof;
-					ElemStrains[elem][elemnode][dof] = Elem[elem].getStrain()[ID];
-					ElemStresses[elem][elemnode][dof] = Elem[elem].getStress()[ID];
-					ElemInternalForces[elem][elemnode][dof] = Elem[elem].getIntForces()[ID];
-				}
-			}
-		}
-        int[] DOFTypesOnNode = Analysis.DefineFreeDoFTypes(Node, Elem, Sup);
-		DispMin = Util.FindMinDisps(U, Elem[0].getDOFs(), DOFTypesOnNode);
-		DispMax = Util.FindMaxDisps(U, Elem[0].getDOFs(), DOFTypesOnNode);
-		StrainMin = Util.FindMinElemProp(ElemStrains, Elem.length, Elem[0].getStrainTypes().length);
-		StrainMax = Util.FindMaxElemProp(ElemStrains, Elem.length, Elem[0].getStrainTypes().length);
-		StressMin = Util.FindMinElemProp(ElemStresses, Elem.length, Elem[0].getStrainTypes().length);
-		StressMax = Util.FindMaxElemProp(ElemStresses, Elem.length, Elem[0].getStrainTypes().length);
-		InternalForcesMin = Util.FindMinElemProp(ElemInternalForces, Elem.length, Elem[0].getStrainTypes().length);
-		InternalForcesMax = Util.FindMaxElemProp(ElemInternalForces, Elem.length, Elem[0].getStrainTypes().length);
-		
-		double[][] strains = new double[Elem.length][3];
-		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
-		{
-			strains[elem] = Elem[elem].getStrain();
-		}
-		for (int node = 0; node <= Node.length - 1; node += 1)
-	    {
-			if (Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U) != null)
-			{
-		    	Node[node].AddConcLoads(Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U));
-			}
-	    }
-		Reactions = Analysis.Reactions(Node, Elem, Sup, NonlinearMat, NonlinearGeo, U);
-		SumReactions = Analysis.SumReactions(Reactions);		
-	}
+	
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import GUI.DrawingOnAPanel;
 import Output.Results;
+import Output.SaveOutput;
 import Utilidades.Util;
 import Utilidades.UtilComponents;
 import structure.ConcLoads;
@@ -327,8 +328,8 @@ public abstract class MenuFunctions
 		if (SelectedDiagram == 0 & -1 < SelectedVar)
 		{
 			//DrawDisplacementContours(SelectedVar);
-			Struct.setDispMin(Util.FindMinDisps(Struct.getU(), Elem[0].getDOFs(), Analysis.DefineFreeDoFTypes(Node, Elem, Sup)));
-			Struct.setDispMax(Util.FindMaxDisps(Struct.getU(), Elem[0].getDOFs(), Analysis.DefineFreeDoFTypes(Node, Elem, Sup)));
+			Struct.getResults().setDispMin(Results.FindMinDisps(Struct.getU(), Elem[0].getDOFs(), Analysis.DefineFreeDoFTypes(Node, Elem, Sup))) ;
+			Struct.getResults().setDispMax(Results.FindMaxDisps(Struct.getU(), Elem[0].getDOFs(), Analysis.DefineFreeDoFTypes(Node, Elem, Sup))) ;
 			ShowDisplacementContour = false;
 			ShowDisplacementContour = true;
 			ShowStrainContour = false;
@@ -517,7 +518,7 @@ public abstract class MenuFunctions
 		values[10][0][6] = Util.Round(MainCanvas.getAngles()[0], 8);
 		values[10][0][7] = Util.Round(MainCanvas.getAngles()[1], 8);
 		values[10][0][8] = Util.Round(MainCanvas.getAngles()[2], 8);
-		Results.SaveStructureToTxt(FileName, InputSections, InputVariables, values);		// Save the structure in an input file (.txt)
+		SaveOutput.SaveStructureToTxt(FileName, InputSections, InputVariables, values);		// Save the structure in an input file (.txt)
 	}
 
 	public static void LoadFile(String Path, String FileName)
@@ -1066,7 +1067,7 @@ public abstract class MenuFunctions
 		{
 			Elem[elem].RecordResults(Node, Struct.getU(), NonlinearMat, NonlinearGeo);
 		}
-		Struct.RecordResults(Node, Elem, Sup, Struct.getU(), NonlinearMat, NonlinearGeo);
+		Struct.getResults().register(Node, Elem, Sup, Struct.getU(), NonlinearMat, NonlinearGeo);
 		ShowNodes = true;
 		ShowElems = true;
 		NodeSelectionIsOn = true;
@@ -1103,28 +1104,28 @@ public abstract class MenuFunctions
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getDispMin()[dof]);
+					vars[sec][0][dof] = String.valueOf(Struct.getResults().getDispMin()[dof]);
 				}
 			}
 			if (sec == 1)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getDispMax()[dof]);
+					vars[sec][0][dof] = String.valueOf(Struct.getResults().getDispMax()[dof]);
 				}
 			}
 			if (sec == 3)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getInternalForcesMin()[dof]);
+					vars[sec][0][dof] = String.valueOf(Struct.getResults().getInternalForcesMin()[dof]);
 				}
 			}
 			if (sec == 4)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getInternalForcesMax()[dof]);
+					vars[sec][0][dof] = String.valueOf(Struct.getResults().getInternalForcesMax()[dof]);
 				}
 			}
 			for (int node = 0; node <= vars[sec].length - 1; node += 1)
@@ -1181,7 +1182,7 @@ public abstract class MenuFunctions
 				}
 			}
 		}
-		Results.SaveOutput(Struct.getName(), Sections, vars);
+		SaveOutput.SaveOutput(Struct.getName(), Sections, vars);
 	}
 	
 	public static void DeformedStructureView()
@@ -1207,7 +1208,7 @@ public abstract class MenuFunctions
 					}
 				}
 			}
-			Results.SaveOutput(Struct.getName(), Sections, vars);
+			SaveOutput.SaveOutput(Struct.getName(), Sections, vars);
 		}
 	}
 
@@ -1471,7 +1472,7 @@ public abstract class MenuFunctions
 			Elem[elem].RecordResults(Node, Struct.getU(), NonlinearMat, NonlinearGeo);
         	Elem[elem].setDeformedCoords(Node);
 		}
-		Struct.RecordResults(Node, Elem, Sup, Struct.getU(), NonlinearMat, NonlinearGeo);
+		Struct.getResults().register(Node, Elem, Sup, Struct.getU(), NonlinearMat, NonlinearGeo);
 		NodeSelectionIsOn = true;
 		ElemSelectionIsOn = true;
 		AnalysisIsComplete = true;
@@ -1675,19 +1676,19 @@ public abstract class MenuFunctions
 			int[] LegendSize = new int[] {(int) (0.8 * jpListSize.getWidth()), (int) (0.6 * jpListSize.getHeight())};
 			if (ShowDisplacementContour)
 			{
-				DP.DrawLegend(LegendPos, "Red to green", "Campo de deslocamentos (m)", LegendSize, Struct.getDispMin()[SelectedVar], Struct.getDispMax()[SelectedVar], 1);
+				DP.DrawLegend(LegendPos, "Red to green", "Campo de deslocamentos (m)", LegendSize, Struct.getResults().getDispMin()[SelectedVar], Struct.getResults().getDispMax()[SelectedVar], 1);
 			}
 			if (ShowStressContour & Node != null & Elem != null)
 			{
-				DP.DrawLegend(LegendPos, "Red to green", "Campo de tensoes (MPa)", LegendSize, Struct.getStressMin()[SelectedVar], Struct.getStressMax()[SelectedVar], 1000);
+				DP.DrawLegend(LegendPos, "Red to green", "Campo de tensoes (MPa)", LegendSize, Struct.getResults().getStressMin()[SelectedVar], Struct.getResults().getStressMax()[SelectedVar], 1000);
 			}
 			if (ShowStrainContour & Node != null & Elem != null)
 			{
-				DP.DrawLegend(LegendPos, "Red to green", "Campo de deformacoes", LegendSize, Struct.getStrainMin()[SelectedVar], Struct.getStrainMax()[SelectedVar], 1);
+				DP.DrawLegend(LegendPos, "Red to green", "Campo de deformacoes", LegendSize, Struct.getResults().getStrainMin()[SelectedVar], Struct.getResults().getStrainMax()[SelectedVar], 1);
 			}
 			if (ShowInternalForces & Node != null & Elem != null)
 			{
-				DP.DrawLegend(LegendPos, "Red to green", "Forcas internas (kN ou kNm)", LegendSize, Struct.getInternalForcesMin()[SelectedVar], Struct.getInternalForcesMax()[SelectedVar], 1);
+				DP.DrawLegend(LegendPos, "Red to green", "Forcas internas (kN ou kNm)", LegendSize, Struct.getResults().getInternalForcesMin()[SelectedVar], Struct.getResults().getInternalForcesMax()[SelectedVar], 1);
 			}
 		}
 	}
@@ -1807,22 +1808,22 @@ public abstract class MenuFunctions
 			if (ShowDisplacementContour)
 			{
 				canvas.setTitle("Deslocamentos (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getDispMin()[selectedvar], Struct.getDispMax()[selectedvar], "Displacement", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getResults().getDispMin()[selectedvar], Struct.getResults().getDispMax()[selectedvar], "Displacement", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowStressContour)
 			{
 				canvas.setTitle("Tensâes (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStressMin()[selectedvar], Struct.getStressMax()[selectedvar], "Stress", selectedvar,  NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getResults().getStressMin()[selectedvar], Struct.getResults().getStressMax()[selectedvar], "Stress", selectedvar,  NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowStrainContour)
 			{
 				canvas.setTitle("Deformaçõs (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getStrainMin()[selectedvar], Struct.getStrainMax()[selectedvar], "Strain", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getResults().getStrainMin()[selectedvar], Struct.getResults().getStrainMax()[selectedvar], "Strain", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 			else if (ShowInternalForces)
 			{
 				canvas.setTitle("Forâas internas (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getInternalForcesMin()[selectedvar], Struct.getInternalForcesMax()[selectedvar], "Force", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
+				DP.DrawContours3D(Elem, Node, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1], Struct.getResults().getInternalForcesMin()[selectedvar], Struct.getResults().getInternalForcesMax()[selectedvar], "Force", selectedvar, NonlinearMat, NonlinearGeo, "Red to green");
 			}
 		}
 	}
