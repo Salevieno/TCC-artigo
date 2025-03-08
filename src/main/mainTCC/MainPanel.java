@@ -1,0 +1,700 @@
+package main.mainTCC;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.sql.Struct;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.BevelBorder;
+
+import main.gui.DrawingOnAPanel;
+import main.gui.Menus;
+import main.structure.ConcLoads;
+import main.structure.DistLoads;
+import main.structure.ElemShape;
+import main.structure.ElemType;
+import main.structure.Element;
+import main.structure.Material;
+import main.structure.MeshType;
+import main.structure.MyCanvas;
+import main.structure.NodalDisps;
+import main.structure.Nodes;
+import main.structure.Reactions;
+import main.structure.Section;
+import main.structure.Structure;
+import main.structure.StructureShape;
+import main.structure.Supports;
+import main.utilidades.Util;
+import main.utilidades.UtilComponents;
+
+public class MainPanel extends JPanel
+{
+	private static final long serialVersionUID = 1L;	
+	private static final Dimension initialSize = new Dimension(582, 610) ;
+	private static final Color bgColor = Menus.palette[2] ;
+	private static final DrawingOnAPanel DP = new DrawingOnAPanel() ;
+	
+	private MyCanvas canvas ;
+	private int[] panelPos ;
+	private JTextArea mouseXPosTextArea = new JTextArea();
+	private JTextArea mouseYPosTextArea = new JTextArea();
+	private boolean showCanvas, showGrid, showMousePos;
+	private boolean showStructure = true, showElems = true, showDeformedStructure = true ;
+	private boolean showMatColor = true, showSecColor = true, showElemContour = true ;
+	private boolean showNodeSelectionWindow ;
+	
+	public static Nodes[] Node;
+
+	private int[] nodeSelectionWindowInitialPos = new int[2] ;
+	
+	public MainPanel(Point frameTopLeftPos)
+	{
+		showCanvas = true ;
+		showGrid = true ;
+		showMousePos = true ;
+		
+		int[] screenTopLeft = new int[] {0, 0, 0} ;
+		canvas = new MyCanvas (new Point(575, 25), new int[] {(int) (0.4 * initialSize.width), (int) (0.8 * initialSize.height), 0}, new double[] {10, 10, 0}, screenTopLeft);
+		panelPos = new int[] {frameTopLeftPos.x + 7 * Menus.buttonSize + 8, frameTopLeftPos.y + 76 + 8, 0};
+		int insets = 5;
+		
+		mouseXPosTextArea = new JTextArea();
+		mouseXPosTextArea.setEditable(false);
+		mouseXPosTextArea.setMargin(new Insets(insets, insets, insets, insets));
+		mouseXPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Menus.palette[0]));
+		mouseXPosTextArea.setPreferredSize(new Dimension(30, 20));
+
+		mouseYPosTextArea = new JTextArea();
+		mouseYPosTextArea.setEditable(false);
+		mouseYPosTextArea.setMargin(new Insets(insets, insets, insets, insets));
+		mouseYPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Menus.palette[0]));
+		mouseYPosTextArea.setPreferredSize(new Dimension(30, 20));
+		
+		this.setBackground(bgColor);
+	    this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+	    this.addMouseListener(new MouseAdapter() 
+	    {
+			public void mousePressed(MouseEvent evt)
+			{
+				requestFocusInWindow();
+				if (evt.getButton() == 1)	// Left click
+				{
+					if (MenuFunctions.StructureCreationIsOn)
+					{
+						MenuFunctions.StructureCreation(panelPos, canvas);
+						Menus.getInstance().EnableButtons();
+						Menus.getInstance().updateInstructionPanel();
+					}
+					if (!MenuFunctions.StructureCreationIsOn)
+					{
+						Menus.getInstance().StepIsComplete = MenuFunctions.CheckSteps();
+						Menus.getInstance().UpperToolbarButton[0].setEnabled(false);
+						Menus.getInstance().UpperToolbarButton[0].setVisible(false);
+						Menus.getInstance().UpperToolbarButton[1].setEnabled(false);
+						Menus.getInstance().UpperToolbarButton[1].setVisible(false);
+					}				
+					if (MenuFunctions.NodeSelectionIsOn)
+					{
+						NodeAddition(canvas, panelPos);
+						if (MenuFunctions.SelectedNodes != null)
+						{
+							if (-1 < MenuFunctions.SelectedNodes[0])
+							{
+								Menus.getInstance().ResetEastPanels();
+								//AddNodeInfoPanel(MenuFunctions.Node[MenuFunctions.SelectedNodes[0]]);
+							}
+						}
+					}
+					if (MenuFunctions.ElemSelectionIsOn)
+					{
+						MenuFunctions.ElemAddition(canvas, panelPos);
+						if (MenuFunctions.SelectedElems != null)
+						{
+							if (-1 < MenuFunctions.SelectedElems[0])
+							{
+								Menus.getInstance().ResetEastPanels();
+								//AddElemInfoPanel(MenuFunctions.Elem[MenuFunctions.SelectedElems[0]]);
+							}
+						}
+					}
+				}
+				if (evt.getButton() == 3)	// Right click
+				{
+					UtilComponents.PrintStructure(Menus.getInstance().StructureMenu.getName(), Node, MenuFunctions.Elem,
+					MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					MenuFunctions.ElemDetailsView();
+				}
+			}
+			public void mouseReleased(MouseEvent evt) 
+			{
+		    }
+		});
+	    this.addMouseMotionListener(new MouseMotionAdapter() 
+	    {
+	        public void mouseDragged(MouseEvent evt) 
+	        {
+
+	        }
+	    });
+	    this.addMouseWheelListener(new MouseWheelListener()
+	    {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent evt) 
+			{
+				MenuFunctions.MouseWheel(panelPos, canvas, evt.getWheelRotation(),
+				new boolean[] {Menus.getInstance().MatAssignmentIsOn, Menus.getInstance().SecAssignmentIsOn, Menus.getInstance().SupAssignmentIsOn,
+					Menus.getInstance().ConcLoadsAssignmentIsOn, Menus.getInstance().DistLoadsAssignmentIsOn, Menus.getInstance().NodalDispsAssignmentIsOn});
+				MenuFunctions.updateDiagramScale(canvas, evt.getWheelRotation());
+			}       	
+	    });
+	    this.addKeyListener(new KeyListener()
+	    {
+			@Override
+			public void keyPressed(KeyEvent evt)
+			{
+				int keyCode = evt.getKeyCode();
+				char keychar = evt.getKeyChar();
+				char[] ActionKeys = new char[] {'Q', 'W', 'A', 'S', 'Z', 'X','E', 'D', 'C'};	// Q, W, A, S, Z, X: rotation, E: top view, D: front view, C: side view
+				if (keychar == Character.toLowerCase(ActionKeys[0]) | keychar == Character.toUpperCase(ActionKeys[0]))
+				{
+					canvas.setAngles(new double[] {canvas.getAngles()[0] - Math.PI/180.0, canvas.getAngles()[1], canvas.getAngles()[2]});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[1]) | keychar == Character.toUpperCase(ActionKeys[1]))
+				{
+					canvas.setAngles(new double[] {canvas.getAngles()[0] + Math.PI/180.0, canvas.getAngles()[1], canvas.getAngles()[2]});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[2]) | keychar == Character.toUpperCase(ActionKeys[2]))
+				{
+					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1] + Math.PI/180.0, canvas.getAngles()[2]});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[3]) | keychar == Character.toUpperCase(ActionKeys[3]))
+				{
+					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1] - Math.PI/180.0, canvas.getAngles()[2]});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[4]) | keychar == Character.toUpperCase(ActionKeys[4]))
+				{
+					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2] + Math.PI/180.0});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[5]) | keychar == Character.toUpperCase(ActionKeys[5]))
+				{
+					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2] - Math.PI/180.0});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[6]) | keychar == Character.toUpperCase(ActionKeys[6]))
+				{
+					canvas.setAngles(new double[] {0, 0, 0});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[7]) | keychar == Character.toUpperCase(ActionKeys[7]))
+				{
+					canvas.setAngles(new double[] {0, -Math.PI/2.0, 0});
+				}
+				if (keychar == Character.toLowerCase(ActionKeys[8]) | keychar == Character.toUpperCase(ActionKeys[8]))
+				{
+					canvas.setAngles(new double[] {-Math.PI/2.0, 0, 0});
+				}
+				if (keyCode == KeyEvent.VK_RIGHT)
+				{
+					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0] + 10, canvas.getDrawingPos()[1], canvas.getDrawingPos()[2]});
+				}
+				if (keyCode == KeyEvent.VK_LEFT)
+				{
+					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0] - 10, canvas.getDrawingPos()[1], canvas.getDrawingPos()[2]});
+				}
+				if (keyCode == KeyEvent.VK_UP)
+				{
+					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0], canvas.getDrawingPos()[1] - 10, canvas.getDrawingPos()[2]});
+				}
+				if (keyCode == KeyEvent.VK_DOWN)
+				{
+					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0], canvas.getDrawingPos()[1] + 10, canvas.getDrawingPos()[2]});
+				}
+				if (keyCode == KeyEvent.VK_ESCAPE)
+				{
+					MenuFunctions.SelectedNodes = null;
+					MenuFunctions.SelectedElems = null;
+				}
+			}
+	
+			@Override
+			public void keyReleased(KeyEvent evt)
+			{
+				
+			}
+	
+			@Override
+			public void keyTyped(KeyEvent evt)
+			{
+				
+			}        	
+	    });
+ 
+	    this.setSize(initialSize);
+	    this.setFocusable(true);
+	    this.requestFocusInWindow();
+	    this.setPreferredSize(initialSize);
+		
+	}
+		
+	public void displayCanvasElements(MyCanvas canvas,  boolean ShowCanvas, boolean ShowGrid, boolean ShowMousePos)
+	{
+		canvas.setPos(new Point((int) (0.1 * initialSize.width), (int) (0.1 * initialSize.height)));
+		canvas.setSize(new int[] {(int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height)});
+		canvas.setCenter(new int[] {canvas.getPos().x + canvas.getSize()[0] / 2, canvas.getPos().y + canvas.getSize()[1] / 2});
+		
+		int[] LittleAxisPos = new int[] {canvas.getPos().x + canvas.getSize()[0] + 10, canvas.getPos().y - 10, 0};
+		int[] BigAxisPos = new int[] {canvas.getPos().x, canvas.getPos().y + canvas.getSize()[1], 0};		
+		DP.DrawAxis(LittleAxisPos, canvas.getSize()[0] / 15, canvas.getSize()[1] / 15, 10, canvas.getAngles());
+		DP.DrawAxis(BigAxisPos, canvas.getSize()[0] + 20, canvas.getSize()[1] + 20, 20, new double[] {0, 0, 0});
+		
+		DP.DrawText(new int[] {canvas.getPos().x + canvas.getSize()[0], canvas.getPos().y + canvas.getSize()[1] + 15, 0}, String.valueOf(Util.Round(canvas.getDim()[0], 3)) + " m", "Center", 0, "Bold", 13, Menus.palette[7]);
+		DP.DrawText(new int[] {canvas.getPos().x + 30, canvas.getPos().y - 10, 0}, String.valueOf(Util.Round(canvas.getDim()[1], 3)) + " m", "Center", 0, "Bold", 13, Menus.palette[10]);
+		if (ShowCanvas)
+		{
+			DP.DrawCanvas(canvas.getTitle(), new double[] {Util.Round(canvas.getGridSpacing()[0], 1), Util.Round(canvas.getGridSpacing()[1], 1)});
+		}
+		if (ShowGrid)
+		{
+			DP.DrawGrid(2);
+		}
+		double[] RealMousePos = Util.ConvertToRealCoords(MenuFunctions.MousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDim());
+		DP.DrawMousePos(new int[] {BigAxisPos[0] + canvas.getSize()[0] / 2 - 60, BigAxisPos[1] + 40}, RealMousePos, Menus.palette[3], Menus.palette[0]);
+	}
+	
+	public void displayContent(Dimension jpMainSize, int[] MainPanelPos, int[] MainCanvasCenter, MyCanvas MainCanvas, DrawingOnAPanel DP)
+	{
+		displayCanvasElements(MainCanvas, showCanvas, showGrid, showMousePos);
+		if (showStructure && MenuFunctions.Struct.getCoords() != null && MenuFunctions.Struct.getCenter() != null && MenuFunctions.Elem == null)
+		{
+			DP.DrawStructureContour3D(MenuFunctions.Struct.getCoords(), Structure.color);
+		}
+		
+		DP.DrawCircle(MainCanvasCenter, 10, 1, false, true, Menus.palette[0], Menus.palette[7]);
+		if (MenuFunctions.StructureCreationIsOn & MenuFunctions.Struct.getCoords() != null)
+		{
+			DP.DrawElemAddition(MenuFunctions.Struct.getCoords(), MenuFunctions.MousePos, 2, MenuFunctions.Struct.getShape(), Menus.palette[6]);
+		}
+		if (showElems & MenuFunctions.Elem != null)
+		{
+			if (showDeformedStructure)
+			{
+				MainCanvas.setTitle("Estrutura deformada (x " + String.valueOf(Util.Round(MenuFunctions.DiagramScales[1], 3)) + ")");
+			}
+			DP.DrawElements3D(Node, MenuFunctions.Elem, MenuFunctions.SelectedElems, showMatColor, showSecColor,
+			showElemContour, showDeformedStructure, MenuFunctions.DiagramScales[1]);
+		}
+		if (MenuFunctions.ShowNodes & Node != null)
+		{
+			DP.DrawNodes3D(Node, MenuFunctions.SelectedNodes, Nodes.color, showDeformedStructure, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.DiagramScales[1]);
+		}
+		if (MenuFunctions.AnalysisIsComplete)
+		{
+			MenuFunctions.DrawResults(MainCanvas, MenuFunctions.Struct, Node, MenuFunctions.Elem, MenuFunctions.SelectedElems, MenuFunctions.SelectedVar,
+			MenuFunctions.ShowElemContour, showDeformedStructure,
+			MenuFunctions.DiagramScales, MenuFunctions.ShowDisplacementContour, MenuFunctions.ShowStressContour,
+			MenuFunctions.ShowStrainContour, MenuFunctions.ShowInternalForces,
+			MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
+			if (MenuFunctions.ShowReactionArrows & MenuFunctions.Reaction != null)
+			{
+				DP.DrawReactions3D(Node, MenuFunctions.Reaction, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.ShowReactionValues, Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1]);
+			}
+		}
+		if (MenuFunctions.ShowSup & MenuFunctions.Sup != null)
+		{
+			DP.DrawSup3D(Node, MenuFunctions.Sup, Supports.color);
+		}
+		if (MenuFunctions.ShowConcLoads & MenuFunctions.ConcLoad != null)
+		{
+			DP.DrawConcLoads3D(Node, MenuFunctions.ConcLoad, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.ShowLoadsValues,
+			ConcLoads.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
+		}
+		if (MenuFunctions.ShowDistLoads & MenuFunctions.DistLoad != null)
+		{
+			DP.DrawDistLoads3D(Node, MenuFunctions.Elem, MenuFunctions.DistLoad, MenuFunctions.ShowLoadsValues, DistLoads.color,
+			showDeformedStructure, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.DiagramScales[1]);
+		}
+		if (MenuFunctions.ShowNodalDisps & MenuFunctions.NodalDisp != null)
+		{
+			DP.DrawNodalDisps3D(Node, MenuFunctions.NodalDisp, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.ShowLoadsValues,
+			NodalDisps.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
+		}
+		if (MenuFunctions.ShowDOFNumber & Node != null)
+		{
+			DP.DrawDOFNumbers(Node, Nodes.color, showDeformedStructure);
+		}
+		if (MenuFunctions.ShowNodeNumber & Node != null)
+		{
+			DP.DrawNodeNumbers(Node, Nodes.color, showDeformedStructure);
+		}
+		if (MenuFunctions.ShowElemNumber & MenuFunctions.Elem != null)
+		{
+			DP.DrawElemNumbers(Node, MenuFunctions.Elem, Nodes.color, showDeformedStructure);
+		}
+		if (showNodeSelectionWindow)
+		{
+			DP.DrawSelectionWindow(nodeSelectionWindowInitialPos, MenuFunctions.MousePos);
+		}
+		if (MenuFunctions.ShowElemSelectionWindow)
+		{
+			DP.DrawSelectionWindow(MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.MousePos);
+		}
+		if (MenuFunctions.ShowElemDetails)
+		{
+			DP.DrawElemDetails(ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()));
+		}
+	}
+	
+
+	public void NodeAddition(MyCanvas MainCanvas, int[] MainPanelPos)
+	{
+		if (Node != null)
+		{
+			MenuFunctions.SelectedNodes = null;
+			MenuFunctions.SelectedNodes = Util.NodesSelection(MainCanvas, MenuFunctions.Struct.getCenter().asArray(), Node, MenuFunctions.MousePos,
+			MainPanelPos, MenuFunctions.SelectedNodes,
+			nodeSelectionWindowInitialPos, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.DiagramScales, showNodeSelectionWindow, showDeformedStructure);
+			
+			int NodeMouseIsOn = Util.NodeMouseIsOn(Node, MenuFunctions.MousePos, MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(),
+			MainCanvas.getDrawingPos(), 4, MenuFunctions.ShowDeformedStructure);
+
+			if (NodeMouseIsOn == -1 | (showNodeSelectionWindow & -1 < NodeMouseIsOn))
+			{
+				showNodeSelectionWindow = !showNodeSelectionWindow;
+				nodeSelectionWindowInitialPos = MenuFunctions.MousePos;
+			}
+		}
+	}
+
+	public static void CreateStructureOnClick(StructureShape structureShape)
+	{
+		MenuFunctions.Struct.setShape(structureShape);
+		MenuFunctions.StructureCreationIsOn = !MenuFunctions.StructureCreationIsOn;
+	}
+
+
+	public static void setElemType(String ElemType)
+	{
+		MenuFunctions.SelectedElemType = ElemType;
+	}
+
+
+	
+ 	public static void AddMaterialToElements(int[] Elems, Material mat)
+	{
+		if (MenuFunctions.Elem != null & Elems != null & mat != null)
+		{
+			for (int i = 0; i <= Elems.length - 1; i += 1)
+			{
+				if (-1 < Elems[i])
+				{
+					MenuFunctions.Elem[Elems[i]].setMat(mat);
+				}
+			}
+			MenuFunctions.SelectedElems = null;
+		}
+	}
+
+	public static void AddSectionsToElements(int[] Elems, Section sec)
+	{
+		if (MenuFunctions.Elem != null & sec != null & Elems != null)
+		{
+			for (int i = 0; i <= Elems.length - 1; i += 1)
+			{
+				if (-1 < Elems[i])
+				{
+					MenuFunctions.Elem[Elems[i]].setSec(sec);
+				}
+			}
+			MenuFunctions.SelectedElems = null;
+		}
+	}
+	
+	public static void AddSupports()
+	{
+		if (-1 < MenuFunctions.SelectedSup & MenuFunctions.SelectedNodes != null & MenuFunctions.SupType != null )
+		{
+			MenuFunctions.Sup = Util.IncreaseArraySize(MenuFunctions.Sup, MenuFunctions.SelectedNodes.length);
+			for (int i = 0; i <= MenuFunctions.SelectedNodes.length - 1; i += 1)
+			{
+				int supid = MenuFunctions.Sup.length - MenuFunctions.SelectedNodes.length + i;
+				if (-1 < MenuFunctions.SelectedNodes[i])
+				{
+					MenuFunctions.Sup[supid] = new Supports(supid, MenuFunctions.SelectedNodes[i], MenuFunctions.SupType[MenuFunctions.SelectedSup]);
+					MainPanel.Node[MenuFunctions.SelectedNodes[i]].setSup(MenuFunctions.SupType[MenuFunctions.SelectedSup]);
+				}
+			}
+			MenuFunctions.ShowSup = true;
+			MenuFunctions.SelectedNodes = null;
+		}
+	}
+	
+	public static void AddConcLoads()
+	{
+		if (-1 < MenuFunctions.SelectedConcLoad & MenuFunctions.SelectedNodes != null & MenuFunctions.ConcLoadType != null)
+		{
+			MenuFunctions.ConcLoad = Util.IncreaseArraySize(MenuFunctions.ConcLoad, MenuFunctions.SelectedNodes.length);
+			for (int i = 0; i <= MenuFunctions.SelectedNodes.length - 1; i += 1)
+			{
+				int loadid = MenuFunctions.ConcLoad.length - MenuFunctions.SelectedNodes.length + i;
+				if (-1 < MenuFunctions.SelectedNodes[i])
+				{
+					MenuFunctions.ConcLoad[loadid] = new ConcLoads(loadid, MenuFunctions.SelectedNodes[i], MenuFunctions.ConcLoadType[MenuFunctions.SelectedConcLoad]);
+					MainPanel.Node[MenuFunctions.SelectedNodes[i]].AddConcLoads(MenuFunctions.ConcLoad[loadid]);
+				}
+			}
+			MenuFunctions.ShowConcLoads = true;
+			MenuFunctions.SelectedNodes = null;
+		}
+	}
+	
+	public static void AddDistLoads()
+	{
+		if (-1 < MenuFunctions.SelectedDistLoad & MenuFunctions.SelectedElems != null & MenuFunctions.DistLoadType != null)
+		{
+			MenuFunctions.DistLoad = Util.IncreaseArraySize(MenuFunctions.DistLoad, MenuFunctions.SelectedElems.length);
+			for (int i = 0; i <= MenuFunctions.SelectedElems.length - 1; i += 1)
+			{
+				int loadid = MenuFunctions.DistLoad.length - MenuFunctions.SelectedElems.length + i;
+				if (-1 < MenuFunctions.SelectedElems[i])
+				{
+					int elem = MenuFunctions.SelectedElems[i];
+					int LoadType = (int) MenuFunctions.DistLoadType[MenuFunctions.SelectedDistLoad][0];
+					double Intensity = MenuFunctions.DistLoadType[MenuFunctions.SelectedDistLoad][1];
+					MenuFunctions.DistLoad[loadid] = new DistLoads(loadid, MenuFunctions.SelectedElems[i], LoadType, Intensity);
+					MenuFunctions.Elem[elem].setDistLoads(Util.AddElem(MenuFunctions.Elem[elem].getDistLoads(), MenuFunctions.DistLoad[loadid]));
+				}
+			}
+			MenuFunctions.ShowDistLoads = true;
+			MenuFunctions.SelectedElems = null;
+		}
+	}
+	
+	public static void AddNodalDisps()
+	{
+		if (-1 < MenuFunctions.SelectedNodalDisp & MenuFunctions.SelectedNodes != null & MenuFunctions.NodalDispType != null)
+		{
+			MenuFunctions.NodalDisp = Util.IncreaseArraySize(MenuFunctions.NodalDisp, MenuFunctions.SelectedNodes.length);
+			for (int i = 0; i <= MenuFunctions.SelectedNodes.length - 1; i += 1)
+			{
+				int dispid = MenuFunctions.NodalDisp.length - MenuFunctions.SelectedNodes.length + i;
+				if (-1 < MenuFunctions.SelectedNodes[i])
+				{
+					MenuFunctions.NodalDisp[dispid] = new NodalDisps(dispid, MenuFunctions.SelectedNodes[i], MenuFunctions.NodalDispType[MenuFunctions.SelectedNodalDisp]);
+					MainPanel.Node[MenuFunctions.SelectedNodes[i]].AddNodalDisps(MenuFunctions.NodalDisp[dispid]);
+				}
+			}
+			MenuFunctions.ShowNodalDisps = true;
+			MenuFunctions.SelectedNodes = null;
+		}
+	}
+	
+	public static void StructureMenuCreateMesh(MeshType meshType, int[][] Mesh, ElemType elemType)
+	{
+		MenuFunctions.Sup = null;
+		MenuFunctions.ConcLoad = null;
+		MenuFunctions.DistLoad = null;
+		MenuFunctions.NodalDisp = null;
+		
+		if (elemType == null)
+		{
+			System.out.println("\nElement shape is null at Menus -> StructureMenuCreateMesh") ;
+			return ;
+		}
+
+		int noffsets = Mesh[0][0];
+	    int[] nintermediatepoints = new int[noffsets];
+		Arrays.fill(nintermediatepoints, Mesh[0][1]);
+		switch (meshType)
+		{
+			case cartesian:
+				MainPanel.Node = Analysis.CreateCartesianNodes(MenuFunctions.Struct.getCoords(), new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				MenuFunctions.Elem = Analysis.CreateCartesianMesh(MainPanel.Node, new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				break ;
+				
+			case radial:
+				MainPanel.Node = Analysis.CreateRadialNodes(MenuFunctions.Struct.getCoords(), noffsets, nintermediatepoints);
+				MenuFunctions.Elem = Analysis.CreateRadialMesh(MainPanel.Node, noffsets, elemType);
+				break ;
+				
+			default:
+				System.out.println("\nMesh type not defined at Menus -> StructureMenuCreateMesh") ;
+				return ;
+		}
+		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		{
+        	MenuFunctions.Elem[elem].setUndeformedCoords(MainPanel.Node);
+        	MenuFunctions.Elem[elem].setCenterCoords();
+		}
+	}
+	
+	public static void setMaterials(List<Material> materials)
+	{
+		MenuFunctions.matTypes = materials;
+	}
+
+	public static void setSections(List<Section> sections)
+	{
+		MenuFunctions.secTypes = sections;
+	}
+
+	public static void DefineSupportTypes(int[][] Supports)
+	{
+		MenuFunctions.SupType = Supports;
+	}
+
+	public static void DefineConcLoadTypes(double[][] ConcLoads)
+	{
+		MenuFunctions.ConcLoadType = ConcLoads;
+	}
+
+	public static void DefineDistLoadTypes(double[][] DistLoads)
+	{
+		MenuFunctions.DistLoadType = DistLoads;
+	}
+
+	public static void DefineNodalDispTypes(double[][] NodalDisps)
+	{
+		MenuFunctions.NodalDispType = NodalDisps;
+	}
+	
+	public static void StructureMenuAssignMaterials()
+	{
+		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
+		MenuFunctions.SelectedMat = 0;
+	}
+	
+	public static void StructureMenuAssignSections()
+	{
+		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
+		MenuFunctions.SelectedSec = 0;
+	}
+	
+	public static void StructureMenuAssignSupports()
+	{
+		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
+		MenuFunctions.SelectedSup = 0;
+	}
+	
+	public static void StructureMenuAssignConcLoads()
+	{
+		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
+		MenuFunctions.SelectedConcLoad = 0;
+	}
+	
+	public static void StructureMenuAssignDistLoads()
+	{
+		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
+		MenuFunctions.SelectedDistLoad = 0;
+	}
+	
+	public static void StructureMenuAssignNodalDisps()
+	{
+		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
+		MenuFunctions.SelectedNodalDisp = 0;
+	}
+	
+	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType,
+			Material CurrentMatType, List<Material> matTypes, Section CurrentSecType, List<Section> secTypes,
+			int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
+	{
+		/* Tipo de elemento, materiais, seçõs, apoios e cargas jâ estâo definidos */
+		
+		/* 1. Criar polâgono */
+		MenuFunctions.Struct = new Structure(null, null, StructCoords);
+		
+		/* 2. Criar malha */
+		StructureMenuCreateMesh(meshType, new int[][] {MeshSizes}, elemType);
+		
+		/* 3. Atribuir materiais */
+		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		{
+			MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
+		}
+		AddMaterialToElements(MenuFunctions.SelectedElems, CurrentMatType);
+		Element.createMatColors(matTypes);
+		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		{
+			int matColorID = matTypes.indexOf(MenuFunctions.Elem[elem].getMat()) ;
+			MenuFunctions.Elem[elem].setMatColor(Element.matColors[matColorID]);
+		}
+
+		/* 4. Atribuir seçõs */
+		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		{
+			MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
+		}
+		AddSectionsToElements(MenuFunctions.SelectedElems, CurrentSecType);
+		Element.setSecColors(secTypes);
+		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		{
+			int secID = secTypes.indexOf(MenuFunctions.Elem[elem].getSec()) ;
+			MenuFunctions.Elem[elem].setSecColor(Element.SecColors[secID]);
+		}
+		
+		/* 5. Atribuir apoios */
+		MenuFunctions.Sup = Util.AddEspecialSupports(MainPanel.Node, Element.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
+
+		/* 6. Atribuir cargas */
+		if (ConcLoadConfig == 1)
+		{
+			if (MenuFunctions.Elem[0].getShape().equals(ElemShape.rectangular))
+			{
+				MenuFunctions.SelectedNodes = Util.AddElem(MenuFunctions.SelectedNodes, (MeshSizes[1] / 2 * (MeshSizes[0] + 1) + MeshSizes[0] / 2));
+			}
+			else if (MenuFunctions.Elem[0].getShape().equals(ElemShape.r8))
+			{
+				MenuFunctions.SelectedNodes = Util.AddElem(MenuFunctions.SelectedNodes, (MeshSizes[1] / 2 * (2 * MeshSizes[0] + 1 + MeshSizes[0] + 1) + MeshSizes[0]));
+			}
+		}
+		MenuFunctions.SelectedConcLoad = SelConcLoad;
+		AddConcLoads();
+		MenuFunctions.SelectedDistLoad = SelDistLoad;
+		if (-1 < SelDistLoad)
+		{
+			MenuFunctions.SelectedElems = null;
+			for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+			{
+				MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
+			}
+			AddDistLoads();
+		}
+		
+		/* 7. Calcular parâmetros para a anâlise */
+		MenuFunctions.CalcAnalysisParameters();
+		
+		MenuFunctions.SelectedNodes = null;
+		MenuFunctions.SelectedElems = null;
+		return new Object[] {MainPanel.Node, MenuFunctions.Elem, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, null};
+	}
+
+	@Override
+    public void paintComponent(Graphics g) 
+    {
+        super.paintComponent(g);
+        MenuFunctions.updateMousePosRelToPanelPos(panelPos) ;
+        DP.setG(g);
+        DP.setCanvas(canvas);
+        DP.setRealStructCenter(MenuFunctions.Struct.getCenter());
+		this.displayContent(initialSize, panelPos, canvas.getCenter(), canvas, DP);
+		if (MenuFunctions.ShowMousePos)
+		{
+			double[] mousePos = Util.ConvertToRealCoords(MenuFunctions.MousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDim());
+			mouseXPosTextArea.setText(String.valueOf(Util.Round(mousePos[0], 3)));
+			mouseYPosTextArea.setText(String.valueOf(Util.Round(mousePos[1], 3)));
+		}
+		repaint();
+    }
+
+}
