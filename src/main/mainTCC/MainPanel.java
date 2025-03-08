@@ -12,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.sql.Struct;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,15 +28,17 @@ import main.structure.ElemShape;
 import main.structure.ElemType;
 import main.structure.Element;
 import main.structure.Material;
+import main.structure.Mesh;
 import main.structure.MeshType;
 import main.structure.MyCanvas;
 import main.structure.NodalDisps;
-import main.structure.Nodes;
+import main.structure.Node;
 import main.structure.Reactions;
 import main.structure.Section;
 import main.structure.Structure;
 import main.structure.StructureShape;
 import main.structure.Supports;
+import main.utilidades.Point3D;
 import main.utilidades.Util;
 import main.utilidades.UtilComponents;
 
@@ -56,8 +57,6 @@ public class MainPanel extends JPanel
 	private boolean showStructure = true, showElems = true, showDeformedStructure = true ;
 	private boolean showMatColor = true, showSecColor = true, showElemContour = true ;
 	private boolean showNodeSelectionWindow ;
-	
-	public static Nodes[] Node;
 
 	private int[] nodeSelectionWindowInitialPos = new int[2] ;
 	
@@ -134,7 +133,7 @@ public class MainPanel extends JPanel
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					UtilComponents.PrintStructure(Menus.getInstance().StructureMenu.getName(), Node, MenuFunctions.Elem,
+					UtilComponents.PrintStructure(Menus.getInstance().StructureMenu.getName(), MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(),
 					MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
@@ -276,7 +275,8 @@ public class MainPanel extends JPanel
 	public void displayContent(Dimension jpMainSize, int[] MainPanelPos, int[] MainCanvasCenter, MyCanvas MainCanvas, DrawingOnAPanel DP)
 	{
 		displayCanvasElements(MainCanvas, showCanvas, showGrid, showMousePos);
-		if (showStructure && MenuFunctions.Struct.getCoords() != null && MenuFunctions.Struct.getCenter() != null && MenuFunctions.Elem == null)
+		if (showStructure && MenuFunctions.Struct.getCoords() != null && MenuFunctions.Struct.getCenter() != null &&
+			MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getElements() == null)
 		{
 			DP.DrawStructureContour3D(MenuFunctions.Struct.getCoords(), Structure.color);
 		}
@@ -286,61 +286,61 @@ public class MainPanel extends JPanel
 		{
 			DP.DrawElemAddition(MenuFunctions.Struct.getCoords(), MenuFunctions.MousePos, 2, MenuFunctions.Struct.getShape(), Menus.palette[6]);
 		}
-		if (showElems & MenuFunctions.Elem != null)
+		if (showElems && MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getElements() != null)
 		{
 			if (showDeformedStructure)
 			{
 				MainCanvas.setTitle("Estrutura deformada (x " + String.valueOf(Util.Round(MenuFunctions.DiagramScales[1], 3)) + ")");
 			}
-			DP.DrawElements3D(Node, MenuFunctions.Elem, MenuFunctions.SelectedElems, showMatColor, showSecColor,
+			DP.DrawElements3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), MenuFunctions.SelectedElems, showMatColor, showSecColor,
 			showElemContour, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
-		if (MenuFunctions.ShowNodes & Node != null)
+		if (MenuFunctions.ShowNodes && MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getNodes() != null)
 		{
-			DP.DrawNodes3D(Node, MenuFunctions.SelectedNodes, Nodes.color, showDeformedStructure, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.DiagramScales[1]);
+			DP.DrawNodes3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.SelectedNodes, Node.color, showDeformedStructure, MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1]);
 		}
 		if (MenuFunctions.AnalysisIsComplete)
 		{
-			MenuFunctions.DrawResults(MainCanvas, MenuFunctions.Struct, Node, MenuFunctions.Elem, MenuFunctions.SelectedElems, MenuFunctions.SelectedVar,
+			MenuFunctions.DrawResults(MainCanvas, MenuFunctions.Struct, MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), MenuFunctions.SelectedElems, MenuFunctions.SelectedVar,
 			MenuFunctions.ShowElemContour, showDeformedStructure,
 			MenuFunctions.DiagramScales, MenuFunctions.ShowDisplacementContour, MenuFunctions.ShowStressContour,
 			MenuFunctions.ShowStrainContour, MenuFunctions.ShowInternalForces,
 			MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
 			if (MenuFunctions.ShowReactionArrows & MenuFunctions.Reaction != null)
 			{
-				DP.DrawReactions3D(Node, MenuFunctions.Reaction, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.ShowReactionValues, Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1]);
+				DP.DrawReactions3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Reaction, MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues, Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1]);
 			}
 		}
 		if (MenuFunctions.ShowSup & MenuFunctions.Sup != null)
 		{
-			DP.DrawSup3D(Node, MenuFunctions.Sup, Supports.color);
+			DP.DrawSup3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Sup, Supports.color);
 		}
 		if (MenuFunctions.ShowConcLoads & MenuFunctions.ConcLoad != null)
 		{
-			DP.DrawConcLoads3D(Node, MenuFunctions.ConcLoad, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.ShowLoadsValues,
+			DP.DrawConcLoads3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.ConcLoad, MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
 			ConcLoads.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
 		if (MenuFunctions.ShowDistLoads & MenuFunctions.DistLoad != null)
 		{
-			DP.DrawDistLoads3D(Node, MenuFunctions.Elem, MenuFunctions.DistLoad, MenuFunctions.ShowLoadsValues, DistLoads.color,
-			showDeformedStructure, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.DiagramScales[1]);
+			DP.DrawDistLoads3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), MenuFunctions.DistLoad, MenuFunctions.ShowLoadsValues, DistLoads.color,
+			showDeformedStructure, MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1]);
 		}
 		if (MenuFunctions.ShowNodalDisps & MenuFunctions.NodalDisp != null)
 		{
-			DP.DrawNodalDisps3D(Node, MenuFunctions.NodalDisp, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.ShowLoadsValues,
+			DP.DrawNodalDisps3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.NodalDisp, MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
 			NodalDisps.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
-		if (MenuFunctions.ShowDOFNumber & Node != null)
+		if (MenuFunctions.ShowDOFNumber && MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getNodes() != null)
 		{
-			DP.DrawDOFNumbers(Node, Nodes.color, showDeformedStructure);
+			DP.DrawDOFNumbers(MenuFunctions.Struct.getMesh().getNodes(), Node.color, showDeformedStructure);
 		}
-		if (MenuFunctions.ShowNodeNumber & Node != null)
+		if (MenuFunctions.ShowNodeNumber && MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getNodes() != null)
 		{
-			DP.DrawNodeNumbers(Node, Nodes.color, showDeformedStructure);
+			DP.DrawNodeNumbers(MenuFunctions.Struct.getMesh().getNodes(), Node.color, showDeformedStructure);
 		}
-		if (MenuFunctions.ShowElemNumber & MenuFunctions.Elem != null)
+		if (MenuFunctions.ShowElemNumber && MenuFunctions.Struct.getMesh() != null &&  MenuFunctions.Struct.getMesh().getElements() != null)
 		{
-			DP.DrawElemNumbers(Node, MenuFunctions.Elem, Nodes.color, showDeformedStructure);
+			DP.DrawElemNumbers(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), Node.color, showDeformedStructure);
 		}
 		if (showNodeSelectionWindow)
 		{
@@ -359,14 +359,14 @@ public class MainPanel extends JPanel
 
 	public void NodeAddition(MyCanvas MainCanvas, int[] MainPanelPos)
 	{
-		if (Node != null)
+		if (MenuFunctions.Struct.getMesh().getNodes() != null)
 		{
 			MenuFunctions.SelectedNodes = null;
-			MenuFunctions.SelectedNodes = Util.NodesSelection(MainCanvas, MenuFunctions.Struct.getCenter().asArray(), Node, MenuFunctions.MousePos,
+			MenuFunctions.SelectedNodes = Util.NodesSelection(MainCanvas, MenuFunctions.Struct.getCenter().asArray(), MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.MousePos,
 			MainPanelPos, MenuFunctions.SelectedNodes,
-			nodeSelectionWindowInitialPos, MenuFunctions.Elem[0].getDOFs(), MenuFunctions.DiagramScales, showNodeSelectionWindow, showDeformedStructure);
+			nodeSelectionWindowInitialPos, MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales, showNodeSelectionWindow, showDeformedStructure);
 			
-			int NodeMouseIsOn = Util.NodeMouseIsOn(Node, MenuFunctions.MousePos, MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(),
+			int NodeMouseIsOn = Util.NodeMouseIsOn(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.MousePos, MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDim(),
 			MainCanvas.getDrawingPos(), 4, MenuFunctions.ShowDeformedStructure);
 
 			if (NodeMouseIsOn == -1 | (showNodeSelectionWindow & -1 < NodeMouseIsOn))
@@ -393,13 +393,13 @@ public class MainPanel extends JPanel
 	
  	public static void AddMaterialToElements(int[] Elems, Material mat)
 	{
-		if (MenuFunctions.Elem != null & Elems != null & mat != null)
+		if (MenuFunctions.Struct.getMesh().getElements() != null & Elems != null & mat != null)
 		{
 			for (int i = 0; i <= Elems.length - 1; i += 1)
 			{
 				if (-1 < Elems[i])
 				{
-					MenuFunctions.Elem[Elems[i]].setMat(mat);
+					MenuFunctions.Struct.getMesh().getElements().get(Elems[i]).setMat(mat);
 				}
 			}
 			MenuFunctions.SelectedElems = null;
@@ -408,13 +408,13 @@ public class MainPanel extends JPanel
 
 	public static void AddSectionsToElements(int[] Elems, Section sec)
 	{
-		if (MenuFunctions.Elem != null & sec != null & Elems != null)
+		if (MenuFunctions.Struct.getMesh().getElements() != null & sec != null & Elems != null)
 		{
 			for (int i = 0; i <= Elems.length - 1; i += 1)
 			{
 				if (-1 < Elems[i])
 				{
-					MenuFunctions.Elem[Elems[i]].setSec(sec);
+					MenuFunctions.Struct.getMesh().getElements().get(Elems[i]).setSec(sec);
 				}
 			}
 			MenuFunctions.SelectedElems = null;
@@ -432,7 +432,7 @@ public class MainPanel extends JPanel
 				if (-1 < MenuFunctions.SelectedNodes[i])
 				{
 					MenuFunctions.Sup[supid] = new Supports(supid, MenuFunctions.SelectedNodes[i], MenuFunctions.SupType[MenuFunctions.SelectedSup]);
-					MainPanel.Node[MenuFunctions.SelectedNodes[i]].setSup(MenuFunctions.SupType[MenuFunctions.SelectedSup]);
+					MenuFunctions.Struct.getMesh().getNodes().get(MenuFunctions.SelectedNodes[i]).setSup(MenuFunctions.SupType[MenuFunctions.SelectedSup]);
 				}
 			}
 			MenuFunctions.ShowSup = true;
@@ -451,7 +451,7 @@ public class MainPanel extends JPanel
 				if (-1 < MenuFunctions.SelectedNodes[i])
 				{
 					MenuFunctions.ConcLoad[loadid] = new ConcLoads(loadid, MenuFunctions.SelectedNodes[i], MenuFunctions.ConcLoadType[MenuFunctions.SelectedConcLoad]);
-					MainPanel.Node[MenuFunctions.SelectedNodes[i]].AddConcLoads(MenuFunctions.ConcLoad[loadid]);
+					MenuFunctions.Struct.getMesh().getNodes().get(MenuFunctions.SelectedNodes[i]).AddConcLoads(MenuFunctions.ConcLoad[loadid]);
 				}
 			}
 			MenuFunctions.ShowConcLoads = true;
@@ -473,7 +473,7 @@ public class MainPanel extends JPanel
 					int LoadType = (int) MenuFunctions.DistLoadType[MenuFunctions.SelectedDistLoad][0];
 					double Intensity = MenuFunctions.DistLoadType[MenuFunctions.SelectedDistLoad][1];
 					MenuFunctions.DistLoad[loadid] = new DistLoads(loadid, MenuFunctions.SelectedElems[i], LoadType, Intensity);
-					MenuFunctions.Elem[elem].setDistLoads(Util.AddElem(MenuFunctions.Elem[elem].getDistLoads(), MenuFunctions.DistLoad[loadid]));
+					MenuFunctions.Struct.getMesh().getElements().get(elem).setDistLoads(Util.AddElem(MenuFunctions.Struct.getMesh().getElements().get(elem).getDistLoads(), MenuFunctions.DistLoad[loadid]));
 				}
 			}
 			MenuFunctions.ShowDistLoads = true;
@@ -492,50 +492,11 @@ public class MainPanel extends JPanel
 				if (-1 < MenuFunctions.SelectedNodes[i])
 				{
 					MenuFunctions.NodalDisp[dispid] = new NodalDisps(dispid, MenuFunctions.SelectedNodes[i], MenuFunctions.NodalDispType[MenuFunctions.SelectedNodalDisp]);
-					MainPanel.Node[MenuFunctions.SelectedNodes[i]].AddNodalDisps(MenuFunctions.NodalDisp[dispid]);
+					MenuFunctions.Struct.getMesh().getNodes().get(MenuFunctions.SelectedNodes[i]).AddNodalDisps(MenuFunctions.NodalDisp[dispid]);
 				}
 			}
 			MenuFunctions.ShowNodalDisps = true;
 			MenuFunctions.SelectedNodes = null;
-		}
-	}
-	
-	public static void StructureMenuCreateMesh(MeshType meshType, int[][] Mesh, ElemType elemType)
-	{
-		MenuFunctions.Sup = null;
-		MenuFunctions.ConcLoad = null;
-		MenuFunctions.DistLoad = null;
-		MenuFunctions.NodalDisp = null;
-		
-		if (elemType == null)
-		{
-			System.out.println("\nElement shape is null at Menus -> StructureMenuCreateMesh") ;
-			return ;
-		}
-
-		int noffsets = Mesh[0][0];
-	    int[] nintermediatepoints = new int[noffsets];
-		Arrays.fill(nintermediatepoints, Mesh[0][1]);
-		switch (meshType)
-		{
-			case cartesian:
-				MainPanel.Node = Analysis.CreateCartesianNodes(MenuFunctions.Struct.getCoords(), new int[] {noffsets, nintermediatepoints[0]}, elemType);
-				MenuFunctions.Elem = Analysis.CreateCartesianMesh(MainPanel.Node, new int[] {noffsets, nintermediatepoints[0]}, elemType);
-				break ;
-				
-			case radial:
-				MainPanel.Node = Analysis.CreateRadialNodes(MenuFunctions.Struct.getCoords(), noffsets, nintermediatepoints);
-				MenuFunctions.Elem = Analysis.CreateRadialMesh(MainPanel.Node, noffsets, elemType);
-				break ;
-				
-			default:
-				System.out.println("\nMesh type not defined at Menus -> StructureMenuCreateMesh") ;
-				return ;
-		}
-		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
-		{
-        	MenuFunctions.Elem[elem].setUndeformedCoords(MainPanel.Node);
-        	MenuFunctions.Elem[elem].setCenterCoords();
 		}
 	}
 	
@@ -605,55 +566,59 @@ public class MainPanel extends JPanel
 		MenuFunctions.SelectedNodalDisp = 0;
 	}
 	
-	public static Object[] CreatureStructure(double[][] StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType,
+	public static Object[] CreatureStructure(List<Point3D> StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType,
 			Material CurrentMatType, List<Material> matTypes, Section CurrentSecType, List<Section> secTypes,
 			int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
 	{
 		/* Tipo de elemento, materiais, seçõs, apoios e cargas jâ estâo definidos */
 		
 		/* 1. Criar polâgono */
-		MenuFunctions.Struct = new Structure(null, null, StructCoords);
+		MenuFunctions.Struct = new Structure("Especial", StructureShape.rectangular, StructCoords);
 		
-		/* 2. Criar malha */
-		StructureMenuCreateMesh(meshType, new int[][] {MeshSizes}, elemType);
+		/* 2. Criar malha */		
+		MenuFunctions.Sup = null;
+		MenuFunctions.ConcLoad = null;
+		MenuFunctions.DistLoad = null;
+		MenuFunctions.NodalDisp = null;
+		MenuFunctions.Struct.createMesh(meshType, new int[][] {MeshSizes}, elemType);
 		
 		/* 3. Atribuir materiais */
-		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		for (int elem = 0; elem <= MenuFunctions.Struct.getMesh().getElements().size() - 1; elem += 1)
 		{
 			MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
 		}
 		AddMaterialToElements(MenuFunctions.SelectedElems, CurrentMatType);
 		Element.createMatColors(matTypes);
-		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
 		{
-			int matColorID = matTypes.indexOf(MenuFunctions.Elem[elem].getMat()) ;
-			MenuFunctions.Elem[elem].setMatColor(Element.matColors[matColorID]);
+			int matColorID = matTypes.indexOf(elem.getMat()) ;
+			elem.setMatColor(Element.matColors[matColorID]);
 		}
 
 		/* 4. Atribuir seçõs */
-		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		for (int elem = 0; elem <= MenuFunctions.Struct.getMesh().getElements().size() - 1; elem += 1)
 		{
 			MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
 		}
 		AddSectionsToElements(MenuFunctions.SelectedElems, CurrentSecType);
 		Element.setSecColors(secTypes);
-		for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
 		{
-			int secID = secTypes.indexOf(MenuFunctions.Elem[elem].getSec()) ;
-			MenuFunctions.Elem[elem].setSecColor(Element.SecColors[secID]);
+			int secID = secTypes.indexOf(elem.getSec()) ;
+			elem.setSecColor(Element.SecColors[secID]);
 		}
 		
 		/* 5. Atribuir apoios */
-		MenuFunctions.Sup = Util.AddEspecialSupports(MainPanel.Node, Element.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
+		MenuFunctions.Sup = Util.AddEspecialSupports(MenuFunctions.Struct.getMesh().getNodes(), Element.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
 
 		/* 6. Atribuir cargas */
 		if (ConcLoadConfig == 1)
 		{
-			if (MenuFunctions.Elem[0].getShape().equals(ElemShape.rectangular))
+			if (MenuFunctions.Struct.getMesh().getElements().get(0).getShape().equals(ElemShape.rectangular))
 			{
 				MenuFunctions.SelectedNodes = Util.AddElem(MenuFunctions.SelectedNodes, (MeshSizes[1] / 2 * (MeshSizes[0] + 1) + MeshSizes[0] / 2));
 			}
-			else if (MenuFunctions.Elem[0].getShape().equals(ElemShape.r8))
+			else if (MenuFunctions.Struct.getMesh().getElements().get(0).getShape().equals(ElemShape.r8))
 			{
 				MenuFunctions.SelectedNodes = Util.AddElem(MenuFunctions.SelectedNodes, (MeshSizes[1] / 2 * (2 * MeshSizes[0] + 1 + MeshSizes[0] + 1) + MeshSizes[0]));
 			}
@@ -664,7 +629,7 @@ public class MainPanel extends JPanel
 		if (-1 < SelDistLoad)
 		{
 			MenuFunctions.SelectedElems = null;
-			for (int elem = 0; elem <= MenuFunctions.Elem.length - 1; elem += 1)
+			for (int elem = 0; elem <= MenuFunctions.Struct.getMesh().getElements().size() - 1; elem += 1)
 			{
 				MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
 			}
@@ -676,7 +641,7 @@ public class MainPanel extends JPanel
 		
 		MenuFunctions.SelectedNodes = null;
 		MenuFunctions.SelectedElems = null;
-		return new Object[] {MainPanel.Node, MenuFunctions.Elem, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, null};
+		return new Object[] {MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, null};
 	}
 
 	@Override

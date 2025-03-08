@@ -2,7 +2,7 @@ package main.structure;
 
 import java.awt.Color;
 
-import main.utilidades.Util;
+import main.gui.Menus;
 
 public class Reactions
 {
@@ -10,7 +10,7 @@ public class Reactions
 	private int Node;		// Node
 	private double[] Loads;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
 
-	public static Color color = Util.ColorPalette()[8];
+	public static Color color = Menus.palette[8];
 	public static double[] SumReactions = new double[6];
 	
 	public Reactions(int ID, int Node, double[] Loads)

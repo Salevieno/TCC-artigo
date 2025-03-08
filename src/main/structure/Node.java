@@ -2,9 +2,11 @@ package main.structure;
 
 import java.awt.Color;
 
+import main.gui.Menus;
+import main.utilidades.Point3D;
 import main.utilidades.Util;
 
-public class Nodes
+public class Node
 {
 	private int ID;				// ID
 	private double[] OriCoords;	// Original coordinates [x, y, z]
@@ -13,13 +15,13 @@ public class Nodes
 	private ConcLoads[] ConcLoad;	// Concentrated loads in the node
 	private NodalDisps[] NodalDisp;// Nodal displacements in the node
 	
-	public static Color color = Util.ColorPalette()[10];
+	public static Color color = Menus.palette[10];
 	
 	public int[] dofs;
 	private int[] DOFType;			// DOFs on node
 	public double[][][] LoadDisp;		// Load displacement curve of the node [dof][x values][y values]
 
-	public Nodes(int ID, double[] OriCoords)
+	public Node(int ID, double[] OriCoords)
 	{
 		this.ID = ID;
 		this.OriCoords = OriCoords;
@@ -28,6 +30,11 @@ public class Nodes
 		ConcLoad = null;
 		NodalDisp = null;
 		DOFType = null;
+	}
+
+	public Node(int ID, Point3D oriCoords, boolean temp)
+	{
+		this(ID, oriCoords.asArray()) ;
 	}
 
 	public int getID() {return ID;}

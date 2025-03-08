@@ -3,7 +3,7 @@ package main.structure;
 import java.awt.Color;
 import java.util.Arrays;
 
-import main.utilidades.Util;
+import main.gui.Menus;
 
 public class Supports
 {
@@ -12,7 +12,7 @@ public class Supports
 	private int[] DoFs;		// Restrained DoFs
 
 	public static int[][] Types = new int[][] {{1, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0}, {1, 1, 0, 0, 0, 0}, {1, 1, 0, 0, 0, 1}, {1, 1, 1, 1, 1, 1}};
-	public static Color color = Util.ColorPalette()[7];
+	public static Color color = Menus.palette[7];
 	
 	public Supports(int ID, int Node, int[] DoFs)
 	{

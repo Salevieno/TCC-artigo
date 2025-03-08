@@ -36,7 +36,7 @@ public abstract class MenuFile
 			public void actionPerformed(ActionEvent e) 
 			{
 				String filename = Menus.getInstance().getSaveLoadFile().run().getText();
-				MenuFunctions.SaveFile(filename, Menus.getMainCanvas(), MenuFunctions.Struct, MainPanel.Node, MenuFunctions.Elem,
+				MenuFunctions.SaveFile(filename, Menus.getMainCanvas(), MenuFunctions.Struct, MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(),
 						MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
 						MenuFunctions.secTypes);
 			}
@@ -62,7 +62,8 @@ public abstract class MenuFile
 		
 		String filename = Menus.getInstance().getSaveLoadFile().run().getText();
 		MenuFunctions.LoadFile("", filename);
-		Menus.getMainCanvas().setDim(new double[] {1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 0), 1.2*Util.FindMaxInPos(MenuFunctions.Struct.getCoords(), 1)});
+		MenuFunctions.Struct.updateMaxCoords() ;
+		Menus.getMainCanvas().setDim(new double[] {1.2 * MenuFunctions.Struct.getMaxCoords().x, 1.2 * MenuFunctions.Struct.getMaxCoords().y, 1});
 		Menus.getInstance().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady());
 		Menus.getInstance().showCanvasOn() ;
 		Menus.getInstance().showGrid() ;

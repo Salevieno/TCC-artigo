@@ -8,14 +8,14 @@ import main.structure.DistLoads;
 import main.structure.Element;
 import main.structure.Material;
 import main.structure.NodalDisps;
-import main.structure.Nodes;
+import main.structure.Node;
 import main.structure.Reactions;
 import main.structure.Section;
 import main.structure.Supports;
 
 public abstract class UtilComponents
 {
-	public static void PrintNode(Nodes Node)
+	public static void PrintNode(Node Node)
 	{
 		System.out.println(Node.getID() + "	" + Arrays.toString(Node.getOriginalCoords()) + "	" + Arrays.toString(Node.getDisp()) + "	" + Node.getSup() + "	" + Arrays.toString(Node.getConcLoads()) + "	" + Arrays.toString(Node.getNodalDisps()));
 	}
@@ -25,25 +25,25 @@ public abstract class UtilComponents
 		System.out.println(Elem.getID() + "	" + Arrays.toString(Elem.getExternalNodes()) + "		" + Elem.getMat() + "	" + Elem.getSec() + "	" + Arrays.toString(Elem.getDistLoads()));
 	}
 	
-	public static void PrintAllNodes(Nodes[] Node)
+	public static void PrintAllNodes(List<Node> Node)
 	{
 		System.out.println();
 		System.out.println("Nodes");
 		System.out.println("ID	Original coords (m)	Displacements (m)	Sup ConcLoads (kN)	NodalDisps (m)");
-		for (int node = 0; node <= Node.length - 1; node += 1)
+		for (int node = 0; node <= Node.size() - 1; node += 1)
 		{
-			PrintNode(Node[node]);
+			PrintNode(Node.get(node));
 		}
 	}
 	
-	public static void PrintAllElems(Element[] Elem)
+	public static void PrintAllElems(List<Element> Elem)
 	{
 		System.out.println();
 		System.out.println("Elems");
 		System.out.println("ID	Nodes		Mat	Sec	DistLoads (kN/m)");
-		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
+		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
-			PrintElem(Elem[elem]);
+			PrintElem(Elem.get(elem));
 		}
 	}
 	
@@ -152,7 +152,7 @@ public abstract class UtilComponents
 		}
 	}
 	
-	public static void PrintStructure(String StructureName, Nodes[] Node, Element[] Elem, List<Material> mats, List<Section> secs, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	public static void PrintStructure(String StructureName, List<Node> Node, List<Element> Elem, List<Material> mats, List<Section> secs, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(StructureName);

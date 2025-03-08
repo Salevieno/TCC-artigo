@@ -3,7 +3,7 @@ package main.structure;
 import java.awt.Color;
 import java.util.Arrays;
 
-import main.utilidades.Util;
+import main.gui.Menus;
 
 public class NodalDisps
 {
@@ -11,7 +11,7 @@ public class NodalDisps
 	private int Node;		// Node
 	private double[] Disps;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
 
-	public static Color color = Util.ColorPalette()[7];
+	public static Color color = Menus.palette[7];
 	public NodalDisps(int ID, int Node, double[] Disps)
 	{
 		this.ID = ID;

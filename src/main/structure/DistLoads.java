@@ -2,7 +2,7 @@ package main.structure;
 
 import java.awt.Color;
 
-import main.utilidades.Util;
+import main.gui.Menus;
 
 public class DistLoads
 {
@@ -11,7 +11,7 @@ public class DistLoads
 	private int Type;			// Type: 0 = Conc load paralel to elem, 1 = Conc load perpendicular to elem, 2 = Conc moment, 3 = UDL paralel to elem, 4 = UDL perpendicular to elem, 5 = triangular
 	private double Intensity;
 
-	public static Color color = Util.ColorPalette()[7];
+	public static Color color = Menus.palette[7];
 	public DistLoads(int ID, int Elem, int Type, double Intensity)
 	{
 		this.ID = ID;

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
+import main.gui.Menus;
 import main.utilidades.Util;
 
 public class Element
@@ -30,7 +31,7 @@ public class Element
 	private double[] Strain;		// Strains on the element
 	private double[] IntForces;		// External forces on the element
 	
-	public static Color color = Util.ColorPalette()[10];
+	public static Color color = Menus.palette[10];
 	public static Color[] matColors;
 	public static Color[] SecColors;
 	
@@ -214,18 +215,18 @@ public class Element
 		return new Object[] {Shape, DOFs, StrainTypes, DOFsPerNode};
 	}
 
-	public double[] calcHalfSize(Nodes[] Node)
+	public double[] calcHalfSize(List<Node> nodes)
 	{
 		double[] size = new double[2];
 		if (Shape.equals(ElemShape.rectangular))
 		{
-			size[0] = Math.abs(Node[ExternalNodes[2]].getOriginalCoords()[0] - Node[ExternalNodes[0]].getOriginalCoords()[0]) / 2;
-			size[1] = Math.abs(Node[ExternalNodes[2]].getOriginalCoords()[1] - Node[ExternalNodes[0]].getOriginalCoords()[1]) / 2;
+			size[0] = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords()[0] - nodes.get(ExternalNodes[0]).getOriginalCoords()[0]) / 2;
+			size[1] = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords()[1] - nodes.get(ExternalNodes[0]).getOriginalCoords()[1]) / 2;
 		}
 		else if (Shape.equals(ElemShape.r8) | Shape.equals(ElemShape.r9))
 		{
-			size[0] = Math.abs(Node[ExternalNodes[4]].getOriginalCoords()[0] - Node[ExternalNodes[0]].getOriginalCoords()[0]) / 2;
-			size[1] = Math.abs(Node[ExternalNodes[4]].getOriginalCoords()[1] - Node[ExternalNodes[0]].getOriginalCoords()[1]) / 2;
+			size[0] = Math.abs(nodes.get(ExternalNodes[4]).getOriginalCoords()[0] - nodes.get(ExternalNodes[0]).getOriginalCoords()[0]) / 2;
+			size[1] = Math.abs(nodes.get(ExternalNodes[4]).getOriginalCoords()[1] - nodes.get(ExternalNodes[0]).getOriginalCoords()[1]) / 2;
 		}
 		return size;
 	}
@@ -260,21 +261,21 @@ public class Element
 	
 	public double[] getCenterCoords(){return CenterCoords;}	
 	
-	public void setUndeformedCoords(Nodes[] Node)
+	public void setUndeformedCoords(List<Node> nodes)
 	{
 		UndeformedCoords = new double[ExternalNodes.length][];
-		for (int node = 0; node <= ExternalNodes.length - 1; node += 1)
+		for (int i = 0; i <= ExternalNodes.length - 1; i += 1)
 		{
-			UndeformedCoords[node] = Node[ExternalNodes[node]].getOriginalCoords();
+			UndeformedCoords[i] = nodes.get(ExternalNodes[i]).getOriginalCoords();
     	}
 	}
 
-	public void setDeformedCoords(Nodes[] Node)
+	public void setDeformedCoords(List<Node> nodes)
 	{
 		DeformedCoords = new double[ExternalNodes.length][];
 		for (int node = 0; node <= ExternalNodes.length - 1; node += 1)
 		{
-			DeformedCoords[node] = Util.ScaledDefCoords(Node[ExternalNodes[node]].getOriginalCoords(), Node[ExternalNodes[node]].getDisp(), Node[node].getDOFType(), 1);
+			DeformedCoords[node] = Util.ScaledDefCoords(nodes.get(ExternalNodes[node]).getOriginalCoords(), nodes.get(ExternalNodes[node]).getDisp(), nodes.get(node).getDOFType(), 1);
     	}
 	}
 	
@@ -300,7 +301,7 @@ public class Element
 		SecColors = Util.RandomColors(SectionTypes.size());
 	}	
 	
-	public double[][] NaturalCoordsShapeFunctions(double e, double n, Nodes[] Node)
+	public double[][] NaturalCoordsShapeFunctions(double e, double n, List<Node> Node)
     {
     	// Calcula as funçõs de forma em um dado ponto (e, n). Unidades 1/mâ e 1/m.
     	double[][] N = null;
@@ -662,11 +663,11 @@ public class Element
     	return N;
     }
 	
-    public double[][] SecondDerivativesb(double e, double n, Nodes[] Node, Section sec, boolean NonlinearGeo)
+    public double[][] SecondDerivativesb(double e, double n, List<Node> nodes, Section sec, boolean NonlinearGeo)
     {
     	// Calcula as derivadas segundas das funçõs de forma em um dado ponto (e, n). Unidades 1/mâ e 1/m.
     	double[][] B = null;
-		double[] ElemSize = calcHalfSize(Node);
+		double[] ElemSize = calcHalfSize(nodes);
 		double a = ElemSize[0];
 		double b = ElemSize[1];
 		double t = sec.getT() / 1000.0;
@@ -721,16 +722,16 @@ public class Element
 	    		double[][] Coords = new double[Nodes.length][];
 	    		for (int node = 0; node <= Nodes.length - 1; node += 1)
 	    		{
-	    			Coords[node] = new double[Node[Nodes[node]].getOriginalCoords().length];
-	    			for (int coord = 0; coord <= Node[Nodes[node]].getOriginalCoords().length - 1; coord += 1)
+	    			Coords[node] = new double[nodes.get(Nodes[node]).getOriginalCoords().length];
+	    			for (int coord = 0; coord <= nodes.get(Nodes[node]).getOriginalCoords().length - 1; coord += 1)
 	        		{
 	    				if (NonlinearGeo)
 	    				{
-	            			Coords[node][coord] = Node[Nodes[node]].getOriginalCoords()[coord] + Node[Nodes[node]].getDisp()[coord];
+	            			Coords[node][coord] = nodes.get(Nodes[node]).getOriginalCoords()[coord] + nodes.get(Nodes[node]).getDisp()[coord];
 	    				}
 	    				else
 	    				{
-	            			Coords[node][coord] = Node[Nodes[node]].getOriginalCoords()[coord];
+	            			Coords[node][coord] = nodes.get(Nodes[node]).getOriginalCoords()[coord];
 	    				}
 	        		}
 	    		}
@@ -795,7 +796,7 @@ public class Element
     	return B;
     }    
     
-	public double[][] Bb(double e, double n, double w, Nodes[] Node, Section sec, boolean NonlinearGeo, int option)
+	public double[][] Bb(double e, double n, double w, List<Node> Node, Section sec, boolean NonlinearGeo, int option)
 	{
     	double[][] Bb1 = null,  Bb2 = null;
     	double t = sec.getT() / 1000.0;
@@ -825,7 +826,7 @@ public class Element
     	}
 	}    
     
-    public double[][] Bs(double e, double n, double w, Nodes[] Node, Section sec, int option)
+    public double[][] Bs(double e, double n, double w, List<Node> Node, Section sec, int option)
 	{
 		double[][] Bs1 = null,  Bs2 = null;
     	double t = sec.getT() / 1000.0;
@@ -865,7 +866,7 @@ public class Element
     	}
 	}
      
-    public double[][] LoadVector(Nodes[] Node)
+    public double[][] LoadVector(List<Node> Node)
 	{
 		double[][] Q = null;
 		double[] ElemSize = calcHalfSize(Node);
@@ -986,11 +987,11 @@ public class Element
 		return C;
     }
        
-    public double[][] StiffnessMatrix(Nodes[] Node, boolean NonlinearMat, boolean NonlinearGeo)
+    public double[][] StiffnessMatrix(List<Node> nodes, boolean NonlinearMat, boolean NonlinearGeo)
     {
     	// Calcula a matriz de rigidez do elemento
     	double[][] k = null;
-		double[] ElemSize = calcHalfSize(Node);
+		double[] ElemSize = calcHalfSize(nodes);
 		double[][] Db = BendingConstitutiveMatrix(mat, NonlinearMat, Strain);
 		double[][] Ds = ShearConstitutiveMatrix2(mat, sec);
 		
@@ -1001,7 +1002,7 @@ public class Element
 			case MR1: k = ElementStiffnessMatrix.MR1StiffnessMatrix(ElemSize, Db, Ds, sec); break ;
 			case MR2: k = ElementStiffnessMatrix.MR2StiffnessMatrix(ElemSize, Db, Ds, sec); break ;
 			case R4: k = ElementStiffnessMatrix.R4StiffnessMatrix(ElemSize, Db, sec); break ;
-			case Q4: k = ElementStiffnessMatrix.Q4StiffnessMatrix(Node, ExternalNodes, ElemSize, Db, sec, NonlinearGeo); break ;
+			case Q4: k = ElementStiffnessMatrix.Q4StiffnessMatrix(nodes, ExternalNodes, ElemSize, Db, sec, NonlinearGeo); break ;
 			case T3G: 
 				
 	        	double[][] D = BendingConstitutiveMatrix(mat, NonlinearMat, Strain);
@@ -1012,20 +1013,20 @@ public class Element
 	            	double[][] Coords = new double[ExternalNodes.length][];
 	    			for (int node = 0; node <= ExternalNodes.length - 1; node += 1)
 	    			{
-		    			Coords[node] = new double[Node[ExternalNodes[node]].getOriginalCoords().length];
-		    			for (int coord = 0; coord <= Node[ExternalNodes[node]].getOriginalCoords().length - 1; coord += 1)
+		    			Coords[node] = new double[nodes.get(ExternalNodes[node]).getOriginalCoords().length];
+		    			for (int coord = 0; coord <= nodes.get(ExternalNodes[node]).getOriginalCoords().length - 1; coord += 1)
 		        		{
-		            		Coords[node][coord] = Node[ExternalNodes[node]].getOriginalCoords()[coord];
+		            		Coords[node][coord] = nodes.get(ExternalNodes[node]).getOriginalCoords()[coord];
 		        		}
 	    			}     	
 	    			Area = Util.TriArea(Coords);
 	        	}
 	    		else
 	        	{
-	        		double[][] DefCoords = Util.GetElemNodesDefPos(Node, ExternalNodes);
+	        		double[][] DefCoords = Util.GetElemNodesDefPos(nodes, ExternalNodes);
 	        		Area = Util.TriArea(DefCoords);
 	        	}
-	    	    double[][] B = SecondDerivativesb(0, 0, Node, sec, NonlinearGeo);
+	    	    double[][] B = SecondDerivativesb(0, 0, nodes, sec, NonlinearGeo);
 	    	    k = Util.MultMatrix(Util.MultMatrix(Util.Transpose(B), D), B);
 	    	    for (int i = 0; i <= k.length - 1; i += 1)
 	        	{
@@ -1062,7 +1063,7 @@ public class Element
     	return k;
     }
     
-    public double[] StrainsOnPoint(Nodes[] Node, double e, double n, double[] U, Section sec, boolean NonlinearGeo)
+    public double[] StrainsOnPoint(List<Node> Node, double e, double n, double[] U, Section sec, boolean NonlinearGeo)
 	{
 		double[] strain = new double[3];
 		
@@ -1074,7 +1075,7 @@ public class Element
 		return strain;
 	}
     
-    public double[] ForcesOnPoint(Nodes[] Node, int[] StrainsOnElem, Material mat, Section sec, boolean NonlinearMat, double e, double n, double[] U, boolean NonlinearGeo)
+    public double[] ForcesOnPoint(List<Node> Node, int[] StrainsOnElem, Material mat, Section sec, boolean NonlinearMat, double e, double n, double[] U, boolean NonlinearGeo)
 	{
 		double[] forces = new double[3];
 		double thick = sec.getT() / 1000.0;
@@ -1095,7 +1096,7 @@ public class Element
 		return forces;
 	}
 
-    public double[] StressesOnPoint(Nodes[] Node, Element Elem, double e, double n, Material mat, int[][] DOFsOnNode, double[] U, Section sec, boolean NonlinearMat, boolean NonlinearGeo)
+    public double[] StressesOnPoint(List<Node> Node, Element Elem, double e, double n, Material mat, int[][] DOFsOnNode, double[] U, Section sec, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		double[] strain = new double[3];
 		double[] sigma = new double[3];
@@ -1107,20 +1108,20 @@ public class Element
 		return sigma;
 	}
           
-  	public double[] DispVec(Nodes[] Node, double[] U)
+  	public double[] DispVec(List<Node> nodes, double[] U)
 	{
 		int ulength = 0;
 		for (int i = 0; i <= ExternalNodes.length - 1; i += 1)
 		{
 			int node = ExternalNodes[i];
-			ulength += Node[node].getDOFType().length;
+			ulength += nodes.get(node).getDOFType().length;
 		}
 		
 		double[] u = new double[ulength];
 		for (int elemnode = 0; elemnode <= ExternalNodes.length - 1; elemnode += 1)
     	{
 			int node = ExternalNodes[elemnode];
-			for (int dof = 0; dof <= Node[node].getDOFType().length - 1; dof += 1)
+			for (int dof = 0; dof <= nodes.get(node).getDOFType().length - 1; dof += 1)
 	    	{
 				if (-1 < NodeDOF[elemnode][dof])
 				{
@@ -1135,7 +1136,7 @@ public class Element
 		return u;
 	}
 	
-	public double[] ForceVec(Nodes[] Node, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
+	public double[] ForceVec(List<Node> Node, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
 		int Nnodes = ExternalNodes.length;
 		int[] ElemDOFs = DOFs;
@@ -1149,7 +1150,7 @@ public class Element
 		return p;
 	}
 	
-	public double[] StrainVec(Nodes[] Node, double[] U, boolean NonlinearGeo)
+	public double[] StrainVec(List<Node> Node, double[] U, boolean NonlinearGeo)
 	{
 		int Nnodes = ExternalNodes.length;
 		float[] e = null, n = null;
@@ -1181,7 +1182,7 @@ public class Element
 		return strainvec;
 	}
 		
-	public double[] StressesVec(Nodes[] Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
+	public double[] StressesVec(List<Node> Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		int Nnodes = ExternalNodes.length;
 		float[] e = null, n = null;
@@ -1245,7 +1246,7 @@ public class Element
     	return sigmavec;
 	}
 	
-	public double[] InternalForcesVec(Nodes[] Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
+	public double[] InternalForcesVec(List<Node> Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		int Nnodes = ExternalNodes.length;
 		float[] e = null, n = null;
@@ -1278,7 +1279,7 @@ public class Element
     	return forcevec;
 	}
 
-	public void RecordResults(Nodes[] Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
+	public void RecordResults(List<Node> Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		setDisp(DispVec(Node, U));
 		setStrain(StrainVec(Node, U, NonlinearGeo));

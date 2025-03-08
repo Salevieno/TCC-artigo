@@ -1,11 +1,13 @@
 package main.output;
 
-import main.utilidades.Util;
+import java.util.List;
+
 import main.mainTCC.Analysis;
 import main.structure.Element;
-import main.structure.Nodes;
+import main.structure.Node;
 import main.structure.Reactions;
 import main.structure.Supports;
+import main.utilidades.Util;
 
 public class Results
 {
@@ -21,49 +23,49 @@ public class Results
 	private double[] SumReactions;
 	private double[][][][] LoadDisp;
 	
-	public void register(Nodes[] Node, Element[] Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
+	public void register(List<Node> Node, List<Element> Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
-		double[][][] ElemStrains = new double[Elem.length][][];
-	    double[][][] ElemStresses = new double[Elem.length][][];
-	    double[][][] ElemInternalForces = new double[Elem.length][][];
-		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
+		double[][][] ElemStrains = new double[Elem.size()][][];
+	    double[][][] ElemStresses = new double[Elem.size()][][];
+	    double[][][] ElemInternalForces = new double[Elem.size()][][];
+		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
-			int NNodesOnElem = Elem[elem].getExternalNodes().length;
-			ElemStrains[elem] = new double[NNodesOnElem][Elem[elem].getStrainTypes().length];
-			ElemStresses[elem] = new double[NNodesOnElem][Elem[elem].getStrainTypes().length];
-			ElemInternalForces[elem] = new double[NNodesOnElem][Elem[elem].getStrainTypes().length];
+			int NNodesOnElem = Elem.get(elem).getExternalNodes().length;
+			ElemStrains[elem] = new double[NNodesOnElem][Elem.get(elem).getStrainTypes().length];
+			ElemStresses[elem] = new double[NNodesOnElem][Elem.get(elem).getStrainTypes().length];
+			ElemInternalForces[elem] = new double[NNodesOnElem][Elem.get(elem).getStrainTypes().length];
 			for (int elemnode = 0; elemnode <= NNodesOnElem - 1; elemnode += 1)
 			{
-				int NumberOfDOFsOnNode = Node[Elem[elem].getExternalNodes()[elemnode]].getDOFType().length;
-				for (int dof = 0; dof <= Elem[elem].getStrainTypes().length - 1; dof += 1)
+				int NumberOfDOFsOnNode = Node.get(Elem.get(elem).getExternalNodes()[elemnode]).getDOFType().length;
+				for (int dof = 0; dof <= Elem.get(elem).getStrainTypes().length - 1; dof += 1)
 				{
 					int ID = elemnode * NumberOfDOFsOnNode + dof;
-					ElemStrains[elem][elemnode][dof] = Elem[elem].getStrain()[ID];
-					ElemStresses[elem][elemnode][dof] = Elem[elem].getStress()[ID];
-					ElemInternalForces[elem][elemnode][dof] = Elem[elem].getIntForces()[ID];
+					ElemStrains[elem][elemnode][dof] = Elem.get(elem).getStrain()[ID];
+					ElemStresses[elem][elemnode][dof] = Elem.get(elem).getStress()[ID];
+					ElemInternalForces[elem][elemnode][dof] = Elem.get(elem).getIntForces()[ID];
 				}
 			}
 		}
-        int[] DOFTypesOnNode = Analysis.DefineFreeDoFTypes(Node, Elem, Sup);
-        setDispMin(FindMinDisps(U, Elem[0].getDOFs(), DOFTypesOnNode)) ;
-        setDispMax(FindMinDisps(U, Elem[0].getDOFs(), DOFTypesOnNode)) ;
-        setStrainMin(FindMinElemProp(ElemStrains, Elem.length, Elem[0].getStrainTypes().length)) ;
-        setStrainMax(FindMaxElemProp(ElemStrains, Elem.length, Elem[0].getStrainTypes().length)) ;
-        setStressMin(FindMinElemProp(ElemStresses, Elem.length, Elem[0].getStrainTypes().length)) ;
-        setStressMax(FindMaxElemProp(ElemStresses, Elem.length, Elem[0].getStrainTypes().length)) ;
-        setInternalForcesMin(FindMinElemProp(ElemInternalForces, Elem.length, Elem[0].getStrainTypes().length)) ;
-        setInternalForcesMax(FindMaxElemProp(ElemInternalForces, Elem.length, Elem[0].getStrainTypes().length)) ;
+        int[] DOFTypesOnNode = Analysis.DefineFreeDoFTypes(Node, Sup);
+        setDispMin(FindMinDisps(U, Elem.get(0).getDOFs(), DOFTypesOnNode)) ;
+        setDispMax(FindMinDisps(U, Elem.get(0).getDOFs(), DOFTypesOnNode)) ;
+        setStrainMin(FindMinElemProp(ElemStrains, Elem.size(), Elem.get(0).getStrainTypes().length)) ;
+        setStrainMax(FindMaxElemProp(ElemStrains, Elem.size(), Elem.get(0).getStrainTypes().length)) ;
+        setStressMin(FindMinElemProp(ElemStresses, Elem.size(), Elem.get(0).getStrainTypes().length)) ;
+        setStressMax(FindMaxElemProp(ElemStresses, Elem.size(), Elem.get(0).getStrainTypes().length)) ;
+        setInternalForcesMin(FindMinElemProp(ElemInternalForces, Elem.size(), Elem.get(0).getStrainTypes().length)) ;
+        setInternalForcesMax(FindMaxElemProp(ElemInternalForces, Elem.size(), Elem.get(0).getStrainTypes().length)) ;
 		
-		double[][] strains = new double[Elem.length][3];
-		for (int elem = 0; elem <= Elem.length - 1; elem += 1)
+		double[][] strains = new double[Elem.size()][3];
+		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
-			strains[elem] = Elem[elem].getStrain();
+			strains[elem] = Elem.get(elem).getStrain();
 		}
-		for (int node = 0; node <= Node.length - 1; node += 1)
+		for (int node = 0; node <= Node.size() - 1; node += 1)
 	    {
 			if (Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U) != null)
 			{
-		    	Node[node].AddConcLoads(Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U));
+		    	Node.get(node).AddConcLoads(Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U));
 			}
 	    }
 		setReactions(Analysis.Reactions(Node, Elem, Sup, NonlinearMat, NonlinearGeo, U)) ;
