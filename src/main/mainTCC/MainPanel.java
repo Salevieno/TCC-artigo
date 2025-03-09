@@ -243,7 +243,9 @@ public class MainPanel extends JPanel
 	    this.setPreferredSize(initialSize);
 		
 	}
-		
+
+	public static Dimension getInitialSize() { return initialSize ;}
+
 	public void displayCanvasElements(MyCanvas canvas, boolean ShowCanvas, boolean ShowGrid, boolean ShowMousePos)
 	{
 		canvas.setPos(new Point((int) (0.1 * initialSize.width), (int) (0.1 * initialSize.height)));

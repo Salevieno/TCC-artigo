@@ -44,10 +44,9 @@ public class DrawingOnAPanel
 
 	}
 
-	public DrawingOnAPanel(Graphics g, MyCanvas canvas, Point3D RealStructCenter)
+	public DrawingOnAPanel(Graphics g, Point3D RealStructCenter)
 	{
 		G = (Graphics2D) g;
-		// this.canvas = canvas;
 		this.RealStructCenter = RealStructCenter;
 	}
 

@@ -78,10 +78,6 @@ public abstract class MenuFunctions
 	{
 		matTypes = new ArrayList<>() ;
 		secTypes = new ArrayList<>() ;
-	}
-	
-	public static void Initialization()
-	{
 		mousePos = new Point();
 		ShowCanvas = true;
 		ShowMousePos = true;

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -12,12 +11,6 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +28,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 
 import main.mainTCC.Analysis;
+import main.mainTCC.DiagramsPanel;
+import main.mainTCC.LegendPanel;
+import main.mainTCC.ListPanel;
 import main.mainTCC.MainPanel;
 import main.mainTCC.MenuFunctions;
 import main.structure.ElemType;
@@ -73,9 +67,12 @@ public class Menus extends JFrame
 	JPanel utb, mp;
 	JPanel bp1, bp2, bp3;
 	JPanel LDpanel;
-	JPanel jpLD, jpLegend, jpLists, jpInstruction;
+	JPanel jpInstruction;
 	
 	private MainPanel mainPanel;
+	private LegendPanel legendPanel;
+	private DiagramsPanel diagramsPanel;
+	private ListPanel jpLists;
 
 	JMenuBar menuBar;
     public JMenu StructureMenu, ViewMenu, AnalysisMenu, ResultsMenu, EspecialMenu;
@@ -103,8 +100,7 @@ public class Menus extends JFrame
 	Dimension defaultPanelSize = new Dimension(260, 300);
 	
 	/* Global variables */	
-	private static MyCanvas MainCanvas, LDCanvas, LegendCanvas, ListsCanvas;
-	DrawingOnAPanel DP;
+	private static MyCanvas MainCanvas ;
 
 	int[] FrameTopLeftPos;
     int[] MainPanelPos;	// LDPanelPos, LegendPanelPos
@@ -149,14 +145,18 @@ public class Menus extends JFrame
 	
 	private Menus()
 	{
+		FrameTopLeftPos = new int[] {200, 50};
+		mainPanel = new MainPanel(new Point(FrameTopLeftPos[0], FrameTopLeftPos[1])) ;
+		legendPanel = new LegendPanel();
+		diagramsPanel = new DiagramsPanel();
+		jpLists = new ListPanel();
+
 		Initialization();
-		MenuFunctions.Initialization();
+
 		AddMenus();
 		setJMenuBar(menuBar);
 		setTitle("TCC");								// Super frame sets its title
-//		setSize(1084, 700);	// Super frame sets its initial window size
 		setPreferredSize(new Dimension(1084, 700)) ;
-		//setBackground(ColorPalette[3]);				// Super frame sets its back ground color
 		setVisible(true);								// Super frame shows
 		pack();
 		/* Super frame sets its everything. Super frame is so independent! =,) */
@@ -169,27 +169,11 @@ public class Menus extends JFrame
 	public static Menus getInstance() { return instance ;}
 	
 	public void Initialization()
-	{	
-		FrameTopLeftPos = new int[] {200, 50};
+	{
 		setLocation(FrameTopLeftPos[0], FrameTopLeftPos[1]);
-		int[] LDPanelSize = new int[] {10, 100};
-		int[] LegendPanelSize = new int[] {10, 100};
-		Border jpLDBorder = BorderFactory.createTitledBorder("");
-//		jpMain = createPanel(jpMain, new int[] {1350, 700}, palette[2], BorderFactory.createBevelBorder(BevelBorder.RAISED), "Main");	// Creates a JPanel inside the JFrame
-//		jpMain.setSize(new Dimension(1350, 700));
-		jpLegend = createPanel(jpLegend, LegendPanelSize, palette[3], BorderFactory.createTitledBorder(jpLDBorder, "Legenda", TitledBorder.CENTER, TitledBorder.CENTER), "Legend");	// Creates a JPanel inside the JFrame
-		jpLegend.setSize(new Dimension(10, 100));
-		jpLD = createPanel(jpLD, LDPanelSize, palette[3], BorderFactory.createTitledBorder(jpLDBorder, "Curva carga deslocamento", TitledBorder.CENTER, TitledBorder.CENTER), "LD");	// Creates a JPanel inside the JFrame
-		jpLD.setSize(new Dimension(0, 100));
-		jpLists = createPanel(jpLists, LDPanelSize, palette[2], BorderFactory.createBevelBorder(BevelBorder.RAISED), "Lists");	// Creates a JPanel inside the JFrame
-		jpLists.setSize(new Dimension(10, 100));
-		
 	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
-	    mainPanel = new MainPanel(new Point(FrameTopLeftPos[0], FrameTopLeftPos[1])) ;
+
 	    MainCanvas = new MyCanvas (new Point(575, 25), new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);	    
-	    LDCanvas = new MyCanvas (new Point(50, 25), new int[] {(int) (0.0 * mainPanel.getSize().getWidth()), (int) (0.0 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);
-	    LegendCanvas = new MyCanvas (new Point(50, 25), new int[] {(int) (0.0 * mainPanel.getSize().getWidth()), (int) (0.0 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);
-	    ListsCanvas = new MyCanvas (new Point(50, 25), new int[] {(int) (0.04 * mainPanel.getSize().getWidth()), (int) (0.04 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);
 
 		SubMenuDisp = new JMenuItem[6];				// ux, uy, uz, tetax, tetay, tetaz
 		SubMenuStresses = new JMenuItem[6];			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
@@ -202,13 +186,14 @@ public class Menus extends JFrame
 	
 	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos) ;}
 	
+	public boolean[] getAqueleBooleanGrande() { return new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn} ;}
+
 	public int[] getFrameTopLeftPos() { return FrameTopLeftPos ;}
 	
 	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
 	
 	public void setStepIsComplete(boolean[] StepIsComplete) {this.StepIsComplete = StepIsComplete ;}
 	
-	// Start of GUI
 	
 	private JPanel createToolbar1()
 	{
@@ -737,7 +722,6 @@ public class Menus extends JFrame
 		return uToolbarPanel;
 	}
 	
-	/* ok */
 	private JPanel createBlankPanel(Dimension size, Color bgcolor)
 	{
 		JPanel blankPanel = new JPanel();
@@ -1020,27 +1004,15 @@ public class Menus extends JFrame
 		JPanel newContentPanel = new JPanel(new GridBagLayout());
 		BorderLayout bl = new BorderLayout();
 		newContentPanel.setLayout(bl);
-		/*GroupLayout cpGLayout = new GroupLayout(newContentPanel);
-		newContentPanel.setLayout(cpGLayout);
-		cpGLayout.setAutoCreateGaps(true);
-		cpGLayout.setAutoCreateContainerGaps(true);*/
 
-		/* upper toolbar and north panels */
 		N1 = createNorthPanels();
-
-		/* west panels */
 		W1 = createWestPanels(Listsplot);
-
-		/* south panels */
 		S1 = createSouthPanels();
-
-		/* east panels */
 		E1 = createEastPanels();
 		
 		newContentPanel.add(N1, BorderLayout.NORTH);
 		newContentPanel.add(mainPanel, BorderLayout.CENTER);
 		newContentPanel.add(W1, BorderLayout.WEST);
-		//newContentPanel.add(S1, BorderLayout.SOUTH);
 		newContentPanel.add(E1, BorderLayout.EAST);
 	
 		this.setContentPane(newContentPanel);
@@ -1149,8 +1121,8 @@ public class Menus extends JFrame
 		{
 			E1.remove(LDpanel);
 			E1.remove(bp3);
-			LDpanel = jpLD;
-			bp3 = jpLegend;
+			LDpanel = diagramsPanel;
+			bp3 = legendPanel;
 			E1.add(bp3);
 			E1.add(LDpanel);
 			tb2.setVisible(true);
@@ -1158,11 +1130,7 @@ public class Menus extends JFrame
 		}
 	}
 	
-	/* ok */
 	
-	// end of GUI
-	
-	// Start of adding menus and menu items	
 	public void AddMenus()
 	{
 		/* Defining menu bars */
@@ -1398,7 +1366,14 @@ public class Menus extends JFrame
 				if (StructCoords != null)
 				{
 					EnableButtons();
-					MenuFunctions.struct.setCoords(arrayToPoint3D(StructCoords));
+
+					List<Point3D> structCoordsAsPoints = new ArrayList<Point3D>() ;
+					for (int i = 0 ; i <= StructCoords.length - 1 ; i += 1)
+					{
+						structCoordsAsPoints.add(new Point3D(StructCoords[i][0], StructCoords[i][1], StructCoords[i][2])) ;
+					}
+
+					MenuFunctions.struct.setCoords(structCoordsAsPoints);
 					MenuFunctions.struct.updateCenter() ;
 					MenuFunctions.struct.updateMinCoords() ;
 					MenuFunctions.struct.updateMaxCoords() ;
@@ -1462,18 +1437,6 @@ public class Menus extends JFrame
 		CreateMesh.add(RadialMesh);		
 	}
 
-	private List<Point3D> arrayToPoint3D(double[][] array)
-	{
-		List<Point3D> result = new ArrayList<>() ;
-
-		for (int i = 0 ; i <= array.length - 1 ; i += 1)
-		{
-			result.add(new Point3D(array[i][0], array[i][1], array[i][2])) ;
-		}
-
-		return result ;
-	}
-	
 	public void AddViewMenuItems()
 	{
 		/* Defining items in the menu View */
@@ -1968,9 +1931,8 @@ public class Menus extends JFrame
 			}
 		});
 	}
-	// End of adding menus and menu items
 
-	/* ok */	
+	
 	public void StructureMenuCreateMesh(MeshType meshType)
 	{
 		JLabel[] Labels = new JLabel[2];
@@ -2133,230 +2095,7 @@ public class Menus extends JFrame
 		UpperToolbarButton[7].setEnabled(NodalDispsAssignmentIsOn);
 		UpperToolbarButton[7].setVisible(NodalDispsAssignmentIsOn);
 	}
-	/* ok */
-	
-	class CustomSizeListsPanel extends JPanel 
-	{
-		private static final long serialVersionUID = 1L;
-		CustomSizeListsPanel(int sizeX, int sizeY) 
-	    {
-	        setPreferredSize(new Dimension(sizeX, sizeY));	// set a preferred size for the custom panel.
-	    }
-	    @Override
-	    public void paintComponent(Graphics g) 
-	    {
-	        super.paintComponent(g);
-	        DP = new DrawingOnAPanel(g, ListsCanvas, MenuFunctions.struct.getCenter());
-	        MenuFunctions.DrawOnListsPanel(jpLists.getSize(), new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn}, DP);
-			repaint();
-	    }
-    }
-	class CustomSizeLegendPanel extends JPanel 
-	{
-		private static final long serialVersionUID = 1L;
-		CustomSizeLegendPanel(int sizeX, int sizeY) 
-	    {
-	        setPreferredSize(new Dimension(sizeX, sizeY));	// set a preferred size for the custom panel.
-	    }
-	    @Override
-	    public void paintComponent(Graphics g) 
-	    {
-	        super.paintComponent(g);
-	        DP = new DrawingOnAPanel(g, LegendCanvas, MenuFunctions.struct.getCenter());
-	        MenuFunctions.DrawOnLegendPanel(jpLegend.getSize(), DP);
-			repaint();
-	    }
-    }
-	class CustomSizeLDPanel extends JPanel 
-	{
-		private static final long serialVersionUID = 1L;
-		CustomSizeLDPanel(int sizeX, int sizeY) 
-	    {
-	        setPreferredSize(new Dimension(sizeX, sizeY));	// set a preferred size for the custom panel.
-	    }
-	    @Override
-	    public void paintComponent(Graphics g) 
-	    {
-	        super.paintComponent(g);
-	        DP = new DrawingOnAPanel(g, LDCanvas, MenuFunctions.struct.getCenter());
-	        MenuFunctions.DrawOnLDPanel(jpLD.getSize(), DP);
-			repaint();
-	    }
-    }
 
-	private JPanel createPanel(JPanel jPanel, int[] PanelSize, Color backgcolor, Border border, String PanelName) 
-	{
-		if (PanelName.equals("Legend"))
-		{
-	        jPanel = new CustomSizeLegendPanel(PanelSize[0], PanelSize[1]);	// we want a legend panel, not a generic JPanel!
-		}
-		else if (PanelName.equals("LD"))
-		{
-	        jPanel = new CustomSizeLDPanel(PanelSize[0], PanelSize[1]);	// we want a LD panel, not a generic JPanel!
-		}
-		else if (PanelName.equals("Lists"))
-		{
-	        jPanel = new CustomSizeListsPanel(PanelSize[0], PanelSize[1]);	// we want a Lists panel, not a generic JPanel!
-		}
-        jPanel.setBackground(backgcolor);
-        jPanel.setBorder(border);
-        jPanel.addMouseListener(new MouseAdapter() 
-        {
-			public void mousePressed(MouseEvent evt)
-			{	
-				if (evt.getButton() == 1)	// Left click
-				{
-					if (MenuFunctions.StructureCreationIsOn)
-					{
-						MenuFunctions.StructureCreation(MainPanelPos, MainCanvas);
-						EnableButtons();
-						updateInstructionPanel();
-					}
-					if (!MenuFunctions.StructureCreationIsOn)
-					{
-						StepIsComplete = MenuFunctions.CheckSteps();
-						UpperToolbarButton[0].setEnabled(false);
-						UpperToolbarButton[0].setVisible(false);
-						UpperToolbarButton[1].setEnabled(false);
-						UpperToolbarButton[1].setVisible(false);
-					}				
-					if (MenuFunctions.NodeSelectionIsOn)
-					{
-						mainPanel.NodeAddition(MainCanvas, MainPanelPos);
-						if (MenuFunctions.SelectedNodes != null)
-						{
-							if (-1 < MenuFunctions.SelectedNodes[0])
-							{
-								ResetEastPanels();
-								//AddNodeInfoPanel(MenuFunctions.Node[MenuFunctions.SelectedNodes[0]]);
-							}
-						}
-					}
-					if (MenuFunctions.ElemSelectionIsOn)
-					{
-						MenuFunctions.ElemAddition(MainCanvas, MainPanelPos);
-						if (MenuFunctions.SelectedElems != null)
-						{
-							if (-1 < MenuFunctions.SelectedElems[0])
-							{
-								ResetEastPanels();
-								//AddElemInfoPanel(MenuFunctions.Elem[MenuFunctions.SelectedElems[0]]);
-							}
-						}
-					}
-				}
-				if (evt.getButton() == 3)	// Right click
-				{
-					MenuFunctions.struct.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.struct.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
-					MenuFunctions.ElemDetailsView();
-				}
-			}
-			public void mouseReleased(MouseEvent evt) 
-			{
-			    //mouseReleased(evt);
-		    }
-		});
-        jPanel.addMouseMotionListener(new MouseMotionAdapter() 
-        {
-            public void mouseDragged(MouseEvent evt) 
-            {
-                //mouseDragged(evt);
-            }
-        });
-        jPanel.addMouseWheelListener(new MouseWheelListener()
-        {
-			@Override
-			public void mouseWheelMoved(MouseWheelEvent evt) 
-			{
-				MenuFunctions.MouseWheel(MainPanelPos, MainCanvas, evt.getWheelRotation(), new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn});
-				MenuFunctions.updateDiagramScale(MainCanvas, evt.getWheelRotation());
-			}       	
-        });
-        jPanel.addKeyListener(new KeyListener()
-        {
-			@Override
-			public void keyPressed(KeyEvent evt)
-			{
-				int keyCode = evt.getKeyCode();
-				char keychar = evt.getKeyChar();
-				char[] ActionKeys = new char[] {'Q', 'W', 'A', 'S', 'Z', 'X','E', 'D', 'C'};	// Q, W, A, S, Z, X: rotation, E: top view, D: front view, C: side view
-				if (keychar == Character.toLowerCase(ActionKeys[0]) | keychar == Character.toUpperCase(ActionKeys[0]))
-				{
-					MainCanvas.setAngles(new double[] {MainCanvas.getAngles()[0] - Math.PI/180.0, MainCanvas.getAngles()[1], MainCanvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[1]) | keychar == Character.toUpperCase(ActionKeys[1]))
-				{
-					MainCanvas.setAngles(new double[] {MainCanvas.getAngles()[0] + Math.PI/180.0, MainCanvas.getAngles()[1], MainCanvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[2]) | keychar == Character.toUpperCase(ActionKeys[2]))
-				{
-					MainCanvas.setAngles(new double[] {MainCanvas.getAngles()[0], MainCanvas.getAngles()[1] + Math.PI/180.0, MainCanvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[3]) | keychar == Character.toUpperCase(ActionKeys[3]))
-				{
-					MainCanvas.setAngles(new double[] {MainCanvas.getAngles()[0], MainCanvas.getAngles()[1] - Math.PI/180.0, MainCanvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[4]) | keychar == Character.toUpperCase(ActionKeys[4]))
-				{
-					MainCanvas.setAngles(new double[] {MainCanvas.getAngles()[0], MainCanvas.getAngles()[1], MainCanvas.getAngles()[2] + Math.PI/180.0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[5]) | keychar == Character.toUpperCase(ActionKeys[5]))
-				{
-					MainCanvas.setAngles(new double[] {MainCanvas.getAngles()[0], MainCanvas.getAngles()[1], MainCanvas.getAngles()[2] - Math.PI/180.0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[6]) | keychar == Character.toUpperCase(ActionKeys[6]))
-				{
-					MainCanvas.setAngles(new double[] {0, 0, 0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[7]) | keychar == Character.toUpperCase(ActionKeys[7]))
-				{
-					MainCanvas.setAngles(new double[] {0, -Math.PI/2.0, 0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[8]) | keychar == Character.toUpperCase(ActionKeys[8]))
-				{
-					MainCanvas.setAngles(new double[] {-Math.PI/2.0, 0, 0});
-				}
-				if (keyCode == KeyEvent.VK_RIGHT)
-				{
-					MainCanvas.setDrawingPos(new int[] {MainCanvas.getDrawingPos()[0] + 10, MainCanvas.getDrawingPos()[1], MainCanvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_LEFT)
-				{
-					MainCanvas.setDrawingPos(new int[] {MainCanvas.getDrawingPos()[0] - 10, MainCanvas.getDrawingPos()[1], MainCanvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_UP)
-				{
-					MainCanvas.setDrawingPos(new int[] {MainCanvas.getDrawingPos()[0], MainCanvas.getDrawingPos()[1] - 10, MainCanvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_DOWN)
-				{
-					MainCanvas.setDrawingPos(new int[] {MainCanvas.getDrawingPos()[0], MainCanvas.getDrawingPos()[1] + 10, MainCanvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_ESCAPE)
-				{
-					MenuFunctions.SelectedNodes = null;
-					MenuFunctions.SelectedElems = null;
-				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent evt)
-			{
-				
-			}
-
-			@Override
-			public void keyTyped(KeyEvent evt)
-			{
-				
-			}        	
-        });
-        //this.setContentPane(jPanelMain);	// add the component to the frame to see it!
-       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //pack();
-        
-        return jPanel;
-    }
 
 	private static JButton AddButton(String Text, int[] Alignment, int[] Size, int FontSize, int[] margins, Color color)
 	{
@@ -2384,4 +2123,5 @@ public class Menus extends JFrame
 	{
 		ShowMousePos = true ;
 	}
+
 }
