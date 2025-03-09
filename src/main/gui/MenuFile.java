@@ -63,7 +63,7 @@ public abstract class MenuFile
 		String filename = Menus.getInstance().getSaveLoadFile().run().getText();
 		MenuFunctions.LoadFile("", filename);
 		MenuFunctions.Struct.updateMaxCoords() ;
-		Menus.getMainCanvas().setDim(new double[] {1.2 * MenuFunctions.Struct.getMaxCoords().x, 1.2 * MenuFunctions.Struct.getMaxCoords().y, 1});
+		Menus.getMainCanvas().setDimension(new double[] {1.2 * MenuFunctions.Struct.getMaxCoords().x, 1.2 * MenuFunctions.Struct.getMaxCoords().y, 1});
 		Menus.getInstance().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady());
 		Menus.getInstance().showCanvasOn() ;
 		Menus.getInstance().showGrid() ;

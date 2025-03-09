@@ -1406,7 +1406,7 @@ public class Menus extends JFrame
 					MenuFunctions.Struct.updateCenter() ;
 					MenuFunctions.Struct.updateMinCoords() ;
 					MenuFunctions.Struct.updateMaxCoords() ;
-					MainCanvas.setDim(new double[] {1.2 * MenuFunctions.Struct.getMaxCoords().x, 1.2 * MenuFunctions.Struct.getMaxCoords().y, 0});
+					MainCanvas.setDimension(new double[] {1.2 * MenuFunctions.Struct.getMaxCoords().x, 1.2 * MenuFunctions.Struct.getMaxCoords().y, 0});
 					MainCanvas.setDrawingPos(new int[2]);
 					updateInstructionPanel();
 				}
@@ -2251,7 +2251,7 @@ public class Menus extends JFrame
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					UtilComponents.PrintStructure(StructureMenu.getName(), MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					UtilComponents.PrintStructure(StructureMenu.getName(), MenuFunctions.Struct.getMesh(), MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
 			}

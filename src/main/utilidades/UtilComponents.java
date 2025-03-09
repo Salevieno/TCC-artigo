@@ -9,6 +9,7 @@ import main.structure.Element;
 import main.structure.Material;
 import main.structure.NodalDisps;
 import main.structure.Node;
+import main.structure.Mesh;
 import main.structure.Reactions;
 import main.structure.Section;
 import main.structure.Supports;
@@ -152,17 +153,17 @@ public abstract class UtilComponents
 		}
 	}
 	
-	public static void PrintStructure(String StructureName, List<Node> Node, List<Element> Elem, List<Material> mats, List<Section> secs, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	public static void PrintStructure(String StructureName, Mesh mesh, List<Material> mats, List<Section> secs, Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(StructureName);
-		if (Node != null)
+		if (mesh.getNodes() != null)
 		{
-			PrintAllNodes(Node);
+			PrintAllNodes(mesh.getNodes());
 		}
-		if (Elem != null)
+		if (mesh.getElements() != null)
 		{
-			PrintAllElems(Elem);
+			PrintAllElems(mesh.getElements());
 		}
 		if (mats != null)
 		{

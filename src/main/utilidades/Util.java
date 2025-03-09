@@ -23,6 +23,7 @@ import main.structure.ConcLoads;
 import main.structure.DistLoads;
 import main.structure.ElemShape;
 import main.structure.Element;
+import main.structure.Mesh;
 import main.structure.MeshType;
 import main.structure.MyCanvas;
 import main.structure.NodalDisps;
@@ -148,8 +149,10 @@ public abstract class Util
 		return DeformedCoords;
 	}
 	
-	public static int ElemMouseIsOn(List<Node> Node, List<Element> Elem, int[] MousePos, double[] StructCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
+	public static int ElemMouseIsOn(Mesh mesh, int[] MousePos, double[] StructCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
 	{
+		List<Node> Node = mesh.getNodes();
+		List<Element> Elem = mesh.getElements();
 		double[] RealMousePos = ConvertToRealCoords2(MousePos, StructCenter, CanvasPos, CanvasSize, CanvasDim, CanvasCenter, CanvasPos);
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
@@ -161,9 +164,9 @@ public abstract class Util
 		return -1;
 	}
 	
-	public static int ElemMouseIsOn(List<Node> Node, List<Element> Elem, int[] MousePos, double[] StructCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
+	public static int ElemMouseIsOn(Mesh mesh, int[] MousePos, double[] StructCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
 	{
-		return ElemMouseIsOn(Node, Elem, MousePos, StructCenter, new int[] {CanvasPos.x, CanvasPos.y}, CanvasSize, CanvasDim, CanvasCenter, DrawingPos, condition) ;
+		return ElemMouseIsOn(mesh, MousePos, StructCenter, new int[] {CanvasPos.x, CanvasPos.y}, CanvasSize, CanvasDim, CanvasCenter, DrawingPos, condition) ;
 	}
 	
 	public static int NodeMouseIsOn(List<Node> Node, int[] MousePos, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double prec, boolean condition)
@@ -1623,7 +1626,7 @@ public abstract class Util
 	public static boolean MouseIsInsideCanvas(int[] MousePos, MyCanvas canvas)
 	{
 		int[] rectPos = new int[] {canvas.getPos().x, canvas.getPos().y};
-		if (rectPos[0] <= MousePos[0] & rectPos[1] <= MousePos[1] & MousePos[0] <= rectPos[0] + canvas.getDim()[0] & MousePos[1] <= rectPos[1] + canvas.getDim()[1])
+		if (rectPos[0] <= MousePos[0] & rectPos[1] <= MousePos[1] & MousePos[0] <= rectPos[0] + canvas.getDimension()[0] & MousePos[1] <= rectPos[1] + canvas.getDimension()[1])
 		{
 			return true;
 		} 
@@ -1763,9 +1766,11 @@ public abstract class Util
 				CanvasDim, DrawingPos, DOFsOnNode, Defscale, condition) ;
 	}
 	
-	public static int[] ElemsInsideWindow(List<Node> Node, List<Element> Elem, double[] RealStructCenter, int[] WindowTopLeft, int[] WindowBotRight, int[] PanelPos, int[] CanvasPos, int[] CanvasCenter,
+	public static int[] ElemsInsideWindow(Mesh mesh, double[] RealStructCenter, int[] WindowTopLeft, int[] WindowBotRight, int[] PanelPos, int[] CanvasPos, int[] CanvasCenter,
 											int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double Defscale, boolean condition)
 	{
+		List<Node> Node = mesh.getNodes();
+		List<Element> Elem = mesh.getElements();
 		int[] ElemsInsideWindow = null;
 		int[] ElemDOFs = Elem.get(0).getDOFs();
 		int[] NodesInWindow = NodesInsideWindow(Node, RealStructCenter, WindowTopLeft, WindowBotRight, CanvasPos, CanvasCenter, CanvasSize, CanvasDim, DrawingPos, ElemDOFs, Defscale, condition);
@@ -2559,12 +2564,12 @@ public abstract class Util
     	return x;
     }
 
-	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, List<Node> Node, List<Element> Elem, int[] MousePos, int[] DPPos, int[] SelectedElems, int[] SelWindowInitPos, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
+	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Mesh mesh, int[] MousePos, int[] DPPos, int[] SelectedElems, int[] SelWindowInitPos, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
 	{
-		int ElemMouseIsOn = ElemMouseIsOn(Node, Elem, MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos(), ShowDeformedStructure);
+		int ElemMouseIsOn = ElemMouseIsOn(mesh, MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos(), ShowDeformedStructure);
 		if (ShowSelWindow)
 		{
-			int[] ElemsInSelWindow = ElemsInsideWindow(Node, Elem, StructCenter, SelWindowInitPos, MousePos, DPPos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getCenter(), canvas.getSize(), canvas.getDim(), canvas.getDrawingPos(), DiagramScales[1], ShowDeformedStructure);
+			int[] ElemsInSelWindow = ElemsInsideWindow(mesh, StructCenter, SelWindowInitPos, MousePos, DPPos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), DiagramScales[1], ShowDeformedStructure);
 			if (ElemsInSelWindow != null)
 			{
 				for (int i = 0; i <= ElemsInSelWindow.length - 1; i += 1)
@@ -2596,7 +2601,7 @@ public abstract class Util
 	public static int[] NodesSelection(MyCanvas canvas, double[] StructCenter, List<Node> Node, int[] MousePos, int[] DPPos, int[] SelectedNodes, int[] SelWindowInitPos, int[] ElemDOFs, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
 	{
 		double prec = 4;
-		int NodeMouseIsOn = Util.NodeMouseIsOn(Node, MousePos, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getDrawingPos(), prec, ShowDeformedStructure);
+		int NodeMouseIsOn = Util.NodeMouseIsOn(Node, MousePos, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), prec, ShowDeformedStructure);
 		if (-1 < NodeMouseIsOn)
 		{
 			if (!ShowSelWindow)
@@ -2607,7 +2612,7 @@ public abstract class Util
 			else
 			{
 				SelectedNodes = null;
-				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDim(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
+				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
 				if (NodesInsideNodeSelectionWindow != null)
 				{
 					for (int i = 0; i <= NodesInsideNodeSelectionWindow.length - 1; i += 1)
@@ -2622,7 +2627,7 @@ public abstract class Util
 			if (ShowSelWindow)
 			{
 				SelectedNodes = null;
-				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDim(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
+				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
 				if (NodesInsideNodeSelectionWindow != null)
 				{
 					for (int i = 0; i <= NodesInsideNodeSelectionWindow.length - 1; i += 1)
@@ -2641,7 +2646,7 @@ public abstract class Util
 		int mindist = 10;
 		for (int node = 0; node <= NodePos.length - 1; node += 1)
 		{
-			int[] Pos = Util.ConvertToDrawingCoords(NodePos[node], canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getDrawingPos());
+			int[] Pos = Util.ConvertToDrawingCoords(NodePos[node], canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos());
 			if (Util.dist(new double[] {MousePos[0], MousePos[1]}, new double[] {Pos[0], Pos[1]}) <= mindist)
 			{
 				return node;

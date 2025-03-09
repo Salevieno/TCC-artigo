@@ -2,13 +2,18 @@ package main.structure;
 
 import java.awt.Point;
 
+import main.gui.DrawingOnAPanel;
+import main.utilidades.Util;
+
+import java.awt.Color;
+
 public class MyCanvas
 {
 	int[] TitlePos;
-	String Title;
+	String title;
 	private Point pos;
-	int[] Size;
-	double[] Dim;
+	int[] size;
+	double[] dimension;
 	int[] DrawingPos;
 	int[] Center;
 	double[] GridSpacing;
@@ -18,32 +23,68 @@ public class MyCanvas
 	public MyCanvas(Point pos, int[] Size, double[] Dim, int[] DrawingPos)
 	{
 		TitlePos = null;
-		Title = null;
+		title = null;
 		this.pos = pos;
-		this.Size = Size;
-		this.Dim = Dim;
+		this.size = Size;
+		this.dimension = Dim;
 		this.DrawingPos = DrawingPos;
 		Center = new int[] {pos.x + Size[0] / 2, pos.y + Size[1] / 2};
 		GridSpacing = new double[] {5, 5, 0};
 		zoom = 1;
 		angles = new double[] {0.0, 0.0, 0.0};
 	}
+
+	public void draw(String Title, double[] PointDist, DrawingOnAPanel DP)
+	{
+		int[] NPoints = new int[] {(int) (size[0]/PointDist[0]), (int) (size[1]/PointDist[1])};
+		int CanvasThick = 1;
+		PointDist[0] = dimension[0]/NPoints[0];
+		PointDist[1] = dimension[1]/NPoints[1];
+		if (Title != null)
+		{
+			int FontSize = 18;
+			Color TextColor = Color.blue;
+			DP.DrawText(new int[] {pos.x + size[0] / 2, pos.y - FontSize, 0}, Title, "Center", 0, "Bold", FontSize, TextColor);
+		}
+		DP.DrawRect(pos, size[0], size[1], CanvasThick, "Left", 0, false, Color.black, Color.blue);
+	}
+
+	public void draw(double[] PointDist, DrawingOnAPanel DP)
+	{
+		draw(title, PointDist, DP) ;
+	}
+	
+	public void drawGrid(int pointSize, DrawingOnAPanel DP)
+	{
+		int[] NPoints = Util.CalculateNumberOfGridPoints(dimension);
+		double[] PointsDist = new double[2];
+		PointsDist[0] = size[0]/(double)(NPoints[0]);
+		PointsDist[1] = size[1]/(double)(NPoints[1]);		
+		for (int i = 0; i <= NPoints[0]; i += 1)
+		{	
+			for (int j = 0; j <= NPoints[1]; j += 1)
+			{	
+				int[] Pos = new int[] {(int) (pos.x + i*PointsDist[0]), (int) (pos.y + j*PointsDist[1])};
+				DP.DrawCircle(Pos, pointSize, 1, true, true, Color.black, Color.black);
+			}
+		}
+	}
 	
 	public int[] getTitlePos() {return TitlePos;}
-	public String getTitle() {return Title;}
+	public String getTitle() {return title;}
 	public Point getPos() {return pos;}
-	public int[] getSize() {return Size;}
-	public double[] getDim() {return Dim;}
+	public int[] getSize() {return size;}
+	public double[] getDimension() {return dimension;}
 	public int[] getDrawingPos() {return DrawingPos;}
 	public int[] getCenter() {return Center;}
 	public double[] getGridSpacing() {return GridSpacing;}
 	public double getZoom() {return zoom;}
 	public double[] getAngles() {return angles;}
 	public void setTitlePos(int[] T) {TitlePos = T;}
-	public void setTitle(String T) {Title = T;}
+	public void setTitle(String T) {title = T;}
 	public void setPos(Point P) {pos = P;}
-	public void setSize(int[] S) {Size = S;}
-	public void setDim(double[] D) {Dim = D;}
+	public void setSize(int[] S) {size = S;}
+	public void setDimension(double[] D) {dimension = D;}
 	public void setDrawingPos(int[] D) {DrawingPos = D;}
 	public void setCenter(int[] C) {Center = C;}
 	public void setGridSpacing(double[] G) {GridSpacing = G;}

@@ -3,8 +3,9 @@ package main.output;
 import java.util.List;
 
 import main.mainTCC.Analysis;
-import main.structure.Element;
+import main.structure.Mesh;
 import main.structure.Node;
+import main.structure.Element;
 import main.structure.Reactions;
 import main.structure.Supports;
 import main.utilidades.Util;
@@ -23,8 +24,10 @@ public class Results
 	private double[] SumReactions;
 	private double[][][][] LoadDisp;
 	
-	public void register(List<Node> Node, List<Element> Elem, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
+	public void register(Mesh mesh, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
+		List<Node> Node = mesh.getNodes();
+		List<Element> Elem = mesh.getElements();
 		double[][][] ElemStrains = new double[Elem.size()][][];
 	    double[][][] ElemStresses = new double[Elem.size()][][];
 	    double[][][] ElemInternalForces = new double[Elem.size()][][];
@@ -68,7 +71,7 @@ public class Results
 		    	Node.get(node).AddConcLoads(Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U));
 			}
 	    }
-		setReactions(Analysis.Reactions(Node, Elem, Sup, NonlinearMat, NonlinearGeo, U)) ;
+		setReactions(Analysis.Reactions(mesh, Sup, NonlinearMat, NonlinearGeo, U)) ;
 		setSumReactions(Analysis.SumReactions(getReactions())) ;
 	}
 

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import main.gui.Menus;
-import main.mainTCC.MainPanel;
 import main.mainTCC.MenuFunctions;
 import main.output.Results;
 import main.utilidades.Point3D;

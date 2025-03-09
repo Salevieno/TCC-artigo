@@ -9,6 +9,7 @@ import main.structure.Element;
 import main.structure.Material;
 import main.structure.NodalDisps;
 import main.structure.Node;
+import main.structure.Mesh;
 import main.structure.Reactions;
 import main.structure.Section;
 import main.structure.Supports;
@@ -141,9 +142,11 @@ public abstract class Analysis
 		}
 	}
 	
-	public static double[] LoadVector(List<Node> Node, List<Element> Elem, int NFreeDOFs, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
+	public static double[] LoadVector(Mesh mesh, int NFreeDOFs, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
 	{
 		double[] P = new double[NFreeDOFs];
+		List<Node> Node = mesh.getNodes();
+		List<Element> Elem = mesh.getElements();
 		if (ConcLoad != null)
 		{
 			for (int load = 0; load <= ConcLoad.length - 1; load += 1)
@@ -290,13 +293,13 @@ public abstract class Analysis
     	return NodeDisp;
     }
 
-	public static Reactions[] Reactions(List<Node> Node, List<Element> Elem, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
+	public static Reactions[] Reactions(Mesh mesh, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
 		Reactions[] R = new Reactions[Sup.length];
 		for (int node = 0; node <= Sup.length - 1; node += 1)
 		{
 			int nodeID = Sup[node].getNode();
-			double[] NodeForces = NodeForces(nodeID, Node, Elem, NonlinearMat, NonlinearGeo, U);
+			double[] NodeForces = NodeForces(nodeID, mesh.getNodes(), mesh.getElements(), NonlinearMat, NonlinearGeo, U);
 			R[node] = new Reactions(node, nodeID, NodeForces);
 		}	
 		return R;
