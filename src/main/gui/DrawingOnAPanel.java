@@ -1001,7 +1001,7 @@ public class DrawingOnAPanel
 			int[][] DrawingCoords = new int[Node.size()][3];
 			if (deformed)
 			{
-				double[] DeformedCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsPerNode, Defscale);
+				double[] DeformedCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords().asArray(), Node.get(node).getDisp(), DOFsPerNode, Defscale);
 				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			else
@@ -1055,7 +1055,7 @@ public class DrawingOnAPanel
 			{
 				if (showdeformed)
 				{
-					double[] DeformedCoords = Util.ScaledDefCoords(Node.get(Nodes[node]).getOriginalCoords(), Node.get(Nodes[node]).getDisp(), ElemDOFs, Defscale);
+					double[] DeformedCoords = Util.ScaledDefCoords(Node.get(Nodes[node]).getOriginalCoords().asArray(), Node.get(Nodes[node]).getDisp(), ElemDOFs, Defscale);
 					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				else
@@ -1096,7 +1096,7 @@ public class DrawingOnAPanel
 			int node = Sup[s].getNode();
 			int[][] Coords = new int[Node.size()][];
 			int suptype = Util.SupType(Sup[s].getDoFs());
-			Coords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Node.get(node).getOriginalCoords(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+			Coords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Node.get(node).getOriginalCoords().asArray(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			if (suptype == 0)
 			{
 				double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1], -canvas.getAngles()[2]};
@@ -1135,10 +1135,10 @@ public class DrawingOnAPanel
 		for (int l = 0; l <= ConcLoads.length - 1; l += 1)
 		{
 			int node = ConcLoads[l].getNode();
-			double[] RealDefCoords = Node.get(node).getOriginalCoords();
+			double[] RealDefCoords = Node.get(node).getOriginalCoords().asArray();
 			if (condition)
 			{
-				RealDefCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), ElemDOFs, Defscale);
+				RealDefCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords().asArray(), Node.get(node).getDisp(), ElemDOFs, Defscale);
 			}
 			for (int dof = 0; dof <= ElemDOFs.length - 1; dof += 1)
 			{
@@ -1180,8 +1180,8 @@ public class DrawingOnAPanel
 		{
 			int elem = DistLoads[l].getElem();
 			int[] nodes = Elem.get(elem).getExternalNodes();
-			double[] RealLeftBotDefCoords = Util.ScaledDefCoords(Node.get(nodes[3]).getOriginalCoords(), Util.GetNodePos(Node.get(nodes[3]), condition), DOFsPerNode, Defscale);
-			double[] RealRightTopDefCoords = Util.ScaledDefCoords(Node.get(nodes[1]).getOriginalCoords(), Util.GetNodePos(Node.get(nodes[1]), condition), DOFsPerNode, Defscale);
+			double[] RealLeftBotDefCoords = Util.ScaledDefCoords(Node.get(nodes[3]).getOriginalCoords().asArray(), Util.GetNodePos(Node.get(nodes[3]), condition), DOFsPerNode, Defscale);
+			double[] RealRightTopDefCoords = Util.ScaledDefCoords(Node.get(nodes[1]).getOriginalCoords().asArray(), Util.GetNodePos(Node.get(nodes[1]), condition), DOFsPerNode, Defscale);
 			//int[] DrawingLeftBotCoords = Util.ConvertToDrawingCoords2Point3D(RealLeftBotDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			//int[] DrawingRightTopCoords = Util.ConvertToDrawingCoords2Point3D(RealRightTopDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			if (DistLoads[l].getType() == 0)
@@ -1243,7 +1243,7 @@ public class DrawingOnAPanel
 		for (int l = 0; l <= Reactions.length - 1; l += 1)
 		{
 			int node = Reactions[l].getNode();
-			double[] RealDefCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), ElemDOFs, Defscale);
+			double[] RealDefCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords().asArray(), Node.get(node).getDisp(), ElemDOFs, Defscale);
 			for (int r = 0; r <= Reactions[l].getLoads().length - 1; r += 1)
 			{
 				double LoadIntensity = Reactions[l].getLoads()[r];
@@ -1386,7 +1386,7 @@ public class DrawingOnAPanel
 			{
 				if (condition)
 				{
-					EdgeCoords[node] = Util.ScaledDefCoords(nodes.get(EdgeNodes[node]).getOriginalCoords(), nodes.get(EdgeNodes[node]).getDisp(), nodes.get(node).getDOFType(), Defscale);
+					EdgeCoords[node] = Util.ScaledDefCoords(nodes.get(EdgeNodes[node]).getOriginalCoords().asArray(), nodes.get(EdgeNodes[node]).getDisp(), nodes.get(node).getDOFType(), Defscale);
 				}
 				else
 				{

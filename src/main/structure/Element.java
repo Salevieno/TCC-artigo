@@ -60,6 +60,16 @@ public class Element
 		DefineProperties(type);
 	}
 
+	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, ElemType type)
+	{
+		this(ID, ExternalNodes, InternalNodes, null, null, type);
+	}
+
+	public Element(int ID, int[] ExternalNodes, ElemType type)
+	{
+		this(ID, ExternalNodes, null, type);
+	}
+
 
 	@Override
 	public String toString()
@@ -228,13 +238,13 @@ public class Element
 		double[] size = new double[2];
 		if (Shape.equals(ElemShape.rectangular))
 		{
-			size[0] = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords()[0] - nodes.get(ExternalNodes[0]).getOriginalCoords()[0]) / 2;
-			size[1] = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords()[1] - nodes.get(ExternalNodes[0]).getOriginalCoords()[1]) / 2;
+			size[0] = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords().x - nodes.get(ExternalNodes[0]).getOriginalCoords().x) / 2;
+			size[1] = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords().y - nodes.get(ExternalNodes[0]).getOriginalCoords().y) / 2;
 		}
 		else if (Shape.equals(ElemShape.r8) | Shape.equals(ElemShape.r9))
 		{
-			size[0] = Math.abs(nodes.get(ExternalNodes[4]).getOriginalCoords()[0] - nodes.get(ExternalNodes[0]).getOriginalCoords()[0]) / 2;
-			size[1] = Math.abs(nodes.get(ExternalNodes[4]).getOriginalCoords()[1] - nodes.get(ExternalNodes[0]).getOriginalCoords()[1]) / 2;
+			size[0] = Math.abs(nodes.get(ExternalNodes[4]).getOriginalCoords().x - nodes.get(ExternalNodes[0]).getOriginalCoords().x) / 2;
+			size[1] = Math.abs(nodes.get(ExternalNodes[4]).getOriginalCoords().y - nodes.get(ExternalNodes[0]).getOriginalCoords().y) / 2;
 		}
 		return size;
 	}
@@ -274,7 +284,7 @@ public class Element
 		UndeformedCoords = new double[ExternalNodes.length][];
 		for (int i = 0; i <= ExternalNodes.length - 1; i += 1)
 		{
-			UndeformedCoords[i] = nodes.get(ExternalNodes[i]).getOriginalCoords();
+			UndeformedCoords[i] = nodes.get(ExternalNodes[i]).getOriginalCoords().asArray();
     	}
 	}
 
@@ -283,7 +293,7 @@ public class Element
 		DeformedCoords = new double[ExternalNodes.length][];
 		for (int node = 0; node <= ExternalNodes.length - 1; node += 1)
 		{
-			DeformedCoords[node] = Util.ScaledDefCoords(nodes.get(ExternalNodes[node]).getOriginalCoords(), nodes.get(ExternalNodes[node]).getDisp(), nodes.get(node).getDOFType(), 1);
+			DeformedCoords[node] = Util.ScaledDefCoords(nodes.get(ExternalNodes[node]).getOriginalCoords().asArray(), nodes.get(ExternalNodes[node]).getDisp(), nodes.get(node).getDOFType(), 1);
     	}
 	}
 	
@@ -730,18 +740,19 @@ public class Element
 	    		double[][] Coords = new double[Nodes.length][];
 	    		for (int node = 0; node <= Nodes.length - 1; node += 1)
 	    		{
-	    			Coords[node] = new double[nodes.get(Nodes[node]).getOriginalCoords().length];
-	    			for (int coord = 0; coord <= nodes.get(Nodes[node]).getOriginalCoords().length - 1; coord += 1)
-	        		{
-	    				if (NonlinearGeo)
-	    				{
-	            			Coords[node][coord] = nodes.get(Nodes[node]).getOriginalCoords()[coord] + nodes.get(Nodes[node]).getDisp()[coord];
-	    				}
-	    				else
-	    				{
-	            			Coords[node][coord] = nodes.get(Nodes[node]).getOriginalCoords()[coord];
-	    				}
-	        		}
+	    			Coords[node] = new double[3];
+	    			if (NonlinearGeo)
+					{
+						Coords[node][0] = nodes.get(Nodes[node]).getOriginalCoords().x + nodes.get(Nodes[node]).getDisp()[0];
+						Coords[node][1] = nodes.get(Nodes[node]).getOriginalCoords().y + nodes.get(Nodes[node]).getDisp()[1];
+						Coords[node][2] = nodes.get(Nodes[node]).getOriginalCoords().z + nodes.get(Nodes[node]).getDisp()[2];
+					}
+					else
+					{
+						Coords[node][0] = nodes.get(Nodes[node]).getOriginalCoords().x;
+						Coords[node][1] = nodes.get(Nodes[node]).getOriginalCoords().y;
+						Coords[node][2] = nodes.get(Nodes[node]).getOriginalCoords().z;
+					}
 	    		}
 	    		
 	    	    double x1 = Coords[0][0], x2 = Coords[1][0], x3 = Coords[2][0];
@@ -1021,11 +1032,10 @@ public class Element
 	            	double[][] Coords = new double[ExternalNodes.length][];
 	    			for (int node = 0; node <= ExternalNodes.length - 1; node += 1)
 	    			{
-		    			Coords[node] = new double[nodes.get(ExternalNodes[node]).getOriginalCoords().length];
-		    			for (int coord = 0; coord <= nodes.get(ExternalNodes[node]).getOriginalCoords().length - 1; coord += 1)
-		        		{
-		            		Coords[node][coord] = nodes.get(ExternalNodes[node]).getOriginalCoords()[coord];
-		        		}
+		    			Coords[node] = new double[3];
+		    			Coords[node][0] = nodes.get(ExternalNodes[node]).getOriginalCoords().x ;
+						Coords[node][1] = nodes.get(ExternalNodes[node]).getOriginalCoords().y ;
+						Coords[node][2] = nodes.get(ExternalNodes[node]).getOriginalCoords().z ;
 	    			}     	
 	    			Area = Util.TriArea(Coords);
 	        	}

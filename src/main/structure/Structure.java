@@ -146,7 +146,7 @@ public class Structure
 			{
 				for (int j = 0; j <= NumberElem[0]; j += 1)
 				{
-					Node[i*(NumberElem[0] + 1) + j] = new Node(i*(NumberElem[0] + 1) + j, new double[] {MinXCoord + j*dx, MinYCoord + i*dy, 0});
+					Node[i*(NumberElem[0] + 1) + j] = new Node(i*(NumberElem[0] + 1) + j, new Point3D(MinXCoord + j*dx, MinYCoord + i*dy, 0));
 				}
 			}
 		}
@@ -162,7 +162,7 @@ public class Structure
 				{
 					for (int j = 0; j <= 2 * NumberElem[0]; j += 1)
 					{
-						Node[nodeID] = new Node(nodeID, new double[] {MinXCoord + j*dx, MinYCoord + i*dy, 0});
+						Node[nodeID] = new Node(nodeID, new Point3D(MinXCoord + j*dx, MinYCoord + i*dy, 0));
 						nodeID += 1;
 					}
 				}
@@ -170,7 +170,7 @@ public class Structure
 				{
 					for (int j = 0; j <= 2 * NumberElem[0] / 2; j += 1)
 					{
-						Node[nodeID] = new Node(nodeID, new double[] {MinXCoord + 2*j*dx, MinYCoord + i*dy, 0});
+						Node[nodeID] = new Node(nodeID, new Point3D(MinXCoord + 2*j*dx, MinYCoord + i*dy, 0));
 						nodeID += 1;
 					}
 				}
@@ -184,7 +184,7 @@ public class Structure
 			{
 				for (int j = 0; j <= 2*NumberElem[0]; j += 1)
 				{
-					Node[i*(2*NumberElem[0] + 1) + j] = new Node(i*(2*NumberElem[0] + 1) + j, new double[] {MinXCoord + j*dx, MinYCoord + i*dy, 0});
+					Node[i*(2*NumberElem[0] + 1) + j] = new Node(i*(2*NumberElem[0] + 1) + j, new Point3D(MinXCoord + j*dx, MinYCoord + i*dy, 0));
 				}
 			}
 		}
@@ -211,9 +211,9 @@ public class Structure
 	    nodes = new Node[P2.length + 1];
         for (int node = 0; node <= P2.length - 1; node += 1)
 		{
-		    nodes[node] = new Node(node, P2[node]);
+		    nodes[node] = new Node(node, new Point3D(P2[node][0], P2[node][1], P2[node][2]));
 		}
-	    nodes[P2.length] = new Node(P2.length, center, true);
+	    nodes[P2.length] = new Node(P2.length, center);
 	    return Arrays.asList(nodes);
 	}
 	

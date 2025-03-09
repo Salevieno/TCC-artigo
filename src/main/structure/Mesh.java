@@ -31,38 +31,38 @@ public class Mesh
 		Element Elem = null;
 		if (elemShape.equals(ElemShape.rectangular))
 		{
-			nodes.add(new Node(0, new double[] {1, 1, 0})) ;
-			nodes.add(new Node(1, new double[] {9, 1, 0})) ;
-			nodes.add(new Node(2, new double[] {9, 9, 0})) ;
-			nodes.add(new Node(3, new double[] {1, 9, 0})) ;
-			Elem = new Element(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
+			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
+			nodes.add(new Node(1, new Point3D(9, 1, 0))) ;
+			nodes.add(new Node(2, new Point3D(9, 9, 0))) ;
+			nodes.add(new Node(3, new Point3D(1, 9, 0))) ;
+			Elem = new Element(0, new int[] {0, 1, 2, 3}, elemType);
 		}
 		else if (elemShape.equals(ElemShape.quad))
 		{
-			nodes.add(new Node(0, new double[] {1, 1, 0})) ;
-			nodes.add(new Node(1, new double[] {9, 3, 0})) ;
-			nodes.add(new Node(2, new double[] {7, 9, 0})) ;
-			nodes.add(new Node(3, new double[] {3, 7, 0})) ;
-			Elem = new Element(0, new int[] {0, 1, 2, 3}, null, null, null, elemType);
+			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
+			nodes.add(new Node(1, new Point3D(9, 3, 0))) ;
+			nodes.add(new Node(2, new Point3D(7, 9, 0))) ;
+			nodes.add(new Node(3, new Point3D(3, 7, 0))) ;
+			Elem = new Element(0, new int[] {0, 1, 2, 3}, elemType);
 		}
 		else if (elemShape.equals(ElemShape.triangular))
 		{
-			nodes.add(new Node(0, new double[] {1, 1, 0})) ;
-			nodes.add(new Node(1, new double[] {9, 5, 0})) ;
-			nodes.add(new Node(2, new double[] {1, 9, 0})) ;
-			Elem = new Element(0, new int[] {0, 1, 2}, null, null, null, elemType);
+			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
+			nodes.add(new Node(1, new Point3D(9, 5, 0))) ;
+			nodes.add(new Node(2, new Point3D(1, 9, 0))) ;
+			Elem = new Element(0, new int[] {0, 1, 2}, elemType);
 		}
 		else if (elemShape.equals(ElemShape.r8))
 		{
-			nodes.add(new Node(0, new double[] {1, 1, 0})) ;
-			nodes.add(new Node(1, new double[] {9, 1, 0})) ;
-			nodes.add(new Node(2, new double[] {9, 9, 0})) ;
-			nodes.add(new Node(3, new double[] {1, 9, 0})) ;
-			nodes.add(new Node(3, new double[] {5, 1, 0})) ;
-			nodes.add(new Node(3, new double[] {5, 9, 0})) ;
-			nodes.add(new Node(3, new double[] {1, 5, 0})) ;
-			nodes.add(new Node(3, new double[] {9, 5, 0})) ;
-			Elem = new Element(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, null, null, null, elemType);
+			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
+			nodes.add(new Node(1, new Point3D(9, 1, 0))) ;
+			nodes.add(new Node(2, new Point3D(9, 9, 0))) ;
+			nodes.add(new Node(3, new Point3D(1, 9, 0))) ;
+			nodes.add(new Node(3, new Point3D(5, 1, 0))) ;
+			nodes.add(new Node(3, new Point3D(5, 9, 0))) ;
+			nodes.add(new Node(3, new Point3D(1, 5, 0))) ;
+			nodes.add(new Node(3, new Point3D(9, 5, 0))) ;
+			Elem = new Element(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, elemType);
 		}
 		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealStructCenter.asArray(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		int textSize = 16;

@@ -417,9 +417,9 @@ public abstract class MenuFunctions
 			{
 				Node node = nodes.get(i);
 				values[2][i][0] = node.getID();
-				values[2][i][1] = Util.Round(node.getOriginalCoords()[0], 8);
-				values[2][i][2] = Util.Round(node.getOriginalCoords()[1], 8);
-				values[2][i][3] = Util.Round(node.getOriginalCoords()[2], 8);
+				values[2][i][1] = Util.Round(node.getOriginalCoords().x, 8);
+				values[2][i][2] = Util.Round(node.getOriginalCoords().y, 8);
+				values[2][i][3] = Util.Round(node.getOriginalCoords().z, 8);
 				values[2][i][4] = node.getSup();
 				values[2][i][5] = node.getConcLoads();
 				values[2][i][6] = node.getNodalDisps();
@@ -570,7 +570,7 @@ public abstract class MenuFunctions
 					Node NewNode;
 					NewNode = new Node(-1, null);
 					NewNode.setID(Integer.parseInt(Line[0]));
-					NewNode.setOriginalCoords(new double[] {Double.parseDouble(Line[1]), Double.parseDouble(Line[2]), Double.parseDouble(Line[3])});
+					NewNode.setOriginalCoords(new Point3D(Double.parseDouble(Line[1]), Double.parseDouble(Line[2]), Double.parseDouble(Line[3])));
 					NewNode.setDisp(new double[3]);
 					MenuFunctions.Struct.getMesh().getNodes().add(NewNode) ;
 				}
@@ -1371,9 +1371,9 @@ public abstract class MenuFunctions
 						int dir = -1;
 						int dof = SelectedVar;
 						
-						double[] FirstNodePos = MenuFunctions.Struct.getMesh().getNodes().get(SelectedNodes[0]).getOriginalCoords();
-						double[] FinalNodePos = MenuFunctions.Struct.getMesh().getNodes().get(SelectedNodes[SelectedNodes.length - 1]).getOriginalCoords();
-						if (FinalNodePos[1] - FirstNodePos[1] <= FinalNodePos[0] - FirstNodePos[0])
+						Point3D FirstNodePos = MenuFunctions.Struct.getMesh().getNodes().get(SelectedNodes[0]).getOriginalCoords();
+						Point3D FinalNodePos = MenuFunctions.Struct.getMesh().getNodes().get(SelectedNodes[SelectedNodes.length - 1]).getOriginalCoords();
+						if (FinalNodePos.y - FirstNodePos.y <= FinalNodePos.x - FirstNodePos.x)
 						{
 							dir = 0;
 						}
@@ -1386,7 +1386,14 @@ public abstract class MenuFunctions
 						{
 							int nodeID = SelectedNodes[node];
 							double minCoord = dir == 0 ? Structure.calcMinCoords(Struct.getCoords()).x : Structure.calcMinCoords(Struct.getCoords()).y ;
-							Xaxisvalues[node] = MenuFunctions.Struct.getMesh().getNodes().get(nodeID).getOriginalCoords()[dir] - minCoord;
+							if (dir == 0)
+							{
+								Xaxisvalues[node] = MenuFunctions.Struct.getMesh().getNodes().get(nodeID).getOriginalCoords().x - minCoord;
+							}
+							else
+							{
+								Xaxisvalues[node] = MenuFunctions.Struct.getMesh().getNodes().get(nodeID).getOriginalCoords().y - minCoord;
+							}
 						}
 						if (SelectedDiagram == 0)
 						{

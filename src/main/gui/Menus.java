@@ -756,16 +756,12 @@ public class Menus extends JFrame
 
 		String OriginalCoords = "", DeformedCoords = "";
 		String ConcLoads = String.valueOf(0 + "," + 0 + "," + 0 + "," + 0 + "," + 0 + "," + 0);
-		for (int c = 0; c <= Node.getOriginalCoords().length - 1; c+= 1)
-		{
-			OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords()[c], 2));
-			DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[c], 2));
-			if (c < Node.getOriginalCoords().length - 1)
-			{
-				OriginalCoords += ",";
-				DeformedCoords += ",";
-			}
-		}
+		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().x, 2)) + "," ;
+		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().y, 2)) + "," ;
+		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().z, 2)) ;
+		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[0], 2)) + "," ;
+		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[1], 2)) + "," ;
+		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[2], 2)) + "," ;
 		if (Node.getConcLoads() != null)
 		{
 			ConcLoads = "";

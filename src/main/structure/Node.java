@@ -10,7 +10,7 @@ import main.utilidades.Util;
 public class Node
 {
 	private int ID;				// ID
-	private double[] OriCoords;	// Original coordinates [x, y, z]
+	private Point3D coords;		// undeformed coordinates
 	private double[] Disp;		// Displacements [ux, uy, uz]
 	private int[] Sup;			// Support in the node
 	private ConcLoads[] ConcLoad;	// Concentrated loads in the node
@@ -22,40 +22,35 @@ public class Node
 	private int[] DOFType;			// DOFs on node
 	public double[][][] LoadDisp;		// Load displacement curve of the node [dof][x values][y values]
 
-	public Node(int ID, double[] OriCoords)
+	public Node(int ID, Point3D coords)
 	{
 		this.ID = ID;
-		this.OriCoords = OriCoords;
-		Disp = OriCoords;
+		this.coords = coords;
+		Disp = coords.asArray();
 		Sup = null;
 		ConcLoad = null;
 		NodalDisp = null;
 		DOFType = null;
 	}
 
-	public Node(int ID, Point3D oriCoords, boolean temp)
-	{
-		this(ID, oriCoords.asArray()) ;
-	}
-
 	@Override
 	public String toString()
 	{
-		return ID + "	" + Arrays.toString(OriCoords) + "	" + Arrays.toString(Disp)
+		return ID + "	" + coords.toString() + "	" + Arrays.toString(Disp)
 				+ "	" + Arrays.toString(Sup) + "	" + Arrays.toString(ConcLoad) + "	"
 				+ Arrays.toString(NodalDisp) + "	" + Arrays.toString(dofs) + "	"
 				+ Arrays.toString(DOFType) + "	" + Arrays.toString(LoadDisp);
 	}
 
 	public int getID() {return ID;}
-	public double[] getOriginalCoords() {return OriCoords;}
+	public Point3D getOriginalCoords() {return coords;}
 	public double[] getDisp() {return Disp;}
 	public int[] getSup() {return Sup;}
 	public ConcLoads[] getConcLoads() {return ConcLoad;}
 	public NodalDisps[] getNodalDisps() {return NodalDisp;}
 	public int[] getDOFType() {return DOFType;}
 	public void setID(int I) {ID = I;}
-	public void setOriginalCoords(double[] C) {OriCoords = C;}
+	public void setOriginalCoords(Point3D C) {coords = C;}
 	public void setDisp(double[] C) {Disp = C;}
 	public void setSup(int[] S) {Sup = S;}
 	public void setConcLoads(ConcLoads[] C) {ConcLoad = C;}

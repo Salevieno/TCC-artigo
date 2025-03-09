@@ -98,8 +98,8 @@ public abstract class Analysis
 
 		if (NPoints <= 3)
 		{
-			double a = Math.abs(Node.get(Elem.getExternalNodes()[2]).getOriginalCoords()[0] - Node.get(Elem.getExternalNodes()[0]).getOriginalCoords()[0]) / 2;
-			double b = Math.abs(Node.get(Elem.getExternalNodes()[2]).getOriginalCoords()[1] - Node.get(Elem.getExternalNodes()[0]).getOriginalCoords()[1]) / 2;
+			double a = Math.abs(Node.get(Elem.getExternalNodes()[2]).getOriginalCoords().x - Node.get(Elem.getExternalNodes()[0]).getOriginalCoords().x) / 2;
+			double b = Math.abs(Node.get(Elem.getExternalNodes()[2]).getOriginalCoords().y - Node.get(Elem.getExternalNodes()[0]).getOriginalCoords().y) / 2;
 			double[][] Db = Element.BendingConstitutiveMatrix(mat, NonlinearMat, strain);
 			double[][] Ds = Element.ShearConstitutiveMatrix2(mat, sec);
 			for (int pe = 0; pe <= NPoints - 1; pe += 1)
@@ -271,7 +271,7 @@ public abstract class Analysis
 	public static double[][] GetNodeDisplacements(List<Node> Node, double[] u)
     {
         int NumDim = 6;
-        double[][] NodeDisp = new double[Node.size()][Node.get(0).getOriginalCoords().length];
+        double[][] NodeDisp = new double[Node.size()][3];
         for (int node = 0; node <= Node.size() - 1; node += 1)
     	{
     	    for (int dim = 0; dim <= NumDim - 1; dim += 1)

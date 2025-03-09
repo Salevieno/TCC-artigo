@@ -1742,7 +1742,7 @@ public abstract class Util
 		for (int node = 0; node <= Node.size() - 1; node += 1)
 		{
 			//double[] RealNodePos = GetNodePos(Node.get(node), condition);
-			double[] RealNodePos = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsOnNode, Defscale);
+			double[] RealNodePos = Util.ScaledDefCoords(Node.get(node).getOriginalCoords().asArray(), Node.get(node).getDisp(), DOFsOnNode, Defscale);
 			//int[] DrawingCoords = ConvertToDrawingCoords(RealNodePos, CanvasPos, CanvasSize, CanvasDim, DrawingPos);
 			int[] DrawingCoords = Util.ConvertToDrawingCoords2(RealNodePos, RealStructCenter, CanvasPos, CanvasSize, CanvasDim, CanvasCenter, DrawingPos);
 			if (WindowTopLeft[0] <= DrawingCoords[0] & DrawingCoords[0] <= WindowBotRight[0] & WindowTopLeft[1] <= DrawingCoords[1] & DrawingCoords[1] <= WindowBotRight[1])
@@ -2476,17 +2476,16 @@ public abstract class Util
 		}
 		else
 		{
-			return Node.getOriginalCoords();
+			return Node.getOriginalCoords().asArray();
 		}
 	}
 	
 	public static double[] GetNodeDefPos(Node Node)
 	{
-		double[] DefCoords = new double[Node.getOriginalCoords().length];
-		for (int coord = 0; coord <= Node.getOriginalCoords().length - 1; coord += 1)
-		{
-			DefCoords[coord] = Node.getOriginalCoords()[coord] + Node.getDisp()[coord];
-		}
+		double[] DefCoords = new double[3];
+		DefCoords[0] = Node.getOriginalCoords().x + Node.getDisp()[0];
+		DefCoords[1] = Node.getOriginalCoords().x + Node.getDisp()[1];
+		DefCoords[2] = Node.getOriginalCoords().x + Node.getDisp()[2];
 		return DefCoords;
 	}
 	
@@ -2495,11 +2494,10 @@ public abstract class Util
 		double[][] DefCoords = new double[ElemNodes.length][];
 		for (int node = 0; node <= ElemNodes.length - 1; node += 1)
 		{
-			DefCoords[node] = new double[nodes.get(ElemNodes[node]).getOriginalCoords().length];
-			for (int coord = 0; coord <= nodes.get(ElemNodes[node]).getOriginalCoords().length - 1; coord += 1)
-    		{
-				DefCoords[node][coord] = nodes.get(ElemNodes[node]).getOriginalCoords()[coord] + nodes.get(ElemNodes[node]).getDisp()[coord];
-    		}
+			DefCoords[node] = new double[3];
+			DefCoords[node][0] = nodes.get(ElemNodes[node]).getOriginalCoords().x + nodes.get(ElemNodes[node]).getDisp()[0];
+			DefCoords[node][1] = nodes.get(ElemNodes[node]).getOriginalCoords().y + nodes.get(ElemNodes[node]).getDisp()[1];
+			DefCoords[node][2] = nodes.get(ElemNodes[node]).getOriginalCoords().z + nodes.get(ElemNodes[node]).getDisp()[2];
 		}
 		return DefCoords;
 	}
