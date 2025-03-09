@@ -131,7 +131,7 @@ public class MainPanel extends JPanel
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					MenuFunctions.Struct.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					MenuFunctions.Struct.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Struct.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
 			}
@@ -332,9 +332,9 @@ public class MainPanel extends JPanel
 				Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas);
 			}
 		}
-		if (MenuFunctions.ShowSup & MenuFunctions.Sup != null)
+		if (MenuFunctions.ShowSup & MenuFunctions.Struct.getSupports() != null)
 		{
-			DP.DrawSup3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Sup, Supports.color, canvas);
+			DP.DrawSup3D(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getSupports(), Supports.color, canvas);
 		}
 		if (MenuFunctions.ShowConcLoads & MenuFunctions.ConcLoad != null)
 		{
@@ -488,13 +488,13 @@ public class MainPanel extends JPanel
 	{
 		if (-1 < MenuFunctions.SelectedSup & MenuFunctions.SelectedNodes != null & MenuFunctions.SupType != null )
 		{
-			MenuFunctions.Sup = Util.IncreaseArraySize(MenuFunctions.Sup, MenuFunctions.SelectedNodes.length);
 			for (int i = 0; i <= MenuFunctions.SelectedNodes.length - 1; i += 1)
 			{
-				int supid = MenuFunctions.Sup.length - MenuFunctions.SelectedNodes.length + i;
 				if (-1 < MenuFunctions.SelectedNodes[i])
 				{
-					MenuFunctions.Sup[supid] = new Supports(supid, MenuFunctions.SelectedNodes[i], MenuFunctions.SupType[MenuFunctions.SelectedSup]);
+					int supid = MenuFunctions.Struct.getSupports().size() - MenuFunctions.SelectedNodes.length + i;
+					Supports newSupport = new Supports(supid, MenuFunctions.SelectedNodes[i], MenuFunctions.SupType[MenuFunctions.SelectedSup]);
+					MenuFunctions.Struct.addSupport(newSupport) ;
 					MenuFunctions.Struct.getMesh().getNodes().get(MenuFunctions.SelectedNodes[i]).setSup(MenuFunctions.SupType[MenuFunctions.SelectedSup]);
 				}
 			}
@@ -639,7 +639,7 @@ public class MainPanel extends JPanel
 		MenuFunctions.Struct = new Structure("Especial", StructureShape.rectangular, StructCoords);
 		
 		/* 2. Criar malha */		
-		MenuFunctions.Sup = null;
+		MenuFunctions.Struct.removeSupports() ;
 		MenuFunctions.ConcLoad = null;
 		MenuFunctions.DistLoad = null;
 		MenuFunctions.NodalDisp = null;
@@ -672,7 +672,11 @@ public class MainPanel extends JPanel
 		}
 		
 		/* 5. Atribuir apoios */
-		MenuFunctions.Sup = Util.AddEspecialSupports(MenuFunctions.Struct.getMesh().getNodes(), Element.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
+		Supports[] supports = Util.AddEspecialSupports(MenuFunctions.Struct.getMesh().getNodes(), Element.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
+		for (Supports sup : supports)
+		{
+			MenuFunctions.Struct.addSupport(sup);
+		}
 
 		/* 6. Atribuir cargas */
 		if (ConcLoadConfig == 1)
@@ -704,7 +708,7 @@ public class MainPanel extends JPanel
 		
 		MenuFunctions.SelectedNodes = null;
 		MenuFunctions.SelectedElems = null;
-		return new Object[] {MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, null};
+		return new Object[] {MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(), MenuFunctions.Struct.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, null};
 	}
 
 	@Override

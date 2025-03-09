@@ -24,7 +24,7 @@ public class Results
 	private double[] SumReactions;
 	private double[][][][] LoadDisp;
 	
-	public void register(Mesh mesh, Supports[] Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
+	public void register(Mesh mesh, List<Supports> Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		List<Node> Node = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
@@ -49,7 +49,7 @@ public class Results
 				}
 			}
 		}
-        int[] DOFTypesOnNode = Analysis.DefineFreeDoFTypes(Node, Sup);
+        int[] DOFTypesOnNode = Analysis.DefineFreeDoFTypes(Node);
         setDispMin(FindMinDisps(U, Elem.get(0).getDOFs(), DOFTypesOnNode)) ;
         setDispMax(FindMinDisps(U, Elem.get(0).getDOFs(), DOFTypesOnNode)) ;
         setStrainMin(FindMinElemProp(ElemStrains, Elem.size(), Elem.get(0).getStrainTypes().length)) ;

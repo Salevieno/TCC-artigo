@@ -1096,16 +1096,16 @@ public class DrawingOnAPanel
 		}
 	}
 
-	public void DrawSup3D(List<Node> Node, Supports[] Sup, Color SupColor, MyCanvas canvas)
+	public void DrawSup3D(List<Node> Node, List<Supports> Sup, Color SupColor, MyCanvas canvas)
 	{
 		int size = 6;
 		int thick = 2;
 		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		for (int s = 0; s <= Sup.length - 1; s += 1)
+		for (int s = 0; s <= Sup.size() - 1; s += 1)
 		{
-			int node = Sup[s].getNode();
+			int node = Sup.get(s).getNode();
 			int[][] Coords = new int[Node.size()][];
-			int suptype = Sup[s].typeFromDOFs();
+			int suptype = Sup.get(s).typeFromDOFs();
 			Coords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Node.get(node).getOriginalCoords().asArray(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			if (suptype == 0)
 			{

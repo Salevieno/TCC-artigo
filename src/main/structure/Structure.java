@@ -21,6 +21,7 @@ public class Structure
 	private Point3D maxCoords;
 
 	private Mesh mesh ;
+	private List<Supports> supports;
 
 	private double[][] K;		// Stiffness matrix
 	private double[] P;			// Load vector
@@ -399,7 +400,7 @@ public class Structure
 		return Arrays.asList(Elem);
 	}
 
-	public static double[][] StructureStiffnessMatrix(int NFreeDOFs, List<Node> nodes, List<Element> elems, Supports[] sups, boolean nonlinearMat, boolean nonlinearGeo)
+	public static double[][] StructureStiffnessMatrix(int NFreeDOFs, List<Node> nodes, List<Element> elems, boolean nonlinearMat, boolean nonlinearGeo)
     {
         double[][] K = new double[NFreeDOFs][NFreeDOFs];
         		
@@ -479,7 +480,7 @@ public class Structure
 		mesh = CreateMesh(meshType, meshInfo, mesh.getNodes(), mesh.getElements(), elemType);
 	}
 
-	public void printStructure(List<Material> mats, List<Section> secs, Supports[] sups, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	public void printStructure(List<Material> mats, List<Section> secs, List<Supports> sups, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(name);
@@ -503,10 +504,7 @@ public class Structure
 			System.out.println();
 			System.out.println("Sups");
 			System.out.println("Id	Node	DoFs (Fx Fy Fz Mx My Mz)");
-			for (int sup = 0; sup <= sups.length - 1; sup += 1)
-			{
-				System.out.println(sups[sup].toString());
-			}
+			sups.forEach(System.out::println);
 		}
 		if (ConcLoads != null)
 		{
@@ -549,6 +547,16 @@ public class Structure
 		}
 	}
 
+	public void addSupport(Supports sup)
+	{
+		if (supports == null)
+		{
+			supports = new ArrayList<>() ;
+		}
+		supports.add(sup) ;
+	}
+	public void removeSupports() { supports = null ;}
+
 	public String getName() {return name;}
 	public StructureShape getShape() {return shape;}
 	public List<Point3D> getCoords() {return coords;}
@@ -556,6 +564,7 @@ public class Structure
 	public Point3D getMinCoords() {return minCoords;}
 	public Point3D getMaxCoords() {return maxCoords;}
 	public Mesh getMesh() { return mesh ;}
+	public List<Supports> getSupports() {return supports;}
 	public double[][] getK() {return K;}
 	public double[] getP() {return P;}
 	public double[] getU() {return U;}
@@ -563,62 +572,9 @@ public class Structure
 	public void setName(String N) {name = N;}
 	public void setShape(StructureShape S) {shape = S;}
 	public void setCoords(List<Point3D> C) {coords = C;}
-	public void setCenter(Point3D C) {center = C;}
-	public void setMinCoords(Point3D MinC) {minCoords = MinC;}
-	public void setMaxCoords(Point3D MaxC) {maxCoords = MaxC;}
 	public void setK(double[][] k) {K = k;}
 	public void setP(double[] p) {P = p;}
 	public void setU(double[] u) {U = u;}
-	
-	public int[][] NodeDOF(List<Node> Node, Supports[] Sup)
-    {
-        int[][] nodeDOF = new int[Node.size()][];
-        boolean NodeHasSup;
-        int supID;
-        int cont = 0;
-        for (int node = 0; node <= Node.size() - 1; node += 1)
-    	{
-        	nodeDOF[node] = new int[Node.get(node).getDOFType().length];
-    	    NodeHasSup = false;
-    	    supID = -1;
-	        for (int sup = 0; sup <= Sup.length - 1; sup += 1)
-    	    {
-    	        if (Sup[sup].getNode() == node)
-    	        {
-    	            NodeHasSup = true;
-    	            supID = sup;
-    	        }
-    	    }
-    	    for (int dof = 0; dof <= Node.get(node).getDOFType().length - 1; dof += 1)
-    	    {
-        	    if (NodeHasSup)
-        	    {
-        	    	if (Node.get(node).getDOFType()[dof] <= Sup[supID].getDoFs().length - 1)
-        	    	{
-            	        if (Sup[supID].getDoFs()[Node.get(node).getDOFType()[dof]] == 0)
-            	        {
-            	            nodeDOF[node][dof] = cont;
-            	            cont += 1;
-            	        }
-            	        else
-            	        {
-            	            nodeDOF[node][dof] = -1;
-            	        }
-        	    	}
-        	        else	// option 1
-        	        {
-        	        	nodeDOF[node][dof] = -1;
-        	        }
-        	    }
-        	    else
-        	    {
-        	        nodeDOF[node][dof] = cont;
-        	        cont += 1;
-        	    }
-    	    }  
-    	}
-    	return nodeDOF;
-    }
 
 	@Override
 	public String toString()

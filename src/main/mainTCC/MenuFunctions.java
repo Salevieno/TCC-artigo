@@ -45,7 +45,6 @@ public abstract class MenuFunctions
 	public static boolean NodeSelectionIsOn, ElemSelectionIsOn;
 	
 	public static Structure Struct;
-	public static Supports[] Sup;
 	public static ConcLoads[] ConcLoad;
 	public static DistLoads[] DistLoad;
 	public static NodalDisps[] NodalDisp;
@@ -223,7 +222,7 @@ public abstract class MenuFunctions
 			MenuFunctions.Struct.getMesh().getNodes() != null & MenuFunctions.Struct.getMesh().getElements() != null &
 			Util.AllElemsHaveMat(MenuFunctions.Struct.getMesh().getElements()) &
 			Util.AllElemsHaveSec(MenuFunctions.Struct.getMesh().getElements()) &
-			Sup != null & (ConcLoad != null | DistLoad != null | NodalDisp != null))
+			MenuFunctions.Struct.getSupports() != null & (ConcLoad != null | DistLoad != null | NodalDisp != null))
 		{
 			return true;
 		}
@@ -266,7 +265,7 @@ public abstract class MenuFunctions
     			StepIsComplete[4] = true;
     		}
         }
-		if (Sup != null)
+		if (MenuFunctions.Struct.getSupports() != null)
 		{
 			StepIsComplete[5] = true;
 		}
@@ -306,7 +305,7 @@ public abstract class MenuFunctions
 			{
 				MenuFunctions.Struct.getMesh().getNodes().get(node).setSup(null);
 			}
-			Sup = null;
+			MenuFunctions.Struct.removeSupports() ;
 		}
 		if (AssignmentIsOn[3])
 		{
@@ -337,8 +336,8 @@ public abstract class MenuFunctions
 		if (SelectedDiagram == 0 & -1 < SelectedVar)
 		{
 			//DrawDisplacementContours(SelectedVar);
-			Struct.getResults().setDispMin(Results.FindMinDisps(Struct.getU(), MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.Struct.getMesh().getNodes(), Sup))) ;
-			Struct.getResults().setDispMax(Results.FindMaxDisps(Struct.getU(), MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.Struct.getMesh().getNodes(), Sup))) ;
+			Struct.getResults().setDispMin(Results.FindMinDisps(Struct.getU(), MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.Struct.getMesh().getNodes()))) ;
+			Struct.getResults().setDispMax(Results.FindMaxDisps(Struct.getU(), MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.Struct.getMesh().getNodes()))) ;
 			ShowDisplacementContour = false;
 			ShowDisplacementContour = true;
 			ShowStrainContour = false;
@@ -369,7 +368,7 @@ public abstract class MenuFunctions
 	
 	/* File menu functions */
 	public static void SaveFile(String FileName, MyCanvas MainCanvas, Structure Struct, List<Node> nodes, List<Element> elems,
-			Supports[] Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, List<Material> UserDefinedMat, List<Section> UserDefinedSec)
+			List<Supports> Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, List<Material> UserDefinedMat, List<Section> UserDefinedSec)
 	{
 		Struct.setName(FileName);
 		String[] InputSections = new String[] {
@@ -465,17 +464,17 @@ public abstract class MenuFunctions
 		}
 		if (Sup != null)
 		{
-			values[6] = new Object[Sup.length][8];
-			for (int sup = 0; sup <= Sup.length - 1; sup += 1)
+			values[6] = new Object[Sup.size()][8];
+			for (int sup = 0; sup <= Sup.size() - 1; sup += 1)
 			{
-				values[6][sup][0] = Sup[sup].getID();
-				values[6][sup][1] = Sup[sup].getNode();
-				values[6][sup][2] = Sup[sup].getDoFs()[0];
-				values[6][sup][3] = Sup[sup].getDoFs()[1];
-				values[6][sup][4] = Sup[sup].getDoFs()[2];
-				values[6][sup][5] = Sup[sup].getDoFs()[3];
-				values[6][sup][6] = Sup[sup].getDoFs()[4];
-				values[6][sup][7] = Sup[sup].getDoFs()[5];
+				values[6][sup][0] = Sup.get(sup).getID();
+				values[6][sup][1] = Sup.get(sup).getNode();
+				values[6][sup][2] = Sup.get(sup).getDoFs()[0];
+				values[6][sup][3] = Sup.get(sup).getDoFs()[1];
+				values[6][sup][4] = Sup.get(sup).getDoFs()[2];
+				values[6][sup][5] = Sup.get(sup).getDoFs()[3];
+				values[6][sup][6] = Sup.get(sup).getDoFs()[4];
+				values[6][sup][7] = Sup.get(sup).getDoFs()[5];
 			}
 		}
 		if (ConcLoads != null)
@@ -600,7 +599,7 @@ public abstract class MenuFunctions
 					NewSup.setID(Integer.parseInt(Line[0]));
 					NewSup.setNode(Integer.parseInt(Line[1]));
 					NewSup.setDoFs(new int[] {Integer.parseInt(Line[2]), Integer.parseInt(Line[3]), Integer.parseInt(Line[4]), Integer.parseInt(Line[5]), Integer.parseInt(Line[6]), Integer.parseInt(Line[7])});
-					Sup = Util.AddElem(Sup, NewSup);
+					MenuFunctions.Struct.addSupport(NewSup);
 					MenuFunctions.Struct.getMesh().getNodes().get(Integer.parseInt(Line[1])).setSup(NewSup.getDoFs());
 				}
 				for (int concload = 0; concload <= Input[7].length - 4; concload += 1)
@@ -643,7 +642,7 @@ public abstract class MenuFunctions
 				System.out.println("Arquivo de input nâo encontrado");
 			}
 		}
-		MenuFunctions.Struct.printStructure(matTypes, secTypes, Sup, ConcLoad, DistLoad, NodalDisp);
+		MenuFunctions.Struct.printStructure(matTypes, secTypes, MenuFunctions.Struct.getSupports(), ConcLoad, DistLoad, NodalDisp);
 	}
 
 	/* Structure menu functions */
@@ -737,7 +736,7 @@ public abstract class MenuFunctions
 		for (int node = 0; node <= MenuFunctions.Struct.getMesh().getNodes().size() - 1; node += 1)
         {
 			MenuFunctions.Struct.getMesh().getNodes().get(node).setDOFType(Util.DefineDOFsOnNode(MenuFunctions.Struct.getMesh().getElements()));
-			MenuFunctions.Struct.getMesh().getNodes().get(node).calcdofs(Sup, Struct.NFreeDOFs + 1);
+			MenuFunctions.Struct.getMesh().getNodes().get(node).calcdofs(MenuFunctions.Struct.getSupports(), Struct.NFreeDOFs + 1);
 			for (int dof = 0; dof <= MenuFunctions.Struct.getMesh().getNodes().get(node).dofs.length - 1; dof += 1)
 	        {
 				if (-1 < MenuFunctions.Struct.getMesh().getNodes().get(node).dofs[dof])
@@ -797,12 +796,12 @@ public abstract class MenuFunctions
 	{
 		/* Record results and set up their view*/
 		Struct.setU(Struct.getU());
-		Reaction = Analysis.Reactions(MenuFunctions.Struct.getMesh(), Sup, NonlinearMat, NonlinearGeo, Struct.getU());
+		Reaction = Analysis.Reactions(MenuFunctions.Struct.getMesh(), MenuFunctions.Struct.getSupports(), NonlinearMat, NonlinearGeo, Struct.getU());
 		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
 		{
 			elem.RecordResults(MenuFunctions.Struct.getMesh().getNodes(), Struct.getU(), NonlinearMat, NonlinearGeo);
 		}
-		Struct.getResults().register(MenuFunctions.Struct.getMesh(), Sup, Struct.getU(), NonlinearMat, NonlinearGeo);
+		Struct.getResults().register(MenuFunctions.Struct.getMesh(), MenuFunctions.Struct.getSupports(), Struct.getU(), NonlinearMat, NonlinearGeo);
 		ShowNodes = true;
 		ShowElems = true;
 		NodeSelectionIsOn = true;
@@ -1008,7 +1007,6 @@ public abstract class MenuFunctions
 
 			Object[] Structure = MainPanel.CreatureStructure(EspecialCoords, meshType, MeshSize, elemType, matTypes.get(Mat), matTypes, secTypes.get(Sec), secTypes,
 																supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
-			Supports[] Sup = (Supports[]) Structure[2];
 			ConcLoads[] ConcLoad = (ConcLoads[]) Structure[3];
 			DistLoads[] DistLoad = (DistLoads[]) Structure[4];
 			NodalDisps[] NodalDisp = (NodalDisps[]) Structure[5];
@@ -1037,7 +1035,7 @@ public abstract class MenuFunctions
 
 			boolean NonlinearMat = true;
 			boolean NonlinearGeo = false;
-			Analysis.run(Struct, Sup, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
+			Analysis.run(Struct, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
 			
 			/* Analysis is complete */
 			PostAnalysis();
@@ -1143,7 +1141,7 @@ public abstract class MenuFunctions
  		}
  		CalcAnalysisParameters();
 		long AnalysisTime = System.currentTimeMillis();
-		Analysis.run(Struct, Sup, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 1, 1, 1);
+		Analysis.run(Struct, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 1, 1, 1);
 		PostAnalysis();
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
 		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
@@ -1151,7 +1149,7 @@ public abstract class MenuFunctions
 			elem.RecordResults(MenuFunctions.Struct.getMesh().getNodes(), Struct.getU(), NonlinearMat, NonlinearGeo);
         	elem.setDeformedCoords(MenuFunctions.Struct.getMesh().getNodes());
 		}
-		Struct.getResults().register(MenuFunctions.Struct.getMesh(), Sup, Struct.getU(), NonlinearMat, NonlinearGeo);
+		Struct.getResults().register(MenuFunctions.Struct.getMesh(), MenuFunctions.Struct.getSupports(), Struct.getU(), NonlinearMat, NonlinearGeo);
 		NodeSelectionIsOn = true;
 		ElemSelectionIsOn = true;
 		AnalysisIsComplete = true;
@@ -1539,7 +1537,7 @@ public abstract class MenuFunctions
 		MenuFunctions.Struct.getMesh().reset() ;
 		matTypes = null;
 		secTypes = null;
-		Sup = null;
+		MenuFunctions.Struct.removeSupports() ;
 		ConcLoadType = null ;
 		ConcLoad = null;
 		DistLoadType = null ;

@@ -50,7 +50,7 @@ public abstract class Analysis
     	return NFreeDoFs;
 	}
 	
-	public static int[] DefineFreeDoFTypes(List<Node> nodes, Supports[] Sup)
+	public static int[] DefineFreeDoFTypes(List<Node> nodes)
 	{
 		int[] FreeDOFTypes = null;
         
@@ -294,7 +294,7 @@ public abstract class Analysis
 		return P;
 	}
 
-	public static double[] run(Structure struct, Supports[] Sup, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp,
+	public static double[] run(Structure struct, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp,
 										boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
 	{
 		/*
@@ -310,7 +310,7 @@ public abstract class Analysis
 			struct.setP(LoadVector(struct.getMesh(), struct.NFreeDOFs, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, loadfactor));
 		    for (int iter = 0; iter <= NIter - 1; iter += 1)
 			{
-		    	struct.setK(Structure.StructureStiffnessMatrix(struct.NFreeDOFs, struct.getMesh().getNodes(), struct.getMesh().getElements(), Sup, NonlinearMat, NonlinearGeo));
+		    	struct.setK(Structure.StructureStiffnessMatrix(struct.NFreeDOFs, struct.getMesh().getNodes(), struct.getMesh().getElements(), NonlinearMat, NonlinearGeo));
 		    	struct.setU(SolveLinearSystem(struct.getK(), struct.getP()));
 			    for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
 			    {
@@ -401,12 +401,12 @@ public abstract class Analysis
     	return NodeDisp;
     }
 
-	public static Reactions[] Reactions(Mesh mesh, Supports[] Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
+	public static Reactions[] Reactions(Mesh mesh, List<Supports> Sup, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
-		Reactions[] R = new Reactions[Sup.length];
-		for (int node = 0; node <= Sup.length - 1; node += 1)
+		Reactions[] R = new Reactions[Sup.size()];
+		for (int node = 0; node <= Sup.size() - 1; node += 1)
 		{
-			int nodeID = Sup[node].getNode();
+			int nodeID = Sup.get(node).getNode();
 			double[] NodeForces = NodeForces(nodeID, mesh.getNodes(), mesh.getElements(), NonlinearMat, NonlinearGeo, U);
 			R[node] = new Reactions(node, nodeID, NodeForces);
 		}	

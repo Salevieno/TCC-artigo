@@ -37,7 +37,7 @@ public abstract class MenuFile
 			{
 				String filename = Menus.getInstance().getSaveLoadFile().run().getText();
 				MenuFunctions.SaveFile(filename, Menus.getMainCanvas(), MenuFunctions.Struct, MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.Struct.getMesh().getElements(),
-						MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
+						MenuFunctions.Struct.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
 						MenuFunctions.secTypes);
 			}
 		});

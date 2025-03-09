@@ -2,6 +2,7 @@ package main.structure;
 
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.List;
 
 import main.gui.Menus;
 import main.utilidades.Point3D;
@@ -57,16 +58,16 @@ public class Node
 	public void setNodalDisps(NodalDisps[] D) {NodalDisp = D;}
 	public void setDOFType(int[] D) {DOFType = D;}
 	
-	public void calcdofs(Supports[] Sup, int cont)
+	public void calcdofs(List<Supports> Sup, int cont)
 	{
         boolean NodeHasSup;
         int supID;
     	dofs = new int[DOFType.length];
 	    NodeHasSup = false;
 	    supID = -1;
-        for (int sup = 0; sup <= Sup.length - 1; sup += 1)
+        for (int sup = 0; sup <= Sup.size() - 1; sup += 1)
 	    {
-	        if (Sup[sup].getNode() == ID)
+	        if (Sup.get(sup).getNode() == ID)
 	        {
 	            NodeHasSup = true;
 	            supID = sup;
@@ -76,9 +77,9 @@ public class Node
 	    {
     	    if (NodeHasSup)
     	    {
-    	    	if (DOFType[dof] <= Sup[supID].getDoFs().length - 1)
+    	    	if (DOFType[dof] <= Sup.get(supID).getDoFs().length - 1)
     	    	{
-        	        if (Sup[supID].getDoFs()[DOFType[dof]] == 0)
+        	        if (Sup.get(supID).getDoFs()[DOFType[dof]] == 0)
         	        {
         	            dofs[dof] = cont;
         	            cont += 1;

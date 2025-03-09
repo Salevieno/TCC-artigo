@@ -1734,7 +1734,7 @@ public class Menus extends JFrame
 					}
 
 					MenuFunctions.CalcAnalysisParameters();
-					Analysis.run(MenuFunctions.Struct, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
+					Analysis.run(MenuFunctions.Struct, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
 				    MenuFunctions.PostAnalysis();
 					for (Element elem : MenuFunctions.Struct.getMesh().getElements())
 					{
@@ -1988,7 +1988,7 @@ public class Menus extends JFrame
 		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Propriedades da malha", "Malha", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
 		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(CI.run());
 		
-		MenuFunctions.Sup = null;
+		MenuFunctions.Struct.removeSupports() ;
 		MenuFunctions.ConcLoad = null;
 		MenuFunctions.DistLoad = null;
 		MenuFunctions.NodalDisp = null;
@@ -2247,7 +2247,7 @@ public class Menus extends JFrame
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					MenuFunctions.Struct.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					MenuFunctions.Struct.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Struct.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
 			}
