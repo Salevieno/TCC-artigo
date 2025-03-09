@@ -452,13 +452,13 @@ public class Structure
 		switch (meshType)
 		{
 			case cartesian:
-				nodes = MenuFunctions.Struct.CreateCartesianNodes(new int[] {noffsets, nintermediatepoints[0]}, elemType);
-				elems = Structure.CreateCartesianMesh(MenuFunctions.Struct.getMesh().getNodes(), new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				nodes = MenuFunctions.struct.CreateCartesianNodes(new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				elems = Structure.CreateCartesianMesh(MenuFunctions.struct.getMesh().getNodes(), new int[] {noffsets, nintermediatepoints[0]}, elemType);
 				break ;
 				
 			case radial:
-				nodes = MenuFunctions.Struct.CreateRadialNodes(noffsets, nintermediatepoints);
-				elems = Structure.CreateRadialMesh(MenuFunctions.Struct.getMesh().getNodes(), noffsets, elemType);
+				nodes = MenuFunctions.struct.CreateRadialNodes(noffsets, nintermediatepoints);
+				elems = Structure.CreateRadialMesh(MenuFunctions.struct.getMesh().getNodes(), noffsets, elemType);
 				break ;
 				
 			default:

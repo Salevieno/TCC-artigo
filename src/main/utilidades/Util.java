@@ -1,12 +1,6 @@
 package main.utilidades;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.MouseInfo;
 import java.awt.Point;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -14,9 +8,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 import main.mainTCC.ReadInput;
 import main.structure.ConcLoads;
@@ -61,9 +52,19 @@ public abstract class Util
 		return new double[] {(OriginalCoords[0] - CanvasPos[0])/(double)(CanvasSize[0])*CanvasDim[0], (-OriginalCoords[1] + CanvasPos[1] + CanvasSize[1])/(double)(CanvasSize[1])*CanvasDim[1], 0};
 	}
 
+	public static double[] ConvertToRealCoords(Point OriginalCoords, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim)
+	{
+		return new double[] {(OriginalCoords.x - CanvasPos[0])/(double)(CanvasSize[0])*CanvasDim[0], (-OriginalCoords.y + CanvasPos[1] + CanvasSize[1])/(double)(CanvasSize[1])*CanvasDim[1], 0};
+	}
+
 	public static double[] ConvertToRealCoords2(int[] OriginalCoords, double[] CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
 	{
 		return new double[] {(OriginalCoords[0] - DrawingPos[0] - CanvasCenter[0])*CanvasDim[0]/CanvasSize[0] + CoordsCenter[0], -(OriginalCoords[1] - DrawingPos[1] - CanvasCenter[1])*CanvasDim[1]/CanvasSize[1] + CoordsCenter[1]};
+	}
+
+	public static double[] ConvertToRealCoords2(Point OriginalCoords, double[] CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
+	{
+		return ConvertToRealCoords2(new int[] {OriginalCoords.x, OriginalCoords.y}, CoordsCenter, CanvasPos, CanvasSize, CanvasDim, CanvasCenter, DrawingPos) ;
 	}
 
 	public static double[] ConvertToRealCoordsPoint3D(int[] OriginalCoords, Point3D CoordsCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
@@ -985,15 +986,11 @@ public abstract class Util
 		return NewCoords;
 	}
 
-	public static int[] GetRelMousePos(int[] PanelPos)
- 	{
-		return new int[] {MouseInfo.getPointerInfo().getLocation().x - PanelPos[0], MouseInfo.getPointerInfo().getLocation().y - PanelPos[1]};
- 	}
 		
-	public static boolean MouseIsInside(int[] MousePos, int[] PanelPos, int[] RectPos, int L, int H)
+	public static boolean MouseIsInside(Point MousePos, int[] PanelPos, int[] RectPos, int L, int H)
 	{
 		int[] rectPos = new int[] {RectPos[0], RectPos[1]};
-		if (rectPos[0] <= MousePos[0] & rectPos[1] <= MousePos[1] & MousePos[0] <= rectPos[0] + L & MousePos[1] <= rectPos[1] + H)
+		if (rectPos[0] <= MousePos.x & rectPos[1] <= MousePos.y & MousePos.x <= rectPos[0] + L & MousePos.y <= rectPos[1] + H)
 		{
 			return true;
 		} 
@@ -1003,12 +1000,12 @@ public abstract class Util
 		}
 	}
 	
-	public static boolean MouseIsInside(int[] MousePos, int[] PanelPos, Point RectPos, int L, int H)
+	public static boolean MouseIsInside(Point MousePos, int[] PanelPos, Point RectPos, int L, int H)
 	{
 		return MouseIsInside(MousePos, PanelPos, new int[] {RectPos.x, RectPos.y}, L, H) ;
 	}
 
-	public static boolean MouseIsOnElem(List<Node> nodes, Element elems, double[] MousePos, int[] CanvasPos, int[] CanvasSize, int[] DrawingPos, boolean condition)
+	public static boolean MouseIsOnElem(List<Node> nodes, Element elems, double[] MousePosRealCoords, int[] CanvasPos, int[] CanvasSize, int[] DrawingPos, boolean condition)
 	{
 		ElemShape elemShape = elems.getShape();
 		if (elemShape.equals(ElemShape.rectangular))
@@ -1019,7 +1016,7 @@ public abstract class Util
 			double y1 = GetNodePos(nodes.get(elems.getExternalNodes()[2]), condition)[1];
 			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
 			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
-			if (InitPoint[0] <= MousePos[0] & MousePos[0] <= FinalPoint[0] & FinalPoint[1] <= MousePos[1] & MousePos[1] <= InitPoint[1])
+			if (InitPoint[0] <= MousePosRealCoords[0] & MousePosRealCoords[0] <= FinalPoint[0] & FinalPoint[1] <= MousePosRealCoords[1] & MousePosRealCoords[1] <= InitPoint[1])
 			{
 				return true;
 			}
@@ -1033,9 +1030,9 @@ public abstract class Util
 		    double[] v1 = GetNodePos(nodes.get(elems.getExternalNodes()[0]), condition);
 		    double[] v2 = GetNodePos(nodes.get(elems.getExternalNodes()[1]), condition);
 		    double[] v3 = GetNodePos(nodes.get(elems.getExternalNodes()[2]), condition);
-		    float d1 = (float) ((MousePos[0] - v2[0]) * (v1[1] - v2[1]) - (v1[0] - v2[0]) * (MousePos[1] - v2[1]));
-		    float d2 = (float) ((MousePos[0] - v3[0]) * (v2[1] - v3[1]) - (v2[0] - v3[0]) * (MousePos[1] - v3[1]));
-		    float d3 = (float) ((MousePos[0] - v1[0]) * (v3[1] - v1[1]) - (v3[0] - v1[0]) * (MousePos[1] - v1[1]));
+		    float d1 = (float) ((MousePosRealCoords[0] - v2[0]) * (v1[1] - v2[1]) - (v1[0] - v2[0]) * (MousePosRealCoords[1] - v2[1]));
+		    float d2 = (float) ((MousePosRealCoords[0] - v3[0]) * (v2[1] - v3[1]) - (v2[0] - v3[0]) * (MousePosRealCoords[1] - v3[1]));
+		    float d3 = (float) ((MousePosRealCoords[0] - v1[0]) * (v3[1] - v1[1]) - (v3[0] - v1[0]) * (MousePosRealCoords[1] - v1[1]));
 		    boolean has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
 		    boolean  has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 		    
@@ -1056,7 +1053,7 @@ public abstract class Util
 			double y1 = GetNodePos(nodes.get(elems.getExternalNodes()[4]), condition)[1];
 			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
 			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
-			if (InitPoint[0] <= MousePos[0] & MousePos[0] <= FinalPoint[0] & FinalPoint[1] <= MousePos[1] & MousePos[1] <= InitPoint[1])
+			if (InitPoint[0] <= MousePosRealCoords[0] & MousePosRealCoords[0] <= FinalPoint[0] & FinalPoint[1] <= MousePosRealCoords[1] & MousePosRealCoords[1] <= InitPoint[1])
 			{
 				return true;
 			}
@@ -1072,10 +1069,10 @@ public abstract class Util
 		return false;
 	}
 	
-	public static boolean MouseIsOnNode(List<Node> nodes, int[] MousePos, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, int node, double prec, boolean condition)
+	public static boolean MouseIsOnNode(List<Node> nodes, Point MousePos, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, int node, double prec, boolean condition)
 	{
 		int[] NodePos = ConvertToDrawingCoords(GetNodePos(nodes.get(node), condition), CanvasPos, CanvasSize, CanvasDim, DrawingPos);
-		double Dist = Math.sqrt(Math.pow(MousePos[0] - NodePos[0], 2) + Math.pow(MousePos[1] - NodePos[1], 2));
+		double Dist = Math.sqrt(Math.pow(MousePos.x - NodePos[0], 2) + Math.pow(MousePos.y - NodePos[1], 2));
 		if (Dist <= prec)
 		{
 			return true;
@@ -1086,10 +1083,10 @@ public abstract class Util
 		}
 	}
 	
-	public static boolean MouseIsInsideCanvas(int[] MousePos, MyCanvas canvas)
+	public static boolean MouseIsInsideCanvas(Point MousePos, MyCanvas canvas)
 	{
 		int[] rectPos = new int[] {canvas.getPos().x, canvas.getPos().y};
-		if (rectPos[0] <= MousePos[0] & rectPos[1] <= MousePos[1] & MousePos[0] <= rectPos[0] + canvas.getDimension()[0] & MousePos[1] <= rectPos[1] + canvas.getDimension()[1])
+		if (rectPos[0] <= MousePos.x & rectPos[1] <= MousePos.y & MousePos.x <= rectPos[0] + canvas.getDimension()[0] & MousePos.y <= rectPos[1] + canvas.getDimension()[1])
 		{
 			return true;
 		} 
@@ -1150,9 +1147,15 @@ public abstract class Util
 		return NodesInsideWindow(Node, RealStructCenter, WindowTopLeft, WindowBotRight, new int[] {CanvasPos.x, CanvasPos.y}, CanvasCenter, CanvasSize,
 				CanvasDim, DrawingPos, DOFsOnNode, Defscale, condition) ;
 	}
+
+	public static int[] NodesInsideWindow(List<Node> Node, double[] RealStructCenter, int[] WindowTopLeft, Point WindowBotRight, Point CanvasPos, int[] CanvasCenter, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, int[] DOFsOnNode, double Defscale, boolean condition)
+	{
+		return NodesInsideWindow(Node, RealStructCenter, WindowTopLeft, new int[] {WindowBotRight.x, WindowBotRight.y}, new int[] {CanvasPos.x, CanvasPos.y}, CanvasCenter, CanvasSize,
+				CanvasDim, DrawingPos, DOFsOnNode, Defscale, condition) ;
+	}
 	
-	public static int[] ElemsInsideWindow(Mesh mesh, double[] RealStructCenter, int[] WindowTopLeft, int[] WindowBotRight, int[] PanelPos, int[] CanvasPos, int[] CanvasCenter,
-											int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double Defscale, boolean condition)
+	public static int[] ElemsInsideWindow(Mesh mesh, double[] RealStructCenter, int[] WindowTopLeft, int[] WindowBotRight, int[] PanelPos,
+	int[] CanvasPos, int[] CanvasCenter, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double Defscale, boolean condition)
 	{
 		List<Node> Node = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
@@ -1192,6 +1195,12 @@ public abstract class Util
 		}
 	}
 	
+	public static int[] ElemsInsideWindow(Mesh mesh, double[] RealStructCenter, int[] WindowTopLeft, Point WindowBotRight, int[] PanelPos, int[] CanvasPos, int[] CanvasCenter,
+											int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double Defscale, boolean condition)
+	{
+		return ElemsInsideWindow(mesh, RealStructCenter, WindowTopLeft, new int[] {WindowBotRight.x, WindowBotRight.y}, PanelPos,
+		CanvasPos, CanvasCenter, CanvasSize, CanvasDim, DrawingPos, Defscale, condition) ;
+	}
 	public static boolean AllElemsHaveMat(List<Element> Elem)
 	{
 		if (Elem != null)

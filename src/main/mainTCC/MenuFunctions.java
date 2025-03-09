@@ -2,6 +2,8 @@ package main.mainTCC;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +30,9 @@ import main.utilidades.Point3D;
 import main.utilidades.Util;
 
 public abstract class MenuFunctions
-{	
-	private static Color[] ColorPalette;
-	public static int[] MousePos;
+{
+
+	public static Point mousePos;
 	public static boolean ShowNodes ;
 	public static boolean ShowElems, ShowConcLoads, ShowDistLoads, ShowNodalDisps, ShowReactionArrows, ShowReactionValues, ShowLoadsValues, ShowSup;
 	public static boolean ShowDOFNumber, ShowNodeNumber, ShowElemNumber, ShowElemContour, ShowMatColor, ShowSecColor, ShowElemDetails;
@@ -44,7 +46,7 @@ public abstract class MenuFunctions
 	public static boolean ShowDeformedStructure ;
 	public static boolean NodeSelectionIsOn, ElemSelectionIsOn;
 	
-	public static Structure Struct;
+	public static Structure struct;
 	public static ConcLoads[] ConcLoad;
 	public static DistLoads[] DistLoad;
 	public static NodalDisps[] NodalDisp;
@@ -70,7 +72,7 @@ public abstract class MenuFunctions
 	public static boolean NonlinearMat;
 	public static boolean NonlinearGeo;
 	
-	public static int[] ElemSelectionWindowInitialPos;
+	public static Point ElemSelectionWindowInitialPos;
 	
 	static
 	{
@@ -79,33 +81,14 @@ public abstract class MenuFunctions
 	}
 	
 	public static void Initialization()
-	{	
-		ColorPalette = Menus.palette;
-		MousePos = new int[2];
+	{
+		mousePos = new Point();
 		ShowCanvas = true;
 		ShowMousePos = true;
 		StructureCreationIsOn = false;
 		SnipToGridIsOn = false;
-		ShowDeformedStructure = false;
-			
-		/*ShowStructure = false;
-		ShowNodes = false;
-		ShowElems = false;
-		ShowConcLoads = false;
-		ShowDistLoads = false;
-		ShowNodalDisps = false;
-		ShowReactionArrows = false;
-		ShowReactionValues = false;
-		ShowSup = false;
-		ShowDOFNumber = false;
-		ShowNodeNumber = false;
-		ShowElemNumber = false;
-		ShowElemContour = true;
-		ShowMatColor = false;
-		ShowSecColor = false;*/
+		ShowDeformedStructure = false;			
 		ShowLoadsValues = true;
-		/*ShowNodeSelectionWindow = false;
-		ShowElemSelectionWindow = false;*/
 		
 		SupType = Supports.Types;
 		
@@ -116,7 +99,7 @@ public abstract class MenuFunctions
 		NodeSelectionIsOn = false;
 		ElemSelectionIsOn = false;
 		
-		Struct = new Structure(null, null, null);
+		struct = new Structure(null, null, null);
 
 		SelectedMat = -1;
 		SelectedSec = -1;
@@ -130,15 +113,20 @@ public abstract class MenuFunctions
 		SelectedElems = null;
 		
 
-	    ElemSelectionWindowInitialPos = new int[2];
+	    ElemSelectionWindowInitialPos = new Point();
 	}
 
-	public static void updateMousePosRelToPanelPos(int[] panelPos) { MousePos = Util.GetRelMousePos(panelPos) ;}
+	public static Point GetRelMousePos(int[] PanelPos)
+ 	{
+		return new Point(MouseInfo.getPointerInfo().getLocation().x - PanelPos[0], MouseInfo.getPointerInfo().getLocation().y - PanelPos[1]) ;
+ 	}
 
-	public static int[] ClosestGridNodePos(MyCanvas canvas, int[] MousePos)
+	public static void updateMousePosRelToPanelPos(int[] panelPos) { mousePos = GetRelMousePos(panelPos) ;}
+
+	public static Point ClosestGridNodePos(MyCanvas canvas, Point MousePos)
 	{
 		int[] NGridPoints = MyCanvas.CalculateNumberOfGridPoints(canvas.getDimension());
-		int[] GridNodePos = MousePos;
+		Point GridNodePos = MousePos;
 		canvas.setGridSpacing(new double[] {canvas.getSize()[0]/(double)(NGridPoints[0]), canvas.getSize()[1]/(double)(NGridPoints[1])});
 		double SnipPower = 1;
 		for (int i = 0; i <= NGridPoints[0]; i += 1)
@@ -146,24 +134,24 @@ public abstract class MenuFunctions
 			for (int j = 0; j <= NGridPoints[1]; j += 1)
 			{	
 				int[] Pos = new int[] {(int) (canvas.getPos().x + (double)(i)/NGridPoints[0]*canvas.getSize()[0]), (int) (canvas.getPos().y + (double)(j)/NGridPoints[1]*canvas.getSize()[1])};
-				if (Math.abs(MousePos[0] - Pos[0]) <= SnipPower*canvas.getGridSpacing()[0]/2 & Math.abs(MousePos[1] - Pos[1]) <= SnipPower*canvas.getGridSpacing()[1]/2)
+				if (Math.abs(MousePos.x - Pos[0]) <= SnipPower*canvas.getGridSpacing()[0]/2 & Math.abs(MousePos.y - Pos[1]) <= SnipPower*canvas.getGridSpacing()[1]/2)
 				{
-					GridNodePos = new int[] {Pos[0], Pos[1]};
+					GridNodePos = new Point(Pos[0], Pos[1]) ;
 				}
 			}
 		}
 		return GridNodePos;
 	}
 
-	public static Point3D getCoordFromMouseClick(MyCanvas canvas, int[] MousePos, boolean SnipToGridIsOn)
+	public static Point3D getCoordFromMouseClick(MyCanvas canvas, Point MousePos, boolean SnipToGridIsOn)
 	{
-		int[] NewDrawingCoord = SnipToGridIsOn ? ClosestGridNodePos(canvas, MousePos) : MousePos;
-		return new Point3D(NewDrawingCoord[0], NewDrawingCoord[1], 0.0) ;	
+		Point NewDrawingCoord = SnipToGridIsOn ? ClosestGridNodePos(canvas, MousePos) : MousePos;
+		return new Point3D(NewDrawingCoord.x, NewDrawingCoord.y, 0.0) ;	
 	}
 
-	public static double[][] GetCoordFromMouseClic2k(StructureShape structshape, MyCanvas canvas, double[][] Coords, int[] MousePos, boolean SnipToGridIsOn)
+	public static double[][] GetCoordFromMouseClic2k(StructureShape structshape, MyCanvas canvas, double[][] Coords, Point MousePos, boolean SnipToGridIsOn)
 	{
-		int[] NewDrawingCoord;
+		Point NewDrawingCoord;
 		double[][] NewCoord;
 		if (SnipToGridIsOn)
 		{		    					
@@ -175,7 +163,7 @@ public abstract class MenuFunctions
 		}	
 		if (Coords == null)
 		{
-    		Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord[0], NewDrawingCoord[1]});
+    		Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, NewDrawingCoord.y});
 		}
 		else
 		{
@@ -183,16 +171,16 @@ public abstract class MenuFunctions
 			{
 				case rectangular:
 				
-					Coords = Util.AddElem(Coords, new double[] {Coords[0][0], NewDrawingCoord[1]});
-					Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord[0], NewDrawingCoord[1]});
-					Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord[0], Coords[0][1]});
+					Coords = Util.AddElem(Coords, new double[] {Coords[0][0], NewDrawingCoord.y});
+					Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, NewDrawingCoord.y});
+					Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, Coords[0][1]});
 					
 					break;
 
 				case circular:
 
 					double[] Center = new double[] {Coords[0][0], Coords[0][1], 0};
-					double[] Point2 = new double[] {NewDrawingCoord[0], NewDrawingCoord[1], 0};
+					double[] Point2 = new double[] {NewDrawingCoord.x, NewDrawingCoord.y, 0};
 					double r = Util.dist(Center, Point2);
 					int NPoints = 20;
 					Coords[0][0] += r;
@@ -206,7 +194,7 @@ public abstract class MenuFunctions
 
 				case polygonal:
 
-	    			Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord[0], NewDrawingCoord[1]});
+	    			Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, NewDrawingCoord.y});
 
 					break ;
 					
@@ -218,11 +206,11 @@ public abstract class MenuFunctions
 	
 	public static boolean CheckIfAnalysisIsReady()
 	{
-		if (MenuFunctions.Struct.getMesh() != null &&
-			MenuFunctions.Struct.getMesh().getNodes() != null & MenuFunctions.Struct.getMesh().getElements() != null &
-			Util.AllElemsHaveMat(MenuFunctions.Struct.getMesh().getElements()) &
-			Util.AllElemsHaveSec(MenuFunctions.Struct.getMesh().getElements()) &
-			MenuFunctions.Struct.getSupports() != null & (ConcLoad != null | DistLoad != null | NodalDisp != null))
+		if (MenuFunctions.struct.getMesh() != null &&
+			MenuFunctions.struct.getMesh().getNodes() != null & MenuFunctions.struct.getMesh().getElements() != null &
+			Util.AllElemsHaveMat(MenuFunctions.struct.getMesh().getElements()) &
+			Util.AllElemsHaveSec(MenuFunctions.struct.getMesh().getElements()) &
+			MenuFunctions.struct.getSupports() != null & (ConcLoad != null | DistLoad != null | NodalDisp != null))
 		{
 			return true;
 		}
@@ -235,9 +223,9 @@ public abstract class MenuFunctions
 	public static boolean[] CheckSteps()
 	{
 		boolean[] StepIsComplete = new boolean[9];
-        if (MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getElements() != null)
+        if (MenuFunctions.struct.getMesh() != null && MenuFunctions.struct.getMesh().getElements() != null)
         {
-    		if (Util.AllElemsHaveElemType(MenuFunctions.Struct.getMesh().getElements()))
+    		if (Util.AllElemsHaveElemType(MenuFunctions.struct.getMesh().getElements()))
     		{
     			StepIsComplete[0] = true;
     		}
@@ -246,26 +234,26 @@ public abstract class MenuFunctions
 		{
 			StepIsComplete[0] = true;
 		}
-        if (Struct.getCoords() != null)
+        if (struct.getCoords() != null)
         {
     		StepIsComplete[1] = true;
         }
-        if (MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getNodes() != null && MenuFunctions.Struct.getMesh().getElements() != null)
+        if (MenuFunctions.struct.getMesh() != null && MenuFunctions.struct.getMesh().getNodes() != null && MenuFunctions.struct.getMesh().getElements() != null)
         {
     		StepIsComplete[2] = true;
         }
-        if (MenuFunctions.Struct.getMesh() != null && MenuFunctions.Struct.getMesh().getElements() != null)
+        if (MenuFunctions.struct.getMesh() != null && MenuFunctions.struct.getMesh().getElements() != null)
         {
-    		if (Util.AllElemsHaveMat(MenuFunctions.Struct.getMesh().getElements()))
+    		if (Util.AllElemsHaveMat(MenuFunctions.struct.getMesh().getElements()))
     		{
     			StepIsComplete[3] = true;
     		}
-    		if (Util.AllElemsHaveSec(MenuFunctions.Struct.getMesh().getElements()))
+    		if (Util.AllElemsHaveSec(MenuFunctions.struct.getMesh().getElements()))
     		{
     			StepIsComplete[4] = true;
     		}
         }
-		if (MenuFunctions.Struct.getSupports() != null)
+		if (MenuFunctions.struct.getSupports() != null)
 		{
 			StepIsComplete[5] = true;
 		}
@@ -288,24 +276,24 @@ public abstract class MenuFunctions
 	/* Upper toolbar button functions */
 	public static void Clean(boolean[] AssignmentIsOn)
 	{
-		for (int elem = 0; elem <= MenuFunctions.Struct.getMesh().getElements().size() - 1; elem += 1)
+		for (int elem = 0; elem <= MenuFunctions.struct.getMesh().getElements().size() - 1; elem += 1)
 		{
 			if (AssignmentIsOn[0])
 			{
-				MenuFunctions.Struct.getMesh().getElements().get(elem).setMat(null);
+				MenuFunctions.struct.getMesh().getElements().get(elem).setMat(null);
 			}
 			if (AssignmentIsOn[1])
 			{
-				MenuFunctions.Struct.getMesh().getElements().get(elem).setSec(null);
+				MenuFunctions.struct.getMesh().getElements().get(elem).setSec(null);
 			}
 		}
 		if (AssignmentIsOn[2])
 		{
-			for (int node = 0; node <= MenuFunctions.Struct.getMesh().getNodes().size() - 1; node += 1)
+			for (int node = 0; node <= MenuFunctions.struct.getMesh().getNodes().size() - 1; node += 1)
 			{
-				MenuFunctions.Struct.getMesh().getNodes().get(node).setSup(null);
+				MenuFunctions.struct.getMesh().getNodes().get(node).setSup(null);
 			}
-			MenuFunctions.Struct.removeSupports() ;
+			MenuFunctions.struct.removeSupports() ;
 		}
 		if (AssignmentIsOn[3])
 		{
@@ -325,19 +313,19 @@ public abstract class MenuFunctions
 	public static void ShowResult()
 	{
 		ShowElems = false;
-		for (int node = 0; node <= MenuFunctions.Struct.getMesh().getElements().get(0).getExternalNodes().length - 1; node += 1)
+		for (int node = 0; node <= MenuFunctions.struct.getMesh().getElements().get(0).getExternalNodes().length - 1; node += 1)
 		{
-			SelectedVar = Util.ElemPosInArray(MenuFunctions.Struct.getMesh().getElements().get(0).getDOFsPerNode()[node], SelectedVar);
+			SelectedVar = Util.ElemPosInArray(MenuFunctions.struct.getMesh().getElements().get(0).getDOFsPerNode()[node], SelectedVar);
 			if (-1 < SelectedVar)
 			{
-				node = MenuFunctions.Struct.getMesh().getElements().get(0).getExternalNodes().length - 1;
+				node = MenuFunctions.struct.getMesh().getElements().get(0).getExternalNodes().length - 1;
 			}
 		}
 		if (SelectedDiagram == 0 & -1 < SelectedVar)
 		{
 			//DrawDisplacementContours(SelectedVar);
-			Struct.getResults().setDispMin(Results.FindMinDisps(Struct.getU(), MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.Struct.getMesh().getNodes()))) ;
-			Struct.getResults().setDispMax(Results.FindMaxDisps(Struct.getU(), MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.Struct.getMesh().getNodes()))) ;
+			struct.getResults().setDispMin(Results.FindMinDisps(struct.getU(), MenuFunctions.struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.struct.getMesh().getNodes()))) ;
+			struct.getResults().setDispMax(Results.FindMaxDisps(struct.getU(), MenuFunctions.struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(MenuFunctions.struct.getMesh().getNodes()))) ;
 			ShowDisplacementContour = false;
 			ShowDisplacementContour = true;
 			ShowStrainContour = false;
@@ -538,15 +526,15 @@ public abstract class MenuFunctions
 			String[][] Input = ReadInput.ReadTxtFile(Path + FileName + ".txt");			// Loads the input file (.txt)
 			if (Input != null)
 			{
-				Struct.setName(Input[0][2]);
+				struct.setName(Input[0][2]);
 				List<Point3D> StructCoords = new ArrayList<>() ;
 				for (int coord = 0; coord <= Input[1].length - 4; coord += 1)
 				{
 					String[] Line = Input[1][coord + 2].split("	");
 					StructCoords.add(new Point3D(Double.parseDouble(Line[0]), Double.parseDouble(Line[1]), Double.parseDouble(Line[2]))) ;
 				}
-				Struct.setCoords(StructCoords);
-				Struct.updateCenter() ;
+				struct.setCoords(StructCoords);
+				struct.updateCenter() ;
 
 				List<Material> matTypes = new ArrayList<>() ;
 				for (int mat = 0; mat <= Input[4].length - 4; mat += 1)
@@ -572,7 +560,7 @@ public abstract class MenuFunctions
 					NewNode.setID(Integer.parseInt(Line[0]));
 					NewNode.setOriginalCoords(new Point3D(Double.parseDouble(Line[1]), Double.parseDouble(Line[2]), Double.parseDouble(Line[3])));
 					NewNode.setDisp(new double[3]);
-					MenuFunctions.Struct.getMesh().getNodes().add(NewNode) ;
+					MenuFunctions.struct.getMesh().getNodes().add(NewNode) ;
 				}
 				for (int elem = 0; elem <= Input[3].length - 4; elem += 1)
 				{
@@ -588,7 +576,7 @@ public abstract class MenuFunctions
 					NewElem.setExternalNodes(ElemNodes);
 					NewElem.setMat(matTypes.get(Integer.parseInt(Line[NumberOfElemNodes + 2])));
 					NewElem.setSec(secTypes.get(Integer.parseInt(Line[NumberOfElemNodes + 3])));
-					MenuFunctions.Struct.getMesh().getElements().add(NewElem) ;
+					MenuFunctions.struct.getMesh().getElements().add(NewElem) ;
 				}
 				
 				for (int sup = 0; sup <= Input[6].length - 4; sup += 1)
@@ -599,8 +587,8 @@ public abstract class MenuFunctions
 					NewSup.setID(Integer.parseInt(Line[0]));
 					NewSup.setNode(Integer.parseInt(Line[1]));
 					NewSup.setDoFs(new int[] {Integer.parseInt(Line[2]), Integer.parseInt(Line[3]), Integer.parseInt(Line[4]), Integer.parseInt(Line[5]), Integer.parseInt(Line[6]), Integer.parseInt(Line[7])});
-					MenuFunctions.Struct.addSupport(NewSup);
-					MenuFunctions.Struct.getMesh().getNodes().get(Integer.parseInt(Line[1])).setSup(NewSup.getDoFs());
+					MenuFunctions.struct.addSupport(NewSup);
+					MenuFunctions.struct.getMesh().getNodes().get(Integer.parseInt(Line[1])).setSup(NewSup.getDoFs());
 				}
 				for (int concload = 0; concload <= Input[7].length - 4; concload += 1)
 				{
@@ -642,7 +630,7 @@ public abstract class MenuFunctions
 				System.out.println("Arquivo de input nâo encontrado");
 			}
 		}
-		MenuFunctions.Struct.printStructure(matTypes, secTypes, MenuFunctions.Struct.getSupports(), ConcLoad, DistLoad, NodalDisp);
+		MenuFunctions.struct.printStructure(matTypes, secTypes, MenuFunctions.struct.getSupports(), ConcLoad, DistLoad, NodalDisp);
 	}
 
 	/* Structure menu functions */
@@ -732,36 +720,36 @@ public abstract class MenuFunctions
 	/* Analysis menu functions */
 	public static void CalcAnalysisParameters()
 	{
-		Struct.NFreeDOFs = -1;
-		for (int node = 0; node <= MenuFunctions.Struct.getMesh().getNodes().size() - 1; node += 1)
+		struct.NFreeDOFs = -1;
+		for (int node = 0; node <= MenuFunctions.struct.getMesh().getNodes().size() - 1; node += 1)
         {
-			MenuFunctions.Struct.getMesh().getNodes().get(node).setDOFType(Util.DefineDOFsOnNode(MenuFunctions.Struct.getMesh().getElements()));
-			MenuFunctions.Struct.getMesh().getNodes().get(node).calcdofs(MenuFunctions.Struct.getSupports(), Struct.NFreeDOFs + 1);
-			for (int dof = 0; dof <= MenuFunctions.Struct.getMesh().getNodes().get(node).dofs.length - 1; dof += 1)
+			MenuFunctions.struct.getMesh().getNodes().get(node).setDOFType(Util.DefineDOFsOnNode(MenuFunctions.struct.getMesh().getElements()));
+			MenuFunctions.struct.getMesh().getNodes().get(node).calcdofs(MenuFunctions.struct.getSupports(), struct.NFreeDOFs + 1);
+			for (int dof = 0; dof <= MenuFunctions.struct.getMesh().getNodes().get(node).dofs.length - 1; dof += 1)
 	        {
-				if (-1 < MenuFunctions.Struct.getMesh().getNodes().get(node).dofs[dof])
+				if (-1 < MenuFunctions.struct.getMesh().getNodes().get(node).dofs[dof])
 				{
-					Struct.NFreeDOFs = MenuFunctions.Struct.getMesh().getNodes().get(node).dofs[dof];
+					struct.NFreeDOFs = MenuFunctions.struct.getMesh().getNodes().get(node).dofs[dof];
 				}
 	        }
-			MenuFunctions.Struct.getMesh().getNodes().get(node).setLoadDispCurve();
+			MenuFunctions.struct.getMesh().getNodes().get(node).setLoadDispCurve();
         }
-		Struct.NFreeDOFs += 1;
-		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
+		struct.NFreeDOFs += 1;
+		for (Element elem : MenuFunctions.struct.getMesh().getElements())
 		{
-			elem.setCumDOFs(Util.CumDOFsOnElem(MenuFunctions.Struct.getMesh().getNodes(), elem.getExternalNodes().length));
-        	elem.setUndeformedCoords(MenuFunctions.Struct.getMesh().getNodes());
+			elem.setCumDOFs(Util.CumDOFsOnElem(MenuFunctions.struct.getMesh().getNodes(), elem.getExternalNodes().length));
+        	elem.setUndeformedCoords(MenuFunctions.struct.getMesh().getNodes());
         	elem.setCenterCoords();
 		}
-		for (int elem = 0; elem <= MenuFunctions.Struct.getMesh().getElements().size() - 1; elem += 1)
+		for (int elem = 0; elem <= MenuFunctions.struct.getMesh().getElements().size() - 1; elem += 1)
 		{
 			int[][] ElemNodeDOF = null;
-			for (int elemnode = 0; elemnode <= MenuFunctions.Struct.getMesh().getElements().get(elem).getExternalNodes().length - 1; elemnode += 1)
+			for (int elemnode = 0; elemnode <= MenuFunctions.struct.getMesh().getElements().get(elem).getExternalNodes().length - 1; elemnode += 1)
 	    	{
-				int node = MenuFunctions.Struct.getMesh().getElements().get(elem).getExternalNodes()[elemnode];
-				ElemNodeDOF = Util.AddElem(ElemNodeDOF, MenuFunctions.Struct.getMesh().getNodes().get(node).dofs);
+				int node = MenuFunctions.struct.getMesh().getElements().get(elem).getExternalNodes()[elemnode];
+				ElemNodeDOF = Util.AddElem(ElemNodeDOF, MenuFunctions.struct.getMesh().getNodes().get(node).dofs);
 	    	}
-			MenuFunctions.Struct.getMesh().getElements().get(elem).setNodeDOF(ElemNodeDOF);
+			MenuFunctions.struct.getMesh().getElements().get(elem).setNodeDOF(ElemNodeDOF);
 		}
 		if (ConcLoadType != null)
 		{
@@ -771,7 +759,7 @@ public abstract class MenuFunctions
 				if (-1 < nodeid)
 				{
 					ConcLoad[loadid] = new ConcLoads(loadid, nodeid, ConcLoadType[loadid]);
-					MenuFunctions.Struct.getMesh().getNodes().get(nodeid).setConcLoads(Util.AddElem(MenuFunctions.Struct.getMesh().getNodes().get(nodeid).getConcLoads(), ConcLoad[loadid]));
+					MenuFunctions.struct.getMesh().getNodes().get(nodeid).setConcLoads(Util.AddElem(MenuFunctions.struct.getMesh().getNodes().get(nodeid).getConcLoads(), ConcLoad[loadid]));
 				}
 			}
 		}
@@ -785,7 +773,7 @@ public abstract class MenuFunctions
 				if (-1 < elemid)
 				{
 					DistLoad[loadid] = new DistLoads(loadid, elemid, LoadType, Intensity);
-					MenuFunctions.Struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(MenuFunctions.Struct.getMesh().getElements().get(elemid).getDistLoads(), DistLoad[loadid]));
+					MenuFunctions.struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(MenuFunctions.struct.getMesh().getElements().get(elemid).getDistLoads(), DistLoad[loadid]));
 				}
 			}
 		}
@@ -795,13 +783,13 @@ public abstract class MenuFunctions
 	public static void PostAnalysis()
 	{
 		/* Record results and set up their view*/
-		Struct.setU(Struct.getU());
-		Reaction = Analysis.Reactions(MenuFunctions.Struct.getMesh(), MenuFunctions.Struct.getSupports(), NonlinearMat, NonlinearGeo, Struct.getU());
-		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
+		struct.setU(struct.getU());
+		Reaction = Analysis.Reactions(MenuFunctions.struct.getMesh(), MenuFunctions.struct.getSupports(), NonlinearMat, NonlinearGeo, struct.getU());
+		for (Element elem : MenuFunctions.struct.getMesh().getElements())
 		{
-			elem.RecordResults(MenuFunctions.Struct.getMesh().getNodes(), Struct.getU(), NonlinearMat, NonlinearGeo);
+			elem.RecordResults(MenuFunctions.struct.getMesh().getNodes(), struct.getU(), NonlinearMat, NonlinearGeo);
 		}
-		Struct.getResults().register(MenuFunctions.Struct.getMesh(), MenuFunctions.Struct.getSupports(), Struct.getU(), NonlinearMat, NonlinearGeo);
+		struct.getResults().register(MenuFunctions.struct.getMesh(), MenuFunctions.struct.getSupports(), struct.getU(), NonlinearMat, NonlinearGeo);
 		ShowNodes = true;
 		ShowElems = true;
 		NodeSelectionIsOn = true;
@@ -810,7 +798,7 @@ public abstract class MenuFunctions
 		ShowReactionArrows = true;
 		ShowDeformedStructure = true;
 		DiagramScales[1] = 1;
-		double MaxDisp = Util.FindMaxAbs(Struct.getU());
+		double MaxDisp = Util.FindMaxAbs(struct.getU());
 		if (0 < MaxDisp)
 		{
 			DiagramScales[1] = 1 / MaxDisp;
@@ -826,10 +814,10 @@ public abstract class MenuFunctions
 		String[][][] vars = new String[Sections.length][][];
 		vars[0] = new String[1][3];
 		vars[1] = new String[1][3];
-		vars[2] = new String[MenuFunctions.Struct.getMesh().getNodes().size()][];
+		vars[2] = new String[MenuFunctions.struct.getMesh().getNodes().size()][];
 		vars[3] = new String[1][3];
 		vars[4] = new String[1][3];
-		vars[5] = new String[MenuFunctions.Struct.getMesh().getNodes().size()][];
+		vars[5] = new String[MenuFunctions.struct.getMesh().getNodes().size()][];
 		vars[6] = new String[Reaction.length][];
 		vars[7] = new String[1][Reactions.SumReactions.length];
 		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
@@ -838,41 +826,41 @@ public abstract class MenuFunctions
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getResults().getDispMin()[dof]);
+					vars[sec][0][dof] = String.valueOf(struct.getResults().getDispMin()[dof]);
 				}
 			}
 			if (sec == 1)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getResults().getDispMax()[dof]);
+					vars[sec][0][dof] = String.valueOf(struct.getResults().getDispMax()[dof]);
 				}
 			}
 			if (sec == 3)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getResults().getInternalForcesMin()[dof]);
+					vars[sec][0][dof] = String.valueOf(struct.getResults().getInternalForcesMin()[dof]);
 				}
 			}
 			if (sec == 4)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(Struct.getResults().getInternalForcesMax()[dof]);
+					vars[sec][0][dof] = String.valueOf(struct.getResults().getInternalForcesMax()[dof]);
 				}
 			}
 			for (int node = 0; node <= vars[sec].length - 1; node += 1)
 			{
 				if (sec == 2)
 				{
-					vars[sec][node] = new String[MenuFunctions.Struct.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node] = new String[MenuFunctions.struct.getMesh().getNodes().get(node).getDOFType().length + 1];
 					vars[sec][node][0] = String.valueOf(node);
-					for (int dof = 0; dof <= MenuFunctions.Struct.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+					for (int dof = 0; dof <= MenuFunctions.struct.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
 					{
-						if (-1 < MenuFunctions.Struct.getMesh().getNodes().get(node).dofs[dof])
+						if (-1 < MenuFunctions.struct.getMesh().getNodes().get(node).dofs[dof])
 						{
-							vars[sec][node][dof + 1] = String.valueOf(Struct.getU()[MenuFunctions.Struct.getMesh().getNodes().get(node).dofs[dof]]);
+							vars[sec][node][dof + 1] = String.valueOf(struct.getU()[MenuFunctions.struct.getMesh().getNodes().get(node).dofs[dof]]);
 						}
 						else
 						{
@@ -882,18 +870,18 @@ public abstract class MenuFunctions
 				}
 				if (sec == 5)
 				{
-					vars[sec][node] = new String[MenuFunctions.Struct.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node] = new String[MenuFunctions.struct.getMesh().getNodes().get(node).getDOFType().length + 1];
 					vars[sec][node][0] = String.valueOf(node);
-					for (int i = 0; i <= MenuFunctions.Struct.getMesh().getElements().size() - 1; i += 1)
+					for (int i = 0; i <= MenuFunctions.struct.getMesh().getElements().size() - 1; i += 1)
 					{
-						Element elem = MenuFunctions.Struct.getMesh().getElements().get(i);
+						Element elem = MenuFunctions.struct.getMesh().getElements().get(i);
 						for (int elemnode = 0; elemnode <= elem.getExternalNodes().length - 1; elemnode += 1)
 						{
 							if (node == elem.getExternalNodes()[elemnode])
 							{
-								for (int dof = 0; dof <= MenuFunctions.Struct.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+								for (int dof = 0; dof <= MenuFunctions.struct.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
 								{
-									vars[sec][node][dof + 1] = String.valueOf(elem.getIntForces()[elemnode*MenuFunctions.Struct.getMesh().getNodes().get(node).getDOFType().length + dof]);
+									vars[sec][node][dof + 1] = String.valueOf(elem.getIntForces()[elemnode*MenuFunctions.struct.getMesh().getNodes().get(node).getDOFType().length + dof]);
 								}
 							}
 						}
@@ -917,7 +905,7 @@ public abstract class MenuFunctions
 				}
 			}
 		}
-		SaveOutput.SaveOutput(Struct.getName(), Sections, vars);
+		SaveOutput.SaveOutput(struct.getName(), Sections, vars);
 	}
 	
 	public static void DeformedStructureView()
@@ -930,12 +918,12 @@ public abstract class MenuFunctions
 		if (-1 < SelectedVar)
 		{
 			int nodeid = SelectedNodes[0];
-			double[][][] loaddisp = MenuFunctions.Struct.getMesh().getNodes().get(nodeid).LoadDisp;
+			double[][][] loaddisp = MenuFunctions.struct.getMesh().getNodes().get(nodeid).LoadDisp;
 			String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
-			String[][][] vars = new String[Sections.length][MenuFunctions.Struct.getMesh().getNodes().get(nodeid).dofs.length][loaddisp[0][0].length];
+			String[][][] vars = new String[Sections.length][MenuFunctions.struct.getMesh().getNodes().get(nodeid).dofs.length][loaddisp[0][0].length];
 			for (int sec = 0; sec <= Sections.length - 1; sec += 1)
 			{
-				for (int dof = 0; dof <= MenuFunctions.Struct.getMesh().getNodes().get(nodeid).dofs.length - 1; dof += 1)
+				for (int dof = 0; dof <= MenuFunctions.struct.getMesh().getNodes().get(nodeid).dofs.length - 1; dof += 1)
 				{
 					for (int loadinc = 0; loadinc <= loaddisp[dof][sec].length - 1; loadinc += 1)
 					{
@@ -943,7 +931,7 @@ public abstract class MenuFunctions
 					}
 				}
 			}
-			SaveOutput.SaveOutput(Struct.getName(), Sections, vars);
+			SaveOutput.SaveOutput(struct.getName(), Sections, vars);
 		}
 	}
 
@@ -1011,12 +999,12 @@ public abstract class MenuFunctions
 			DistLoads[] DistLoad = (DistLoads[]) Structure[4];
 			NodalDisps[] NodalDisp = (NodalDisps[]) Structure[5];
 			
-			System.out.println("Struct coords: " + Struct.getCoords());
-			System.out.println("Struct shape: " + Struct.getShape());
-			System.out.println("Struct center: " + Struct.getCenter());
-			System.out.println("Struct min coords: " + Struct.getMinCoords());
-			System.out.println("Struct max coords: " + Struct.getMaxCoords());
-			System.out.println("Struct free dofs: " + Struct.NFreeDOFs);
+			System.out.println("Struct coords: " + struct.getCoords());
+			System.out.println("Struct shape: " + struct.getShape());
+			System.out.println("Struct center: " + struct.getCenter());
+			System.out.println("Struct min coords: " + struct.getMinCoords());
+			System.out.println("Struct max coords: " + struct.getMaxCoords());
+			System.out.println("Struct free dofs: " + struct.NFreeDOFs);
 			System.out.println("meshType: " + meshType);
 			System.out.println("MeshSize: " + MeshSize);
 			System.out.println("elemType: " + elemType);
@@ -1035,7 +1023,7 @@ public abstract class MenuFunctions
 
 			boolean NonlinearMat = true;
 			boolean NonlinearGeo = false;
-			Analysis.run(Struct, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
+			Analysis.run(struct, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
 			
 			/* Analysis is complete */
 			PostAnalysis();
@@ -1077,7 +1065,7 @@ public abstract class MenuFunctions
 		}
 		//Re.SaveOutput("Especial", Sections, vars);
 		
-		return Struct;
+		return struct;
 	}
 
 	public static void RunExample(int exampleID)
@@ -1141,22 +1129,22 @@ public abstract class MenuFunctions
  		}
  		CalcAnalysisParameters();
 		long AnalysisTime = System.currentTimeMillis();
-		Analysis.run(Struct, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 1, 1, 1);
+		Analysis.run(struct, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 1, 1, 1);
 		PostAnalysis();
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
-		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
+		for (Element elem : MenuFunctions.struct.getMesh().getElements())
 		{
-			elem.RecordResults(MenuFunctions.Struct.getMesh().getNodes(), Struct.getU(), NonlinearMat, NonlinearGeo);
-        	elem.setDeformedCoords(MenuFunctions.Struct.getMesh().getNodes());
+			elem.RecordResults(MenuFunctions.struct.getMesh().getNodes(), struct.getU(), NonlinearMat, NonlinearGeo);
+        	elem.setDeformedCoords(MenuFunctions.struct.getMesh().getNodes());
 		}
-		Struct.getResults().register(MenuFunctions.Struct.getMesh(), MenuFunctions.Struct.getSupports(), Struct.getU(), NonlinearMat, NonlinearGeo);
+		struct.getResults().register(MenuFunctions.struct.getMesh(), MenuFunctions.struct.getSupports(), struct.getU(), NonlinearMat, NonlinearGeo);
 		NodeSelectionIsOn = true;
 		ElemSelectionIsOn = true;
 		AnalysisIsComplete = true;
 		ShowReactionArrows = true;
 		ShowReactionValues = true;
 		ShowDeformedStructure = true;
-		double MaxDisp = Util.FindMaxAbs(Struct.getU());
+		double MaxDisp = Util.FindMaxAbs(struct.getU());
 		if (0 < MaxDisp)
 		{
 			DiagramScales[1] = 1 / MaxDisp;
@@ -1256,22 +1244,22 @@ public abstract class MenuFunctions
 			if (ShowDisplacementContour)
 			{
 				DrawLegend(LegendPos, "Red to green", "Campo de deslocamentos (m)", LegendSize,
-				Struct.getResults().getDispMin()[SelectedVar], Struct.getResults().getDispMax()[SelectedVar], 1, DP);
+				struct.getResults().getDispMin()[SelectedVar], struct.getResults().getDispMax()[SelectedVar], 1, DP);
 			}
-			if (ShowStressContour & MenuFunctions.Struct.getMesh().getNodes() != null & MenuFunctions.Struct.getMesh().getElements() != null)
+			if (ShowStressContour & MenuFunctions.struct.getMesh().getNodes() != null & MenuFunctions.struct.getMesh().getElements() != null)
 			{
 				DrawLegend(LegendPos, "Red to green", "Campo de tensoes (MPa)", LegendSize,
-				Struct.getResults().getStressMin()[SelectedVar], Struct.getResults().getStressMax()[SelectedVar], 1000, DP);
+				struct.getResults().getStressMin()[SelectedVar], struct.getResults().getStressMax()[SelectedVar], 1000, DP);
 			}
-			if (ShowStrainContour & MenuFunctions.Struct.getMesh().getNodes() != null & MenuFunctions.Struct.getMesh().getElements() != null)
+			if (ShowStrainContour & MenuFunctions.struct.getMesh().getNodes() != null & MenuFunctions.struct.getMesh().getElements() != null)
 			{
 				DrawLegend(LegendPos, "Red to green", "Campo de deformacoes", LegendSize,
-				Struct.getResults().getStrainMin()[SelectedVar], Struct.getResults().getStrainMax()[SelectedVar], 1, DP);
+				struct.getResults().getStrainMin()[SelectedVar], struct.getResults().getStrainMax()[SelectedVar], 1, DP);
 			}
-			if (ShowInternalForces & MenuFunctions.Struct.getMesh().getNodes() != null & MenuFunctions.Struct.getMesh().getElements() != null)
+			if (ShowInternalForces & MenuFunctions.struct.getMesh().getNodes() != null & MenuFunctions.struct.getMesh().getElements() != null)
 			{
 				DrawLegend(LegendPos, "Red to green", "Forcas internas (kN ou kNm)", LegendSize,
-				Struct.getResults().getInternalForcesMin()[SelectedVar], Struct.getResults().getInternalForcesMax()[SelectedVar], 1, DP);
+				struct.getResults().getInternalForcesMin()[SelectedVar], struct.getResults().getInternalForcesMax()[SelectedVar], 1, DP);
 			}
 		}
 	}
@@ -1307,7 +1295,7 @@ public abstract class MenuFunctions
 			if (SelectedNodes != null)
 			{
 				int nodeid = SelectedNodes[0];
-				if (MenuFunctions.Struct.getMesh().getNodes().get(nodeid) != null)
+				if (MenuFunctions.struct.getMesh().getNodes().get(nodeid) != null)
 				{
 					Dimension LDPanelSize = jpLDSize;
 					int[] CurvePos = new int[] {(int) (0.38 * LDPanelSize.getWidth()), (int) (0.8 * LDPanelSize.getHeight())};
@@ -1318,8 +1306,8 @@ public abstract class MenuFunctions
 						int dir = -1;
 						int dof = SelectedVar;
 						
-						Point3D FirstNodePos = MenuFunctions.Struct.getMesh().getNodes().get(SelectedNodes[0]).getOriginalCoords();
-						Point3D FinalNodePos = MenuFunctions.Struct.getMesh().getNodes().get(SelectedNodes[SelectedNodes.length - 1]).getOriginalCoords();
+						Point3D FirstNodePos = MenuFunctions.struct.getMesh().getNodes().get(SelectedNodes[0]).getOriginalCoords();
+						Point3D FinalNodePos = MenuFunctions.struct.getMesh().getNodes().get(SelectedNodes[SelectedNodes.length - 1]).getOriginalCoords();
 						if (FinalNodePos.y - FirstNodePos.y <= FinalNodePos.x - FirstNodePos.x)
 						{
 							dir = 0;
@@ -1332,14 +1320,14 @@ public abstract class MenuFunctions
 						for (int node = 0; node <= SelectedNodes.length - 1; node += 1)
 						{
 							int nodeID = SelectedNodes[node];
-							double minCoord = dir == 0 ? Structure.calcMinCoords(Struct.getCoords()).x : Structure.calcMinCoords(Struct.getCoords()).y ;
+							double minCoord = dir == 0 ? Structure.calcMinCoords(struct.getCoords()).x : Structure.calcMinCoords(struct.getCoords()).y ;
 							if (dir == 0)
 							{
-								Xaxisvalues[node] = MenuFunctions.Struct.getMesh().getNodes().get(nodeID).getOriginalCoords().x - minCoord;
+								Xaxisvalues[node] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getOriginalCoords().x - minCoord;
 							}
 							else
 							{
-								Xaxisvalues[node] = MenuFunctions.Struct.getMesh().getNodes().get(nodeID).getOriginalCoords().y - minCoord;
+								Xaxisvalues[node] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getOriginalCoords().y - minCoord;
 							}
 						}
 						if (SelectedDiagram == 0)
@@ -1347,7 +1335,7 @@ public abstract class MenuFunctions
 							for (int node = 0; node <= SelectedNodes.length - 1; node += 1)
 							{
 								int nodeID = SelectedNodes[node];
-								Yaxisvalues[node] = MenuFunctions.Struct.getMesh().getNodes().get(nodeID).getDisp()[dof];
+								Yaxisvalues[node] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getDisp()[dof];
 							}
 						}
 						else if (SelectedDiagram == 1)
@@ -1356,14 +1344,14 @@ public abstract class MenuFunctions
 							{
 								int nodeID = SelectedNodes[node];
 								int elemID = -1;
-								for (int i = 0; i <= MenuFunctions.Struct.getMesh().getElements().size() - 1; i += 1)
+								for (int i = 0; i <= MenuFunctions.struct.getMesh().getElements().size() - 1; i += 1)
 								{
-									if (Util.ArrayContains(MenuFunctions.Struct.getMesh().getElements().get(i).getExternalNodes(), nodeID))
+									if (Util.ArrayContains(MenuFunctions.struct.getMesh().getElements().get(i).getExternalNodes(), nodeID))
 									{
 										elemID = i;
 									}
 								}
-								Yaxisvalues[node] = MenuFunctions.Struct.getMesh().getElements().get(elemID).getStress()[dof];
+								Yaxisvalues[node] = MenuFunctions.struct.getMesh().getElements().get(elemID).getStress()[dof];
 							}
 						}
 						else if (SelectedDiagram == 2)
@@ -1372,14 +1360,14 @@ public abstract class MenuFunctions
 							{
 								int nodeID = SelectedNodes[node];
 								int elemID = -1;
-								for (int i = 0; i <= MenuFunctions.Struct.getMesh().getElements().size() - 1; i += 1)
+								for (int i = 0; i <= MenuFunctions.struct.getMesh().getElements().size() - 1; i += 1)
 								{
-									if (Util.ArrayContains(MenuFunctions.Struct.getMesh().getElements().get(i).getExternalNodes(), nodeID))
+									if (Util.ArrayContains(MenuFunctions.struct.getMesh().getElements().get(i).getExternalNodes(), nodeID))
 									{
 										elemID = i;
 									}
 								}
-								Yaxisvalues[node] = MenuFunctions.Struct.getMesh().getElements().get(elemID).getStrain()[dof];
+								Yaxisvalues[node] = MenuFunctions.struct.getMesh().getElements().get(elemID).getStrain()[dof];
 							}
 						}
 						else if (SelectedDiagram == 3)
@@ -1388,25 +1376,29 @@ public abstract class MenuFunctions
 							{
 								int nodeID = SelectedNodes[node];
 								int elemID = -1;
-								for (int i = 0; i <= MenuFunctions.Struct.getMesh().getElements().size() - 1; i += 1)
+								for (int i = 0; i <= MenuFunctions.struct.getMesh().getElements().size() - 1; i += 1)
 								{
-									if (Util.ArrayContains(MenuFunctions.Struct.getMesh().getElements().get(i).getExternalNodes(), nodeID))
+									if (Util.ArrayContains(MenuFunctions.struct.getMesh().getElements().get(i).getExternalNodes(), nodeID))
 									{
 										elemID = i;
 									}
 								}
-								Yaxisvalues[node] = MenuFunctions.Struct.getMesh().getElements().get(elemID).getIntForces()[dof];
+								Yaxisvalues[node] = MenuFunctions.struct.getMesh().getElements().get(elemID).getIntForces()[dof];
 							}
 						}
-						DP.Draw2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]), "Resultados na seââo", "x var", "y var", Xaxisvalues, Yaxisvalues, Util.FindMin(Xaxisvalues), Util.FindMin(Yaxisvalues), Util.FindMaxAbs(Xaxisvalues), Util.FindMaxAbs(Yaxisvalues), 2, 2, ColorPalette[5], ColorPalette[10]);
+						DP.Draw2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]), "Resultados na seââo", "x var", "y var",
+						Xaxisvalues, Yaxisvalues, Util.FindMin(Xaxisvalues), Util.FindMin(Yaxisvalues),
+						Util.FindMaxAbs(Xaxisvalues), Util.FindMaxAbs(Yaxisvalues), 2, 2, Menus.palette[5], Menus.palette[10]);
 					}
 					else if (-1 < SelectedNodes[0])
 					{
 						if (-1 < SelectedVar)
 						{						
-							double[] XValues = MenuFunctions.Struct.getMesh().getNodes().get(nodeid).LoadDisp[SelectedVar][0];
-							double[] YValues = MenuFunctions.Struct.getMesh().getNodes().get(nodeid).LoadDisp[SelectedVar][1];
-							DP.Draw2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]), "Curva carga-deslocamento", "u (mm)", "Fator de carga", XValues, YValues, Util.FindMin(XValues), Util.FindMin(YValues), Util.FindMaxAbs(XValues), Util.FindMaxAbs(YValues), 3, 3, ColorPalette[5], ColorPalette[10]);					
+							double[] XValues = MenuFunctions.struct.getMesh().getNodes().get(nodeid).LoadDisp[SelectedVar][0];
+							double[] YValues = MenuFunctions.struct.getMesh().getNodes().get(nodeid).LoadDisp[SelectedVar][1];
+							DP.Draw2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]),
+							"Curva carga-deslocamento", "u (mm)", "Fator de carga", XValues, YValues,
+							Util.FindMin(XValues), Util.FindMin(YValues), Util.FindMaxAbs(XValues), Util.FindMaxAbs(YValues), 3, 3, Menus.palette[5], Menus.palette[10]);					
 						}
 					}
 				}
@@ -1417,31 +1409,31 @@ public abstract class MenuFunctions
 	/* Mouse functions */
 	public static void StructureCreation(int[] MainPanelPos, MyCanvas MainCanvas)
 	{
-		List<Point3D> StructCoords = Struct.getCoords();
+		List<Point3D> StructCoords = struct.getCoords();
 		   
-		if (Util.MouseIsInside(MousePos, new int[2], MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
+		if (Util.MouseIsInside(mousePos, new int[2], MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
 	    {
-			if (Struct.getShape().equals(StructureShape.rectangular) | Struct.getShape().equals(StructureShape.circular))
+			if (struct.getShape().equals(StructureShape.rectangular) | struct.getShape().equals(StructureShape.circular))
 			{
 				if (StructCoords != null)
 				{
     				StructureCreationIsOn = false;
 				}
-				Point3D newCoord = getCoordFromMouseClick(MainCanvas, MousePos, SnipToGridIsOn) ;
-				Struct.addCoordFromMouseClick(newCoord) ;
+				Point3D newCoord = getCoordFromMouseClick(MainCanvas, mousePos, SnipToGridIsOn) ;
+				struct.addCoordFromMouseClick(newCoord) ;
 			}
-			else if (Struct.getShape().equals(StructureShape.polygonal))
+			else if (struct.getShape().equals(StructureShape.polygonal))
 			{
 				int prec = 10;
 				if (StructCoords != null)
 				{
-					if (Util.dist(new double[] {MousePos[0], MousePos[1]}, new double[] {StructCoords.get(0).x, StructCoords.get(0).y}) < prec)
+					if (Util.dist(new double[] {mousePos.x, mousePos.y}, new double[] {StructCoords.get(0).x, StructCoords.get(0).y}) < prec)
 					{
 	    				StructureCreationIsOn = false;
 					}
 				}
-				Point3D newCoord = getCoordFromMouseClick(MainCanvas, MousePos, SnipToGridIsOn) ;
-				Struct.addCoordFromMouseClick(newCoord) ;
+				Point3D newCoord = getCoordFromMouseClick(MainCanvas, mousePos, SnipToGridIsOn) ;
+				struct.addCoordFromMouseClick(newCoord) ;
 			}
 			else
 			{
@@ -1449,7 +1441,7 @@ public abstract class MenuFunctions
 			}
 	    }
 
-		Struct.setCoords(StructCoords);
+		struct.setCoords(StructCoords);
 		if (!StructureCreationIsOn)
 		{
 			for (int c = 0; c <= StructCoords.size() - 1; c += 1)
@@ -1457,35 +1449,35 @@ public abstract class MenuFunctions
 				double[] realCoords = Util.ConvertToRealCoords(new int[] {(int) StructCoords.get(c).x, (int) StructCoords.get(c).y, 0}, new int[] {MainCanvas.getPos().x, MainCanvas.getPos().y}, MainCanvas.getSize(), MainCanvas.getDimension()) ;
 				StructCoords.set(c, new Point3D(realCoords[0], realCoords[1], realCoords[2])) ;
 			}
-			if (Struct.getShape().equals(StructureShape.polygonal))
+			if (struct.getShape().equals(StructureShape.polygonal))
 			{
 				StructCoords.set(StructCoords.size() - 1, StructCoords.get(0)) ;
 			}
-			Struct.updateCenter() ;
-			MainCanvas.setCenter(Util.ConvertToDrawingCoords(Struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getDrawingPos()));
+			struct.updateCenter() ;
+			MainCanvas.setCenter(Util.ConvertToDrawingCoords(struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getDrawingPos()));
 		}
 	}
 
 	
 	public static void ElemAddition(MyCanvas MainCanvas, int[] MainPanelPos)
 	{
-		if (MenuFunctions.Struct.getMesh().getElements() != null)
+		if (MenuFunctions.struct.getMesh().getElements() != null)
 		{
 			SelectedElems = null;
-			SelectedElems = Mesh.ElemsSelection(MainCanvas, Struct.getCenter().asArray(), MenuFunctions.Struct.getMesh(), MousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
-			int ElemMouseIsOn = Mesh.ElemMouseIsOn(MenuFunctions.Struct.getMesh(), MousePos, Struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getCenter(), MainCanvas.getDrawingPos(), ShowDeformedStructure);
+			SelectedElems = Mesh.ElemsSelection(MainCanvas, struct.getCenter().asArray(), MenuFunctions.struct.getMesh(), mousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
+			int ElemMouseIsOn = Mesh.ElemMouseIsOn(MenuFunctions.struct.getMesh(), mousePos, struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getCenter(), MainCanvas.getDrawingPos(), ShowDeformedStructure);
 			if (ElemMouseIsOn == -1 | (ShowElemSelectionWindow & -1 < ElemMouseIsOn))
 			{
 				ShowElemSelectionWindow = !ShowElemSelectionWindow;
-				ElemSelectionWindowInitialPos = MousePos;
+				ElemSelectionWindowInitialPos = mousePos;
 			}
 		}
 	}
 	
 	public static void MouseWheel(int[] MainPanelPos, MyCanvas MainCanvas, int WheelRot, boolean[] AssignmentIsOn)
 	{
-		boolean MouseIsInMainCanvas = Util.MouseIsInside(MousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]);
-		if (ShowCanvas & Util.MouseIsInside(MousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
+		boolean MouseIsInMainCanvas = Util.MouseIsInside(mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]);
+		if (ShowCanvas & Util.MouseIsInside(mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
 		{
 			MainCanvas.getDimension()[0] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[0])*WheelRot, 1);
 			MainCanvas.getDimension()[1] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[1])*WheelRot, 1);
@@ -1524,7 +1516,7 @@ public abstract class MenuFunctions
 	
 	public static void updateDiagramScale(MyCanvas MainCanvas, int WheelRot)
 	{
-		if (AnalysisIsComplete & !Util.MouseIsInsideCanvas(MousePos, MainCanvas))
+		if (AnalysisIsComplete & !Util.MouseIsInsideCanvas(mousePos, MainCanvas))
 		{
 			DiagramScales[1] += -Util.Round(10 * Math.log10(DiagramScales[1]) * WheelRot, 10);
 			DiagramScales[1] = Math.max(DiagramScales[1], 0.001);
@@ -1533,11 +1525,11 @@ public abstract class MenuFunctions
 
 	public static void ResetStructure()
 	{
-		Struct = new Structure(null, null, null);
-		MenuFunctions.Struct.getMesh().reset() ;
+		struct = new Structure(null, null, null);
+		MenuFunctions.struct.getMesh().reset() ;
 		matTypes = null;
 		secTypes = null;
-		MenuFunctions.Struct.removeSupports() ;
+		MenuFunctions.struct.removeSupports() ;
 		ConcLoadType = null ;
 		ConcLoad = null;
 		DistLoadType = null ;
