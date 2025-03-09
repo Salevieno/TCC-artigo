@@ -32,8 +32,7 @@ import main.structure.Reactions;
 import main.structure.Supports;
 
 public abstract class Util 
-{
-	
+{	
 	
 	public static Color[] RandomColors(int n)
 	{
@@ -55,16 +54,8 @@ public abstract class Util
 	{
 		return Math.sqrt(Math.pow(Point2[0] - Point1[0], 2) + Math.pow(Point2[1] - Point1[1], 2));
 	}
-
-	public static int[] CalculateNumberOfGridPoints(double[] CanvasDim)
-	{
-		int[] NPointsMin = new int[] {6, 6}, NPointsMax = new int[] {46, 46};
-		int[] NPoints = new int[2];
-		NPoints[0] = (int) (NPointsMin[0] + (NPointsMax[0] - NPointsMin[0]) * (CanvasDim[0] % 100) / 100.0);
-		NPoints[1] = (int) (NPointsMin[1] + (NPointsMax[1] - NPointsMin[1]) * (CanvasDim[1] % 100) / 100.0);	
-		return NPoints;
-	}
 	
+
 	public static double[] ConvertToRealCoords(int[] OriginalCoords, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim)
 	{
 		return new double[] {(OriginalCoords[0] - CanvasPos[0])/(double)(CanvasSize[0])*CanvasDim[0], (-OriginalCoords[1] + CanvasPos[1] + CanvasSize[1])/(double)(CanvasSize[1])*CanvasDim[1], 0};
@@ -73,11 +64,6 @@ public abstract class Util
 	public static double[] ConvertToRealCoords2(int[] OriginalCoords, double[] CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
 	{
 		return new double[] {(OriginalCoords[0] - DrawingPos[0] - CanvasCenter[0])*CanvasDim[0]/CanvasSize[0] + CoordsCenter[0], -(OriginalCoords[1] - DrawingPos[1] - CanvasCenter[1])*CanvasDim[1]/CanvasSize[1] + CoordsCenter[1]};
-	}
-
-	public static double[] ConvertToRealCoordsPoint3D(int[] OriginalCoords, Point3D CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
-	{
-		return new double[] {(OriginalCoords[0] - DrawingPos[0] - CanvasCenter[0])*CanvasDim[0]/CanvasSize[0] + CoordsCenter.x, -(OriginalCoords[1] - DrawingPos[1] - CanvasCenter[1])*CanvasDim[1]/CanvasSize[1] + CoordsCenter.y};
 	}
 
 	public static double[] ConvertToRealCoordsPoint3D(int[] OriginalCoords, Point3D CoordsCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
@@ -100,21 +86,12 @@ public abstract class Util
 		return new int[] {(int) (DrawingPos[0] + CanvasCenter[0] + (OriginalCoords[0] - CoordsCenter[0])/CanvasDim[0]*CanvasSize[0]), (int) (DrawingPos[1] + CanvasCenter[1] - (OriginalCoords[1] - CoordsCenter[1])/CanvasDim[1]*CanvasSize[1])};
 	}
 
-	public static int[] ConvertToDrawingCoords2Point3D(double[] OriginalCoords, Point3D CoordsCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
-	{
-		return new int[] {(int) (DrawingPos[0] + CanvasCenter[0] + (OriginalCoords[0] - CoordsCenter.x)/CanvasDim[0]*CanvasSize[0]), (int) (DrawingPos[1] + CanvasCenter[1] - (OriginalCoords[1] - CoordsCenter.y)/CanvasDim[1]*CanvasSize[1])};
-	}
-
 	public static int[] ConvertToDrawingCoords2Point3D(double[] OriginalCoords, Point3D CoordsCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
 	{
 		return new int[] {(int) (DrawingPos[0] + CanvasCenter[0] + (OriginalCoords[0] - CoordsCenter.x)/CanvasDim[0]*CanvasSize[0]), (int) (DrawingPos[1] + CanvasCenter[1] - (OriginalCoords[1] - CoordsCenter.y)/CanvasDim[1]*CanvasSize[1])};
 	}
 	
-	public static int ConvertToDrawingSize(int[] CanvasPos, int[] PanelPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double size)
-	{
-		return (ConvertToDrawingCoords(new double[] {0, 0}, CanvasPos, CanvasSize, CanvasDim, DrawingPos)[1] - ConvertToDrawingCoords(new double[] {0, size}, CanvasPos, CanvasSize, CanvasDim, DrawingPos)[1]);
-	}
-	
+
 	public static double[] InNaturalCoordsTriangle(double[][] Coords, double[] Point)
 	{
 		double[] natCoords = new double[3];
@@ -148,56 +125,8 @@ public abstract class Util
 		}
 		return DeformedCoords;
 	}
-	
-	public static int ElemMouseIsOn(Mesh mesh, int[] MousePos, double[] StructCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
-	{
-		List<Node> Node = mesh.getNodes();
-		List<Element> Elem = mesh.getElements();
-		double[] RealMousePos = ConvertToRealCoords2(MousePos, StructCenter, CanvasPos, CanvasSize, CanvasDim, CanvasCenter, CanvasPos);
-		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-		{
-			if (MouseIsOnElem(Node, Elem.get(elem), RealMousePos, CanvasPos, CanvasSize, DrawingPos, condition))
-		    {
-				return elem;
-		    }
-		}
-		return -1;
-	}
-	
-	public static int ElemMouseIsOn(Mesh mesh, int[] MousePos, double[] StructCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
-	{
-		return ElemMouseIsOn(mesh, MousePos, StructCenter, new int[] {CanvasPos.x, CanvasPos.y}, CanvasSize, CanvasDim, CanvasCenter, DrawingPos, condition) ;
-	}
-	
-	public static int NodeMouseIsOn(List<Node> Node, int[] MousePos, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double prec, boolean condition)
-	{
-		for (int node = 0; node <= Node.size() - 1; node += 1)
-		{
-			if (MouseIsOnNode(Node, MousePos, CanvasPos, CanvasSize, CanvasDim, DrawingPos, node, prec, condition))
-		    {
-				return node;
-		    }
-		}
-		return -1;
-	}
-	
-	public static int NodeMouseIsOn(List<Node> Node, int[] MousePos, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double prec, boolean condition)
-	{
-		return NodeMouseIsOn(Node, MousePos, new int[] {CanvasPos.x, CanvasPos.y}, CanvasSize, CanvasDim, DrawingPos, prec, condition) ;
-	}
-	
-	public static double Bhaskara(double a, double b, double c, String SqrtSign)
-	{
-		if (SqrtSign.equals("+"))
-		{
-			return (-b + Math.sqrt(b*b - 4*a*c))/(2*a);
-		}
-		else
-		{
-			return (-b - Math.sqrt(b*b - 4*a*c))/(2*a);
-		}
-	}
-	
+		
+
 	public static double TriArea(double[][] Coords)
     {
         double x1 = Coords[0][0], x2 = Coords[1][0], x3 = Coords[2][0];
@@ -206,19 +135,7 @@ public abstract class Util
     	return A;
     }
 
-	public static double FindMinAbs(double[] SetOfValues)
-	{
-		double MinValue = SetOfValues[0];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			if (Math.abs(SetOfValues[v]) < MinValue)
-			{
-				MinValue = Math.abs(SetOfValues[v]);
-			}
-		}
-		return MinValue;
-	}
-	
+
 	public static double FindMaxAbs(double[] SetOfValues)
 	{
 		double MaxValue = SetOfValues[0];
@@ -271,83 +188,6 @@ public abstract class Util
 		return MaxValue;
 	}
 
-	public static double FindMax(double[] SetOfValues)
-	{
-		double MaxValue = SetOfValues[0];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			if (MaxValue < SetOfValues[v])
-			{
-				MaxValue = SetOfValues[v];
-			}
-		}
-		return MaxValue;
-	}
-	
-	public static int FindMin(int[][] SetOfValues)
-	{
-		int MinValue = SetOfValues[0][0];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			for (int v2 = 0; v2 <= SetOfValues[v].length - 1; v2 += 1)
-			{
-				if (SetOfValues[v][v2] < MinValue)
-				{
-					MinValue = SetOfValues[v][v2];
-				}
-			}
-		}
-		return MinValue;
-	}
-	
-	public static double FindMin(double[][] SetOfValues)
-	{
-		double MinValue = SetOfValues[0][0];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			for (int v2 = 0; v2 <= SetOfValues[v].length - 1; v2 += 1)
-			{
-				if (SetOfValues[v][v2] < MinValue)
-				{
-					MinValue = SetOfValues[v][v2];
-				}
-			}
-		}
-		return MinValue;
-	}
-	
-	public static int FindMax(int[][] SetOfValues)
-	{
-		int MaxValue = SetOfValues[0][0];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			for (int v2 = 0; v2 <= SetOfValues[v].length - 1; v2 += 1)
-			{
-				if (MaxValue < SetOfValues[v][v2])
-				{
-					MaxValue = SetOfValues[v][v2];
-				}
-			}
-		}
-		return MaxValue;
-	}
-	
-	public static double FindMax(double[][] SetOfValues)
-	{
-		double MaxValue = SetOfValues[0][0];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			for (int v2 = 0; v2 <= SetOfValues[v].length - 1; v2 += 1)
-			{
-				if (MaxValue < SetOfValues[v][v2])
-				{
-					MaxValue = SetOfValues[v][v2];
-				}
-			}
-		}
-		return MaxValue;
-	}
-
 	public static double[] FindMinPerPos(double[][] SetOfValues)
 	{
 		double[] MinValues = new double[SetOfValues[0].length];
@@ -389,50 +229,7 @@ public abstract class Util
 		return MinValues;
 	}
 	
-	public static double FindMinInPos(double[][] SetOfValues, int pos)
-	{
-		double MinValue = SetOfValues[0][pos];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			if (SetOfValues[v][pos] < MinValue)
-			{
-				MinValue = SetOfValues[v][pos];
-			}
-		}
-		return MinValue;
-	}
 
-	public static double FindMaxInPos(double[][] SetOfValues, int pos)
-	{
-		double MaxValue = SetOfValues[0][pos];
-		for (int v = 0; v <= SetOfValues.length - 1; v += 1)
-		{
-			if (MaxValue < SetOfValues[v][pos])
-			{
-				MaxValue = SetOfValues[v][pos];
-			}
-		}
-		return MaxValue;
-	}
-	
- 	public static String[] AddElem(String[] OriginalArray, String NewElem)
-	{
-		if (OriginalArray == null)
-		{
-			return new String[] {NewElem};
-		}
-		else
-		{
-			String[] NewArray = new String[OriginalArray.length + 1];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			NewArray[OriginalArray.length] = NewElem;
-			return NewArray;
-		}
-	}
- 	
  	public static double[] AddElem(double[] OriginalArray, double NewElem)
 	{
 		if (OriginalArray == null)
@@ -471,44 +268,6 @@ public abstract class Util
 			return NewArray;
 		}
 	}
- 	
- 	// public static List<Node> AddElem(List<Node> OriginalArray, Node NewElem)
- 	// {
- 	// 	if (OriginalArray == null)
-	// 	{
-	// 		List<Node> listNodes = new ArrayList<Node>();
-	// 		listNodes.add(NewElem);
-	// 		return listNodes;
-	// 	}
-	// 	else
-	// 	{
-	// 		List<Node> NewArray = new Node[OriginalArray.length + 1];
-	// 		for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-	// 		{
-	// 			NewArray[i] = OriginalArray[i];
-	// 		}
-	// 		NewArray[OriginalArray.length] = NewElem;
-	// 		return NewArray;
-	// 	}
- 	// }
-
- 	public static Element[] AddElem(Element[] OriginalArray, Element NewElem)
- 	{
- 		if (OriginalArray == null)
-		{
-			return new Element[] {NewElem};
-		}
-		else
-		{
-			Element[] NewArray = new Element[OriginalArray.length + 1];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			NewArray[OriginalArray.length] = NewElem;
-			return NewArray;
-		}
- 	}
  	
  	public static Supports[] AddElem(Supports[] OriginalArray, Supports NewElem)
 	{
@@ -582,31 +341,6 @@ public abstract class Util
 		}
  	}
  	
- 	public static int[][] AddElem(int[][] OriginalArray, int[] NewElem, boolean ElemMustBeUnique)
-	{
-		if (OriginalArray == null)
-		{
-			return new int[][] {NewElem};
-		}
-		else
-		{
-			if (!ElemMustBeUnique | !ArrayContains(OriginalArray, NewElem))
-			{
-				int[][] NewArray = new int[OriginalArray.length + 1][];
-				for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-				{
-					NewArray[i] = OriginalArray[i];
-				}
-				NewArray[OriginalArray.length] = NewElem;
-				return NewArray;
-			}
-			else
-			{
-				return OriginalArray;
-			}
-		}
-	}
-
 	public static String[][] AddElem(String[][] OriginalArray, String[] NewElem)
 	{
 		if (OriginalArray == null)
@@ -661,6 +395,7 @@ public abstract class Util
 		}
 	}
 	
+
 	public static Supports[] IncreaseArraySize(Supports[] OriginalArray, int size)
 	{
 		if (OriginalArray == null)
@@ -738,23 +473,6 @@ public abstract class Util
 		}
 	}
 	
-	public static String[][] IncreaseArraySize(String[][] OriginalArray, int size)
-	{
-		if (OriginalArray == null)
-		{
-			return new String[size][];
-		}
-		else
-		{
-			String[][] NewArray = new String[OriginalArray.length + size][];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			return NewArray;
-		}
-	}
-	
 	public static int[] AddElem(int[] OriginalArray, int NewElem)
 	{
 		if (OriginalArray == null)
@@ -773,6 +491,7 @@ public abstract class Util
 		}
 	}
 	
+
 	public static boolean ArrayContains(int[] OriginalArray, int elem)
 	{
 		for (int i = 0; i <= OriginalArray.length - 1; i += 1)
@@ -783,70 +502,6 @@ public abstract class Util
 			}
 		}
 		return false;
-	}
-
-	public static boolean ArrayContains(int[][] OriginalArray, int[] elem)
-	{
-		boolean arraycontains = true;
-		if (OriginalArray != null & elem != null)
-		{
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				if (OriginalArray[i][0] == elem[0] & OriginalArray[i].length == elem.length)
-				{
-					arraycontains = true;
-					for (int j = 1; j <= OriginalArray[i].length - 1; j += 1)
-					{
-						if (OriginalArray[i][j] != elem[j])
-						{
-							j = OriginalArray[i].length - 1;
-							arraycontains = false;
-						}
-					}
-					if (arraycontains)
-					{
-						return arraycontains;
-					}
-				}
-			}
-			return false;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	public static boolean ArrayContains(double[][] OriginalArray, double[] elem)
-	{
-		boolean arraycontains = true;
-		if (OriginalArray != null & elem != null)
-		{
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				if (OriginalArray[i][0] == elem[0] & OriginalArray[i].length == elem.length)
-				{
-					arraycontains = true;
-					for (int j = 1; j <= OriginalArray[i].length - 1; j += 1)
-					{
-						if (OriginalArray[i][j] != elem[j])
-						{
-							j = OriginalArray[i].length - 1;
-							arraycontains = false;
-						}
-					}
-					if (arraycontains)
-					{
-						return arraycontains;
-					}
-				}
-			}
-			return false;
-		}
-		else
-		{
-			return false;
-		}
 	}
 
 	public static int ElemPosInArray(int[] OriginalArray, int elem)
@@ -862,6 +517,7 @@ public abstract class Util
 		return pos;
 	}
 	
+
 	public static int ProdVec(int[] Vector)
 	{
 		int prod = 1;
@@ -874,27 +530,7 @@ public abstract class Util
 		}
 		return prod;
 	}
-	
-	public static double ProdVec(double[] Vector)
-	{
-		double prod = 1.0;
-		for (int i = 0; i <= Vector.length - 1; i += 1)
-		{
-			prod = prod*Vector[i];
-		}
-		return prod;
-	}
 
-	public static int[] EqualMatrix(int[] A)
-	{
-		return Arrays.copyOf(A, A.length);
-	}
-	
-	public static double[] EqualMatrix(double[] A)
-	{
-		return Arrays.copyOf(A, A.length);
-	}
-	
 	public static double[][] AddMatrix(double[][] A, double[][] B)
 	{
 		/*This function adds two matrices*/
@@ -1010,27 +646,7 @@ public abstract class Util
         }      
 		return C;
 	}
-	
-	public static int[] MultMatrixVector (double[][] A, int[] b)
-	{
-		/*This function multiplies a matrix and a vector*/		
-        int aColumns = A[0].length;
-        int bRows = b.length;
-		int[] C = new int[bRows];	
-		if (aColumns != bRows) 
-        {
-            throw new IllegalArgumentException("Number of columns in A (" + aColumns + ") did not match the number of rows in b (" + bRows + ").");
-        }	
-        for (int i = 0; i < bRows; i += 1)
-        { 
-            for (int j = 0; j < aColumns; j += 1)
-            {
-            	C[i] += A[i][j] * b[j];
-            }
-        }      
-		return C;
-	}
-	
+
 	public static double[] MultVector (double[] a, double b)
 	{
 		/*This function multiplies two vectors*/
@@ -1081,6 +697,7 @@ public abstract class Util
         }
 		return matrixTranspose;
 	}
+
 
 	public static int[] RotateCoord(int[] OriCoord, int[] RefPoint, double[] angle)
 	{
@@ -1177,12 +794,7 @@ public abstract class Util
 		coord[2] = oriCoord[2];
 		return coord;
 	}
-	
-	public static double[] RotateCoordPoint3D(double[] OriCoord, Point3D RefPoint, double[] angle)
-	{
-		return RotateCoord(OriCoord, RefPoint.asArray(), angle) ;
-	}
-	
+
     public static int[][] MatrixDoubleToInt(double[][] matrix)
     {
     	int[][] newmatrix = new int[matrix.length][];
@@ -1199,17 +811,7 @@ public abstract class Util
     	return newmatrix;
     }
     
-	public static int TextLength(String Text, Font TextFont, int size, Graphics G)
-	{
-		FontMetrics metrics = G.getFontMetrics(TextFont);
-		return (int)(metrics.stringWidth(Text)*0.05*size);
-	}
-	
-	public static int TextHeight(int TextSize)
-	{
-		return (int)(0.8*TextSize);
-	}
-    
+
 	public static float Round(Double num, int decimals)
 	{
 		if (!num.isNaN())
@@ -1222,18 +824,7 @@ public abstract class Util
 			return 0;
 		}
 	}
-	
-	public static double Average(double[] values)
-	{
-		double avr = 0;
-		for (int i = 0; i <= values.length - 1; i += 1)
-		{
-			avr += values[i];
-		}
-		avr = avr / (double)values.length;
-		return avr;
-	}
-	
+
 	public static int Average(int[] values)
 	{
 		int avr = 0;
@@ -1259,27 +850,7 @@ public abstract class Util
 		blue = blue / (double)colors.length;
 		return new Color((int)red, (int)green, (int)blue);
 	}
-	
-	public static double[] MatrixAverages(double[][] values)
-	{
-		double[] avr = new double[values[0].length];
-		for (int i = 0; i <= values[0].length - 1; i += 1)
-		{
-			for (int j = 0; j <= values.length - 1; j += 1)
-			{
-				avr[i] += values[j][i];
-			}
-			avr[i] = avr[i] / (double)values.length;
-		}
-		return avr;
-	}
-	
-	public static Point3D MatrixAveragesToPoint3D(double[][] values)
-	{
-		double[] avrArray = MatrixAverages(values) ;
-		return new Point3D(avrArray[0], avrArray[1], avrArray[2]);
-	}
-	
+
 	public static String[] FitText(String inputstring, int NumberOfChars)
 	{
 		String[] newstring = new String[inputstring.length()];
@@ -1322,64 +893,7 @@ public abstract class Util
 		}
 		return newstring2;
 	}
-	
-	public static int[] CenterStructure(int[] DrawingPos, int[] CanvasCenter, int[] DrawingCoords)
-	{
-		return new int[] {DrawingPos[0] - (DrawingCoords[0] - CanvasCenter[0]), DrawingPos[1] - (DrawingCoords[1] - CanvasCenter[1])};
-	}
 
-	public static JButton AddButton(ImageIcon Icon, int[] Alignment, int[] Size, Color color)
-	{
-		JButton NewButton = new JButton();
-		NewButton.setIcon(Icon);
-		NewButton.setVerticalAlignment(Alignment[0]);
-		NewButton.setHorizontalAlignment(Alignment[1]);
-		NewButton.setBackground(color);
-		NewButton.setPreferredSize(new Dimension(Size[0], Size[1]));	
-		return NewButton;
-	}
-	
-	public static JButton AddButton(String Text, int[] Alignment, int[] Size, int FontSize, int[] margins, Color color)
-	{
-		JButton NewButton = new JButton(Text);
-		NewButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, FontSize));
-		NewButton.setVerticalAlignment(Alignment[0]);
-		NewButton.setHorizontalAlignment(Alignment[1]);
-		NewButton.setBackground(color);
-		NewButton.setPreferredSize(new Dimension(Size[0], Size[1]));
-		NewButton.setMargin(new Insets(margins[0], margins[1], margins[2], margins[3]));
-		return NewButton;
-	}
-	
-	public static double[] CentroidOfPoints(double[][] Coords)
-	{
-	    if (Coords != null)
-	    {
-    	    if (1 < Coords.length)
-    	    {
-    	        double[] Centroid = new double[3];
-        	    for (int i = 0; i <= Coords.length - 1; i += 1)
-        		{
-        		    Centroid[0] += Coords[i][0];
-        		    Centroid[1] += Coords[i][1];
-        		    Centroid[2] += Coords[i][2];
-        		}
-        		Centroid[0] = Centroid[0] / (double) Coords.length;
-        		Centroid[1] = Centroid[1] / (double) Coords.length;
-        		Centroid[2] = Centroid[2] / (double) Coords.length;
-        		return Centroid;
-    	    }
-    	    else
-    	    {
-    	       return Coords[0];
-    	    }
-	    }
-	    else
-	    {
-	        return null;    
-	    }
-	}
-	
 	public static double[][] PolygonLines(double[][] Coords)
     {
         double[][] Lines = new double[Coords.length][6];
@@ -1438,17 +952,6 @@ public abstract class Util
 		return Points;
 	}
 	
-	public static double[][] CreateInternalPolygonPoints(double[][] Coords, double[] PolygonCenter, double offset)
-	{
-	    double[][] Points = new double[Coords.length][3];
-	    for (int i = 0; i <= Coords.length - 1; i += 1)
-		{
-		    double[] Line = new double[] {PolygonCenter[0], PolygonCenter[1], 0, Coords[i][0], Coords[i][1], 0};
-		    Points[i] = CreatePointInLine(Line, 1 - offset);
-		}
-		return Points;
-	}
-	
 	public static double[][] CreateInternalPolygonPoints(List<Point3D> Coords, Point3D PolygonCenter, double offset)
 	{
 	    double[][] Points = new double[Coords.size()][3];
@@ -1482,46 +985,6 @@ public abstract class Util
 		return NewCoords;
 	}
 
-	public static double[][] DetermineStructureMinMaxCoords(double[][] Coords)
-	{
-		double[] MinCoords = new double[] {Coords[0][0], Coords[0][1]}, MaxCoords = new double[] {Coords[0][0], Coords[0][1]};	// Create a new array to avoid bugs		
-		for (int i = 0; i <= Coords.length - 1; i += 1)
-		{
-			for (int j = 0; j <= 2 - 1; j += 1)
-			{
-				if (Coords[i][j] < MinCoords[j])
-				{
-					MinCoords[j] = Coords[i][j];
-				}
-				if (MaxCoords[j] < Coords[i][j])
-				{
-					MaxCoords[j] = Coords[i][j];
-				}
-			}
-		}
-		return new double[][] {MinCoords, MaxCoords};
-	}
-	
-	public static double UpdateStructureScale(double[][] Coords, int MaxSize)
-	{
-		 // Find min and max coordinates and returns the scale. Currently only works for 2D
-		double[][] MinMaxCoords = DetermineStructureMinMaxCoords(Coords);
-		double[] MinCoords = MinMaxCoords[0], MaxCoords = MinMaxCoords[1];
-		if (Math.max(MaxCoords[0] - MinCoords[0], MaxCoords[1] - MinCoords[1]) <= Math.pow(10, -5))
-		{
-			return 1;
-		}
-		else
-		{
-			return MaxSize/Math.max(MaxCoords[0] - MinCoords[0], MaxCoords[1] - MinCoords[1]);
-		}
-	}
-	
-	public static int[] GetAbsMousePos()
- 	{
-		return new int[] {MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y};
- 	}
-	
 	public static int[] GetRelMousePos(int[] PanelPos)
  	{
 		return new int[] {MouseInfo.getPointerInfo().getLocation().x - PanelPos[0], MouseInfo.getPointerInfo().getLocation().y - PanelPos[1]};
@@ -1634,84 +1097,6 @@ public abstract class Util
 		{
 			return false;
 		}
-	}
-	
-	public static boolean AreAssigned(int[][] Members, String Prop)
-	{
-		for (int member = 0; member <= Members.length - 1; member += 1)
-		{
-			if (Prop.equals("Mat") & Members[member][2] == -1)
-			{
-				return false;
-			}
-			if (Prop.equals("Sec") & Members[member][3] == -1)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	public static String[] DefineDiagramsNames(String MemberType, String DiagramType)
-	{
-		if (MemberType != null)
-		{
-			if (DiagramType.equals("Force"))
-			{
-				if (MemberType.equals("T2") | MemberType.equals("T3"))
-				{
-					return new String[] {"Axial"};
-				}
-				else if (MemberType.equals("F2"))
-				{
-					return new String[] {"Axial", "Shear y", "Moment z"};
-				}
-				else if (MemberType.equals("F3"))
-				{
-					return new String[] {"Axial", "Shear y", "Shear z", "Torsion", "Moment y", "Moment z"};
-				}
-			}
-			else if (DiagramType.equals("Stress"))
-			{
-				if (MemberType.equals("T2") | MemberType.equals("T3"))
-				{
-					return new String[] {"Axial"};
-				}
-				else if (MemberType.equals("F2"))
-				{
-					return new String[] {"Axial", "Shear y"};
-				}
-				else if (MemberType.equals("F3"))
-				{
-					return new String[] {"Axial", "Shear y", "Shear z"};
-				}
-			}
-		}
-		return new String[] {};
-	}
-	
-	public static int FindID (String[] Array, String Elem)
-	{
-		for (int i = 0; i <= Array.length - 1; i += 1)
-		{
-			if (Array[i].equals(Elem))
-			{
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	public static int FindID (double[][] Array, double[] Elem)
-	{
-		for (int i = 0; i <= Array.length - 1; i += 1)
-		{
-			if (Array[i].equals(Elem))
-			{
-				return i;
-			}
-		}
-		return -1;
 	}
 	
 	public static Color FindColor(double value, double min, double max, String Style)
@@ -1885,48 +1270,6 @@ public abstract class Util
         
         return CumDOFsOnElem;
 	}
-	
-	/*public static Sup[] AddSupports(Nodes[] Node, Sup[] sup, int[] SelectedNodes, int[][] SupTypes, int SelectedSupType)
-	{
-		sup = Util.IncreaseArraySize(sup, SelectedNodes.length);
-		if (-1 < SelectedSupType & SelectedNodes != null)
-		{
-			for (int i = 0; i <= SelectedNodes.length - 1; i += 1)
-			{
-				if (-1 < SelectedNodes[i])
-				{
-					sup[sup.length - SelectedNodes.length + i] = new Sup(sup.length - SelectedNodes.length + i, SelectedNodes[i], SupTypes[SelectedSupType]);
-					Node[SelectedNodes[i]].setSup(SelectedSupType);
-				}
-			}
-		}
-		
-		return sup;
-	}*/
-	
-	/*public Supports[] DefineSupports(Nodes[] Node, int[] SelectedNodes, int[] SupType)
-	{
-		Supports[] sup = null;
-		sup = MenuFunctions.AddSupports(Node, sup, SelectedNodes, SupType);
-		
-		return sup;
-	}
-	
-	public static ConcLoads[] DefineConcLoads(Nodes[] Node, int[] SelectedNodes, double[] UserDefinedConcLoads)
-	{
-		ConcLoads[] concloads = null;
-		concloads = MenuFunctions.AddConcLoads(Node, concloads, SelectedNodes, UserDefinedConcLoads);
-		
-		return concloads;
-	}
-	
-	public static DistLoads[] DefineDistLoads(Elements[] Elem, int[] SelectedNodes, double[] UserDefinedDistLoads)
-	{
-		DistLoads[] distloads = null;
-		distloads = MenuFunctions.AddDistLoadsToElements(Elem, distloads, SelectedNodes, UserDefinedDistLoads);
-		
-		return distloads;
-	}*/
 	
 	public static Object[] LoadEspecialInput()
 	{
@@ -2198,186 +1541,6 @@ public abstract class Util
 		return sup;
 	}
 	
-	
-	
-	/*public static DistLoads[] AddEspecialDistLoads(Elements[] Elem, double[][] UserDefinedDistLoads, int DistLoadConfig, int DistLoadType)
-	{
-		if (UserDefinedDistLoads != null)
-		{
-			if (0 < UserDefinedDistLoads.length)
-			{
-				int[] DistLoadElems = null;
-				if (DistLoadConfig == 1)
-				{
-					DistLoadElems = new int[Elem.length];
-					for (int elem = 0; elem <= Elem.length - 1; elem += 1)
-					{
-						DistLoadElems[elem] = elem;
-					}
-				}
-				DistLoads[] distloads = DefineDistLoads(Elem, DistLoadElems, UserDefinedDistLoads[DistLoadType]);
-				
-				return distloads;
-			}
-		}
-		
-		return null;
-	}*/
-	
-	public static int[] NodalDoFs (String MemberType)
-	{
-		/*This function defines the active DoFs in each node according to the member type*/		
-		int[] DoFsPerNode = {};
-		if (MemberType.equals("T2"))
-		{
-			DoFsPerNode = new int[] {0, 1};
-		}	
-		if (MemberType.equals("T3"))
-		{
-			DoFsPerNode = new int[] {0, 1, 2};
-		}	
-		if (MemberType.equals("B2"))
-		{
-			DoFsPerNode = new int[] {1, 5};
-		}	
-		if (MemberType.equals("B3"))
-		{
-			DoFsPerNode = new int[] {1, 4, 5};
-		}	
-		if (MemberType.equals("F2"))
-		{
-			DoFsPerNode = new int[] {0, 1, 5};
-		}	
-		if (MemberType.equals("F3"))
-		{
-			DoFsPerNode = new int[] {0, 1, 2, 3, 4, 5};
-		}	
-		return DoFsPerNode;
-	}
-	
-	public static int[] CountDoFs (String MemberType, double[][] Coords, int[][] Sup)
-	{
-		/*This function counts the number of free, restrained, and total DoFs*/		
-		int NumberTotalDoFs;
-		int NumberFreeDoFs;
-		int NumberRestDoFs;
-		int NumberSup = Sup.length;	
-		int[] DoFsPerNode = NodalDoFs(MemberType);
-		int NumberDoFsPerNode = DoFsPerNode.length;
-		
-		NumberTotalDoFs = Coords.length*NumberDoFsPerNode;
-		NumberFreeDoFs = NumberTotalDoFs;                       // Number of free DoFs = Total number of DoFs
-		for (int i = 0; i <= NumberSup - 1; ++i)
-		{
-			for (int j = 0; j <= NumberDoFsPerNode - 1; ++j)
-			{
-				NumberFreeDoFs += -Sup[i][DoFsPerNode[j] + 1];  // Reduces the restrained DoFs from the number of free DoFs
-			}
-		}
-		NumberRestDoFs = NumberTotalDoFs - NumberFreeDoFs;
-		return new int[] {NumberFreeDoFs, NumberRestDoFs};
-	}
-	
-	public static int[][] NumberDoFs (String MemberType, double[][] Coords, int[][] Sup)
-	{
-		/*This function numbers the DoFs in each node and stores the numbering in a matrix
-		  Free DoFs are numbered starting at 0
-		  Restrained DoFs are numbered starting at the number of free DoFs
-		  This function miscalculates the number of RestDoFs if there are 2 or more supports in the same node*/		
-		int[][] NodeDoF;
-		boolean FoundSupport;
-		int CountFreeDoFs = 0;
-		int CountRestDoFs = 0;
-		int[] DoFsPerNode = NodalDoFs(MemberType);
-		int NumberNodes = Coords.length;
-		int NumberSup = Sup.length;
-		int NumberDoFsPerNode =  DoFsPerNode.length;
-		int NumberFreeDoFs = CountDoFs(MemberType, Coords, Sup)[0];	
-
-		/*Numbering the DoFs and storing them in the NodeDoF matrix*/
-		NodeDoF = new int[NumberNodes][NumberDoFsPerNode];
-		for (int node = 0; node <= NumberNodes - 1; node += 1)
-		{
-			FoundSupport = false;
-			for (int j = 0; j <= NumberSup - 1; j += 1)
-			{
-				if (Sup[j][0] == node)
-				{
-					FoundSupport = true;
-					for (int k = 0; k <= NumberDoFsPerNode - 1; k += 1)
-					{
-						if (Sup[j][DoFsPerNode[k] + 1] == 1)
-						{
-							NodeDoF[node][k] = CountRestDoFs + NumberFreeDoFs;
-							CountRestDoFs += 1;
-						}
-						else
-						{
-							NodeDoF[node][k] = CountFreeDoFs;
-							CountFreeDoFs += 1;
-						}
-					}	
-				}	
-			}
-			if (!FoundSupport)
-			{
-				for (int k = 0; k <= NumberDoFsPerNode - 1; k += 1)
-				{
-					NodeDoF[node][k] = CountFreeDoFs;
-					CountFreeDoFs += 1;
-				}	
-			}
-		}
-		return NodeDoF;
-	}
-
-	public static boolean NodeHasSup (int[][] Sup, int node)
-	{
-		if (Sup == null)
-		{
-			return false;
-		}
-		for (int i = 0; i <= Sup.length - 1; i += 1)
-		{
-			if (Sup[i][0] == node)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static int SupType (int[] DoFs)
-	{
-		int suptype = -1;
-		
-		if (DoFs[0] == 1 & DoFs[1] == 0 & DoFs[2] == 0 & DoFs[3] == 0 & DoFs[4] == 0 & DoFs[5] == 0)
-		{
-			suptype = 0;																				// roller in the x dir
-		}
-		if (DoFs[0] == 0 & DoFs[1] == 1 & DoFs[2] == 0 & DoFs[3] == 0 & DoFs[4] == 0 & DoFs[5] == 0)
-		{
-			suptype = 1;																				// roller in the y dir
-		}
-		if (DoFs[0] == 0 & DoFs[1] == 0 & DoFs[2] == 1 & DoFs[3] == 0 & DoFs[4] == 0 & DoFs[5] == 0)
-		{
-			suptype = 2;																				// roller in the z dir
-		}
-		if (DoFs[0] == 1 & DoFs[1] == 1 & DoFs[2] == 0 & DoFs[3] == 0 & DoFs[4] == 0 & DoFs[5] == 0)
-		{
-			suptype = 3;																				// pin in the x-y dir
-		}
-		if (DoFs[0] == 1 & DoFs[1] == 1 & DoFs[2] == 0 & DoFs[3] == 0 & DoFs[4] == 0 & DoFs[5] == 1)
-		{
-			suptype = 4;																				// cantilever xyz
-		}
-		if (DoFs[0] == 1 & DoFs[1] == 1 & DoFs[2] == 1 & DoFs[3] == 1 & DoFs[4] == 1 & DoFs[5] == 1)
-		{
-			suptype = 5;																				// full cantilever
-		}
-		
-		return suptype;
-	}
 
 	public static double FindMaxConcLoad(ConcLoads[] ConcLoads)
 	{
@@ -2412,29 +1575,6 @@ public abstract class Util
 				if (MaxLoad < Math.abs(DistLoads[l].getIntensity()))
 				{
 					MaxLoad = Math.abs(DistLoads[l].getIntensity());
-				}
-			}
-			return MaxLoad;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	public static double FindMaxNodalDisp(NodalDisps[] NodalDisps)
-	{
-		if (NodalDisps != null)
-		{
-			double MaxLoad = NodalDisps[0].getDisps()[0];
-			for (int l = 0; l <= NodalDisps.length - 1; l += 1)
-			{
-				for (int i = 0; i <= NodalDisps[l].getDisps().length - 1; i += 1)
-				{
-					if (MaxLoad < Math.abs(NodalDisps[l].getDisps()[i]))
-					{
-						MaxLoad = Math.abs(NodalDisps[l].getDisps()[i]);
-					}
 				}
 			}
 			return MaxLoad;
@@ -2510,146 +1650,4 @@ public abstract class Util
 		return new Color(NewRed, NewGreen, NewBlue);
 	}
 
-	public static double[] SolveLinearSystem(double[][] A, double[] B)
-    {
-    	/*This function uses the Cholesky decomposition to solve the system A = Bx and returns the vector x*/
-    	int DoF = A.length;
-    	double[][] R = new double[DoF][DoF];
-    	double[] Z = new double[DoF];
-    	double[] x = new double[DoF];
-    	double sum = 0;
-    	for (int i = 0; i <= DoF - 1; i += 1)
-    	{
-        	for (int j = 0; j <= DoF - 1; j += 1)
-        	{
-        		sum = 0;
-        		if (i == j)
-        		{
-        			for (int k = 0; k <= i - 1; k += 1)
-        			{
-        				sum += R[k][i]*R[k][j];
-        			}
-        			R[i][i] = Math.pow(A[i][i] - sum, 0.5);
-        		}
-        		if (i < j)
-        		{
-        			for (int k = 0; k <= i - 1; k += 1)
-        			{
-        				sum += R[k][i]*R[k][j];
-        			}
-        			R[i][j] = 1/R[i][i]*(A[i][j] - sum);
-        		}
-        	}      	
-    	}
-    	for (int i = 0; i <= DoF - 1; i += 1)
-    	{
-    		sum = 0;
-    		for (int j = 0; j <= i - 1; j += 1)
-        	{
-    			sum += -R[j][i]*Z[j];
-        	}
-    		Z[i] = (B[i] + sum)/R[i][i];
-    	}
-    	for (int i = 0; i <= DoF - 1; i += 1)
-    	{
-    		sum = 0;
-    		for (int j = 0; j <= i - 1; j += 1)
-        	{
-    			sum += -R[DoF - i - 1][DoF + j - i]*x[DoF + j - i];
-        	}
-    		x[DoF - i - 1] = (Z[DoF - i - 1] + sum)/R[DoF - i - 1][DoF - i - 1];
-    	}
-    	return x;
-    }
-
-	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Mesh mesh, int[] MousePos, int[] DPPos, int[] SelectedElems, int[] SelWindowInitPos, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
-	{
-		int ElemMouseIsOn = ElemMouseIsOn(mesh, MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos(), ShowDeformedStructure);
-		if (ShowSelWindow)
-		{
-			int[] ElemsInSelWindow = ElemsInsideWindow(mesh, StructCenter, SelWindowInitPos, MousePos, DPPos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), DiagramScales[1], ShowDeformedStructure);
-			if (ElemsInSelWindow != null)
-			{
-				for (int i = 0; i <= ElemsInSelWindow.length - 1; i += 1)
-				{
-					SelectedElems = Util.AddElem(SelectedElems, ElemsInSelWindow[i]);
-				}
-			}
-			/*else if (ElemMouseIsOn == -1)
-			{
-				SelectedElems = null;
-			}*/
-		}
-		else if (-1 < ElemMouseIsOn)
-		{
-			SelectedElems = Util.AddElem(SelectedElems, ElemMouseIsOn);
-			/*for (int elem = 0; elem <= Elem.length - 1; elem += 1)
-			{
-				double[] RealMousePos = ConvertToRealCoords2(MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-				if (Util.MouseIsOnElem(Node, Elem[elem], RealMousePos, canvas.getPos(), canvas.getSize(), canvas.getDrawingPos(), ShowDeformedStructure))
-			    {
-					SelectedElems = Util.AddElem(SelectedElems, elem);
-			    }
-			}*/
-		}
-		
-		return SelectedElems;
-	}
-	
-	public static int[] NodesSelection(MyCanvas canvas, double[] StructCenter, List<Node> Node, int[] MousePos, int[] DPPos, int[] SelectedNodes, int[] SelWindowInitPos, int[] ElemDOFs, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
-	{
-		double prec = 4;
-		int NodeMouseIsOn = Util.NodeMouseIsOn(Node, MousePos, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), prec, ShowDeformedStructure);
-		if (-1 < NodeMouseIsOn)
-		{
-			if (!ShowSelWindow)
-			{
-				SelectedNodes = null;
-				SelectedNodes = Util.AddElem(SelectedNodes, NodeMouseIsOn);
-			}
-			else
-			{
-				SelectedNodes = null;
-				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
-				if (NodesInsideNodeSelectionWindow != null)
-				{
-					for (int i = 0; i <= NodesInsideNodeSelectionWindow.length - 1; i += 1)
-					{
-						SelectedNodes = Util.AddElem(SelectedNodes, NodesInsideNodeSelectionWindow[i]);
-					}
-				}		
-			}
-		}
-		else
-		{
-			if (ShowSelWindow)
-			{
-				SelectedNodes = null;
-				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
-				if (NodesInsideNodeSelectionWindow != null)
-				{
-					for (int i = 0; i <= NodesInsideNodeSelectionWindow.length - 1; i += 1)
-					{
-						SelectedNodes = Util.AddElem(SelectedNodes, NodesInsideNodeSelectionWindow[i]);
-					}
-				}
-			}
-		}
-		
-		return SelectedNodes;
-	}
-
-	public static int SnipToNode(double[][] NodePos, int[] MousePos, MyCanvas canvas, int[] DPPos)
-	{
-		int mindist = 10;
-		for (int node = 0; node <= NodePos.length - 1; node += 1)
-		{
-			int[] Pos = Util.ConvertToDrawingCoords(NodePos[node], canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos());
-			if (Util.dist(new double[] {MousePos[0], MousePos[1]}, new double[] {Pos[0], Pos[1]}) <= mindist)
-			{
-				return node;
-			}
-		}
-		return -1;
-	}
 }

@@ -1,5 +1,6 @@
 package main.mainTCC;
 
+import java.sql.Struct;
 import java.util.List;
 
 import main.structure.ConcLoads;
@@ -12,11 +13,13 @@ import main.structure.Node;
 import main.structure.Mesh;
 import main.structure.Reactions;
 import main.structure.Section;
+import main.structure.Structure;
 import main.structure.Supports;
 import main.utilidades.Util;
 
 public abstract class Analysis
 {
+
 	public static int CalcNFreeDoFs(List<Node> Node, Element[] Elem, Supports[] Sup)
 	{
 		int NFreeDoFs = 0;
@@ -65,6 +68,58 @@ public abstract class Analysis
     	return FreeDOFTypes;
 	}
 	
+	public static double[] SolveLinearSystem(double[][] A, double[] B)
+    {
+    	/*This function uses the Cholesky decomposition to solve the system A = Bx and returns the vector x*/
+    	int DoF = A.length;
+    	double[][] R = new double[DoF][DoF];
+    	double[] Z = new double[DoF];
+    	double[] x = new double[DoF];
+    	double sum = 0;
+    	for (int i = 0; i <= DoF - 1; i += 1)
+    	{
+        	for (int j = 0; j <= DoF - 1; j += 1)
+        	{
+        		sum = 0;
+        		if (i == j)
+        		{
+        			for (int k = 0; k <= i - 1; k += 1)
+        			{
+        				sum += R[k][i]*R[k][j];
+        			}
+        			R[i][i] = Math.pow(A[i][i] - sum, 0.5);
+        		}
+        		if (i < j)
+        		{
+        			for (int k = 0; k <= i - 1; k += 1)
+        			{
+        				sum += R[k][i]*R[k][j];
+        			}
+        			R[i][j] = 1/R[i][i]*(A[i][j] - sum);
+        		}
+        	}      	
+    	}
+    	for (int i = 0; i <= DoF - 1; i += 1)
+    	{
+    		sum = 0;
+    		for (int j = 0; j <= i - 1; j += 1)
+        	{
+    			sum += -R[j][i]*Z[j];
+        	}
+    		Z[i] = (B[i] + sum)/R[i][i];
+    	}
+    	for (int i = 0; i <= DoF - 1; i += 1)
+    	{
+    		sum = 0;
+    		for (int j = 0; j <= i - 1; j += 1)
+        	{
+    			sum += -R[DoF - i - 1][DoF + j - i]*x[DoF + j - i];
+        	}
+    		x[DoF - i - 1] = (Z[DoF - i - 1] + sum)/R[DoF - i - 1][DoF - i - 1];
+    	}
+    	return x;
+    }
+
 	public static double[][] NumIntegration(List<Node> Node, Element Elem, Material mat, Section sec, int[][] DOFsPerNode, boolean NonlinearMat, boolean NonlinearGeo, double[] strain, int NPoints)
 	{
 		double[] Points = null;
@@ -238,7 +293,60 @@ public abstract class Analysis
 		}
 		return P;
 	}
-	
+
+	public static double[] run(Structure struct, Supports[] Sup, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp,
+										boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
+	{
+		/*
+		 * NIter = Nâmero de iteraçõs em cada passo (para convergir)
+		 * NLoadSteps = Nâmero de incrementos de carga (nâmero de passos)
+		 * MaxLoadFactor = Fator de carga final (valor multiplicando a carga)
+		 * */
+		long AnalysisTime = System.currentTimeMillis();
+		double loadinc = MaxLoadFactor / (double) NLoadSteps;
+		for (int loadstep = 0; loadstep <= NLoadSteps - 1; loadstep += 1)
+		{
+			double loadfactor = 0 + (loadstep + 1)*loadinc;
+			struct.setP(LoadVector(struct.getMesh(), struct.NFreeDOFs, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, loadfactor));
+		    for (int iter = 0; iter <= NIter - 1; iter += 1)
+			{
+		    	struct.setK(Structure.StructureStiffnessMatrix(struct.NFreeDOFs, struct.getMesh().getNodes(), struct.getMesh().getElements(), Sup, NonlinearMat, NonlinearGeo));
+		    	struct.setU(SolveLinearSystem(struct.getK(), struct.getP()));
+			    for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
+			    {
+			    	struct.getMesh().getNodes().get(node).setDisp(GetNodeDisplacements(struct.getMesh().getNodes(), struct.getU())[node]);
+			    }
+			    if (NonlinearMat)
+			    {
+					for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
+				    {
+						struct.getMesh().getElements().get(elem).setStrain(struct.getMesh().getElements().get(elem).StrainVec(struct.getMesh().getNodes(), struct.getU(), NonlinearGeo));
+				    }
+			    }
+				/*for (int elem = 0; elem <= Elem.length - 1; elem += 1)
+			    {
+					Elem[elem].setIntForces(Elem[elem].InternalForcesVec(Node, struct.getU(), NonlinearMat, NonlinearGeo));
+			    }*/
+				//UtilText.PrintMatrix(struct.getK());
+			    //UtilText.PrintVector(struct.getP());
+		        //UtilText.PrintVector(struct.getU());
+				System.out.println("iter: " + iter + " max disp: " + Util.FindMaxAbs(struct.getU()));
+			}
+			for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
+			{
+				struct.getMesh().getNodes().get(node).addLoadDispCurve(struct.getU(), loadfactor);
+			}
+		}
+		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
+		System.out.println("Tempo de anâlise = " + AnalysisTime / 1000.0 + " seg");
+		if (((Double)struct.getU()[0]).isNaN())
+		{
+			System.out.println("Displacement results are NaN at Menus -> RunAnalysis");
+		}
+		
+		return struct.getU();
+	}
+
     public static double DispOnPoint(List<Node> Node, Element Elem, double e, double n, int dof, double[] u)
     {
     	double[] N = Elem.NaturalCoordsShapeFunctions(e, n, Node)[dof];
@@ -350,4 +458,5 @@ public abstract class Analysis
 		
 		return forces;
 	}
+
 }

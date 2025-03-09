@@ -56,7 +56,7 @@ public class MyCanvas
 	
 	public void drawGrid(int pointSize, DrawingOnAPanel DP)
 	{
-		int[] NPoints = Util.CalculateNumberOfGridPoints(dimension);
+		int[] NPoints = CalculateNumberOfGridPoints(dimension);
 		double[] PointsDist = new double[2];
 		PointsDist[0] = size[0]/(double)(NPoints[0]);
 		PointsDist[1] = size[1]/(double)(NPoints[1]);		
@@ -68,6 +68,14 @@ public class MyCanvas
 				DP.DrawCircle(Pos, pointSize, 1, true, true, Color.black, Color.black);
 			}
 		}
+	}	
+	public static int[] CalculateNumberOfGridPoints(double[] CanvasDim)
+	{
+		int[] NPointsMin = new int[] {6, 6}, NPointsMax = new int[] {46, 46};
+		int[] NPoints = new int[2];
+		NPoints[0] = (int) (NPointsMin[0] + (NPointsMax[0] - NPointsMin[0]) * (CanvasDim[0] % 100) / 100.0);
+		NPoints[1] = (int) (NPointsMin[1] + (NPointsMax[1] - NPointsMin[1]) * (CanvasDim[1] % 100) / 100.0);	
+		return NPoints;
 	}
 	
 	public int[] getTitlePos() {return TitlePos;}

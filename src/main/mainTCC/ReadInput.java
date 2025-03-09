@@ -26,7 +26,7 @@ public abstract class ReadInput
 					Text = Util.AddElem(Text, null);
 					cat += 1;
 	            }
-				Text[cat] = Util.AddElem(Text[cat], Line);
+				Text[cat] = AddElem(Text[cat], Line);
 				Line = bufferedReader.readLine();
 				if (Line.isEmpty())
 				{
@@ -48,4 +48,23 @@ public abstract class ReadInput
         }
 		return Text;
 	}
+	
+	public static String[] AddElem(String[] OriginalArray, String NewElem)
+	{
+		if (OriginalArray == null)
+		{
+			return new String[] {NewElem};
+		}
+		else
+		{
+			String[] NewArray = new String[OriginalArray.length + 1];
+			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
+			{
+				NewArray[i] = OriginalArray[i];
+			}
+			NewArray[OriginalArray.length] = NewElem;
+			return NewArray;
+		}
+	}
+ 	
 }

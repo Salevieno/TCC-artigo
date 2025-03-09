@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,7 +13,6 @@ import java.awt.Point;
 import java.awt.RadialGradientPaint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +20,6 @@ import main.mainTCC.Analysis;
 import main.structure.ConcLoads;
 import main.structure.DistLoads;
 import main.structure.ElemShape;
-import main.structure.ElemType;
 import main.structure.Element;
 import main.structure.Mesh;
 import main.structure.MyCanvas;
@@ -60,6 +59,17 @@ public class DrawingOnAPanel
 	public void setRealStructCenter(Point3D realStructCenter)
 	{
 		RealStructCenter = realStructCenter;
+	}
+
+	public static int TextLength(String Text, Font TextFont, int size, Graphics G)
+	{
+		FontMetrics metrics = G.getFontMetrics(TextFont);
+		return (int)(metrics.stringWidth(Text)*0.05*size);
+	}
+	
+	public static int TextHeight(int TextSize)
+	{
+		return (int)(0.8*TextSize);
 	}
 
 	// public void setCanvas(MyCanvas canvas)
@@ -107,7 +117,7 @@ public class DrawingOnAPanel
 	}
     public void DrawText(int[] Pos, String Text, String Alignment, float angle, String Style, int size, Color color)
     {
-		float TextLength = Util.TextLength(Text, TextFont, size, G), TextHeight = Util.TextHeight(size);
+		float TextLength = TextLength(Text, TextFont, size, G), TextHeight = TextHeight(size);
     	int[] Offset = new int[2];
 		AffineTransform a = null;	// Rotate rectangle
 		AffineTransform backup = G.getTransform();
@@ -118,13 +128,13 @@ public class DrawingOnAPanel
 		else if (Alignment.equals("Center"))
     	{
 			a = AffineTransform.getRotateInstance(-angle*Math.PI/180, Pos[0], Pos[1] + 0.5*TextHeight);	// Rotate text
-    		Offset[0] = -Util.TextLength(Text, BoldTextFont, size, G)/2;
-    		Offset[1] = Util.TextHeight(size)/2;
+    		Offset[0] = -TextLength(Text, BoldTextFont, size, G)/2;
+    		Offset[1] = TextHeight(size)/2;
     	}
     	else if (Alignment.equals("Right"))
     	{
 			a = AffineTransform.getRotateInstance(-angle*Math.PI/180, Pos[0], Pos[1] + 0.5*TextHeight);	// Rotate text
-    		Offset[0] = -Util.TextLength(Text, BoldTextFont, size, G);
+    		Offset[0] = -TextLength(Text, BoldTextFont, size, G);
     	}
     	if (Style.equals("Bold"))
     	{
@@ -843,7 +853,7 @@ public class DrawingOnAPanel
 		{
 			int[][] DrawingCoords = new int[Node.size()][];
 			DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node.get(node), deformed), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			DrawText(new int[] {(int)(DrawingCoords[node][0] + Offset), (int)(DrawingCoords[node][1] + 1.1*Util.TextHeight(FontSize))}, Integer.toString(node), "Left", 0, "Bold", FontSize, NodeColor);		
+			DrawText(new int[] {(int)(DrawingCoords[node][0] + Offset), (int)(DrawingCoords[node][1] + 1.1*TextHeight(FontSize))}, Integer.toString(node), "Left", 0, "Bold", FontSize, NodeColor);		
 		}	
 	}
 	
@@ -878,7 +888,7 @@ public class DrawingOnAPanel
 			for (int dof = 0; dof <= Node.get(node).dofs.length - 1; dof += 1)
 			{
 				double angle = 2 * Math.PI * dof / Node.get(node).dofs.length;
-				int[] Pos = new int[] {(int)(DrawingNodePos[node][0] + Offset*Math.cos(angle)), (int)(DrawingNodePos[node][1] + Offset*Math.sin(angle) + 1.1*Util.TextHeight(FontSize))};
+				int[] Pos = new int[] {(int)(DrawingNodePos[node][0] + Offset*Math.cos(angle)), (int)(DrawingNodePos[node][1] + Offset*Math.sin(angle) + 1.1*TextHeight(FontSize))};
 				DrawText(Pos, Integer.toString(Node.get(node).dofs[dof]), "Left", 0, "Bold", FontSize, NodeColor);	
 			}	
 		}	
@@ -1095,7 +1105,7 @@ public class DrawingOnAPanel
 		{
 			int node = Sup[s].getNode();
 			int[][] Coords = new int[Node.size()][];
-			int suptype = Util.SupType(Sup[s].getDoFs());
+			int suptype = Sup[s].typeFromDOFs();
 			Coords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Node.get(node).getOriginalCoords().asArray(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			if (suptype == 0)
 			{

@@ -38,6 +38,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import main.mainTCC.Analysis;
 import main.mainTCC.MainPanel;
 import main.mainTCC.MenuFunctions;
 import main.structure.ElemType;
@@ -248,7 +249,7 @@ public class Menus extends JFrame
 	    ButtonNames[27] = "Mostrar reaçõs";
 	    for (int b = 0; b <= jb.length - 1; b += 1)
 	    {
-			jb[b] = Util.AddButton(null, new int[2], new int[] {32, 32}, 12, new int[] {0, 0, 0, 0}, ButtonBGColor);
+			jb[b] = AddButton(null, new int[2], new int[] {32, 32}, 12, new int[] {0, 0, 0, 0}, ButtonBGColor);
 		    jb[b].setToolTipText(ButtonNames[b]);
 			jb[b].setIcon(new ImageIcon("./Icons/Tb1B" + String.valueOf(b + 1) + ".png"));
 			jb[b].setFocusable(false);
@@ -564,7 +565,7 @@ public class Menus extends JFrame
 		
 		for (int b = 0; b <= UpperToolbarButton.length - 1; b += 1)
 		{
-			UpperToolbarButton[b] = Util.AddButton(ButtonNames[b], new int[2], new int[] {ButtonLength[b], 30}, 11, new int[] {2, 2, 2, 2}, ButtonBgColor);
+			UpperToolbarButton[b] = AddButton(ButtonNames[b], new int[2], new int[] {ButtonLength[b], 30}, 11, new int[] {2, 2, 2, 2}, ButtonBgColor);
 			UpperToolbarButton[b].setEnabled(false);
 			UpperToolbarButton[b].setVisible(false);
 			UpperToolbarButton[b].setFocusable(false);
@@ -1733,7 +1734,7 @@ public class Menus extends JFrame
 					}
 
 					MenuFunctions.CalcAnalysisParameters();
-					MenuFunctions.RunAnalysis(MenuFunctions.Struct, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
+					Analysis.run(MenuFunctions.Struct, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
 				    MenuFunctions.PostAnalysis();
 					for (Element elem : MenuFunctions.Struct.getMesh().getElements())
 					{
@@ -2357,6 +2358,17 @@ public class Menus extends JFrame
         return jPanel;
     }
 
+	private static JButton AddButton(String Text, int[] Alignment, int[] Size, int FontSize, int[] margins, Color color)
+	{
+		JButton NewButton = new JButton(Text);
+		NewButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, FontSize));
+		NewButton.setVerticalAlignment(Alignment[0]);
+		NewButton.setHorizontalAlignment(Alignment[1]);
+		NewButton.setBackground(color);
+		NewButton.setPreferredSize(new Dimension(Size[0], Size[1]));
+		NewButton.setMargin(new Insets(margins[0], margins[1], margins[2], margins[3]));
+		return NewButton;
+	}
 	
 	public void showCanvasOn()
 	{

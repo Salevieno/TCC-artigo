@@ -14,6 +14,7 @@ import main.structure.DistLoads;
 import main.structure.ElemType;
 import main.structure.Element;
 import main.structure.Material;
+import main.structure.Mesh;
 import main.structure.MeshType;
 import main.structure.MyCanvas;
 import main.structure.NodalDisps;
@@ -137,7 +138,7 @@ public abstract class MenuFunctions
 
 	public static int[] ClosestGridNodePos(MyCanvas canvas, int[] MousePos)
 	{
-		int[] NGridPoints = Util.CalculateNumberOfGridPoints(canvas.getDimension());
+		int[] NGridPoints = MyCanvas.CalculateNumberOfGridPoints(canvas.getDimension());
 		int[] GridNodePos = MousePos;
 		canvas.setGridSpacing(new double[] {canvas.getSize()[0]/(double)(NGridPoints[0]), canvas.getSize()[1]/(double)(NGridPoints[1])});
 		double SnipPower = 1;
@@ -791,58 +792,6 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static double[] RunAnalysis(Structure struct, Supports[] Sup, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp,
-										boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
-	{
-		/*
-		 * NIter = Nâmero de iteraçõs em cada passo (para convergir)
-		 * NLoadSteps = Nâmero de incrementos de carga (nâmero de passos)
-		 * MaxLoadFactor = Fator de carga final (valor multiplicando a carga)
-		 * */
-		long AnalysisTime = System.currentTimeMillis();
-		double loadinc = MaxLoadFactor / (double) NLoadSteps;
-		for (int loadstep = 0; loadstep <= NLoadSteps - 1; loadstep += 1)
-		{
-			double loadfactor = 0 + (loadstep + 1)*loadinc;
-			struct.setP(Analysis.LoadVector(struct.getMesh(), Struct.NFreeDOFs, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, loadfactor));
-		    for (int iter = 0; iter <= NIter - 1; iter += 1)
-			{
-		    	struct.setK(Structure.StructureStiffnessMatrix(Struct.NFreeDOFs, struct.getMesh().getNodes(), struct.getMesh().getElements(), Sup, NonlinearMat, NonlinearGeo));
-		    	struct.setU(Util.SolveLinearSystem(struct.getK(), struct.getP()));
-			    for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
-			    {
-			    	struct.getMesh().getNodes().get(node).setDisp(Analysis.GetNodeDisplacements(struct.getMesh().getNodes(), struct.getU())[node]);
-			    }
-			    if (NonlinearMat)
-			    {
-					for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
-				    {
-						struct.getMesh().getElements().get(elem).setStrain(struct.getMesh().getElements().get(elem).StrainVec(struct.getMesh().getNodes(), struct.getU(), NonlinearGeo));
-				    }
-			    }
-				/*for (int elem = 0; elem <= Elem.length - 1; elem += 1)
-			    {
-					Elem[elem].setIntForces(Elem[elem].InternalForcesVec(Node, struct.getU(), NonlinearMat, NonlinearGeo));
-			    }*/
-				//UtilText.PrintMatrix(struct.getK());
-			    //UtilText.PrintVector(struct.getP());
-		        //UtilText.PrintVector(struct.getU());
-				System.out.println("iter: " + iter + " max disp: " + Util.FindMaxAbs(struct.getU()));
-			}
-			for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
-			{
-				struct.getMesh().getNodes().get(node).addLoadDispCurve(Struct.getU(), loadfactor);
-			}
-		}
-		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
-		System.out.println("Tempo de anâlise = " + AnalysisTime / 1000.0 + " seg");
-		if (((Double)struct.getU()[0]).isNaN())
-		{
-			System.out.println("Displacement results are NaN at Menus -> RunAnalysis");
-		}
-		
-		return struct.getU();
-	}
 
 	public static void PostAnalysis()
 	{
@@ -1088,7 +1037,7 @@ public abstract class MenuFunctions
 
 			boolean NonlinearMat = true;
 			boolean NonlinearGeo = false;
-			RunAnalysis(Struct, Sup, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
+			Analysis.run(Struct, Sup, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
 			
 			/* Analysis is complete */
 			PostAnalysis();
@@ -1194,7 +1143,7 @@ public abstract class MenuFunctions
  		}
  		CalcAnalysisParameters();
 		long AnalysisTime = System.currentTimeMillis();
-		RunAnalysis(Struct, Sup, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 1, 1, 1);
+		Analysis.run(Struct, Sup, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 1, 1, 1);
 		PostAnalysis();
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
 		for (Element elem : MenuFunctions.Struct.getMesh().getElements())
@@ -1525,8 +1474,8 @@ public abstract class MenuFunctions
 		if (MenuFunctions.Struct.getMesh().getElements() != null)
 		{
 			SelectedElems = null;
-			SelectedElems = Util.ElemsSelection(MainCanvas, Struct.getCenter().asArray(), MenuFunctions.Struct.getMesh(), MousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
-			int ElemMouseIsOn = Util.ElemMouseIsOn(MenuFunctions.Struct.getMesh(), MousePos, Struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getCenter(), MainCanvas.getDrawingPos(), ShowDeformedStructure);
+			SelectedElems = Mesh.ElemsSelection(MainCanvas, Struct.getCenter().asArray(), MenuFunctions.Struct.getMesh(), MousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
+			int ElemMouseIsOn = Mesh.ElemMouseIsOn(MenuFunctions.Struct.getMesh(), MousePos, Struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getCenter(), MainCanvas.getDrawingPos(), ShowDeformedStructure);
 			if (ElemMouseIsOn == -1 | (ShowElemSelectionWindow & -1 < ElemMouseIsOn))
 			{
 				ShowElemSelectionWindow = !ShowElemSelectionWindow;

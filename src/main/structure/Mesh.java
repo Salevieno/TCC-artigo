@@ -1,6 +1,7 @@
 package main.structure;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -98,6 +99,121 @@ public class Mesh
 
     public List<Node> getNodes()  { return nodes ;}
     public List<Element> getElements() { return elems ;}
+
+	
+	public static int[] NodesSelection(MyCanvas canvas, double[] StructCenter, List<Node> Node, int[] MousePos, int[] DPPos, int[] SelectedNodes, int[] SelWindowInitPos, int[] ElemDOFs, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
+	{
+		double prec = 4;
+		int NodeMouseIsOn = NodeMouseIsOn(Node, MousePos, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), prec, ShowDeformedStructure);
+		if (-1 < NodeMouseIsOn)
+		{
+			if (!ShowSelWindow)
+			{
+				SelectedNodes = null;
+				SelectedNodes = Util.AddElem(SelectedNodes, NodeMouseIsOn);
+			}
+			else
+			{
+				SelectedNodes = null;
+				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
+				if (NodesInsideNodeSelectionWindow != null)
+				{
+					for (int i = 0; i <= NodesInsideNodeSelectionWindow.length - 1; i += 1)
+					{
+						SelectedNodes = Util.AddElem(SelectedNodes, NodesInsideNodeSelectionWindow[i]);
+					}
+				}		
+			}
+		}
+		else
+		{
+			if (ShowSelWindow)
+			{
+				SelectedNodes = null;
+				int[] NodesInsideNodeSelectionWindow = Util.NodesInsideWindow(Node, StructCenter, SelWindowInitPos, MousePos, canvas.getPos(), canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), ElemDOFs, DiagramScales[1], ShowDeformedStructure);
+				if (NodesInsideNodeSelectionWindow != null)
+				{
+					for (int i = 0; i <= NodesInsideNodeSelectionWindow.length - 1; i += 1)
+					{
+						SelectedNodes = Util.AddElem(SelectedNodes, NodesInsideNodeSelectionWindow[i]);
+					}
+				}
+			}
+		}
+		
+		return SelectedNodes;
+	}
+
+	public static int NodeMouseIsOn(List<Node> Node, int[] MousePos, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double prec, boolean condition)
+	{
+		for (int node = 0; node <= Node.size() - 1; node += 1)
+		{
+			if (Util.MouseIsOnNode(Node, MousePos, CanvasPos, CanvasSize, CanvasDim, DrawingPos, node, prec, condition))
+		    {
+				return node;
+		    }
+		}
+		return -1;
+	}
+	
+	public static int NodeMouseIsOn(List<Node> Node, int[] MousePos, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, double prec, boolean condition)
+	{
+		return NodeMouseIsOn(Node, MousePos, new int[] {CanvasPos.x, CanvasPos.y}, CanvasSize, CanvasDim, DrawingPos, prec, condition) ;
+	}
+	
+	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Mesh mesh, int[] MousePos, int[] DPPos, int[] SelectedElems, int[] SelWindowInitPos, double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
+	{
+		int ElemMouseIsOn = ElemMouseIsOn(mesh, MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos(), ShowDeformedStructure);
+		if (ShowSelWindow)
+		{
+			int[] ElemsInSelWindow = Util.ElemsInsideWindow(mesh, StructCenter, SelWindowInitPos, MousePos, DPPos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getCenter(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos(), DiagramScales[1], ShowDeformedStructure);
+			if (ElemsInSelWindow != null)
+			{
+				for (int i = 0; i <= ElemsInSelWindow.length - 1; i += 1)
+				{
+					SelectedElems = Util.AddElem(SelectedElems, ElemsInSelWindow[i]);
+				}
+			}
+			/*else if (ElemMouseIsOn == -1)
+			{
+				SelectedElems = null;
+			}*/
+		}
+		else if (-1 < ElemMouseIsOn)
+		{
+			SelectedElems = Util.AddElem(SelectedElems, ElemMouseIsOn);
+			/*for (int elem = 0; elem <= Elem.length - 1; elem += 1)
+			{
+				double[] RealMousePos = ConvertToRealCoords2(MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+				if (Util.MouseIsOnElem(Node, Elem[elem], RealMousePos, canvas.getPos(), canvas.getSize(), canvas.getDrawingPos(), ShowDeformedStructure))
+			    {
+					SelectedElems = Util.AddElem(SelectedElems, elem);
+			    }
+			}*/
+		}
+		
+		return SelectedElems;
+	}
+
+	public static int ElemMouseIsOn(Mesh mesh, int[] MousePos, double[] StructCenter, int[] CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
+	{
+		List<Node> Node = mesh.getNodes();
+		List<Element> Elem = mesh.getElements();
+		double[] RealMousePos = Util.ConvertToRealCoords2(MousePos, StructCenter, CanvasPos, CanvasSize, CanvasDim, CanvasCenter, CanvasPos);
+		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
+		{
+			if (Util.MouseIsOnElem(Node, Elem.get(elem), RealMousePos, CanvasPos, CanvasSize, DrawingPos, condition))
+		    {
+				return elem;
+		    }
+		}
+		return -1;
+	}
+	
+	public static int ElemMouseIsOn(Mesh mesh, int[] MousePos, double[] StructCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos, boolean condition)
+	{
+		return ElemMouseIsOn(mesh, MousePos, StructCenter, new int[] {CanvasPos.x, CanvasPos.y}, CanvasSize, CanvasDim, CanvasCenter, DrawingPos, condition) ;
+	}
 
 	private void printNodes()
 	{

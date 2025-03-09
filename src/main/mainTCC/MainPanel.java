@@ -425,11 +425,11 @@ public class MainPanel extends JPanel
 		if (MenuFunctions.Struct.getMesh().getNodes() != null)
 		{
 			MenuFunctions.SelectedNodes = null;
-			MenuFunctions.SelectedNodes = Util.NodesSelection(MainCanvas, MenuFunctions.Struct.getCenter().asArray(), MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.MousePos,
+			MenuFunctions.SelectedNodes = Mesh.NodesSelection(MainCanvas, MenuFunctions.Struct.getCenter().asArray(), MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.MousePos,
 			MainPanelPos, MenuFunctions.SelectedNodes,
 			nodeSelectionWindowInitialPos, MenuFunctions.Struct.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales, showNodeSelectionWindow, showDeformedStructure);
 			
-			int NodeMouseIsOn = Util.NodeMouseIsOn(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.MousePos, MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(),
+			int NodeMouseIsOn = Mesh.NodeMouseIsOn(MenuFunctions.Struct.getMesh().getNodes(), MenuFunctions.MousePos, MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(),
 			MainCanvas.getDrawingPos(), 4, MenuFunctions.ShowDeformedStructure);
 
 			if (NodeMouseIsOn == -1 | (showNodeSelectionWindow & -1 < NodeMouseIsOn))
