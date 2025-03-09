@@ -1,6 +1,7 @@
 package main.structure;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 import main.gui.Menus;
 import main.utilidades.Point3D;
@@ -35,6 +36,15 @@ public class Node
 	public Node(int ID, Point3D oriCoords, boolean temp)
 	{
 		this(ID, oriCoords.asArray()) ;
+	}
+
+	@Override
+	public String toString()
+	{
+		return ID + "	" + Arrays.toString(OriCoords) + "	" + Arrays.toString(Disp)
+				+ "	" + Arrays.toString(Sup) + "	" + Arrays.toString(ConcLoad) + "	"
+				+ Arrays.toString(NodalDisp) + "	" + Arrays.toString(dofs) + "	"
+				+ Arrays.toString(DOFType) + "	" + Arrays.toString(LoadDisp);
 	}
 
 	public int getID() {return ID;}

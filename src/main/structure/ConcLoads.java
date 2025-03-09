@@ -28,7 +28,7 @@ public class ConcLoads
 
 	@Override
 	public String toString() {
-		return "ConcLoads [ID=" + ID + ", Node=" + Node + ", Loads=" + Arrays.toString(Loads) + "]";
+		return ID + "	" + Node + "	" + Arrays.toString(Loads) ;
 	}
 
 }

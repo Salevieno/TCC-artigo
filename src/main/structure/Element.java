@@ -60,6 +60,14 @@ public class Element
 		DefineProperties(type);
 	}
 
+
+	@Override
+	public String toString()
+	{
+		return ID + "	" + type + "	" + ExternalNodes + "	" + mat + "	" + sec + "	" + Arrays.toString(DistLoads) ;
+	}
+
+
 	public int getID() {return ID;}
 	public ElemShape getShape() {return Shape;}
 	public int[] getDOFs() {return DOFs;}

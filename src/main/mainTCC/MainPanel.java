@@ -12,14 +12,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.TitlePaneLayout;
 
 import main.gui.DrawingOnAPanel;
 import main.gui.Menus;
@@ -41,7 +39,6 @@ import main.structure.StructureShape;
 import main.structure.Supports;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
-import main.utilidades.UtilComponents;
 
 public class MainPanel extends JPanel
 {
@@ -134,8 +131,7 @@ public class MainPanel extends JPanel
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					UtilComponents.PrintStructure(Menus.getInstance().StructureMenu.getName(), MenuFunctions.Struct.getMesh(),
-					MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					MenuFunctions.Struct.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
 			}
@@ -376,7 +372,7 @@ public class MainPanel extends JPanel
 		{
 			DP.DrawSelectionWindow(MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.MousePos);
 		}
-		if (MenuFunctions.ShowElemDetails)
+		if (MenuFunctions.ShowElemDetails && MenuFunctions.SelectedElemType != null)
 		{
 			Mesh.DrawElemDetails(ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()), canvas, DP);
 		}

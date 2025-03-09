@@ -479,6 +479,76 @@ public class Structure
 		mesh = CreateMesh(meshType, meshInfo, mesh.getNodes(), mesh.getElements(), elemType);
 	}
 
+	public void printStructure(List<Material> mats, List<Section> secs, Supports[] sups, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	{
+		System.out.println(" *** Structure information ***");
+		System.out.println(name);
+		mesh.print() ;
+		if (mats != null)
+		{			
+			System.out.println();
+			System.out.println("Mats");
+			System.out.println("E (GPa)	v");
+			mats.forEach(System.out::println);
+		}
+		if (secs != null)
+		{			
+			System.out.println();
+			System.out.println("Secs");
+			System.out.println("thick (mm)");
+			secs.forEach(System.out::println);
+		}
+		if (sups != null)
+		{
+			System.out.println();
+			System.out.println("Sups");
+			System.out.println("Id	Node	DoFs (Fx Fy Fz Mx My Mz)");
+			for (int sup = 0; sup <= sups.length - 1; sup += 1)
+			{
+				System.out.println(sups[sup].toString());
+			}
+		}
+		if (ConcLoads != null)
+		{
+			System.out.println();
+			System.out.println("ConcLoads");
+			System.out.println("Id	Node	Loads Fx Fy Fz Mx My Mz (kN)");
+			if (ConcLoads != null)
+			{
+				for (int load = 0; load <= ConcLoads.length - 1; load += 1)
+				{
+					System.out.println(ConcLoads[load].toString());
+				}
+			}
+		}
+		if (DistLoads != null)
+		{
+			System.out.println();
+			System.out.println("DistLoads");
+			System.out.println("Id	Elem type	Intensity (kN/m)");
+			if (DistLoads != null)
+			{
+				for (int load = 0; load <= DistLoads.length - 1; load += 1)
+				{
+					System.out.println(DistLoads[load].toString());
+				}
+			}
+		}
+		if (NodalDisps != null)
+		{
+			System.out.println();
+			System.out.println("NodalDisps");
+			System.out.println("Id	Node	Disp ux uy uz thetax thetay thetaz (m)");
+			if (NodalDisps != null)
+			{
+				for (int disp = 0; disp <= NodalDisps.length - 1; disp += 1)
+				{
+					System.out.println(NodalDisps[disp].toString());
+				}
+			}
+		}
+	}
+
 	public String getName() {return name;}
 	public StructureShape getShape() {return shape;}
 	public List<Point3D> getCoords() {return coords;}

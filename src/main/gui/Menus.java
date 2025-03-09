@@ -38,9 +38,6 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import main.utilidades.Point3D;
-import main.utilidades.Util;
-import main.utilidades.UtilComponents;
 import main.mainTCC.MainPanel;
 import main.mainTCC.MenuFunctions;
 import main.structure.ElemType;
@@ -52,6 +49,8 @@ import main.structure.Node;
 import main.structure.Section;
 import main.structure.Structure;
 import main.structure.StructureShape;
+import main.utilidades.Point3D;
+import main.utilidades.Util;
 
 /*
  Prâximas adiçõs
@@ -2251,7 +2250,7 @@ public class Menus extends JFrame
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					UtilComponents.PrintStructure(StructureMenu.getName(), MenuFunctions.Struct.getMesh(), MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					MenuFunctions.Struct.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MenuFunctions.Sup, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
 					MenuFunctions.ElemDetailsView();
 				}
 			}

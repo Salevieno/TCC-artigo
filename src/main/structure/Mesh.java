@@ -99,6 +99,26 @@ public class Mesh
     public List<Node> getNodes()  { return nodes ;}
     public List<Element> getElements() { return elems ;}
 
+	private void printNodes()
+	{
+		System.out.println("\nNodes");
+		System.out.println("ID	Original coords (m)	Displacements (m)	Sup ConcLoads (kN)	NodalDisps (m)");		
+		nodes.forEach(System.out::println);
+	}
+	
+	private void printElems()
+	{
+		System.out.println("\nElems");
+		System.out.println("ID	Type	Nodes		Mat	Sec	DistLoads (kN/m)");
+		elems.forEach(System.out::println);
+	}
+
+	public void print()
+	{
+		printNodes();
+		printElems();
+	}
+	
 
     @Override
     public String toString()

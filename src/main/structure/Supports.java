@@ -30,7 +30,7 @@ public class Supports
 
 	@Override
 	public String toString() {
-		return "Supports [ID=" + ID + ", Node=" + Node + ", DoFs=" + Arrays.toString(DoFs) + "]";
+		return ID + "	" + Node + "	" + Arrays.toString(DoFs);
 	}
 	
 }

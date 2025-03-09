@@ -31,7 +31,7 @@ public class DistLoads
 
 	@Override
 	public String toString() {
-		return "DistLoads [ID=" + ID + ", Elem=" + Elem + ", Type=" + Type + ", Intensity=" + Intensity + "]";
+		return ID + "	" + Elem + "	" + Type + "	" + Intensity ;
 	}
 
 }

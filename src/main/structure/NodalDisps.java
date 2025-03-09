@@ -28,7 +28,7 @@ public class NodalDisps
 
 	@Override
 	public String toString() {
-		return "NodalDisps [ID=" + ID + ", Node=" + Node + ", Disps=" + Arrays.toString(Disps) + "]";
+		return ID + "	" + Node + "	" + Arrays.toString(Disps) ;
 	}
 
 }

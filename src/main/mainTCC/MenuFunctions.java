@@ -3,7 +3,6 @@ package main.mainTCC;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import main.gui.DrawingOnAPanel;
@@ -26,7 +25,6 @@ import main.structure.StructureShape;
 import main.structure.Supports;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
-import main.utilidades.UtilComponents;
 
 public abstract class MenuFunctions
 {	
@@ -644,7 +642,7 @@ public abstract class MenuFunctions
 				System.out.println("Arquivo de input nâo encontrado");
 			}
 		}
-		UtilComponents.PrintStructure(FileName, MenuFunctions.Struct.getMesh(), matTypes, secTypes, Sup, ConcLoad, DistLoad, NodalDisp);
+		MenuFunctions.Struct.printStructure(matTypes, secTypes, Sup, ConcLoad, DistLoad, NodalDisp);
 	}
 
 	/* Structure menu functions */
