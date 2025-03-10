@@ -97,7 +97,7 @@ public class Structure
 		switch(shape)
 		{
 			case rectangular:
-			
+
 				coords.add(new Point3D(coords.get(0).x, newCoord.y, 0.0)) ;
 				coords.add(new Point3D(newCoord.x, newCoord.y, 0.0)) ;
 				coords.add(new Point3D(newCoord.x, coords.get(0).y, 0.0)) ;

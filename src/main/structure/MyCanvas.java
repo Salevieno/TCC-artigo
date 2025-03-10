@@ -1,6 +1,7 @@
 package main.structure;
 
 import java.awt.Point;
+import java.util.Arrays;
 
 import main.gui.DrawingOnAPanel;
 import main.utilidades.Util;
@@ -98,4 +99,14 @@ public class MyCanvas
 	public void setGridSpacing(double[] G) {GridSpacing = G;}
 	public void setZoom(double Z) {zoom = Z;}
 	public void setAngles(double[] a) {angles = a;}
+
+	@Override
+	public String toString() {
+		return "MyCanvas [title=" + title + ", pos=" + pos + ", size=" + Arrays.toString(size) + ", dimension="
+				+ Arrays.toString(dimension) + ", DrawingPos=" + Arrays.toString(DrawingPos) + ", Center="
+				+ Arrays.toString(Center) + ", zoom=" + zoom + "]";
+	}
+
+
+	
 }

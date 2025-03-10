@@ -141,8 +141,16 @@ public abstract class MenuFunctions
 
 	public static Point3D getCoordFromMouseClick(MyCanvas canvas, Point MousePos, boolean SnipToGridIsOn)
 	{
-		Point NewDrawingCoord = SnipToGridIsOn ? ClosestGridNodePos(canvas, MousePos) : MousePos;
-		return new Point3D(NewDrawingCoord.x, NewDrawingCoord.y, 0.0) ;	
+		
+		if (SnipToGridIsOn)
+		{
+			Point closestGridPoint = ClosestGridNodePos(canvas, MousePos) ;
+			return new Point3D(closestGridPoint.x, closestGridPoint.y, 0.0) ;
+		}
+
+		double[] mousePosRealCoords = Util.ConvertToRealCoords(MousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension()) ;
+		return new Point3D(mousePosRealCoords[0], mousePosRealCoords[1], 0.0) ;
+
 	}
 
 	public static double[][] GetCoordFromMouseClic2k(StructureShape structshape, MyCanvas canvas, double[][] Coords, Point MousePos, boolean SnipToGridIsOn)
@@ -1417,6 +1425,9 @@ public abstract class MenuFunctions
 				}
 				Point3D newCoord = getCoordFromMouseClick(MainCanvas, mousePos, SnipToGridIsOn) ;
 				struct.addCoordFromMouseClick(newCoord) ;
+				System.out.println("Mouse pos: " + mousePos);
+				System.out.println("New coord: " + newCoord);
+				System.out.println(struct);
 			}
 			else if (struct.getShape().equals(StructureShape.polygonal))
 			{
@@ -1437,18 +1448,18 @@ public abstract class MenuFunctions
 			}
 	    }
 
-		struct.setCoords(StructCoords);
+		// struct.setCoords(StructCoords);
 		if (!StructureCreationIsOn)
 		{
-			for (int c = 0; c <= StructCoords.size() - 1; c += 1)
-			{
-				double[] realCoords = Util.ConvertToRealCoords(new int[] {(int) StructCoords.get(c).x, (int) StructCoords.get(c).y, 0}, new int[] {MainCanvas.getPos().x, MainCanvas.getPos().y}, MainCanvas.getSize(), MainCanvas.getDimension()) ;
-				StructCoords.set(c, new Point3D(realCoords[0], realCoords[1], realCoords[2])) ;
-			}
-			if (struct.getShape().equals(StructureShape.polygonal))
-			{
-				StructCoords.set(StructCoords.size() - 1, StructCoords.get(0)) ;
-			}
+			// for (int c = 0; c <= StructCoords.size() - 1; c += 1)
+			// {
+			// 	double[] realCoords = Util.ConvertToRealCoords(new int[] {(int) StructCoords.get(c).x, (int) StructCoords.get(c).y, 0}, new int[] {MainCanvas.getPos().x, MainCanvas.getPos().y}, MainCanvas.getSize(), MainCanvas.getDimension()) ;
+			// 	StructCoords.set(c, new Point3D(realCoords[0], realCoords[1], realCoords[2])) ;
+			// }
+			// if (struct.getShape().equals(StructureShape.polygonal))
+			// {
+			// 	StructCoords.set(StructCoords.size() - 1, StructCoords.get(0)) ;
+			// }
 			struct.updateCenter() ;
 			MainCanvas.setCenter(Util.ConvertToDrawingCoords(struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getDrawingPos()));
 		}

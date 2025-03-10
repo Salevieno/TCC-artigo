@@ -1,7 +1,6 @@
 package main.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
@@ -58,13 +57,13 @@ import main.utilidades.Util;
 public class Menus extends JFrame
 {
 	private static final long serialVersionUID = 1L;
-	/* Container and panel variables */
-	Container cp;    
-	JPanel N1, S1, E1, W1;
+
+	/* panel variables */
+	JPanel N1, E1, W1;
 	JPanel tb1, tb2;
 	JPanel ListsPanel;
 	JPanel iPanel;
-	JPanel utb, mp;
+	JPanel utb, mousePanel;
 	JPanel bp1, bp2, bp3;
 	JPanel LDpanel;
 	JPanel jpInstruction;
@@ -92,18 +91,17 @@ public class Menus extends JFrame
 	
 	JButton AssignMaterialButton, AssignSectionButton, AssignSupButton, AssignConcLoadButton, AssignDistLoadButton, AssignNodalDispButton;
 	public JButton[] UpperToolbarButton;	// 0: Ligar âmâ, 1: Desligar âmâ, 2: Atribuir material, 3: Atribuir seââo, 4: Atribuir apoios, 5: Atribuir cargas conc, 6: Atribuir cargas dist, 7: Atribuir desl nodais, 8: +escala, 9: -escala
-	JTextArea xPos;
-	JTextArea yPos;
+
 	
 	public static final int buttonSize = 32 ;
 	
 	Dimension defaultPanelSize = new Dimension(260, 300);
+	private static final Dimension initialSize = new Dimension(1084, 700) ;
 	
 	/* Global variables */	
 	private static MyCanvas MainCanvas ;
 
 	int[] FrameTopLeftPos;
-    int[] MainPanelPos;	// LDPanelPos, LegendPanelPos
 	boolean ShowElems, ShowReactionArrows, ShowReactionValues, ShowLoadsValues;
     boolean ShowCanvas, ShowGrid, ShowMousePos;
     public boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
@@ -155,15 +153,14 @@ public class Menus extends JFrame
 
 		AddMenus();
 		setJMenuBar(menuBar);
-		setTitle("TCC");								// Super frame sets its title
-		setPreferredSize(new Dimension(1084, 700)) ;
-		setVisible(true);								// Super frame shows
+		setTitle("TCC");				// Super frame sets its title
+		setPreferredSize(initialSize) ;		// Super frame sets its size
+		setVisible(true);					// Super frame gets into the show
 		pack();
 		/* Super frame sets its everything. Super frame is so independent! =,) */
 
 		setPanelsMain(jpLists);
 	}
-		
 	
 
 	public static Menus getInstance() { return instance ;}
@@ -874,43 +871,10 @@ public class Menus extends JFrame
 		}
 	}
 	
-	private JPanel createMousePositionPanel()
-	{
-		JPanel mousePosPanel = new JPanel();
-		mousePosPanel.setBackground(palette[3]);
-		GridLayout gLayout = new GridLayout(1, 0);
-		gLayout.setHgap(10);
-		mousePosPanel.setLayout(gLayout);
-		JLabel iLabel = new JLabel("Mouse Pos: ");
-		JTextArea xPosTextArea = new JTextArea();
-		JTextArea yPosTextArea = new JTextArea();
-		int insets = 5;
-		
-		xPosTextArea.setEditable(false);
-		xPosTextArea.setMargin(new Insets(insets, insets, insets, insets));
-		xPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, palette[0]));
-		xPosTextArea.setPreferredSize(new Dimension(30, 20));
-		
-		yPosTextArea.setEditable(false);
-		yPosTextArea.setMargin(new Insets(insets, insets, insets, insets));
-		yPosTextArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, palette[0]));
-		yPosTextArea.setPreferredSize(new Dimension(30, 20));
-		
-		this.xPos = xPosTextArea;
-		this.yPos = yPosTextArea;
-		
-		mousePosPanel.add(iLabel);
-		mousePosPanel.add(xPosTextArea);
-		mousePosPanel.add(yPosTextArea);
-		
-		return mousePosPanel;
-	}
-	
 	private JPanel createNorthPanels()
 	{
 		JPanel N = new JPanel(new GridBagLayout());
 		utb = createUpperToolBar();
-		//utb.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, ColorPalette[1]));
 		JPanel bp1 = createBlankPanel(new Dimension(7 * 32 + 4, 30), palette[2]);
 		JPanel bp2 = createBlankPanel(new Dimension(260, 30), palette[2]);
 		N.add(bp1);
@@ -918,20 +882,6 @@ public class Menus extends JFrame
 		N.add(bp2);
 		
 		return N;
-	}
-	
-	private JPanel createSouthPanels()
-	{
-		JPanel S = new JPanel(new GridLayout(1, 0));
-		mp = createMousePositionPanel();
-		mp.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
-		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
-		S.add(mp);
-		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
-		S.add(createBlankPanel(new Dimension(10, 20), palette[2]));
-		
-		return S;
 	}
 	
 	private JPanel createEastPanels()
@@ -1007,7 +957,6 @@ public class Menus extends JFrame
 
 		N1 = createNorthPanels();
 		W1 = createWestPanels(Listsplot);
-		S1 = createSouthPanels();
 		E1 = createEastPanels();
 		
 		newContentPanel.add(N1, BorderLayout.NORTH);
@@ -1022,8 +971,8 @@ public class Menus extends JFrame
 	public void EnableButtons()
 	{
 		Structure structure = MenuFunctions.struct;
-		List<Node> nodes = MenuFunctions.struct.getMesh().getNodes() ;
-		List<Element> elems = MenuFunctions.struct.getMesh().getElements();
+		List<Node> nodes = MenuFunctions.struct.getMesh() != null ? MenuFunctions.struct.getMesh().getNodes() : null ;
+		List<Element> elems = MenuFunctions.struct.getMesh() != null ? MenuFunctions.struct.getMesh().getElements() : null;
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
 		String SelectedElemType = MenuFunctions.SelectedElemType;
 		List<Material> MatTypes = MenuFunctions.matTypes;
@@ -1388,6 +1337,7 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
+				System.out.println("ClickNodes");
 				JLabel[] Labels = new JLabel[] {};
 				JButton[] Buttons = new JButton[StructureShape.values().length];
 				boolean[] Enabled = new boolean[StructureShape.values().length];

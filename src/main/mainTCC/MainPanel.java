@@ -292,19 +292,55 @@ public class MainPanel extends JPanel
 		DP.DrawText(new int[] {Pos[0] + 130, Pos[1]}, String.valueOf(Util.Round(RealMousePos[1], 2)), "Left", 0, "Bold", FontSize, Color.black);
 	}
 	
+	
+	private void drawStructureCreationWindow(List<Point3D> InitCoords, Point MousePos, int MemberThickness, StructureShape structshape, Color color, DrawingOnAPanel DP)
+	{
+		int[] InitPoint = Util.ConvertToDrawingCoords(new double[] {InitCoords.get(0).x, InitCoords.get(0).y}, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos());
+		int[] mousePos = new int[] {(int) MousePos.x, (int) MousePos.y};
+		if (structshape.equals(StructureShape.rectangular))
+		{
+			System.out.println(InitPoint);
+			DP.DrawLine(InitPoint, new int[] {MousePos.x, InitPoint[1]}, MemberThickness, color);
+			DP.DrawLine(InitPoint, new int[] {InitPoint[0], MousePos.y}, MemberThickness, color);
+			DP.DrawLine(new int[] {MousePos.x, InitPoint[1]}, mousePos, MemberThickness, color);
+			DP.DrawLine(new int[] {InitPoint[0], MousePos.y}, mousePos, MemberThickness, color);
+		}
+		else if (structshape.equals(StructureShape.circular))
+		{
+			DP.DrawCircle(InitPoint, (int)(2*Util.dist(mousePos, InitPoint)), MemberThickness, true, true, Color.black, color);
+		}
+		else if (structshape.equals(StructureShape.polygonal))
+		{
+			int[] FinalPoint = new int[] {(int) InitCoords.get(InitCoords.size() - 1).x, (int) InitCoords.get(InitCoords.size() - 1).y};
+			int[] xCoords = new int[InitCoords.size()], yCoords = new int[InitCoords.size()];
+			for (int i = 0; i <= InitCoords.size() - 1; i += 1)
+			{
+				xCoords[i] = (int) InitCoords.get(i).x;
+				yCoords[i] = (int) InitCoords.get(i).y;
+			}
+			DP.DrawPolyLine(xCoords, yCoords, MemberThickness, color);
+			DP.DrawLine(FinalPoint, new int[] {MousePos.x, MousePos.y}, MemberThickness, color);
+		}
+		else
+		{
+			System.out.println("Structure shape not identified at Visuals -> DrawElemAddition");
+		}
+	}
+
 	public void displayContent(Dimension jpMainSize, int[] MainPanelPos, int[] MainCanvasCenter, MyCanvas MainCanvas, DrawingOnAPanel DP)
 	{
 		displayCanvasElements(MainCanvas, showCanvas, showGrid, showMousePos);
-		if (showStructure && MenuFunctions.struct.getCoords() != null && MenuFunctions.struct.getCenter() != null &&
-			MenuFunctions.struct.getMesh() != null && MenuFunctions.struct.getMesh().getElements() == null)
+		// System.out.println(MenuFunctions.struct.getCoords());
+		if (showStructure && MenuFunctions.struct.getCoords() != null && MenuFunctions.struct.getCenter() != null)
 		{
+			// System.out.println(canvas);
 			DP.DrawStructureContour3D(MenuFunctions.struct.getCoords(), Structure.color, canvas);
 		}
 		
 		DP.DrawCircle(MainCanvasCenter, 10, 1, false, true, Menus.palette[0], Menus.palette[7]);
 		if (MenuFunctions.StructureCreationIsOn & MenuFunctions.struct.getCoords() != null)
 		{
-			DP.DrawElemAddition(MenuFunctions.struct.getCoords(), MenuFunctions.mousePos, 2, MenuFunctions.struct.getShape(), Menus.palette[6]);
+			drawStructureCreationWindow(MenuFunctions.struct.getCoords(), MenuFunctions.mousePos, 2, MenuFunctions.struct.getShape(), Menus.palette[6], DP);
 		}
 		if (showElems && MenuFunctions.struct.getMesh() != null && MenuFunctions.struct.getMesh().getElements() != null)
 		{
