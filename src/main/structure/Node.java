@@ -43,6 +43,12 @@ public class Node
 				+ Arrays.toString(DOFType) + "	" + Arrays.toString(LoadDisp);
 	}
 
+	
+	public double[] deformedPos()
+	{
+		return new double[] {coords.x + Disp[0], coords.y + Disp[1], coords.z + Disp[2]} ;
+	}
+
 	public int getID() {return ID;}
 	public Point3D getOriginalCoords() {return coords;}
 	public double[] getDisp() {return Disp;}

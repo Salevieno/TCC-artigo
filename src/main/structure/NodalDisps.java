@@ -12,6 +12,12 @@ public class NodalDisps
 	private double[] Disps;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
 
 	public static Color color = Menus.palette[7];
+	
+	public NodalDisps(int ID, Node Node, double[] Disps)
+	{
+		this(ID, Node.getID(), Disps);
+	}
+	
 	public NodalDisps(int ID, int Node, double[] Disps)
 	{
 		this.ID = ID;

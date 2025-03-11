@@ -1,12 +1,12 @@
 package main.structure;
 
+import java.awt.Color;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.Arrays;
 
 import main.gui.DrawingOnAPanel;
-import main.utilidades.Util;
-
-import java.awt.Color;
+import main.utilidades.Point3D;
 
 public class MyCanvas
 {
@@ -70,6 +70,7 @@ public class MyCanvas
 			}
 		}
 	}	
+	
 	public static int[] CalculateNumberOfGridPoints(double[] CanvasDim)
 	{
 		int[] NPointsMin = new int[] {6, 6}, NPointsMax = new int[] {46, 46};
@@ -79,6 +80,28 @@ public class MyCanvas
 		return NPoints;
 	}
 	
+
+
+	public Point2D.Double inRealCoords(Point drawingPos)
+	{
+		Point2D.Double realPos = new Point2D.Double();
+		realPos.x = (drawingPos.x - pos.x) / (double)size[0] * dimension[0] ;
+		realPos.y = (-drawingPos.y + pos.y + size[1]) / (double)size[1] * dimension[1] ;
+		return realPos;
+	}
+
+	public Point inDrawingCoords(Point2D.Double realPos)
+	{
+		Point drawingPos = new Point();
+		drawingPos.x = (int) (pos.x + drawingPos.x + realPos.x / dimension[0] * size[0]) ;
+		drawingPos.y = (int) (pos.y + drawingPos.y + size[1] - realPos.y / dimension[1] * size[1]) ;
+		return drawingPos;
+	}
+	public Point inDrawingCoords(Point3D realPos)
+	{
+		return inDrawingCoords(new Point2D.Double(realPos.x, realPos.y)) ;
+	}
+
 	public int[] getTitlePos() {return TitlePos;}
 	public String getTitle() {return title;}
 	public Point getPos() {return pos;}
@@ -96,6 +119,7 @@ public class MyCanvas
 	public void setDimension(double[] D) {dimension = D;}
 	public void setDrawingPos(int[] D) {DrawingPos = D;}
 	public void setCenter(int[] C) {Center = C;}
+	public void setCenter(Point C) {Center = new int[] {C.x, C.y} ;}
 	public void setGridSpacing(double[] G) {GridSpacing = G;}
 	public void setZoom(double Z) {zoom = Z;}
 	public void setAngles(double[] a) {angles = a;}

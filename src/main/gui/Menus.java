@@ -654,11 +654,15 @@ public class Menus extends JFrame
 					
 					if (MatAssignmentIsOn)
 					{
+						System.out.println("Mat types at menus: " + MenuFunctions.matTypes);
 						Element.createMatColors(MenuFunctions.matTypes);
 						for (Element elem : MenuFunctions.struct.getMesh().getElements())
 						{
 							int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;
-							elem.setMatColor(Element.matColors[colorID]);
+							if (colorID != -1)
+							{
+								elem.setMatColor(Element.matColors[colorID]);
+							}
 						}
 					}
 					if (SecAssignmentIsOn)
@@ -682,7 +686,7 @@ public class Menus extends JFrame
 				UpperToolbarButton[6].setVisible(false);
 				UpperToolbarButton[7].setEnabled(false);
 				UpperToolbarButton[7].setVisible(false);
-				MenuFunctions.SelectedNodes = null;
+				MenuFunctions.selectedNodes = null;
 				MenuFunctions.SelectedElems = null;
 				MatAssignmentIsOn = false;
 				SecAssignmentIsOn = false;
@@ -905,9 +909,9 @@ public class Menus extends JFrame
 	
 	public void ResetEastPanels()
 	{
-		if (MenuFunctions.SelectedNodes != null)
+		if (MenuFunctions.selectedNodes != null)
 		{
-			int nodeID = MenuFunctions.SelectedNodes[0] ;
+			int nodeID = MenuFunctions.selectedNodes.get(0).getID() ;
 			if (-1 < nodeID)
 			{
 				bp1 = createNodeInfoPanel(MenuFunctions.struct.getMesh().getNodes().get(nodeID)) ;
@@ -1919,6 +1923,7 @@ public class Menus extends JFrame
 		int[][] ButtonSizes = new int[][] {{100, 20}, {30, 20}, {30, 20}, {30, 20}};
 		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Materials", "Mat", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
 		double[][] createdMaterials = CI.run() ;
+		System.out.println("\ncreated materials" + Arrays.deepToString(createdMaterials));
 		List<Material> mats = new ArrayList<>() ;
 		for (int i = 0 ; i <= createdMaterials.length - 1 ; i += 1)
 		{

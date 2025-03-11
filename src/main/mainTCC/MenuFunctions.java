@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,8 @@ public abstract class MenuFunctions
 	public static NodalDisps[] NodalDisp;
 	public static Reactions[] Reaction;
 	
-	public static int[] SelectedNodes, SelectedElems;
+	public static int[] SelectedElems;
+	public static List<Node> selectedNodes ;
 	public static int SelectedMat;
 	public static int SelectedSec;
 	public static int SelectedSup;
@@ -105,7 +107,7 @@ public abstract class MenuFunctions
 		SelectedNodalDisp = -1;
 		DiagramScales = new double[2];
 		
-		SelectedNodes = null;
+		selectedNodes = null;
 		SelectedElems = null;
 		
 
@@ -148,8 +150,9 @@ public abstract class MenuFunctions
 			return new Point3D(closestGridPoint.x, closestGridPoint.y, 0.0) ;
 		}
 
-		double[] mousePosRealCoords = Util.ConvertToRealCoords(MousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension()) ;
-		return new Point3D(mousePosRealCoords[0], mousePosRealCoords[1], 0.0) ;
+		Point2D.Double mousePosRealCoords = canvas.inRealCoords(MousePos) ;
+		// Util.ConvertToRealCoords(MousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension()) ;
+		return new Point3D(mousePosRealCoords.x, mousePosRealCoords.y, 0.0) ;
 
 	}
 
@@ -921,7 +924,7 @@ public abstract class MenuFunctions
 	{
 		if (-1 < SelectedVar)
 		{
-			int nodeid = SelectedNodes[0];
+			int nodeid = selectedNodes.get(0).getID();
 			double[][][] loaddisp = MenuFunctions.struct.getMesh().getNodes().get(nodeid).LoadDisp;
 			String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
 			String[][][] vars = new String[Sections.length][MenuFunctions.struct.getMesh().getNodes().get(nodeid).dofs.length][loaddisp[0][0].length];
@@ -1296,22 +1299,22 @@ public abstract class MenuFunctions
 	{
 		if (AnalysisIsComplete)
 		{
-			if (SelectedNodes != null)
+			if (selectedNodes != null)
 			{
-				int nodeid = SelectedNodes[0];
+				int nodeid = selectedNodes.get(0).getID() ;
 				if (MenuFunctions.struct.getMesh().getNodes().get(nodeid) != null)
 				{
 					Dimension LDPanelSize = jpLDSize;
 					int[] CurvePos = new int[] {(int) (0.38 * LDPanelSize.getWidth()), (int) (0.8 * LDPanelSize.getHeight())};
 					int[] CurveSize = new int[] {(int) (0.8 * LDPanelSize.getWidth()), (int) (0.6 * LDPanelSize.getHeight())};
-					if (1 < SelectedNodes.length)
+					if (1 < selectedNodes.size())
 					{
-						double[] Xaxisvalues = new double[SelectedNodes.length], Yaxisvalues = new double[SelectedNodes.length];
+						double[] Xaxisvalues = new double[selectedNodes.size()], Yaxisvalues = new double[selectedNodes.size()];
 						int dir = -1;
 						int dof = SelectedVar;
 						
-						Point3D FirstNodePos = MenuFunctions.struct.getMesh().getNodes().get(SelectedNodes[0]).getOriginalCoords();
-						Point3D FinalNodePos = MenuFunctions.struct.getMesh().getNodes().get(SelectedNodes[SelectedNodes.length - 1]).getOriginalCoords();
+						Point3D FirstNodePos = selectedNodes.get(0).getOriginalCoords();
+						Point3D FinalNodePos = selectedNodes.get(selectedNodes.size() - 1).getOriginalCoords();
 						if (FinalNodePos.y - FirstNodePos.y <= FinalNodePos.x - FirstNodePos.x)
 						{
 							dir = 0;
@@ -1321,32 +1324,32 @@ public abstract class MenuFunctions
 							dir = 1;
 						}
 						
-						for (int node = 0; node <= SelectedNodes.length - 1; node += 1)
+						for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 						{
-							int nodeID = SelectedNodes[node];
+							int nodeID = selectedNodes.get(i).getID();
 							double minCoord = dir == 0 ? Structure.calcMinCoords(struct.getCoords()).x : Structure.calcMinCoords(struct.getCoords()).y ;
 							if (dir == 0)
 							{
-								Xaxisvalues[node] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getOriginalCoords().x - minCoord;
+								Xaxisvalues[i] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getOriginalCoords().x - minCoord;
 							}
 							else
 							{
-								Xaxisvalues[node] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getOriginalCoords().y - minCoord;
+								Xaxisvalues[i] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getOriginalCoords().y - minCoord;
 							}
 						}
 						if (SelectedDiagram == 0)
 						{
-							for (int node = 0; node <= SelectedNodes.length - 1; node += 1)
+							for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 							{
-								int nodeID = SelectedNodes[node];
-								Yaxisvalues[node] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getDisp()[dof];
+								int nodeID = selectedNodes.get(i).getID();
+								Yaxisvalues[i] = MenuFunctions.struct.getMesh().getNodes().get(nodeID).getDisp()[dof];
 							}
 						}
 						else if (SelectedDiagram == 1)
 						{
-							for (int node = 0; node <= SelectedNodes.length - 1; node += 1)
+							for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
 							{
-								int nodeID = SelectedNodes[node];
+								int nodeID = selectedNodes.get(node).getID();
 								int elemID = -1;
 								for (int i = 0; i <= MenuFunctions.struct.getMesh().getElements().size() - 1; i += 1)
 								{
@@ -1360,9 +1363,9 @@ public abstract class MenuFunctions
 						}
 						else if (SelectedDiagram == 2)
 						{
-							for (int node = 0; node <= SelectedNodes.length - 1; node += 1)
+							for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
 							{
-								int nodeID = SelectedNodes[node];
+								int nodeID = selectedNodes.get(node).getID();
 								int elemID = -1;
 								for (int i = 0; i <= MenuFunctions.struct.getMesh().getElements().size() - 1; i += 1)
 								{
@@ -1376,9 +1379,9 @@ public abstract class MenuFunctions
 						}
 						else if (SelectedDiagram == 3)
 						{
-							for (int node = 0; node <= SelectedNodes.length - 1; node += 1)
+							for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
 							{
-								int nodeID = SelectedNodes[node];
+								int nodeID = selectedNodes.get(node).getID();
 								int elemID = -1;
 								for (int i = 0; i <= MenuFunctions.struct.getMesh().getElements().size() - 1; i += 1)
 								{
@@ -1394,7 +1397,7 @@ public abstract class MenuFunctions
 						Xaxisvalues, Yaxisvalues, Util.FindMin(Xaxisvalues), Util.FindMin(Yaxisvalues),
 						Util.FindMaxAbs(Xaxisvalues), Util.FindMaxAbs(Yaxisvalues), 2, 2, Menus.palette[5], Menus.palette[10]);
 					}
-					else if (-1 < SelectedNodes[0])
+					else if (-1 < selectedNodes.get(0).getID())
 					{
 						if (-1 < SelectedVar)
 						{						
@@ -1461,7 +1464,8 @@ public abstract class MenuFunctions
 			// 	StructCoords.set(StructCoords.size() - 1, StructCoords.get(0)) ;
 			// }
 			struct.updateCenter() ;
-			MainCanvas.setCenter(Util.ConvertToDrawingCoords(struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getDrawingPos()));
+			// MainCanvas.setCenter(Util.ConvertToDrawingCoords(struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getDrawingPos()));
+			MainCanvas.setCenter(MainCanvas.inDrawingCoords(struct.getCenter()));
 		}
 	}
 
@@ -1472,7 +1476,7 @@ public abstract class MenuFunctions
 		{
 			SelectedElems = null;
 			SelectedElems = Mesh.ElemsSelection(MainCanvas, struct.getCenter().asArray(), MenuFunctions.struct.getMesh(), mousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
-			int ElemMouseIsOn = Mesh.ElemMouseIsOn(MenuFunctions.struct.getMesh(), mousePos, struct.getCenter().asArray(), MainCanvas.getPos(), MainCanvas.getSize(), MainCanvas.getDimension(), MainCanvas.getCenter(), MainCanvas.getDrawingPos(), ShowDeformedStructure);
+			int ElemMouseIsOn = Mesh.ElemMouseIsOn(MenuFunctions.struct.getMesh(), mousePos, struct.getCenter().asArray(), MainCanvas, ShowDeformedStructure);
 			if (ElemMouseIsOn == -1 | (ShowElemSelectionWindow & -1 < ElemMouseIsOn))
 			{
 				ShowElemSelectionWindow = !ShowElemSelectionWindow;

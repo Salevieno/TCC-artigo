@@ -14,6 +14,11 @@ public class Supports
 	public static int[][] Types = new int[][] {{1, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0}, {1, 1, 0, 0, 0, 0}, {1, 1, 0, 0, 0, 1}, {1, 1, 1, 1, 1, 1}};
 	public static Color color = Menus.palette[7];
 	
+	public Supports(int ID, Node Node, int[] DoFs)
+	{
+		this(ID, Node.getID(), DoFs);
+	}
+
 	public Supports(int ID, int Node, int[] DoFs)
 	{
 		this.ID = ID;

@@ -176,6 +176,10 @@ public class DrawingOnAPanel
     	G.drawLine(PosInit[0], PosInit[1], PosFinal[0], PosFinal[1]);
     	G.setStroke(new BasicStroke(stdStroke));
     }
+    public void DrawLine(Point PosInit, Point PosFinal, int thickness, Color color)
+    {
+    	DrawLine(new int[] {PosInit.x, PosInit.y}, new int[] {PosFinal.x, PosFinal.y}, thickness, color) ;
+    }
     public void DrawGradRect(int[] Pos, int l, int h, Color leftTop, Color rightTop, Color leftBottom, Color rightBottom)
     {
     	float size = (float) ((l + h) / 2.0);
@@ -302,6 +306,21 @@ public class DrawingOnAPanel
     	{
         	G.setColor(FillColor);
         	G.fillOval(Pos[0] - diam/2, Pos[1] - diam/2, diam, diam);
+    	}
+    	G.setStroke(new BasicStroke(stdStroke));
+    }
+    public void DrawCircle(Point Pos, int diam, int thickness, boolean contour, boolean fill, Color ContourColor, Color FillColor)
+    {
+    	G.setStroke(new BasicStroke(thickness));
+    	if (contour)
+    	{
+        	G.setColor(ContourColor);
+        	G.drawOval(Pos.x - diam/2, Pos.y - diam/2, diam, diam);
+    	}
+    	if (fill)
+    	{
+        	G.setColor(FillColor);
+        	G.fillOval(Pos.x - diam/2, Pos.y - diam/2, diam, diam);
     	}
     	G.setStroke(new BasicStroke(stdStroke));
     }
@@ -866,9 +885,15 @@ public class DrawingOnAPanel
 			int[] DrawingCoords = new int[2];
 			for (int elemnode = 0; elemnode <= Elem.get(elem).getExternalNodes().length - 1; elemnode += 1)
 			{
-				int node = Elem.get(elem).getExternalNodes()[elemnode];
-				DrawingCoords[0] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[0];
-				DrawingCoords[1] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[1];
+				int nodeID = Elem.get(elem).getExternalNodes()[elemnode];
+				Node node = Node.get(nodeID) ;
+				Point3D nodeDeformedPos = new Point3D(Util.GetNodePos(node, deformed)[0], Util.GetNodePos(node, deformed)[1], Util.GetNodePos(node, deformed)[2]) ;
+				// Point3D nodeDeformedPos = new Point3D(node.deformedPos()[0], deformed)[0], Util.GetNodePos(Node.get(nodeID), deformed)[1], Util.GetNodePos(Node.get(nodeID), deformed)[2]) ;
+				Point nodeDeformedPosInDrawingCoords = canvas.inDrawingCoords(nodeDeformedPos) ;
+				DrawingCoords[0] += nodeDeformedPosInDrawingCoords.x;
+				DrawingCoords[1] += nodeDeformedPosInDrawingCoords.y;
+				// DrawingCoords[0] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[0];
+				// DrawingCoords[1] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[1];
 			}
 			DrawingCoords[0] = DrawingCoords[0] / Elem.get(elem).getExternalNodes().length;
 			DrawingCoords[1] = DrawingCoords[1] / Elem.get(elem).getExternalNodes().length;
@@ -967,7 +992,7 @@ public class DrawingOnAPanel
 		DrawPolygon(Xcoords, Ycoords, thick, true, true, structureColor, structureColor);
 	}
 	
-	public void DrawNodes3D(List<Node> Node, int[] SelectedNodes, Color NodeColor, boolean deformed, int[] DOFsPerNode, double Defscale, MyCanvas canvas)
+	public void DrawNodes3D(List<Node> Node, List<Node> selectedNodes, Color NodeColor, boolean deformed, int[] DOFsPerNode, double Defscale, MyCanvas canvas)
 	{
 		int size = 6;
 		int thick = 1;
@@ -985,11 +1010,11 @@ public class DrawingOnAPanel
 				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			DrawCircle(DrawingCoords[node], size, thick, false, true, Color.black, NodeColor);
-			if (SelectedNodes != null)
+			if (selectedNodes != null)
 			{
-				for (int i = 0; i <= SelectedNodes.length - 1; i += 1)
+				for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 				{
-					if (node == SelectedNodes[i])
+					if (node == selectedNodes.get(i).getID())
 					{
 						DrawCircle(DrawingCoords[node], 2*size, thick, false, true, Color.black, Color.red);
 					}

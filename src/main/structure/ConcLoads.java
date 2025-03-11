@@ -12,6 +12,12 @@ public class ConcLoads
 	private double[] Loads;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
 
 	public static Color color = Menus.palette[7];
+
+	public ConcLoads(int ID, Node Node, double[] Loads)
+	{
+		this(ID, Node.getID(), Loads);
+	}
+
 	public ConcLoads(int ID, int Node, double[] Loads)
 	{
 		this.ID = ID;
