@@ -1,16 +1,16 @@
 package main.mainTCC;
 
-import java.sql.Struct;
 import java.util.List;
 
+import main.loading.Loading;
 import main.structure.ConcLoads;
 import main.structure.DistLoads;
 import main.structure.ElemType;
 import main.structure.Element;
 import main.structure.Material;
+import main.structure.Mesh;
 import main.structure.NodalDisps;
 import main.structure.Node;
-import main.structure.Mesh;
 import main.structure.Reactions;
 import main.structure.Section;
 import main.structure.Structure;
@@ -197,23 +197,23 @@ public abstract class Analysis
 		}
 	}
 	
-	public static double[] LoadVector(Mesh mesh, int NFreeDOFs, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
+	public static double[] LoadVector(Mesh mesh, int NFreeDOFs, Loading loading, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
 	{
 		double[] P = new double[NFreeDOFs];
 		List<Node> Node = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
-		if (ConcLoad != null)
+		if (loading.getConcLoads() != null)
 		{
-			for (int load = 0; load <= ConcLoad.length - 1; load += 1)
+			for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
 			{
-				int node = ConcLoad[load].getNode();
+				int node = loading.getConcLoads().get(load).getNode();
 				for (int dof = 0; dof <= Node.get(node).getDOFType().length - 1; dof += 1)
 				{
 					if (-1 < Node.get(node).dofs[dof])
 					{
-						if (Node.get(node).getDOFType()[dof] <= ConcLoad[load].getLoads().length - 1)
+						if (Node.get(node).getDOFType()[dof] <= loading.getConcLoads().get(load).getLoads().length - 1)
 						{
-							P[Node.get(node).dofs[dof]] += ConcLoad[load].getLoads()[Node.get(node).getDOFType()[dof]] * loadfactor;
+							P[Node.get(node).dofs[dof]] += loading.getConcLoads().get(load).getLoads()[Node.get(node).getDOFType()[dof]] * loadfactor;
 						}
 					}
 				}
@@ -262,19 +262,19 @@ public abstract class Analysis
 			}
 		}
 		
-		if (NodalDisp != null)
+		if (loading.getNodalDisps() != null)
 		{
 			double[] Uapplied = new double[NFreeDOFs];
-			for (int disp = 0; disp <= NodalDisp.length - 1; disp += 1)
+			for (int disp = 0; disp <= loading.getNodalDisps().size() - 1; disp += 1)
 			{
-				int node = NodalDisp[disp].getNode();
+				int node = loading.getNodalDisps().get(disp).getNode();
 				for (int dof = 0; dof <= Elem.get(0).getDOFsPerNode().length - 1; dof += 1)
 				{
 					if (-1 < Node.get(node).dofs[dof])
 					{
-						if (Node.get(node).getDOFType()[dof] <= NodalDisp[disp].getDisps().length - 1)
+						if (Node.get(node).getDOFType()[dof] <= loading.getNodalDisps().get(disp).getDisps().length - 1)
 						{
-							Uapplied[Node.get(node).dofs[dof]] += NodalDisp[disp].getDisps()[Node.get(node).getDOFType()[dof]]*loadfactor;
+							Uapplied[Node.get(node).dofs[dof]] += loading.getNodalDisps().get(disp).getDisps()[Node.get(node).getDOFType()[dof]]*loadfactor;
 						}
 					}
 				}
@@ -294,7 +294,7 @@ public abstract class Analysis
 		return P;
 	}
 
-	public static double[] run(Structure struct, ConcLoads[] ConcLoad, DistLoads[] DistLoad, NodalDisps[] NodalDisp,
+	public static double[] run(Structure struct, Loading loading,
 										boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
 	{
 		/*
@@ -307,7 +307,7 @@ public abstract class Analysis
 		for (int loadstep = 0; loadstep <= NLoadSteps - 1; loadstep += 1)
 		{
 			double loadfactor = 0 + (loadstep + 1)*loadinc;
-			struct.setP(LoadVector(struct.getMesh(), struct.NFreeDOFs, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, loadfactor));
+			struct.setP(LoadVector(struct.getMesh(), struct.NFreeDOFs, loading, NonlinearMat, NonlinearGeo, loadfactor));
 		    for (int iter = 0; iter <= NIter - 1; iter += 1)
 			{
 		    	struct.setK(Structure.StructureStiffnessMatrix(struct.NFreeDOFs, struct.getMesh().getNodes(), struct.getMesh().getElements(), NonlinearMat, NonlinearGeo));

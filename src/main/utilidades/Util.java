@@ -1494,18 +1494,18 @@ public abstract class Util
 	}
 	
 
-	public static double FindMaxConcLoad(ConcLoads[] ConcLoads)
+	public static double FindMaxConcLoad(List<ConcLoads> concLoads)
 	{
-		if (ConcLoads != null)
+		if (concLoads != null && !concLoads.isEmpty())
 		{
-			double MaxLoad = ConcLoads[0].getLoads()[0];
-			for (int l = 0; l <= ConcLoads.length - 1; l += 1)
+			double MaxLoad = concLoads.get(0).getLoads()[0];
+			for (int l = 0; l <= concLoads.size() - 1; l += 1)
 			{
-				for (int i = 0; i <= ConcLoads[l].getLoads().length - 1; i += 1)
+				for (int i = 0; i <= concLoads.get(l).getLoads().length - 1; i += 1)
 				{
-					if (MaxLoad < Math.abs(ConcLoads[l].getLoads()[i]))
+					if (MaxLoad < Math.abs(concLoads.get(l).getLoads()[i]))
 					{
-						MaxLoad = Math.abs(ConcLoads[l].getLoads()[i]);
+						MaxLoad = Math.abs(concLoads.get(l).getLoads()[i]);
 					}
 				}
 			}
@@ -1517,16 +1517,16 @@ public abstract class Util
 		}
 	}
 
-	public static double FindMaxDistLoad(DistLoads[] DistLoads)
+	public static double FindMaxDistLoad(List<DistLoads> DistLoads)
 	{
-		if (DistLoads != null)
+		if (DistLoads != null && !DistLoads.isEmpty())
 		{
-			double MaxLoad = DistLoads[0].getIntensity();
-			for (int l = 0; l <= DistLoads.length - 1; l += 1)
+			double MaxLoad = DistLoads.get(0).getIntensity();
+			for (int l = 0; l <= DistLoads.size() - 1; l += 1)
 			{
-				if (MaxLoad < Math.abs(DistLoads[l].getIntensity()))
+				if (MaxLoad < Math.abs(DistLoads.get(l).getIntensity()))
 				{
-					MaxLoad = Math.abs(DistLoads[l].getIntensity());
+					MaxLoad = Math.abs(DistLoads.get(l).getIntensity());
 				}
 			}
 			return MaxLoad;

@@ -6,10 +6,12 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import main.gui.DrawingOnAPanel;
 import main.gui.Menus;
+import main.loading.Loading;
 import main.output.Results;
 import main.output.SaveOutput;
 import main.structure.ConcLoads;
@@ -46,9 +48,6 @@ public abstract class MenuFunctions
 	public static boolean ShowDeformedStructure ;
 	public static boolean NodeSelectionIsOn, ElemSelectionIsOn;
 	
-	public static ConcLoads[] ConcLoad;
-	public static DistLoads[] DistLoad;
-	public static NodalDisps[] NodalDisp;
 	
 	public static int[] SelectedElems;
 	public static List<Node> selectedNodes ;
@@ -205,13 +204,13 @@ public abstract class MenuFunctions
 		return NewCoord;
 	}
 	
-	public static boolean CheckIfAnalysisIsReady(Structure struct)
+	public static boolean CheckIfAnalysisIsReady(Structure struct, Loading loading)
 	{
 		if (struct.getMesh() != null &&
 			struct.getMesh().getNodes() != null & struct.getMesh().getElements() != null &
 			Util.AllElemsHaveMat(struct.getMesh().getElements()) &
 			Util.AllElemsHaveSec(struct.getMesh().getElements()) &
-			struct.getSupports() != null & (ConcLoad != null | DistLoad != null | NodalDisp != null))
+			struct.getSupports() != null & loading != null)
 		{
 			return true;
 		}
@@ -258,15 +257,15 @@ public abstract class MenuFunctions
 		{
 			StepIsComplete[5] = true;
 		}
-		if (ConcLoad != null)
+		if (MainPanel.loading != null && MainPanel.loading.getConcLoads() != null)
 		{
 			StepIsComplete[6] = true;
 		}
-		if (DistLoad != null)
+		if (MainPanel.loading != null && MainPanel.loading.getDistLoads() != null)
 		{
 			StepIsComplete[7] = true;
 		}
-		if (NodalDisp != null)
+		if (MainPanel.loading != null && MainPanel.loading.getNodalDisps() != null)
 		{
 			StepIsComplete[8] = true;
 		}
@@ -298,15 +297,15 @@ public abstract class MenuFunctions
 		}
 		if (AssignmentIsOn[3])
 		{
-			ConcLoad = null;
+			MainPanel.loading.setConcLoads(null) ;
 		}
 		if (AssignmentIsOn[4])
 		{
-			DistLoad = null;
+			MainPanel.loading.setDistLoads(null) ;
 		}
 		if (AssignmentIsOn[5])
 		{
-			NodalDisp = null;
+			MainPanel.loading.setNodalDisps(null) ;
 		}
 	}
 	
@@ -357,7 +356,7 @@ public abstract class MenuFunctions
 	
 	/* File menu functions */
 	public static void SaveFile(String FileName, MyCanvas MainCanvas, Structure Struct, List<Node> nodes, List<Element> elems,
-			List<Supports> Sup, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps, List<Material> UserDefinedMat, List<Section> UserDefinedSec)
+			List<Supports> Sup, Loading loading, List<Material> UserDefinedMat, List<Section> UserDefinedSec)
 	{
 		Struct.setName(FileName);
 		String[] InputSections = new String[] {
@@ -466,45 +465,45 @@ public abstract class MenuFunctions
 				values[6][sup][7] = Sup.get(sup).getDoFs()[5];
 			}
 		}
-		if (ConcLoads != null)
+		if (loading.getConcLoads() != null)
 		{
-			values[7] = new Object[ConcLoads.length][8];
-			for (int load = 0; load <= ConcLoads.length - 1; load += 1)
+			values[7] = new Object[loading.getConcLoads().size()][8];
+			for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
 			{
-				values[7][load][0] = ConcLoads[load].getID();
-				values[7][load][1] = ConcLoads[load].getNode();
-				values[7][load][2] = ConcLoads[load].getLoads()[0];
-				values[7][load][3] = ConcLoads[load].getLoads()[1];
-				values[7][load][4] = ConcLoads[load].getLoads()[2];
-				values[7][load][5] = ConcLoads[load].getLoads()[3];
-				values[7][load][6] = ConcLoads[load].getLoads()[4];
-				values[7][load][7] = ConcLoads[load].getLoads()[5];
+				values[7][load][0] = loading.getConcLoads().get(load).getID();
+				values[7][load][1] = loading.getConcLoads().get(load).getNode();
+				values[7][load][2] = loading.getConcLoads().get(load).getLoads()[0];
+				values[7][load][3] = loading.getConcLoads().get(load).getLoads()[1];
+				values[7][load][4] = loading.getConcLoads().get(load).getLoads()[2];
+				values[7][load][5] = loading.getConcLoads().get(load).getLoads()[3];
+				values[7][load][6] = loading.getConcLoads().get(load).getLoads()[4];
+				values[7][load][7] = loading.getConcLoads().get(load).getLoads()[5];
 			}
 		}
-		if (DistLoads != null)
+		if (loading.getDistLoads() != null)
 		{
-			values[8] = new Object[DistLoads.length][4];
-			for (int load = 0; load <= DistLoads.length - 1; load += 1)
+			values[8] = new Object[loading.getDistLoads().size()][4];
+			for (int load = 0; load <= loading.getDistLoads().size() - 1; load += 1)
 			{
-				values[8][load][0] = DistLoads[load].getID();
-				values[8][load][1] = DistLoads[load].getElem();
-				values[8][load][2] = DistLoads[load].getType();
-				values[8][load][3] = DistLoads[load].getIntensity();
+				values[8][load][0] = loading.getDistLoads().get(load).getID();
+				values[8][load][1] = loading.getDistLoads().get(load).getElem();
+				values[8][load][2] = loading.getDistLoads().get(load).getType();
+				values[8][load][3] = loading.getDistLoads().get(load).getIntensity();
 			}
 		}
-		if (NodalDisps != null)
+		if (loading.getNodalDisps() != null)
 		{
-			values[9] = new Object[NodalDisps.length][8];
-			for (int dist = 0; dist <= NodalDisps.length - 1; dist += 1)
+			values[9] = new Object[loading.getNodalDisps().size()][8];
+			for (int dist = 0; dist <= loading.getNodalDisps().size() - 1; dist += 1)
 			{
-				values[9][dist][0] = NodalDisps[dist].getID();
-				values[9][dist][1] = NodalDisps[dist].getNode();
-				values[9][dist][2] = NodalDisps[dist].getDisps()[0];
-				values[9][dist][3] = NodalDisps[dist].getDisps()[1];
-				values[9][dist][4] = NodalDisps[dist].getDisps()[2];
-				values[9][dist][5] = NodalDisps[dist].getDisps()[3];
-				values[9][dist][6] = NodalDisps[dist].getDisps()[4];
-				values[9][dist][7] = NodalDisps[dist].getDisps()[5];
+				values[9][dist][0] = loading.getNodalDisps().get(dist).getID();
+				values[9][dist][1] = loading.getNodalDisps().get(dist).getNode();
+				values[9][dist][2] = loading.getNodalDisps().get(dist).getDisps()[0];
+				values[9][dist][3] = loading.getNodalDisps().get(dist).getDisps()[1];
+				values[9][dist][4] = loading.getNodalDisps().get(dist).getDisps()[2];
+				values[9][dist][5] = loading.getNodalDisps().get(dist).getDisps()[3];
+				values[9][dist][6] = loading.getNodalDisps().get(dist).getDisps()[4];
+				values[9][dist][7] = loading.getNodalDisps().get(dist).getDisps()[5];
 			}
 		}
 		values[10] = new Object[1][9];
@@ -602,7 +601,7 @@ public abstract class MenuFunctions
 					NewConcLoad.setNode(Integer.parseInt(Line[1]));
 					NewConcLoad.setLoads(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
 					ConcLoadType = Util.AddElem(ConcLoadType, new double[] {NewConcLoad.getNode(), NewConcLoad.getLoads()[0], NewConcLoad.getLoads()[1], NewConcLoad.getLoads()[2], NewConcLoad.getLoads()[3], NewConcLoad.getLoads()[4], NewConcLoad.getLoads()[5]});
-					ConcLoad = Util.AddElem(ConcLoad, NewConcLoad);
+					MainPanel.loading.addConcLoad(NewConcLoad);
 				}
 				for (int distload = 0; distload <= Input[8].length - 4; distload += 1)
 				{
@@ -614,7 +613,7 @@ public abstract class MenuFunctions
 					NewDistLoad.setType(Integer.parseInt(Line[2]));
 					NewDistLoad.setIntensity(Double.parseDouble(Line[3]));
 					DistLoadType = Util.AddElem(DistLoadType, new double[] {NewDistLoad.getElem(), NewDistLoad.getType(), NewDistLoad.getIntensity()});
-					DistLoad = Util.AddElem(DistLoad, NewDistLoad);
+					MainPanel.loading.addDistLoad(NewDistLoad);
 				}
 				for (int nodaldisp = 0; nodaldisp <= Input[9].length - 4; nodaldisp += 1)
 				{
@@ -625,11 +624,11 @@ public abstract class MenuFunctions
 					NewNodalDisp.setNode(Integer.parseInt(Line[1]));
 					NewNodalDisp.setDisps(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
 					NodalDispType = Util.AddElem(NodalDispType, new double[] {NewNodalDisp.getNode(), NewNodalDisp.getDisps()[0], NewNodalDisp.getDisps()[1], NewNodalDisp.getDisps()[2], NewNodalDisp.getDisps()[3], NewNodalDisp.getDisps()[4], NewNodalDisp.getDisps()[5]});
-					NodalDisp = Util.AddElem(NodalDisp, NewNodalDisp);
+					MainPanel.loading.addNodalDisp(NewNodalDisp);
 				}
 
 				System.out.println("Structure loaded successfully");
-				structure.printStructure(matTypes, secTypes, structure.getSupports(), ConcLoad, DistLoad, NodalDisp);
+				structure.printStructure(matTypes, secTypes, structure.getSupports(), MainPanel.loading);
 				return structure ;
 			}
 			else
@@ -770,8 +769,8 @@ public abstract class MenuFunctions
 				int nodeid = (int) ConcLoadType[loadid][1];
 				if (-1 < nodeid)
 				{
-					ConcLoad[loadid] = new ConcLoads(loadid, nodeid, ConcLoadType[loadid]);
-					struct.getMesh().getNodes().get(nodeid).setConcLoads(Util.AddElem(struct.getMesh().getNodes().get(nodeid).getConcLoads(), ConcLoad[loadid]));
+					MainPanel.loading.getConcLoads().set(loadid, new ConcLoads(loadid, nodeid, ConcLoadType[loadid])) ;
+					struct.getMesh().getNodes().get(nodeid).setConcLoads(Util.AddElem(struct.getMesh().getNodes().get(nodeid).getConcLoads(), MainPanel.loading.getConcLoads().get(loadid)));
 				}
 			}
 		}
@@ -784,8 +783,8 @@ public abstract class MenuFunctions
 				double Intensity = DistLoadType[loadid][2];
 				if (-1 < elemid)
 				{
-					DistLoad[loadid] = new DistLoads(loadid, elemid, LoadType, Intensity);
-					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), DistLoad[loadid]));
+					MainPanel.loading.getDistLoads().set(loadid, new DistLoads(loadid, elemid, LoadType, Intensity)) ;
+					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), MainPanel.loading.getDistLoads().get(loadid)));
 				}
 			}
 		}
@@ -1008,9 +1007,10 @@ public abstract class MenuFunctions
 
 			Object[] Structure = MainPanel.CreatureStructure(EspecialCoords, meshType, MeshSize, elemType, matTypes.get(Mat), matTypes, secTypes.get(Sec), secTypes,
 																supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
-			ConcLoads[] ConcLoad = (ConcLoads[]) Structure[3];
-			DistLoads[] DistLoad = (DistLoads[]) Structure[4];
-			NodalDisps[] NodalDisp = (NodalDisps[]) Structure[5];
+			List<ConcLoads> ConcLoad = (List<ConcLoads>) Structure[3];
+			List<DistLoads> DistLoad = (List<DistLoads>) Structure[4];
+			List<NodalDisps> NodalDisp = (List<NodalDisps>) Structure[5];
+			Loading loading = new Loading(ConcLoad, DistLoad, NodalDisp) ;
 			
 			// System.out.println("meshType: " + meshType);
 			// System.out.println("MeshSize: " + MeshSize);
@@ -1030,7 +1030,7 @@ public abstract class MenuFunctions
 
 			boolean NonlinearMat = true;
 			boolean NonlinearGeo = false;
-			Analysis.run(MainPanel.structure, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
+			Analysis.run(MainPanel.structure, loading, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
 			
 			/* Analysis is complete */
 			PostAnalysis(MainPanel.structure);
@@ -1079,6 +1079,7 @@ public abstract class MenuFunctions
 	{
 		
 		Structure structure = new Structure(null, null, null);
+		MainPanel.loading.clearLoads() ;
 		resetDisplay();
 		if (exampleID == 0)
 		{
@@ -1139,7 +1140,7 @@ public abstract class MenuFunctions
 		MainPanel.structure = structure ;
  		CalcAnalysisParameters(MainPanel.structure);
 		long AnalysisTime = System.currentTimeMillis();
-		Analysis.run(MainPanel.structure, ConcLoad, DistLoad, NodalDisp, NonlinearMat, NonlinearGeo, 1, 1, 1);
+		Analysis.run(MainPanel.structure, MainPanel.loading, NonlinearMat, NonlinearGeo, 1, 1, 1);
 		PostAnalysis(MainPanel.structure);
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
 		for (Element elem : MainPanel.structure.getMesh().getElements())
@@ -1488,11 +1489,8 @@ public abstract class MenuFunctions
 		matTypes = null;
 		secTypes = null;
 		ConcLoadType = null ;
-		ConcLoad = null;
 		DistLoadType = null ;
-		DistLoad = null;
 		NodalDispType = null ;
-		NodalDisp = null;
 		ShowNodes = false;
 		ShowElems = false;
 		ShowConcLoads = false;

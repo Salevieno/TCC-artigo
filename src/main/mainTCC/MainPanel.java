@@ -23,6 +23,7 @@ import javax.swing.border.BevelBorder;
 
 import main.gui.DrawingOnAPanel;
 import main.gui.Menus;
+import main.loading.Loading;
 import main.structure.ConcLoads;
 import main.structure.DistLoads;
 import main.structure.ElemShape;
@@ -62,7 +63,8 @@ public class MainPanel extends JPanel
 	
 	public static boolean StructureCreationIsOn = false;
 	
-	public static Structure structure;
+	public static Structure structure ;
+	public static Loading loading ;
 	
 	public MainPanel(Point frameTopLeftPos)
 	{
@@ -88,6 +90,7 @@ public class MainPanel extends JPanel
 		mouseYPosTextArea.setPreferredSize(new Dimension(30, 20));
 		
 		structure = new Structure(null, null, null);
+		loading = new Loading() ;
 		
 		this.setBackground(bgColor);
 	    this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -142,7 +145,7 @@ public class MainPanel extends JPanel
 				}
 				if (evt.getButton() == 3)	// Right click
 				{
-					MainPanel.structure.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MainPanel.structure.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp);
+					MainPanel.structure.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MainPanel.structure.getSupports(), loading);
 					MenuFunctions.ElemDetailsView();
 				}
 			}
@@ -427,20 +430,20 @@ public class MainPanel extends JPanel
 		{
 			DP.DrawSup3D(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getSupports(), Supports.color, canvas);
 		}
-		if (MenuFunctions.ShowConcLoads & MenuFunctions.ConcLoad != null)
+		if (MenuFunctions.ShowConcLoads & loading != null && loading.getConcLoads() != null)
 		{
-			DP.DrawConcLoads3D(MainPanel.structure.getMesh().getNodes(), MenuFunctions.ConcLoad,
+			DP.DrawConcLoads3D(MainPanel.structure.getMesh().getNodes(), loading.getConcLoads(),
 			MainPanel.structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
 			ConcLoads.color, showDeformedStructure, MenuFunctions.DiagramScales[1], canvas);
 		}
-		if (MenuFunctions.ShowDistLoads & MenuFunctions.DistLoad != null)
+		if (MenuFunctions.ShowDistLoads & loading != null && loading.getDistLoads() != null)
 		{
-			DP.DrawDistLoads3D(MainPanel.structure.getMesh(), MenuFunctions.DistLoad, MenuFunctions.ShowLoadsValues, DistLoads.color,
+			DP.DrawDistLoads3D(MainPanel.structure.getMesh(), loading.getDistLoads(), MenuFunctions.ShowLoadsValues, DistLoads.color,
 			showDeformedStructure, MainPanel.structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas);
 		}
-		if (MenuFunctions.ShowNodalDisps & MenuFunctions.NodalDisp != null)
+		if (MenuFunctions.ShowNodalDisps & loading != null && loading.getNodalDisps() != null)
 		{
-			DP.DrawNodalDisps3D(MainPanel.structure.getMesh().getNodes(), MenuFunctions.NodalDisp, MainPanel.structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
+			DP.DrawNodalDisps3D(MainPanel.structure.getMesh().getNodes(), loading.getNodalDisps(), MainPanel.structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
 			NodalDisps.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
 		if (MenuFunctions.ShowDOFNumber && MainPanel.structure.getMesh() != null && MainPanel.structure.getMesh().getNodes() != null)
@@ -608,14 +611,14 @@ public class MainPanel extends JPanel
 	{
 		if (-1 < MenuFunctions.SelectedConcLoad & MenuFunctions.selectedNodes != null & MenuFunctions.ConcLoadType != null)
 		{
-			MenuFunctions.ConcLoad = Util.IncreaseArraySize(MenuFunctions.ConcLoad, MenuFunctions.selectedNodes.size());
 			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
 			{
-				int loadid = MenuFunctions.ConcLoad.length - MenuFunctions.selectedNodes.size() + i;
+				int loadid = loading.getConcLoads().size() - MenuFunctions.selectedNodes.size() + i;
 				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
 				{
-					MenuFunctions.ConcLoad[loadid] = new ConcLoads(loadid, MenuFunctions.selectedNodes.get(i), MenuFunctions.ConcLoadType[MenuFunctions.SelectedConcLoad]);
-					MenuFunctions.selectedNodes.get(i).AddConcLoads(MenuFunctions.ConcLoad[loadid]);
+					ConcLoads newConcLoad = new ConcLoads(loadid, MenuFunctions.selectedNodes.get(i), MenuFunctions.ConcLoadType[MenuFunctions.SelectedConcLoad]);
+					loading.getConcLoads().add(newConcLoad);
+					MenuFunctions.selectedNodes.get(i).AddConcLoads(newConcLoad);
 				}
 			}
 			MenuFunctions.ShowConcLoads = true;
@@ -627,17 +630,17 @@ public class MainPanel extends JPanel
 	{
 		if (-1 < MenuFunctions.SelectedDistLoad & MenuFunctions.SelectedElems != null & MenuFunctions.DistLoadType != null)
 		{
-			MenuFunctions.DistLoad = Util.IncreaseArraySize(MenuFunctions.DistLoad, MenuFunctions.SelectedElems.length);
 			for (int i = 0; i <= MenuFunctions.SelectedElems.length - 1; i += 1)
 			{
-				int loadid = MenuFunctions.DistLoad.length - MenuFunctions.SelectedElems.length + i;
+				int loadid = loading.getDistLoads().size() - MenuFunctions.SelectedElems.length + i;
 				if (-1 < MenuFunctions.SelectedElems[i])
 				{
 					int elem = MenuFunctions.SelectedElems[i];
 					int LoadType = (int) MenuFunctions.DistLoadType[MenuFunctions.SelectedDistLoad][0];
 					double Intensity = MenuFunctions.DistLoadType[MenuFunctions.SelectedDistLoad][1];
-					MenuFunctions.DistLoad[loadid] = new DistLoads(loadid, MenuFunctions.SelectedElems[i], LoadType, Intensity);
-					MainPanel.structure.getMesh().getElements().get(elem).setDistLoads(Util.AddElem(MainPanel.structure.getMesh().getElements().get(elem).getDistLoads(), MenuFunctions.DistLoad[loadid]));
+					DistLoads newDistLoad = new DistLoads(loadid, MenuFunctions.SelectedElems[i], LoadType, Intensity) ;
+					loading.getDistLoads().add(newDistLoad);
+					MainPanel.structure.getMesh().getElements().get(elem).setDistLoads(Util.AddElem(MainPanel.structure.getMesh().getElements().get(elem).getDistLoads(), newDistLoad));
 				}
 			}
 			MenuFunctions.ShowDistLoads = true;
@@ -649,14 +652,14 @@ public class MainPanel extends JPanel
 	{
 		if (-1 < MenuFunctions.SelectedNodalDisp & MenuFunctions.selectedNodes != null & MenuFunctions.NodalDispType != null)
 		{
-			MenuFunctions.NodalDisp = Util.IncreaseArraySize(MenuFunctions.NodalDisp, MenuFunctions.selectedNodes.size());
 			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
 			{
-				int dispid = MenuFunctions.NodalDisp.length - MenuFunctions.selectedNodes.size() + i;
+				int dispid = loading.getNodalDisps().size() - MenuFunctions.selectedNodes.size() + i;
 				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
 				{
-					MenuFunctions.NodalDisp[dispid] = new NodalDisps(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[MenuFunctions.SelectedNodalDisp]);
-					MenuFunctions.selectedNodes.get(i).AddNodalDisps(MenuFunctions.NodalDisp[dispid]);
+					NodalDisps newNodalDisp = new NodalDisps(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[MenuFunctions.SelectedNodalDisp]) ;
+					loading.getNodalDisps().add(newNodalDisp);
+					MenuFunctions.selectedNodes.get(i).AddNodalDisps(newNodalDisp);
 				}
 			}
 			MenuFunctions.ShowNodalDisps = true;
@@ -741,9 +744,7 @@ public class MainPanel extends JPanel
 		
 		/* 2. Criar malha */		
 		MainPanel.structure.removeSupports() ;
-		MenuFunctions.ConcLoad = null;
-		MenuFunctions.DistLoad = null;
-		MenuFunctions.NodalDisp = null;
+		loading.clearLoads() ;
 		MainPanel.structure.createMesh(meshType, new int[][] {MeshSizes}, elemType);
 		
 		/* 3. Atribuir materiais */
@@ -812,7 +813,8 @@ public class MainPanel extends JPanel
 		
 		MenuFunctions.selectedNodes = null;
 		MenuFunctions.SelectedElems = null;
-		return new Object[] {MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(), MainPanel.structure.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, null};
+		return new Object[] {MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(), MainPanel.structure.getSupports(),
+			loading.getConcLoads(), loading.getDistLoads(), null};
 	}
 
 	@Override

@@ -1128,14 +1128,14 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawConcLoads3D (List<Node> Node, ConcLoads[] ConcLoads, int[] ElemDOFs, boolean ShowValues, Color ConcLoadsColor, boolean condition, double Defscale, MyCanvas canvas)
+	public void DrawConcLoads3D (List<Node> Node, List<ConcLoads> concLoads, int[] ElemDOFs, boolean ShowValues, Color ConcLoadsColor, boolean condition, double Defscale, MyCanvas canvas)
 	{
 		int MaxArrowSize = 1;
 		int thickness = 2;
-		double MaxLoad = Util.FindMaxConcLoad(ConcLoads);
-		for (int l = 0; l <= ConcLoads.length - 1; l += 1)
+		double MaxLoad = Util.FindMaxConcLoad(concLoads);
+		for (int l = 0; l <= concLoads.size() - 1; l += 1)
 		{
-			int node = ConcLoads[l].getNode();
+			int node = concLoads.get(l).getNode();
 			double[] RealDefCoords = Node.get(node).getOriginalCoords().asArray();
 			if (condition)
 			{
@@ -1143,9 +1143,9 @@ public class DrawingOnAPanel
 			}
 			for (int dof = 0; dof <= ElemDOFs.length - 1; dof += 1)
 			{
-				if (ElemDOFs[dof] < ConcLoads[l].getLoads().length)
+				if (ElemDOFs[dof] < concLoads.get(l).getLoads().length)
 				{
-					double LoadIntensity = ConcLoads[l].getLoads()[ElemDOFs[dof]];
+					double LoadIntensity = concLoads.get(l).getLoads()[ElemDOFs[dof]];
 					if (0 < Math.abs(LoadIntensity))
 					{
 						int size = (int)(MaxArrowSize * LoadIntensity / MaxLoad);
@@ -1168,28 +1168,28 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawDistLoads3D (Mesh mesh, DistLoads[] DistLoads, boolean ShowValues, Color DistLoadsColor, boolean condition,
+	public void DrawDistLoads3D (Mesh mesh, List<DistLoads> distLoads, boolean ShowValues, Color DistLoadsColor, boolean condition,
 	int[] DOFsPerNode, double Defscale, MyCanvas canvas)
 	{
 		int[] NArrows = new int[] {4, 4};
 		int MaxArrowSize = 1;
 		int thickness = 2;
-		double MaxLoad = Util.FindMaxDistLoad(DistLoads);
+		double MaxLoad = Util.FindMaxDistLoad(distLoads);
 		List<Node> Node = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
-		for (int l = 0; l <= DistLoads.length - 1; l += 1)
+		for (int l = 0; l <= distLoads.size() - 1; l += 1)
 		{
-			int elem = DistLoads[l].getElem();
+			int elem = distLoads.get(l).getElem();
 			int[] nodes = Elem.get(elem).getExternalNodes();
 			double[] RealLeftBotDefCoords = Util.ScaledDefCoords(Node.get(nodes[3]).getOriginalCoords().asArray(), Util.GetNodePos(Node.get(nodes[3]), condition), DOFsPerNode, Defscale);
 			double[] RealRightTopDefCoords = Util.ScaledDefCoords(Node.get(nodes[1]).getOriginalCoords().asArray(), Util.GetNodePos(Node.get(nodes[1]), condition), DOFsPerNode, Defscale);
 			//int[] DrawingLeftBotCoords = Util.ConvertToDrawingCoords2Point3D(RealLeftBotDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			//int[] DrawingRightTopCoords = Util.ConvertToDrawingCoords2Point3D(RealRightTopDefCoords, RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-			if (DistLoads[l].getType() == 0)
+			if (distLoads.get(l).getType() == 0)
 			{
 				
 			}
-			if (DistLoads[l].getType() == 4)
+			if (distLoads.get(l).getType() == 4)
 			{
 				//double LoadIntensity = DistLoads[l].getIntensity();
 				for (int i = 0; i <= NArrows[0] - 1; i += 1)
@@ -1199,14 +1199,14 @@ public class DrawingOnAPanel
 						double x = (RealLeftBotDefCoords[0] + (RealRightTopDefCoords[0] - RealLeftBotDefCoords[0])*(i/(double)(NArrows[0] - 1)));
 						double y = (RealLeftBotDefCoords[1] + (RealRightTopDefCoords[1] - RealLeftBotDefCoords[1])*(j/(double)(NArrows[1] - 1)));
 						double z = RealLeftBotDefCoords[2];
-						DrawPL3D(new double[] {x, y, z}, MaxArrowSize*DistLoads[l].getIntensity()/MaxLoad, thickness, canvas.getAngles(), 2, DistLoadsColor, canvas);
+						DrawPL3D(new double[] {x, y, z}, MaxArrowSize*distLoads.get(l).getIntensity()/MaxLoad, thickness, canvas.getAngles(), 2, DistLoadsColor, canvas);
 					}
 				}
 			}
 		}
 	}
 
-	public void DrawNodalDisps3D (List<Node> Node, NodalDisps[] NodalDisps, int[] DOFsPerNode, boolean ShowValues, Color ConcLoadsColor, boolean condition, double Defscale)
+	public void DrawNodalDisps3D (List<Node> Node, List<NodalDisps> NodalDisps, int[] DOFsPerNode, boolean ShowValues, Color ConcLoadsColor, boolean condition, double Defscale)
 	{/*
 		int MaxArrowSize = 40;
 		//int thickness = 2;

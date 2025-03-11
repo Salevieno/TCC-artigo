@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import main.gui.Menus;
+import main.loading.Loading;
 import main.mainTCC.MainPanel;
 import main.output.Results;
 import main.utilidades.Point3D;
@@ -486,7 +487,7 @@ public class Structure
 		mesh = new Mesh(new ArrayList<>(), new ArrayList<>()) ;
 	}
 
-	public void printStructure(List<Material> mats, List<Section> secs, List<Supports> sups, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)
+	public void printStructure(List<Material> mats, List<Section> secs, List<Supports> sups, Loading loading)
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(name);
@@ -512,44 +513,26 @@ public class Structure
 			System.out.println("Id	Node	DoFs (Fx Fy Fz Mx My Mz)");
 			sups.forEach(System.out::println);
 		}
-		if (ConcLoads != null)
+		if (MainPanel.loading.getConcLoads() != null)
 		{
 			System.out.println();
 			System.out.println("ConcLoads");
 			System.out.println("Id	Node	Loads Fx Fy Fz Mx My Mz (kN)");
-			if (ConcLoads != null)
-			{
-				for (int load = 0; load <= ConcLoads.length - 1; load += 1)
-				{
-					System.out.println(ConcLoads[load].toString());
-				}
-			}
+			MainPanel.loading.getConcLoads().forEach(System.out::println);
 		}
-		if (DistLoads != null)
+		if (MainPanel.loading.getDistLoads() != null)
 		{
 			System.out.println();
 			System.out.println("DistLoads");
 			System.out.println("Id	Elem type	Intensity (kN/m)");
-			if (DistLoads != null)
-			{
-				for (int load = 0; load <= DistLoads.length - 1; load += 1)
-				{
-					System.out.println(DistLoads[load].toString());
-				}
-			}
+			MainPanel.loading.getDistLoads().forEach(System.out::println);
 		}
-		if (NodalDisps != null)
+		if (MainPanel.loading.getNodalDisps() != null)
 		{
 			System.out.println();
 			System.out.println("NodalDisps");
 			System.out.println("Id	Node	Disp ux uy uz thetax thetay thetaz (m)");
-			if (NodalDisps != null)
-			{
-				for (int disp = 0; disp <= NodalDisps.length - 1; disp += 1)
-				{
-					System.out.println(NodalDisps[disp].toString());
-				}
-			}
+			MainPanel.loading.getNodalDisps().forEach(System.out::println);
 		}
 	}
 

@@ -697,7 +697,7 @@ public class Menus extends JFrame
 				MenuFunctions.NodeSelectionIsOn = false;
 				MenuFunctions.ElemSelectionIsOn = false;
 				StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
-				ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure);
+				ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
 				updateInstructionPanel();
 				
 				if (ReadyForAnalysis)
@@ -836,7 +836,7 @@ public class Menus extends JFrame
 		jpInstruction.removeAll();
 
         boolean[] StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
-        boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure);
+        boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
         ImageIcon OkIcon = new ImageIcon("./Icons/OkIcon.png");
 		Color TextColor = palette[0];
 		JLabel[] iStep = new JLabel[9];
@@ -1651,7 +1651,7 @@ public class Menus extends JFrame
 					}
 
 					MenuFunctions.CalcAnalysisParameters(MainPanel.structure);
-					Analysis.run(MainPanel.structure, MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
+					Analysis.run(MainPanel.structure, MainPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
 				    MenuFunctions.PostAnalysis(MainPanel.structure);
 					for (Element elem : MainPanel.structure.getMesh().getElements())
 					{
@@ -1905,9 +1905,7 @@ public class Menus extends JFrame
 		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(CI.run());
 		
 		MainPanel.structure.removeSupports() ;
-		MenuFunctions.ConcLoad = null;
-		MenuFunctions.DistLoad = null;
-		MenuFunctions.NodalDisp = null;
+		MainPanel.loading.clearLoads() ;
 		MainPanel.structure.createMesh(meshType, UserDefinedMesh, ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()));
 		MenuFunctions.NodeView();
 		MenuFunctions.ElemView();
