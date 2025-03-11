@@ -28,7 +28,7 @@ public class ListPanel extends JPanel
     {
         super.paintComponent(g);
         DP.setG(g);
-        DP.setRealStructCenter(MenuFunctions.struct.getCenter());
+        DP.setRealStructCenter(MainPanel.structure.getCenter());
         if (Menus.getInstance() != null)
         {
             MenuFunctions.DrawOnListsPanel(initialSize, Menus.getInstance().getAqueleBooleanGrande(), DP);

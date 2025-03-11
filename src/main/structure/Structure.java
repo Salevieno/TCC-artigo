@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import main.gui.Menus;
-import main.mainTCC.MenuFunctions;
+import main.mainTCC.MainPanel;
 import main.output.Results;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
@@ -82,7 +82,7 @@ public class Structure
 
 	public void updateCenter() { center = calcCenter(coords) ;}
 	public void updateMinCoords() { minCoords = calcMinCoords(coords) ;}
-	public void updateMaxCoords() { minCoords = calcMaxCoords(coords) ;}
+	public void updateMaxCoords() { maxCoords = calcMaxCoords(coords) ;}
 
 	public void addCoordFromMouseClick(Point3D newCoord)
 	{
@@ -452,13 +452,13 @@ public class Structure
 		switch (meshType)
 		{
 			case cartesian:
-				nodes = MenuFunctions.struct.CreateCartesianNodes(new int[] {noffsets, nintermediatepoints[0]}, elemType);
-				elems = Structure.CreateCartesianMesh(MenuFunctions.struct.getMesh().getNodes(), new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				nodes = MainPanel.structure.CreateCartesianNodes(new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				elems = Structure.CreateCartesianMesh(MainPanel.structure.getMesh().getNodes(), new int[] {noffsets, nintermediatepoints[0]}, elemType);
 				break ;
 				
 			case radial:
-				nodes = MenuFunctions.struct.CreateRadialNodes(noffsets, nintermediatepoints);
-				elems = Structure.CreateRadialMesh(MenuFunctions.struct.getMesh().getNodes(), noffsets, elemType);
+				nodes = MainPanel.structure.CreateRadialNodes(noffsets, nintermediatepoints);
+				elems = Structure.CreateRadialMesh(MainPanel.structure.getMesh().getNodes(), noffsets, elemType);
 				break ;
 				
 			default:
@@ -476,8 +476,13 @@ public class Structure
 
 	public void createMesh(MeshType meshType, int[][] meshInfo, ElemType elemType)
 	{
-		mesh = new Mesh(new ArrayList<>(), new ArrayList<>()) ;
+		resetMesh() ;
 		mesh = CreateMesh(meshType, meshInfo, mesh.getNodes(), mesh.getElements(), elemType);
+	}
+
+	public void resetMesh()
+	{
+		mesh = new Mesh(new ArrayList<>(), new ArrayList<>()) ;
 	}
 
 	public void printStructure(List<Material> mats, List<Section> secs, List<Supports> sups, ConcLoads[] ConcLoads, DistLoads[] DistLoads, NodalDisps[] NodalDisps)

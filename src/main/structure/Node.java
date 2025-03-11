@@ -27,7 +27,7 @@ public class Node
 	{
 		this.ID = ID;
 		this.coords = coords;
-		Disp = coords.asArray();
+		Disp = coords != null ? coords.asArray() : null;
 		Sup = null;
 		ConcLoad = null;
 		NodalDisp = null;

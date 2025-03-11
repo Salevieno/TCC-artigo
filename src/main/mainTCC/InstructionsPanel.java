@@ -24,8 +24,8 @@ public class InstructionsPanel extends JPanel
     {
         super.paintComponent(g);
         DP.setG(g);
-        DP.setRealStructCenter(MenuFunctions.struct.getCenter());
-        MenuFunctions.DrawOnLDPanel(initialSize, DP);
+        DP.setRealStructCenter(MainPanel.structure.getCenter());
+        MenuFunctions.DrawOnLDPanel(MainPanel.structure, initialSize, DP);
         repaint();
     }
 }

@@ -30,8 +30,8 @@ public class LegendPanel extends JPanel
     {
         super.paintComponent(g);
         DP.setG(g);
-        DP.setRealStructCenter(MenuFunctions.struct.getCenter());
-        MenuFunctions.DrawOnLegendPanel(this.getSize(), DP);
+        DP.setRealStructCenter(MainPanel.structure.getCenter());
+        MenuFunctions.DrawOnLegendPanel(MainPanel.structure, this.getSize(), DP);
         repaint();
     }
 }

@@ -12,6 +12,7 @@ import main.utilidades.Util;
 import main.mainTCC.MainPanel;
 import main.mainTCC.MainTCC;
 import main.mainTCC.MenuFunctions;
+import main.structure.Structure;
 
 public abstract class MenuFile
 {
@@ -36,8 +37,8 @@ public abstract class MenuFile
 			public void actionPerformed(ActionEvent e) 
 			{
 				String filename = Menus.getInstance().getSaveLoadFile().run().getText();
-				MenuFunctions.SaveFile(filename, Menus.getMainCanvas(), MenuFunctions.struct, MenuFunctions.struct.getMesh().getNodes(), MenuFunctions.struct.getMesh().getElements(),
-						MenuFunctions.struct.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
+				MenuFunctions.SaveFile(filename, Menus.getMainCanvas(), MainPanel.structure, MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(),
+						MainPanel.structure.getSupports(), MenuFunctions.ConcLoad, MenuFunctions.DistLoad, MenuFunctions.NodalDisp, MenuFunctions.matTypes,
 						MenuFunctions.secTypes);
 			}
 		});
@@ -58,13 +59,15 @@ public abstract class MenuFile
 
 	public static void loadStructure()
 	{
-		MenuFunctions.ResetStructure();
+		
+		MainPanel.structure = new Structure(null, null, null);
+		MenuFunctions.resetDisplay();
 		
 		String filename = Menus.getInstance().getSaveLoadFile().run().getText();
-		MenuFunctions.LoadFile("", filename);
-		MenuFunctions.struct.updateMaxCoords() ;
-		Menus.getMainCanvas().setDimension(new double[] {1.2 * MenuFunctions.struct.getMaxCoords().x, 1.2 * MenuFunctions.struct.getMaxCoords().y, 1});
-		Menus.getInstance().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady());
+		MainPanel.structure = MenuFunctions.LoadFile("", filename);
+		MainPanel.structure.updateMaxCoords() ;
+		Menus.getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 1});
+		Menus.getInstance().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure));
 		Menus.getInstance().showCanvasOn() ;
 		Menus.getInstance().showGrid() ;
 		Menus.getInstance().showMousePos() ;
@@ -75,7 +78,7 @@ public abstract class MenuFile
 		MenuFunctions.ConcLoadsView();
 		MenuFunctions.DistLoadsView();
 		MenuFunctions.NodalDispsView();
-		Menus.getInstance().setStepIsComplete(MenuFunctions.CheckSteps());
+		Menus.getInstance().setStepIsComplete(MenuFunctions.CheckSteps(MainPanel.structure));
 		Menus.getInstance().DisableButtons();
 		Menus.getInstance().EnableButtons();
 		Menus.getInstance().updateInstructionPanel();
