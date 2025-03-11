@@ -49,7 +49,6 @@ public abstract class MenuFunctions
 	public static ConcLoads[] ConcLoad;
 	public static DistLoads[] DistLoad;
 	public static NodalDisps[] NodalDisp;
-	public static Reactions[] Reaction;
 	
 	public static int[] SelectedElems;
 	public static List<Node> selectedNodes ;
@@ -797,7 +796,8 @@ public abstract class MenuFunctions
 	{
 		/* Record results and set up their view*/
 		struct.setU(struct.getU());
-		Reaction = Analysis.Reactions(struct.getMesh(), struct.getSupports(), NonlinearMat, NonlinearGeo, struct.getU());
+		Reactions[] reactions = Analysis.Reactions(struct.getMesh(), struct.getSupports(), NonlinearMat, NonlinearGeo, struct.getU());
+		struct.setReactions(reactions);
 		for (Element elem : struct.getMesh().getElements())
 		{
 			elem.RecordResults(struct.getMesh().getNodes(), struct.getU(), NonlinearMat, NonlinearGeo);
@@ -817,21 +817,21 @@ public abstract class MenuFunctions
 			DiagramScales[1] = 1 / MaxDisp;
 		}
 		System.out.println("Max disp: " + MaxDisp);
-		Reactions.setSumReactions(Analysis.SumReactions(Reaction));		
+		Reactions.setSumReactions(Analysis.SumReactions(reactions));		
 	}
 	
 	/* Results menu functions */
-	public static void ResultsMenuSaveResults(Structure struct)
+	public static void ResultsMenuSaveResults(Structure structure)
 	{
 		String[] Sections = new String[] {"Min Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Max Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Min Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Max Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Reacoes \nno	Fx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)", "Soma das reacoes \nFx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)"};
 		String[][][] vars = new String[Sections.length][][];
 		vars[0] = new String[1][3];
 		vars[1] = new String[1][3];
-		vars[2] = new String[struct.getMesh().getNodes().size()][];
+		vars[2] = new String[structure.getMesh().getNodes().size()][];
 		vars[3] = new String[1][3];
 		vars[4] = new String[1][3];
-		vars[5] = new String[struct.getMesh().getNodes().size()][];
-		vars[6] = new String[Reaction.length][];
+		vars[5] = new String[structure.getMesh().getNodes().size()][];
+		vars[6] = new String[structure.getReactions().length][];
 		vars[7] = new String[1][Reactions.SumReactions.length];
 		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
 		{
@@ -839,41 +839,41 @@ public abstract class MenuFunctions
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(struct.getResults().getDispMin()[dof]);
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMin()[dof]);
 				}
 			}
 			if (sec == 1)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(struct.getResults().getDispMax()[dof]);
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMax()[dof]);
 				}
 			}
 			if (sec == 3)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(struct.getResults().getInternalForcesMin()[dof]);
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMin()[dof]);
 				}
 			}
 			if (sec == 4)
 			{
 				for (int dof = 0; dof <= 3 - 1; dof += 1)
 				{
-					vars[sec][0][dof] = String.valueOf(struct.getResults().getInternalForcesMax()[dof]);
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMax()[dof]);
 				}
 			}
 			for (int node = 0; node <= vars[sec].length - 1; node += 1)
 			{
 				if (sec == 2)
 				{
-					vars[sec][node] = new String[struct.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
 					vars[sec][node][0] = String.valueOf(node);
-					for (int dof = 0; dof <= struct.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+					for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
 					{
-						if (-1 < struct.getMesh().getNodes().get(node).dofs[dof])
+						if (-1 < structure.getMesh().getNodes().get(node).dofs[dof])
 						{
-							vars[sec][node][dof + 1] = String.valueOf(struct.getU()[struct.getMesh().getNodes().get(node).dofs[dof]]);
+							vars[sec][node][dof + 1] = String.valueOf(structure.getU()[structure.getMesh().getNodes().get(node).dofs[dof]]);
 						}
 						else
 						{
@@ -883,18 +883,18 @@ public abstract class MenuFunctions
 				}
 				if (sec == 5)
 				{
-					vars[sec][node] = new String[struct.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
 					vars[sec][node][0] = String.valueOf(node);
-					for (int i = 0; i <= struct.getMesh().getElements().size() - 1; i += 1)
+					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
 					{
-						Element elem = struct.getMesh().getElements().get(i);
+						Element elem = structure.getMesh().getElements().get(i);
 						for (int elemnode = 0; elemnode <= elem.getExternalNodes().length - 1; elemnode += 1)
 						{
 							if (node == elem.getExternalNodes()[elemnode])
 							{
-								for (int dof = 0; dof <= struct.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+								for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
 								{
-									vars[sec][node][dof + 1] = String.valueOf(elem.getIntForces()[elemnode*struct.getMesh().getNodes().get(node).getDOFType().length + dof]);
+									vars[sec][node][dof + 1] = String.valueOf(elem.getIntForces()[elemnode*structure.getMesh().getNodes().get(node).getDOFType().length + dof]);
 								}
 							}
 						}
@@ -902,11 +902,11 @@ public abstract class MenuFunctions
 				}
 				if (sec == 6)
 				{
-					vars[sec][node] = new String[Reaction[node].getLoads().length + 1];
+					vars[sec][node] = new String[structure.getReactions()[node].getLoads().length + 1];
 					vars[sec][node][0] = String.valueOf(node);
-					for (int dof = 0; dof <= Reaction[node].getLoads().length - 1; dof += 1)
+					for (int dof = 0; dof <= structure.getReactions()[node].getLoads().length - 1; dof += 1)
 					{
-						vars[sec][node][dof + 1] = String.valueOf(Reaction[node].getLoads()[dof]);
+						vars[sec][node][dof + 1] = String.valueOf(structure.getReactions()[node].getLoads()[dof]);
 					}
 				}
 			}
@@ -918,7 +918,7 @@ public abstract class MenuFunctions
 				}
 			}
 		}
-		SaveOutput.SaveOutput(struct.getName(), Sections, vars);
+		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
 	}
 	
 	public static void DeformedStructureView()

@@ -416,9 +416,9 @@ public class MainPanel extends JPanel
 			MenuFunctions.DiagramScales, MenuFunctions.ShowDisplacementContour, MenuFunctions.ShowStressContour,
 			MenuFunctions.ShowStrainContour, MenuFunctions.ShowInternalForces,
 			MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
-			if (MenuFunctions.ShowReactionArrows & MenuFunctions.Reaction != null)
+			if (MenuFunctions.ShowReactionArrows & structure.getReactions() != null)
 			{
-				DP.DrawReactions3D(MainPanel.structure.getMesh().getNodes(), MenuFunctions.Reaction,
+				DP.DrawReactions3D(MainPanel.structure.getMesh().getNodes(), structure.getReactions(),
 				MainPanel.structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues,
 				Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas);
 			}

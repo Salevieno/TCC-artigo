@@ -22,6 +22,7 @@ public class Structure
 
 	private Mesh mesh ;
 	private List<Supports> supports;
+	public static Reactions[] Reaction;
 
 	private double[][] K;		// Stiffness matrix
 	private double[] P;			// Load vector
@@ -574,12 +575,15 @@ public class Structure
 	public double[] getP() {return P;}
 	public double[] getU() {return U;}
 	public Results getResults() {return results;}
+	public Reactions[] getReactions() {return Reaction;}
 	public void setName(String N) {name = N;}
 	public void setShape(StructureShape S) {shape = S;}
 	public void setCoords(List<Point3D> C) {coords = C;}
 	public void setK(double[][] k) {K = k;}
 	public void setP(double[] p) {P = p;}
 	public void setU(double[] u) {U = u;}
+	public void setResults(Results R) {results = R;}
+	public void setReactions(Reactions[] R) {Reaction = R;}
 
 	@Override
 	public String toString()
