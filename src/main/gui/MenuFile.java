@@ -9,7 +9,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import main.utilidades.Util;
-import main.mainTCC.MainPanel;
+import main.view.MainPanel;
 import main.mainTCC.MainTCC;
 import main.mainTCC.MenuFunctions;
 import main.structure.Structure;

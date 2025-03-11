@@ -29,10 +29,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import main.mainTCC.Analysis;
-import main.mainTCC.DiagramsPanel;
-import main.mainTCC.LegendPanel;
-import main.mainTCC.ListPanel;
-import main.mainTCC.MainPanel;
 import main.mainTCC.MenuFunctions;
 import main.structure.ElemType;
 import main.structure.Element;
@@ -45,6 +41,10 @@ import main.structure.Structure;
 import main.structure.StructureShape;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
+import main.view.DiagramsPanel;
+import main.view.LegendPanel;
+import main.view.ListPanel;
+import main.view.MainPanel;
 
 /*
  Prâximas adiçõs

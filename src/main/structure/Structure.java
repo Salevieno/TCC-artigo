@@ -7,10 +7,10 @@ import java.util.List;
 
 import main.gui.Menus;
 import main.loading.Loading;
-import main.mainTCC.MainPanel;
 import main.output.Results;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
+import main.view.MainPanel;
 
 public class Structure
 {

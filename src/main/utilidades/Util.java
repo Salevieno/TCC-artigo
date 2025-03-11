@@ -388,23 +388,6 @@ public abstract class Util
 		}
 	}
 
-	public static DistLoads[] IncreaseArraySize(DistLoads[] OriginalArray, int size)
-	{
-		if (OriginalArray == null)
-		{
-			return new DistLoads[size];
-		}
-		else
-		{
-			DistLoads[] NewArray = new DistLoads[OriginalArray.length + size];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			return NewArray;
-		}
-	}
-
 	public static NodalDisps[] IncreaseArraySize(NodalDisps[] OriginalArray, int size)
 	{
 		if (OriginalArray == null)

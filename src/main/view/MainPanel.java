@@ -1,4 +1,4 @@
-package main.mainTCC;
+package main.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,6 +24,8 @@ import javax.swing.border.BevelBorder;
 import main.gui.DrawingOnAPanel;
 import main.gui.Menus;
 import main.loading.Loading;
+import main.mainTCC.MenuFunctions;
+import main.mainTCC.SelectionWindow;
 import main.structure.ConcLoads;
 import main.structure.DistLoads;
 import main.structure.ElemShape;
