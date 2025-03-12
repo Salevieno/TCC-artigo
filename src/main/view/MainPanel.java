@@ -24,8 +24,10 @@ import javax.swing.border.BevelBorder;
 import main.gui.DrawingOnAPanel;
 import main.gui.Menus;
 import main.loading.Loading;
+import main.mainTCC.Analysis;
 import main.mainTCC.MenuFunctions;
 import main.mainTCC.SelectionWindow;
+import main.output.Results;
 import main.structure.ConcLoads;
 import main.structure.DistLoads;
 import main.structure.ElemShape;
@@ -54,23 +56,28 @@ public class MainPanel extends JPanel
 	
 	private MyCanvas canvas ;
 	private int[] panelPos ;
-	private JTextArea mouseXPosTextArea = new JTextArea();
-	private JTextArea mouseYPosTextArea = new JTextArea();
+	private JTextArea mouseXPosTextArea ;
+	private JTextArea mouseYPosTextArea ;	
 	
-	public static int SelectedMat;
-	public static int SelectedSec;
-	public static int SelectedSup;
-	public static int SelectedConcLoad;
-	public static int SelectedDistLoad;
-	public static int SelectedNodalDisp;
-	private static boolean ShowCanvas;
+	public static int selectedMatID;
+	public static int selectedSecID;
+	public static int selectedSupID;
+	public static int selectedConcLoadID;
+	public static int selectedDistLoadID;
+	public static int selectedNodalDispID;
+	private static boolean canvasIsVisible;
 
 	private boolean showCanvas, showGrid, showMousePos;
-	private boolean showStructure = true, showElems = true, showDeformedStructure = true ;
-	private boolean showMatColor = true, showSecColor = true, showElemContour = true ;
+	private boolean showStructure, showElems, showDeformedStructure ;
+	private boolean showMatColor, showSecColor, showElemContour ;
 	private boolean showNodeSelectionWindow ;
+	public static boolean ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces;
 
-	private SelectionWindow selectionWindow = new SelectionWindow() ;
+	public static int SelectedDiagram = -1;
+	public static int SelectedVar = -1;
+	
+	private SelectionWindow selectionWindow ;
+	public static boolean showElemSelectionWindow;
 	
 	public static boolean StructureCreationIsOn = false;
 	
@@ -103,14 +110,20 @@ public class MainPanel extends JPanel
 		structure = new Structure(null, null, null);
 		loading = new Loading() ;
 		
-
-		ShowCanvas = true;
-		SelectedMat = -1;
-		SelectedSec = -1;
-		SelectedSup = -1;
-		SelectedConcLoad = -1;
-		SelectedDistLoad = -1;
-		SelectedNodalDisp = -1;
+		selectionWindow = new SelectionWindow() ;
+		showStructure = true ;
+		showElems = true ;
+		showDeformedStructure = true ;
+		showMatColor = true ;
+		showSecColor = true ;
+		showElemContour = true ;
+		canvasIsVisible = true;
+		selectedMatID = -1;
+		selectedSecID = -1;
+		selectedSupID = -1;
+		selectedConcLoadID = -1;
+		selectedDistLoadID = -1;
+		selectedNodalDispID = -1;
 
 		this.setBackground(bgColor);
 	    this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -152,7 +165,7 @@ public class MainPanel extends JPanel
 					}
 					if (MenuFunctions.ElemSelectionIsOn)
 					{
-						MenuFunctions.ElemAddition(MainPanel.structure, canvas, panelPos);
+						ElemAddition(MainPanel.structure, canvas, panelPos);
 						if (MenuFunctions.SelectedElems != null)
 						{
 							if (-1 < MenuFunctions.SelectedElems[0])
@@ -278,6 +291,22 @@ public class MainPanel extends JPanel
 		
 	}
 
+	public void ElemAddition(Structure structure, MyCanvas MainCanvas, int[] MainPanelPos)
+	{
+		if (structure.getMesh().getElements() != null)
+		{
+			MenuFunctions.SelectedElems = null;
+			MenuFunctions.SelectedElems = Mesh.ElemsSelection(MainCanvas, structure.getCenter().asArray(), structure.getMesh(),
+			MenuFunctions.mousePos, MainPanelPos, MenuFunctions.SelectedElems, MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.DiagramScales, showElemSelectionWindow, showDeformedStructure);
+			int ElemMouseIsOn = Mesh.ElemMouseIsOn(structure.getMesh(), MenuFunctions.mousePos, structure.getCenter().asArray(), MainCanvas, showDeformedStructure);
+			if (ElemMouseIsOn == -1 | (showElemSelectionWindow & -1 < ElemMouseIsOn))
+			{
+				showElemSelectionWindow = !showElemSelectionWindow;
+				MenuFunctions.ElemSelectionWindowInitialPos = MenuFunctions.mousePos;
+			}
+		}
+	}
+
 	public static void StructureCreation(int[] MainPanelPos, MyCanvas canvas, Point mousePos, boolean SnipToGridIsOn)
 	{
 		List<Point3D> StructCoords = structure.getCoords();
@@ -326,40 +355,40 @@ public class MainPanel extends JPanel
 	public static void MouseWheel(int[] MainPanelPos, MyCanvas MainCanvas, int WheelRot, boolean[] AssignmentIsOn)
 	{
 		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]);
-		if (ShowCanvas & Util.MouseIsInside(MenuFunctions.mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
+		if (canvasIsVisible & Util.MouseIsInside(MenuFunctions.mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
 		{
 			MainCanvas.getDimension()[0] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[0])*WheelRot, 1);
 			MainCanvas.getDimension()[1] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[1])*WheelRot, 1);
 		}
 		if (AssignmentIsOn[0] & !MouseIsInMainCanvas)
 		{
-			SelectedMat += WheelRot;
-			SelectedMat = Math.min(Math.max(SelectedMat, 0), MenuFunctions.matTypes.size() - 1);
+			selectedMatID += WheelRot;
+			selectedMatID = Math.min(Math.max(selectedMatID, 0), MenuFunctions.matTypes.size() - 1);
 		}
 		if (AssignmentIsOn[1] & !MouseIsInMainCanvas)
 		{
-			SelectedSec += WheelRot;
-			SelectedSec = Math.min(Math.max(SelectedSec, 0), MenuFunctions.secTypes.size() - 1);
+			selectedSecID += WheelRot;
+			selectedSecID = Math.min(Math.max(selectedSecID, 0), MenuFunctions.secTypes.size() - 1);
 		}
 		if (AssignmentIsOn[2] & !MouseIsInMainCanvas)
 		{
-			SelectedSup += WheelRot;
-			SelectedSup = Math.min(Math.max(SelectedSup, 0), MenuFunctions.SupType.length - 1);
+			selectedSupID += WheelRot;
+			selectedSupID = Math.min(Math.max(selectedSupID, 0), MenuFunctions.SupType.length - 1);
 		}
 		if (AssignmentIsOn[3] & !MouseIsInMainCanvas)
 		{
-			SelectedConcLoad += WheelRot;
-			SelectedConcLoad = Math.min(Math.max(SelectedConcLoad, 0), MenuFunctions.ConcLoadType.length - 1);
+			selectedConcLoadID += WheelRot;
+			selectedConcLoadID = Math.min(Math.max(selectedConcLoadID, 0), MenuFunctions.ConcLoadType.length - 1);
 		}
 		if (AssignmentIsOn[4] & !MouseIsInMainCanvas)
 		{
-			SelectedDistLoad += WheelRot;
-			SelectedDistLoad = Math.min(Math.max(SelectedDistLoad, 0), MenuFunctions.DistLoadType.length - 1);
+			selectedDistLoadID += WheelRot;
+			selectedDistLoadID = Math.min(Math.max(selectedDistLoadID, 0), MenuFunctions.DistLoadType.length - 1);
 		}
 		if (AssignmentIsOn[5] & !MouseIsInMainCanvas)
 		{
-			SelectedNodalDisp += WheelRot;
-			SelectedNodalDisp = Math.min(Math.max(SelectedNodalDisp, 0), MenuFunctions.NodalDispType.length - 1);
+			selectedNodalDispID += WheelRot;
+			selectedNodalDispID = Math.min(Math.max(selectedNodalDispID, 0), MenuFunctions.NodalDispType.length - 1);
 		}
 	}
 
@@ -475,11 +504,11 @@ public class MainPanel extends JPanel
 		}
 		if (MenuFunctions.AnalysisIsComplete)
 		{
-			DrawResults(canvas, MainPanel.structure, MenuFunctions.SelectedElems, MenuFunctions.SelectedVar,
+			DrawResults(canvas, MainPanel.structure, MenuFunctions.SelectedElems, SelectedVar,
 			MenuFunctions.ShowElemContour, showDeformedStructure,
-			MenuFunctions.DiagramScales, MenuFunctions.ShowDisplacementContour, MenuFunctions.ShowStressContour,
-			MenuFunctions.ShowStrainContour, MenuFunctions.ShowInternalForces,
+			MenuFunctions.DiagramScales, ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces,
 			MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
+			
 			if (MenuFunctions.ShowReactionArrows & structure.getReactions() != null)
 			{
 				DP.DrawReactions3D(MainPanel.structure.getMesh().getNodes(), structure.getReactions(),
@@ -523,7 +552,7 @@ public class MainPanel extends JPanel
 		// {
 		// 	DP.DrawSelectionWindow(new Point(nodeSelectionWindowInitialPos[0], nodeSelectionWindowInitialPos[1]), MenuFunctions.mousePos);
 		// }
-		if (MenuFunctions.ShowElemSelectionWindow)
+		if (showElemSelectionWindow)
 		{
 			DP.DrawSelectionWindow(MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.mousePos);
 		}
@@ -537,9 +566,9 @@ public class MainPanel extends JPanel
 			selectionWindow.display(MenuFunctions.mousePos, DP) ;
 		}
 		
-		if (MenuFunctions.ShowMousePos)
+		if (showMousePos)
 		{
-			Point2D.Double mousePos = canvas.inRealCoords(MenuFunctions.mousePos) ;// Util.ConvertToRealCoords(MenuFunctions.mousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension());
+			Point2D.Double mousePos = canvas.inRealCoords(MenuFunctions.mousePos) ;
 			mouseXPosTextArea.setText(String.valueOf(Util.Round(mousePos.x, 3)));
 			mouseYPosTextArea.setText(String.valueOf(Util.Round(mousePos.y, 3)));
 		}
@@ -651,16 +680,16 @@ public class MainPanel extends JPanel
 	
 	public static void AddSupports()
 	{
-		if (-1 < SelectedSup & MenuFunctions.selectedNodes != null & MenuFunctions.SupType != null )
+		if (-1 < selectedSupID & MenuFunctions.selectedNodes != null & MenuFunctions.SupType != null )
 		{
 			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
 			{
 				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
 				{
 					int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
-					Supports newSupport = new Supports(supid, MenuFunctions.selectedNodes.get(i), MenuFunctions.SupType[SelectedSup]);
+					Supports newSupport = new Supports(supid, MenuFunctions.selectedNodes.get(i), MenuFunctions.SupType[selectedSupID]);
 					MainPanel.structure.addSupport(newSupport) ;
-					MenuFunctions.selectedNodes.get(i).setSup(MenuFunctions.SupType[SelectedSup]);
+					MenuFunctions.selectedNodes.get(i).setSup(MenuFunctions.SupType[selectedSupID]);
 				}
 			}
 			MenuFunctions.ShowSup = true;
@@ -670,14 +699,14 @@ public class MainPanel extends JPanel
 	
 	public static void AddConcLoads()
 	{
-		if (-1 < SelectedConcLoad & MenuFunctions.selectedNodes != null & MenuFunctions.ConcLoadType != null)
+		if (-1 < selectedConcLoadID & MenuFunctions.selectedNodes != null & MenuFunctions.ConcLoadType != null)
 		{
 			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
 			{
 				int loadid = loading.getConcLoads().size() - MenuFunctions.selectedNodes.size() + i;
 				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
 				{
-					ConcLoads newConcLoad = new ConcLoads(loadid, MenuFunctions.selectedNodes.get(i), MenuFunctions.ConcLoadType[SelectedConcLoad]);
+					ConcLoads newConcLoad = new ConcLoads(loadid, MenuFunctions.selectedNodes.get(i), MenuFunctions.ConcLoadType[selectedConcLoadID]);
 					loading.getConcLoads().add(newConcLoad);
 					MenuFunctions.selectedNodes.get(i).AddConcLoads(newConcLoad);
 				}
@@ -689,7 +718,7 @@ public class MainPanel extends JPanel
 	
 	public static void AddDistLoads()
 	{
-		if (-1 < SelectedDistLoad & MenuFunctions.SelectedElems != null & MenuFunctions.DistLoadType != null)
+		if (-1 < selectedDistLoadID & MenuFunctions.SelectedElems != null & MenuFunctions.DistLoadType != null)
 		{
 			for (int i = 0; i <= MenuFunctions.SelectedElems.length - 1; i += 1)
 			{
@@ -697,8 +726,8 @@ public class MainPanel extends JPanel
 				if (-1 < MenuFunctions.SelectedElems[i])
 				{
 					int elem = MenuFunctions.SelectedElems[i];
-					int LoadType = (int) MenuFunctions.DistLoadType[SelectedDistLoad][0];
-					double Intensity = MenuFunctions.DistLoadType[SelectedDistLoad][1];
+					int LoadType = (int) MenuFunctions.DistLoadType[selectedDistLoadID][0];
+					double Intensity = MenuFunctions.DistLoadType[selectedDistLoadID][1];
 					DistLoads newDistLoad = new DistLoads(loadid, MenuFunctions.SelectedElems[i], LoadType, Intensity) ;
 					loading.getDistLoads().add(newDistLoad);
 					MainPanel.structure.getMesh().getElements().get(elem).setDistLoads(Util.AddElem(MainPanel.structure.getMesh().getElements().get(elem).getDistLoads(), newDistLoad));
@@ -711,14 +740,14 @@ public class MainPanel extends JPanel
 	
 	public static void AddNodalDisps()
 	{
-		if (-1 < SelectedNodalDisp & MenuFunctions.selectedNodes != null & MenuFunctions.NodalDispType != null)
+		if (-1 < selectedNodalDispID & MenuFunctions.selectedNodes != null & MenuFunctions.NodalDispType != null)
 		{
 			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
 			{
 				int dispid = loading.getNodalDisps().size() - MenuFunctions.selectedNodes.size() + i;
 				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
 				{
-					NodalDisps newNodalDisp = new NodalDisps(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[SelectedNodalDisp]) ;
+					NodalDisps newNodalDisp = new NodalDisps(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[selectedNodalDispID]) ;
 					loading.getNodalDisps().add(newNodalDisp);
 					MenuFunctions.selectedNodes.get(i).AddNodalDisps(newNodalDisp);
 				}
@@ -761,37 +790,37 @@ public class MainPanel extends JPanel
 	public static void StructureMenuAssignMaterials()
 	{
 		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		SelectedMat = 0;
+		selectedMatID = 0;
 	}
 	
 	public static void StructureMenuAssignSections()
 	{
 		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		SelectedSec = 0;
+		selectedSecID = 0;
 	}
 	
 	public static void StructureMenuAssignSupports()
 	{
 		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		SelectedSup = 0;
+		selectedSupID = 0;
 	}
 	
 	public static void StructureMenuAssignConcLoads()
 	{
 		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		SelectedConcLoad = 0;
+		selectedConcLoadID = 0;
 	}
 	
 	public static void StructureMenuAssignDistLoads()
 	{
 		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		SelectedDistLoad = 0;
+		selectedDistLoadID = 0;
 	}
 	
 	public static void StructureMenuAssignNodalDisps()
 	{
 		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		SelectedNodalDisp = 0;
+		selectedNodalDispID = 0;
 	}
 	
 	public static Object[] CreatureStructure(List<Point3D> StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType,
@@ -856,9 +885,9 @@ public class MainPanel extends JPanel
 				MenuFunctions.selectedNodes.add(MainPanel.structure.getMesh().getNodes().get(nodeID));
 			}
 		}
-		SelectedConcLoad = SelConcLoad;
+		selectedConcLoadID = SelConcLoad;
 		AddConcLoads();
-		SelectedDistLoad = SelDistLoad;
+		selectedDistLoadID = SelDistLoad;
 		if (-1 < SelDistLoad)
 		{
 			MenuFunctions.SelectedElems = null;
@@ -876,6 +905,60 @@ public class MainPanel extends JPanel
 		MenuFunctions.SelectedElems = null;
 		return new Object[] {MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(), MainPanel.structure.getSupports(),
 			loading.getConcLoads(), loading.getDistLoads(), null};
+	}
+
+
+	public static void ShowResult(Structure struct)
+	{
+		MenuFunctions.ShowElems = false;
+		for (int node = 0; node <= struct.getMesh().getElements().get(0).getExternalNodes().length - 1; node += 1)
+		{
+			SelectedVar = Util.ElemPosInArray(struct.getMesh().getElements().get(0).getDOFsPerNode()[node], SelectedVar);
+			if (-1 < SelectedVar)
+			{
+				node = struct.getMesh().getElements().get(0).getExternalNodes().length - 1;
+			}
+		}
+		if (SelectedDiagram == 0 & -1 < SelectedVar)
+		{
+			//DrawDisplacementContours(SelectedVar);
+			struct.getResults().setDispMin(Results.FindMinDisps(struct.getU(), struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(struct.getMesh().getNodes()))) ;
+			struct.getResults().setDispMax(Results.FindMaxDisps(struct.getU(), struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(struct.getMesh().getNodes()))) ;
+			ShowDisplacementContour = false;
+			ShowDisplacementContour = true;
+			ShowStrainContour = false;
+			ShowInternalForces = false;
+		}
+		else if (SelectedDiagram == 1 & -1 < SelectedVar)
+		{
+			ShowDisplacementContour = false;
+			ShowStressContour = true;
+			ShowStrainContour = false;
+			ShowInternalForces = false;
+		}
+		else if (SelectedDiagram == 2 & -1 < SelectedVar)
+		{
+			ShowDisplacementContour = false;
+			ShowStressContour = false;
+			ShowStrainContour = true;
+			ShowInternalForces = false;
+		}
+		else if (SelectedDiagram == 3 & -1 < SelectedVar)
+		{
+			ShowDisplacementContour = false;
+			ShowStressContour = false;
+			ShowStrainContour = false;
+			ShowInternalForces = true;
+		}
+	}
+
+	public static void resetDisplay()
+	{
+		showElemSelectionWindow = false;
+		ShowDisplacementContour = false;
+		ShowStressContour = false;
+		ShowStrainContour = false;
+		ShowInternalForces = false;
 	}
 
 	@Override

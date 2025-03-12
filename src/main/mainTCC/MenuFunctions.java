@@ -1,16 +1,11 @@
 package main.mainTCC;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import main.gui.DrawingOnAPanel;
-import main.gui.Menus;
 import main.loading.Loading;
 import main.output.Results;
 import main.output.SaveOutput;
@@ -19,7 +14,6 @@ import main.structure.DistLoads;
 import main.structure.ElemType;
 import main.structure.Element;
 import main.structure.Material;
-import main.structure.Mesh;
 import main.structure.MeshType;
 import main.structure.MyCanvas;
 import main.structure.NodalDisps;
@@ -27,7 +21,6 @@ import main.structure.Node;
 import main.structure.Reactions;
 import main.structure.Section;
 import main.structure.Structure;
-import main.structure.StructureShape;
 import main.structure.Supports;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
@@ -40,11 +33,8 @@ public abstract class MenuFunctions
 	public static boolean ShowNodes ;
 	public static boolean ShowElems, ShowConcLoads, ShowDistLoads, ShowNodalDisps, ShowReactionArrows, ShowReactionValues, ShowLoadsValues, ShowSup;
 	public static boolean ShowDOFNumber, ShowNodeNumber, ShowElemNumber, ShowElemContour, ShowMatColor, ShowSecColor, ShowElemDetails;
-	public static boolean ShowMousePos;
 	public static boolean SnipToGridIsOn;
-	public static boolean ShowElemSelectionWindow;
 	public static boolean AnalysisIsComplete;
-	public static boolean ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces;
 	public static boolean ShowDeformedStructure ;
 	public static boolean NodeSelectionIsOn, ElemSelectionIsOn;
 	
@@ -52,8 +42,6 @@ public abstract class MenuFunctions
 	public static int[] SelectedElems;
 	public static List<Node> selectedNodes ;
 	
-	public static int SelectedDiagram = -1;
-	public static int SelectedVar = -1;
 	public static double[] DiagramScales;
 	
 	public static String SelectedElemType;
@@ -71,7 +59,6 @@ public abstract class MenuFunctions
 		matTypes = new ArrayList<>() ;
 		secTypes = new ArrayList<>() ;
 		mousePos = new Point();
-		ShowMousePos = true;
 		SnipToGridIsOn = false;
 		ShowDeformedStructure = false;			
 		ShowLoadsValues = true;
@@ -131,66 +118,10 @@ public abstract class MenuFunctions
 		}
 
 		Point2D.Double mousePosRealCoords = canvas.inRealCoords(MousePos) ;
-		// Util.ConvertToRealCoords(MousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension()) ;
 		return new Point3D(mousePosRealCoords.x, mousePosRealCoords.y, 0.0) ;
 
 	}
 
-	public static double[][] GetCoordFromMouseClic2k(StructureShape structshape, MyCanvas canvas, double[][] Coords, Point MousePos, boolean SnipToGridIsOn)
-	{
-		Point NewDrawingCoord;
-		double[][] NewCoord;
-		if (SnipToGridIsOn)
-		{		    					
-			NewDrawingCoord = ClosestGridNodePos(canvas, MousePos);
-		}
-		else
-		{
-			NewDrawingCoord = MousePos;
-		}	
-		if (Coords == null)
-		{
-    		Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, NewDrawingCoord.y});
-		}
-		else
-		{
-			switch(structshape)
-			{
-				case rectangular:
-				
-					Coords = Util.AddElem(Coords, new double[] {Coords[0][0], NewDrawingCoord.y});
-					Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, NewDrawingCoord.y});
-					Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, Coords[0][1]});
-					
-					break;
-
-				case circular:
-
-					double[] Center = new double[] {Coords[0][0], Coords[0][1], 0};
-					double[] Point2 = new double[] {NewDrawingCoord.x, NewDrawingCoord.y, 0};
-					double r = Util.dist(Center, Point2);
-					int NPoints = 20;
-					Coords[0][0] += r;
-					for (int node = 1; node <= NPoints - 1; node += 1)
-					{
-						double angle = node * 2 * Math.PI / (double) NPoints;
-						Coords = Util.AddElem(Coords, new double[] {Center[0] + r*Math.cos(angle), Center[1] + r*Math.sin(angle), 0});
-					}
-
-					break ;
-
-				case polygonal:
-
-	    			Coords = Util.AddElem(Coords, new double[] {NewDrawingCoord.x, NewDrawingCoord.y});
-
-					break ;
-					
-			}
-		}
-		NewCoord = Coords;
-		return NewCoord;
-	}
-	
 	public static boolean CheckIfAnalysisIsReady(Structure struct, Loading loading)
 	{
 		if (struct.getMesh() != null &&
@@ -297,215 +228,7 @@ public abstract class MenuFunctions
 	}
 	
 	/* Results toolbar functions */
-	public static void ShowResult(Structure struct)
-	{
-		ShowElems = false;
-		for (int node = 0; node <= struct.getMesh().getElements().get(0).getExternalNodes().length - 1; node += 1)
-		{
-			SelectedVar = Util.ElemPosInArray(struct.getMesh().getElements().get(0).getDOFsPerNode()[node], SelectedVar);
-			if (-1 < SelectedVar)
-			{
-				node = struct.getMesh().getElements().get(0).getExternalNodes().length - 1;
-			}
-		}
-		if (SelectedDiagram == 0 & -1 < SelectedVar)
-		{
-			//DrawDisplacementContours(SelectedVar);
-			struct.getResults().setDispMin(Results.FindMinDisps(struct.getU(), struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(struct.getMesh().getNodes()))) ;
-			struct.getResults().setDispMax(Results.FindMaxDisps(struct.getU(), struct.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(struct.getMesh().getNodes()))) ;
-			ShowDisplacementContour = false;
-			ShowDisplacementContour = true;
-			ShowStrainContour = false;
-			ShowInternalForces = false;
-		}
-		else if (SelectedDiagram == 1 & -1 < SelectedVar)
-		{
-			ShowDisplacementContour = false;
-			ShowStressContour = true;
-			ShowStrainContour = false;
-			ShowInternalForces = false;
-		}
-		else if (SelectedDiagram == 2 & -1 < SelectedVar)
-		{
-			ShowDisplacementContour = false;
-			ShowStressContour = false;
-			ShowStrainContour = true;
-			ShowInternalForces = false;
-		}
-		else if (SelectedDiagram == 3 & -1 < SelectedVar)
-		{
-			ShowDisplacementContour = false;
-			ShowStressContour = false;
-			ShowStrainContour = false;
-			ShowInternalForces = true;
-		}
-	}
 	
-	/* File menu functions */
-	public static void SaveFile(String FileName, MyCanvas MainCanvas, Structure Struct, List<Node> nodes, List<Element> elems,
-			List<Supports> Sup, Loading loading, List<Material> UserDefinedMat, List<Section> UserDefinedSec)
-	{
-		Struct.setName(FileName);
-		String[] InputSections = new String[] {
-			    "Nome da estrutura",
-			    "Coordenadas da estrutura",
-			    "Nos",
-			    "Elementos",
-			    "Materiais",
-			    "Secoes",
-			    "Apoios",
-			    "Cargas concentradas",
-			    "Cargas distribuidas",
-			    "Deslocamentos aplicados",
-			    "Desenho"
-			};
-		String[][] InputVariables = new String[11][];
-		InputVariables[0] = new String[] {"Nome"};
-		InputVariables[1] = new String[] {"x (m)	y (m)	z (m)"};
-		InputVariables[2] = new String[] {"Id	x (m)	y (m)	z (m)	Sup	Carga conc	Desl"};
-		InputVariables[3] = new String[] {"Id	Tipo	No1	No2	No3	Mat	Sec"};
-		InputVariables[4] = new String[] {"Id	E (GPa)	v	fu (MPa)"};
-		InputVariables[5] = new String[] {"Id	Espessura (mm)"};
-		InputVariables[6] = new String[] {"Id	No	Rx	Ry	Rz	Tetax	Tetay	Tetaz"};
-		InputVariables[7] = new String[] {"Id	No	Fx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)"};
-		InputVariables[8] = new String[] {"Id	Elem	Tipo	Valor inicial (kN)	Valor final (kN)	Dist inicial (mm)	Dist final (mm)"};
-		InputVariables[9] = new String[] {"Id	No	Fx	Fy	Fz	Mx	My	Mz"};
-		InputVariables[10] = new String[] {"Pos des x (m)	Pos des y (m)	Centro x (m)	Centro y (m)	Dim x (m)	Dim y (m)	Tetax	Tetay	Tetaz"};
-		Object[][][] values = new Object[11][][];
-
-		values[0] = new Object[1][1];
-		values[0][0][0] = FileName;
-		if (Struct.getCoords() != null)
-		{
-			values[1] = new Object[Struct.getCoords().size()][3];
-			for (int i = 0; i <= Struct.getCoords().size() - 1; i += 1)
-			{
-				values[1][i][0] = Struct.getCoords().get(i).x;
-				values[1][i][1] = Struct.getCoords().get(i).y;
-				values[1][i][2] = Struct.getCoords().get(i).z;
-			}
-		}
-		if (nodes != null)
-		{
-			values[2] = new Object[nodes.size()][7];
-			for (int i = 0; i <= nodes.size() - 1; i += 1)
-			{
-				Node node = nodes.get(i);
-				values[2][i][0] = node.getID();
-				values[2][i][1] = Util.Round(node.getOriginalCoords().x, 8);
-				values[2][i][2] = Util.Round(node.getOriginalCoords().y, 8);
-				values[2][i][3] = Util.Round(node.getOriginalCoords().z, 8);
-				values[2][i][4] = node.getSup();
-				values[2][i][5] = node.getConcLoads();
-				values[2][i][6] = node.getNodalDisps();
-			}
-		}
-		if (elems != null)
-		{
-			values[3] = new Object[elems.size()][elems.get(0).getExternalNodes().length + 4];
-			for (int i = 0; i <= elems.size() - 1; i += 1)
-			{
-				Element elem = elems.get(i) ;
-				int NElemNodes = elem.getExternalNodes().length;
-				values[3][i][0] = elem.getID();
-				values[3][i][1] = elem.getType();
-				for (int elemnode = 0; elemnode <= NElemNodes - 1; elemnode += 1)
-				{
-					values[3][i][elemnode + 2] = elem.getExternalNodes()[elemnode];
-				}
-				values[3][i][NElemNodes + 2] = elem.getMat();
-				values[3][i][NElemNodes + 3] = elem.getSec();
-			}
-		}
-		if (UserDefinedMat != null)
-		{
-			values[4] = new Object[UserDefinedMat.size()][4];
-			for (int mat = 0; mat <= UserDefinedMat.size() - 1; mat += 1)
-			{
-				values[4][mat][0] = mat;
-				values[4][mat][1] = UserDefinedMat.get(mat).getE();
-				values[4][mat][2] = UserDefinedMat.get(mat).getV();
-				values[4][mat][3] = UserDefinedMat.get(mat).getG();
-			}
-		}
-		if (UserDefinedSec != null)
-		{
-			values[5] = new Object[UserDefinedSec.size()][2];
-			for (int sec = 0; sec <= UserDefinedSec.size() - 1; sec += 1)
-			{
-				values[5][sec][0] = sec;
-				values[5][sec][1] = UserDefinedSec.get(sec).getT();
-			}
-		}
-		if (Sup != null)
-		{
-			values[6] = new Object[Sup.size()][8];
-			for (int sup = 0; sup <= Sup.size() - 1; sup += 1)
-			{
-				values[6][sup][0] = Sup.get(sup).getID();
-				values[6][sup][1] = Sup.get(sup).getNode();
-				values[6][sup][2] = Sup.get(sup).getDoFs()[0];
-				values[6][sup][3] = Sup.get(sup).getDoFs()[1];
-				values[6][sup][4] = Sup.get(sup).getDoFs()[2];
-				values[6][sup][5] = Sup.get(sup).getDoFs()[3];
-				values[6][sup][6] = Sup.get(sup).getDoFs()[4];
-				values[6][sup][7] = Sup.get(sup).getDoFs()[5];
-			}
-		}
-		if (loading.getConcLoads() != null)
-		{
-			values[7] = new Object[loading.getConcLoads().size()][8];
-			for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
-			{
-				values[7][load][0] = loading.getConcLoads().get(load).getID();
-				values[7][load][1] = loading.getConcLoads().get(load).getNode();
-				values[7][load][2] = loading.getConcLoads().get(load).getLoads()[0];
-				values[7][load][3] = loading.getConcLoads().get(load).getLoads()[1];
-				values[7][load][4] = loading.getConcLoads().get(load).getLoads()[2];
-				values[7][load][5] = loading.getConcLoads().get(load).getLoads()[3];
-				values[7][load][6] = loading.getConcLoads().get(load).getLoads()[4];
-				values[7][load][7] = loading.getConcLoads().get(load).getLoads()[5];
-			}
-		}
-		if (loading.getDistLoads() != null)
-		{
-			values[8] = new Object[loading.getDistLoads().size()][4];
-			for (int load = 0; load <= loading.getDistLoads().size() - 1; load += 1)
-			{
-				values[8][load][0] = loading.getDistLoads().get(load).getID();
-				values[8][load][1] = loading.getDistLoads().get(load).getElem();
-				values[8][load][2] = loading.getDistLoads().get(load).getType();
-				values[8][load][3] = loading.getDistLoads().get(load).getIntensity();
-			}
-		}
-		if (loading.getNodalDisps() != null)
-		{
-			values[9] = new Object[loading.getNodalDisps().size()][8];
-			for (int dist = 0; dist <= loading.getNodalDisps().size() - 1; dist += 1)
-			{
-				values[9][dist][0] = loading.getNodalDisps().get(dist).getID();
-				values[9][dist][1] = loading.getNodalDisps().get(dist).getNode();
-				values[9][dist][2] = loading.getNodalDisps().get(dist).getDisps()[0];
-				values[9][dist][3] = loading.getNodalDisps().get(dist).getDisps()[1];
-				values[9][dist][4] = loading.getNodalDisps().get(dist).getDisps()[2];
-				values[9][dist][5] = loading.getNodalDisps().get(dist).getDisps()[3];
-				values[9][dist][6] = loading.getNodalDisps().get(dist).getDisps()[4];
-				values[9][dist][7] = loading.getNodalDisps().get(dist).getDisps()[5];
-			}
-		}
-		values[10] = new Object[1][9];
-		values[10][0][0] = MainCanvas.getDrawingPos()[0];
-		values[10][0][1] = MainCanvas.getDrawingPos()[1];
-		values[10][0][2] = MainCanvas.getCenter()[0];
-		values[10][0][3] = MainCanvas.getCenter()[1];
-		values[10][0][4] = Util.Round(MainCanvas.getDimension()[0], 8);
-		values[10][0][5] = Util.Round(MainCanvas.getDimension()[1], 8);
-		values[10][0][6] = Util.Round(MainCanvas.getAngles()[0], 8);
-		values[10][0][7] = Util.Round(MainCanvas.getAngles()[1], 8);
-		values[10][0][8] = Util.Round(MainCanvas.getAngles()[2], 8);
-		SaveOutput.SaveStructureToTxt(FileName, InputSections, InputVariables, values);		// Save the structure in an input file (.txt)
-	}
-
 	public static Structure LoadFile(String Path, String FileName)
 	{
 		if (!FileName.equals("")) 
@@ -630,8 +353,6 @@ public abstract class MenuFunctions
 			return null ;
 		}
 	}
-
-	/* Structure menu functions */
 
 	/* Visual menu functions */
 	
@@ -914,7 +635,7 @@ public abstract class MenuFunctions
 	
 	public static void SaveLoadDispCurve(Structure structure)
 	{
-		if (-1 < SelectedVar)
+		if (-1 < MainPanel.SelectedVar)
 		{
 			int nodeid = selectedNodes.get(0).getID();
 			double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).LoadDisp;
@@ -1067,6 +788,7 @@ public abstract class MenuFunctions
 		
 		Structure structure = new Structure(null, null, null);
 		MainPanel.loading.clearLoads() ;
+		MainPanel.resetDisplay() ;
 		resetDisplay();
 		if (exampleID == 0)
 		{
@@ -1153,24 +875,6 @@ public abstract class MenuFunctions
 		}
 	}
 
-	/* Mouse functions */
-
-	
-	public static void ElemAddition(Structure structure, MyCanvas MainCanvas, int[] MainPanelPos)
-	{
-		if (structure.getMesh().getElements() != null)
-		{
-			SelectedElems = null;
-			SelectedElems = Mesh.ElemsSelection(MainCanvas, structure.getCenter().asArray(), structure.getMesh(), mousePos, MainPanelPos, SelectedElems, ElemSelectionWindowInitialPos, DiagramScales, ShowElemSelectionWindow, ShowDeformedStructure);
-			int ElemMouseIsOn = Mesh.ElemMouseIsOn(structure.getMesh(), mousePos, structure.getCenter().asArray(), MainCanvas, ShowDeformedStructure);
-			if (ElemMouseIsOn == -1 | (ShowElemSelectionWindow & -1 < ElemMouseIsOn))
-			{
-				ShowElemSelectionWindow = !ShowElemSelectionWindow;
-				ElemSelectionWindowInitialPos = mousePos;
-			}
-		}
-	}
-	
 	
 	public static void updateDiagramScale(MyCanvas MainCanvas, int WheelRot)
 	{
@@ -1202,14 +906,9 @@ public abstract class MenuFunctions
 		ShowElemContour = true;
 		ShowMatColor = false;
 		ShowSecColor = false;
-		ShowElemSelectionWindow = false;
 		// StructureCreationIsOn = false;
 		ShowLoadsValues = true;
 		AnalysisIsComplete = false;
-		ShowDisplacementContour = false;
 		ShowDeformedStructure = false;
-		ShowStressContour = false;
-		ShowStrainContour = false;
-		ShowInternalForces = false;
 	}
 }

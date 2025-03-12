@@ -26,7 +26,7 @@ public class InstructionsPanel extends JPanel
         super.paintComponent(g);
         DP.setG(g);
         DP.setRealStructCenter(MainPanel.structure.getCenter());
-        DiagramsPanel.display(MainPanel.structure, MenuFunctions.selectedNodes, MenuFunctions.SelectedVar, MenuFunctions.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP);
+        DiagramsPanel.display(MainPanel.structure, MenuFunctions.selectedNodes, MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP);
         repaint();
     }
 }

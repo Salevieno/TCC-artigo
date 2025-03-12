@@ -149,7 +149,17 @@ public class Menus extends JFrame
 		diagramsPanel = new DiagramsPanel();
 		jpLists = new ListPanel();
 
-		Initialization();
+		setLocation(FrameTopLeftPos[0], FrameTopLeftPos[1]);
+	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
+
+	    MainCanvas = new MyCanvas (new Point(575, 25), new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);	    
+
+		SubMenuDisp = new JMenuItem[6];				// ux, uy, uz, tetax, tetay, tetaz
+		SubMenuStresses = new JMenuItem[6];			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
+		SubMenuStrains = new JMenuItem[6];			// ex, ey, ez, gxy, gxz, gyz
+		SubMenuInternalForces = new JMenuItem[6];	// Fx, Fy, Fz, Mx, My, Mz
+		StepIsComplete = new boolean[9];		// 0 = Elem type; 1 = Struct Coords; 2 = Nodes and Elems; 3 = Mat; 4 = Sec; 5 = Sup; 6 = Conc loads; 7 = Dist loads; 8 = Nodal disps
+	
 
 		AddMenus();
 		setJMenuBar(menuBar);
@@ -165,28 +175,12 @@ public class Menus extends JFrame
 
 	public static Menus getInstance() { return instance ;}
 	
-	public void Initialization()
-	{
-		setLocation(FrameTopLeftPos[0], FrameTopLeftPos[1]);
-	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
-
-	    MainCanvas = new MyCanvas (new Point(575, 25), new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);	    
-
-		SubMenuDisp = new JMenuItem[6];				// ux, uy, uz, tetax, tetay, tetaz
-		SubMenuStresses = new JMenuItem[6];			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
-		SubMenuStrains = new JMenuItem[6];			// ex, ey, ez, gxy, gxz, gyz
-		SubMenuInternalForces = new JMenuItem[6];	// Fx, Fy, Fz, Mx, My, Mz
-		StepIsComplete = new boolean[9];		// 0 = Elem type; 1 = Struct Coords; 2 = Nodes and Elems; 3 = Mat; 4 = Sec; 5 = Sup; 6 = Conc loads; 7 = Dist loads; 8 = Nodal disps
-	}
-	
 	public static MyCanvas getMainCanvas() { return MainCanvas ;}
 	
 	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos) ;}
 	
 	public boolean[] getAqueleBooleanGrande() { return new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn} ;}
 
-	public int[] getFrameTopLeftPos() { return FrameTopLeftPos ;}
-	
 	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
 	
 	public void setStepIsComplete(boolean[] StepIsComplete) {this.StepIsComplete = StepIsComplete ;}
@@ -513,9 +507,9 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.SelectedDiagram = cbResults.getSelectedIndex();
-				MenuFunctions.SelectedVar = cbSubRes.getSelectedIndex();
-				MenuFunctions.ShowResult(MainPanel.structure);
+				MainPanel.SelectedDiagram = cbResults.getSelectedIndex();
+				MainPanel.SelectedVar = cbSubRes.getSelectedIndex();
+				MainPanel.ShowResult(MainPanel.structure);
 			}
 		});
 		btnCalcular.setFocusable(false);
@@ -595,11 +589,11 @@ public class Menus extends JFrame
 			{
 				if (MatAssignmentIsOn)
 				{
-					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.matTypes.get(MainPanel.SelectedMat));
+					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.matTypes.get(MainPanel.selectedMatID));
 				}
 				if (SecAssignmentIsOn)
 				{
-					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.secTypes.get(MainPanel.SelectedSec));
+					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.secTypes.get(MainPanel.selectedSecID));
 				}
 				if (DistLoadsAssignmentIsOn)
 				{
@@ -1766,7 +1760,7 @@ public class Menus extends JFrame
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 0;
-					MenuFunctions.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), d2);
+					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), d2);
 					ShowElems = false;
 					//DrawDisplacementContours(SelectedVar);
 					//ResetE1Panel();
@@ -1796,7 +1790,7 @@ public class Menus extends JFrame
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 1;
-					MenuFunctions.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
+					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
 					ShowElems = false;
 					//DrawStressContours(SelectedVar);
 					//ResetE1Panel();
@@ -1826,7 +1820,7 @@ public class Menus extends JFrame
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 2;
-					MenuFunctions.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
+					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
 					ShowElems = false;
 					//DrawStrainContours(SelectedVar);
 					//ResetE1Panel();
@@ -1856,7 +1850,7 @@ public class Menus extends JFrame
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 3;
-					MenuFunctions.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), f2);
+					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), f2);
 					ShowElems = false;
 					//DrawInternalForcesContours(Util.ElemPosInArray(Elem[0].getDOFs(), f2));
 					//ResetE1Panel();

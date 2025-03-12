@@ -115,7 +115,7 @@ public class ListPanel extends JPanel
         DP.setRealStructCenter(MainPanel.structure.getCenter());
         if (Menus.getInstance() != null)
         {
-            display(Menus.getInstance().getAqueleBooleanGrande(), MainPanel.SelectedSup, MainPanel.SelectedConcLoad, MainPanel.SelectedDistLoad, MainPanel.SelectedNodalDisp, DP);
+            display(Menus.getInstance().getAqueleBooleanGrande(), MainPanel.selectedSupID, MainPanel.selectedConcLoadID, MainPanel.selectedDistLoadID, MainPanel.selectedNodalDispID, DP);
         }
         repaint();
     }
