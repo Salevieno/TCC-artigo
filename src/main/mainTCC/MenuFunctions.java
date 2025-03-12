@@ -40,7 +40,6 @@ public abstract class MenuFunctions
 	public static boolean ShowNodes ;
 	public static boolean ShowElems, ShowConcLoads, ShowDistLoads, ShowNodalDisps, ShowReactionArrows, ShowReactionValues, ShowLoadsValues, ShowSup;
 	public static boolean ShowDOFNumber, ShowNodeNumber, ShowElemNumber, ShowElemContour, ShowMatColor, ShowSecColor, ShowElemDetails;
-	private static boolean ShowCanvas;
 	public static boolean ShowMousePos;
 	public static boolean SnipToGridIsOn;
 	public static boolean ShowElemSelectionWindow;
@@ -52,12 +51,6 @@ public abstract class MenuFunctions
 	
 	public static int[] SelectedElems;
 	public static List<Node> selectedNodes ;
-	public static int SelectedMat;
-	public static int SelectedSec;
-	public static int SelectedSup;
-	public static int SelectedConcLoad;
-	public static int SelectedDistLoad;
-	public static int SelectedNodalDisp;
 	
 	public static int SelectedDiagram = -1;
 	public static int SelectedVar = -1;
@@ -78,7 +71,6 @@ public abstract class MenuFunctions
 		matTypes = new ArrayList<>() ;
 		secTypes = new ArrayList<>() ;
 		mousePos = new Point();
-		ShowCanvas = true;
 		ShowMousePos = true;
 		SnipToGridIsOn = false;
 		ShowDeformedStructure = false;			
@@ -93,12 +85,6 @@ public abstract class MenuFunctions
 		NodeSelectionIsOn = false;
 		ElemSelectionIsOn = false;
 
-		SelectedMat = -1;
-		SelectedSec = -1;
-		SelectedSup = -1;
-		SelectedConcLoad = -1;
-		SelectedDistLoad = -1;
-		SelectedNodalDisp = -1;
 		DiagramScales = new double[2];
 		
 		selectedNodes = null;
@@ -1185,45 +1171,6 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static void MouseWheel(int[] MainPanelPos, MyCanvas MainCanvas, int WheelRot, boolean[] AssignmentIsOn)
-	{
-		boolean MouseIsInMainCanvas = Util.MouseIsInside(mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]);
-		if (ShowCanvas & Util.MouseIsInside(mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
-		{
-			MainCanvas.getDimension()[0] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[0])*WheelRot, 1);
-			MainCanvas.getDimension()[1] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[1])*WheelRot, 1);
-		}
-		if (AssignmentIsOn[0] & !MouseIsInMainCanvas)
-		{
-			SelectedMat += WheelRot;
-			SelectedMat = Math.min(Math.max(SelectedMat, 0), matTypes.size() - 1);
-		}
-		if (AssignmentIsOn[1] & !MouseIsInMainCanvas)
-		{
-			SelectedSec += WheelRot;
-			SelectedSec = Math.min(Math.max(SelectedSec, 0), secTypes.size() - 1);
-		}
-		if (AssignmentIsOn[2] & !MouseIsInMainCanvas)
-		{
-			SelectedSup += WheelRot;
-			SelectedSup = Math.min(Math.max(SelectedSup, 0), SupType.length - 1);
-		}
-		if (AssignmentIsOn[3] & !MouseIsInMainCanvas)
-		{
-			SelectedConcLoad += WheelRot;
-			SelectedConcLoad = Math.min(Math.max(SelectedConcLoad, 0), ConcLoadType.length - 1);
-		}
-		if (AssignmentIsOn[4] & !MouseIsInMainCanvas)
-		{
-			SelectedDistLoad += WheelRot;
-			SelectedDistLoad = Math.min(Math.max(SelectedDistLoad, 0), DistLoadType.length - 1);
-		}
-		if (AssignmentIsOn[5] & !MouseIsInMainCanvas)
-		{
-			SelectedNodalDisp += WheelRot;
-			SelectedNodalDisp = Math.min(Math.max(SelectedNodalDisp, 0), NodalDispType.length - 1);
-		}
-	}
 	
 	public static void updateDiagramScale(MyCanvas MainCanvas, int WheelRot)
 	{

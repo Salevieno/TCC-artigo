@@ -595,11 +595,11 @@ public class Menus extends JFrame
 			{
 				if (MatAssignmentIsOn)
 				{
-					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.matTypes.get(MenuFunctions.SelectedMat));
+					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.matTypes.get(MainPanel.SelectedMat));
 				}
 				if (SecAssignmentIsOn)
 				{
-					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.secTypes.get(MenuFunctions.SelectedSec));
+					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.secTypes.get(MainPanel.SelectedSec));
 				}
 				if (DistLoadsAssignmentIsOn)
 				{
