@@ -97,9 +97,44 @@ public class MyCanvas
 		drawingPos.y = (int) (pos.y + drawingPos.y + size[1] - realPos.y / dimension[1] * size[1]) ;
 		return drawingPos;
 	}
+	
 	public Point inDrawingCoords(Point3D realPos)
 	{
 		return inDrawingCoords(new Point2D.Double(realPos.x, realPos.y)) ;
+	}
+
+	public void incAngles(double dX, double dY, double dZ)
+	{
+		angles[0] += dX;
+		angles[1] += dY;
+		angles[2] += dZ;
+	}
+
+	public void topView()
+	{
+		angles[0] = 0;
+		angles[1] = 0;
+		angles[2] = 0;
+	}
+
+	public void frontView()
+	{
+		angles[0] = 0;
+		angles[1] = -Math.PI/2;
+		angles[2] = 0;
+	}
+
+	public void sideView()
+	{
+		angles[0] = -Math.PI/2;
+		angles[1] = 0;
+		angles[2] = 0;
+	}
+
+	public void incDrawingPos(int dX, int dY)
+	{
+		DrawingPos[0] += dX;
+		DrawingPos[1] += dY;
 	}
 
 	public int[] getTitlePos() {return TitlePos;}

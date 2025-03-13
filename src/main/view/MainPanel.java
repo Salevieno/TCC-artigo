@@ -5,20 +5,22 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
 import main.gui.DrawingOnAPanel;
@@ -132,164 +134,66 @@ public class MainPanel extends JPanel
 			public void mousePressed(MouseEvent evt)
 			{
 				requestFocusInWindow();
-				if (evt.getButton() == 1)	// Left click
-				{
-					if (StructureCreationIsOn)
-					{
-						StructureCreation(panelPos, canvas, MenuFunctions.mousePos, MenuFunctions.SnipToGridIsOn);
-						Menus.getInstance().EnableButtons();
-						Menus.getInstance().updateInstructionPanel();
-					}
-					if (!StructureCreationIsOn)
-					{
-						Menus.getInstance().StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
-						Menus.getInstance().UpperToolbarButton[0].setEnabled(false);
-						Menus.getInstance().UpperToolbarButton[0].setVisible(false);
-						Menus.getInstance().UpperToolbarButton[1].setEnabled(false);
-						Menus.getInstance().UpperToolbarButton[1].setVisible(false);
-					}				
-					if (MenuFunctions.NodeSelectionIsOn)
-					{
-						System.out.println("\nEntrou em NodeSelectionIsOn");
-
-
-						NodeAddition(panelPos);
-						if (MenuFunctions.selectedNodes != null)
-						{
-							if (!MenuFunctions.selectedNodes.isEmpty() && -1 < MenuFunctions.selectedNodes.get(0).getID())
-							{
-								Menus.getInstance().ResetEastPanels();
-								//AddNodeInfoPanel(MenuFunctions.Node[MenuFunctions.SelectedNodes[0]]);
-							}
-						}
-					}
-					if (MenuFunctions.ElemSelectionIsOn)
-					{
-						ElemAddition(MainPanel.structure, canvas, panelPos);
-						if (MenuFunctions.SelectedElems != null)
-						{
-							if (-1 < MenuFunctions.SelectedElems[0])
-							{
-								Menus.getInstance().ResetEastPanels();
-								//AddElemInfoPanel(MenuFunctions.Elem[MenuFunctions.SelectedElems[0]]);
-							}
-						}
-					}
-				}
-				if (evt.getButton() == 3)	// Right click
-				{
-					MainPanel.structure.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MainPanel.structure.getSupports(), loading);
-					MenuFunctions.ElemDetailsView();
-				}
+				handleMousePress(evt) ;
 			}
 			public void mouseReleased(MouseEvent evt) 
 			{
 		    }
-		});
-	    this.addMouseMotionListener(new MouseMotionAdapter() 
-	    {
-	        public void mouseDragged(MouseEvent evt) 
-	        {
-
-	        }
-	    });
+		}) ;
 	    this.addMouseWheelListener(new MouseWheelListener()
 	    {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent evt) 
 			{
-				MouseWheel(panelPos, canvas, evt.getWheelRotation(),
-				new boolean[] {Menus.getInstance().MatAssignmentIsOn, Menus.getInstance().SecAssignmentIsOn, Menus.getInstance().SupAssignmentIsOn,
-					Menus.getInstance().ConcLoadsAssignmentIsOn, Menus.getInstance().DistLoadsAssignmentIsOn, Menus.getInstance().NodalDispsAssignmentIsOn});
-				MenuFunctions.updateDiagramScale(canvas, evt.getWheelRotation());
+				handleMouseWheel(evt) ;
 			}       	
-	    });
-	    this.addKeyListener(new KeyListener()
-	    {
-			@Override
-			public void keyPressed(KeyEvent evt)
-			{
-				int keyCode = evt.getKeyCode();
-				char keychar = evt.getKeyChar();
-				char[] ActionKeys = new char[] {'Q', 'W', 'A', 'S', 'Z', 'X','E', 'D', 'C'};	// Q, W, A, S, Z, X: rotation, E: top view, D: front view, C: side view
-				if (keychar == Character.toLowerCase(ActionKeys[0]) | keychar == Character.toUpperCase(ActionKeys[0]))
-				{
-					canvas.setAngles(new double[] {canvas.getAngles()[0] - Math.PI/180.0, canvas.getAngles()[1], canvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[1]) | keychar == Character.toUpperCase(ActionKeys[1]))
-				{
-					canvas.setAngles(new double[] {canvas.getAngles()[0] + Math.PI/180.0, canvas.getAngles()[1], canvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[2]) | keychar == Character.toUpperCase(ActionKeys[2]))
-				{
-					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1] + Math.PI/180.0, canvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[3]) | keychar == Character.toUpperCase(ActionKeys[3]))
-				{
-					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1] - Math.PI/180.0, canvas.getAngles()[2]});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[4]) | keychar == Character.toUpperCase(ActionKeys[4]))
-				{
-					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2] + Math.PI/180.0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[5]) | keychar == Character.toUpperCase(ActionKeys[5]))
-				{
-					canvas.setAngles(new double[] {canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2] - Math.PI/180.0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[6]) | keychar == Character.toUpperCase(ActionKeys[6]))
-				{
-					canvas.setAngles(new double[] {0, 0, 0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[7]) | keychar == Character.toUpperCase(ActionKeys[7]))
-				{
-					canvas.setAngles(new double[] {0, -Math.PI/2.0, 0});
-				}
-				if (keychar == Character.toLowerCase(ActionKeys[8]) | keychar == Character.toUpperCase(ActionKeys[8]))
-				{
-					canvas.setAngles(new double[] {-Math.PI/2.0, 0, 0});
-				}
-				if (keyCode == KeyEvent.VK_RIGHT)
-				{
-					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0] + 10, canvas.getDrawingPos()[1], canvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_LEFT)
-				{
-					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0] - 10, canvas.getDrawingPos()[1], canvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_UP)
-				{
-					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0], canvas.getDrawingPos()[1] - 10, canvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_DOWN)
-				{
-					canvas.setDrawingPos(new int[] {canvas.getDrawingPos()[0], canvas.getDrawingPos()[1] + 10, canvas.getDrawingPos()[2]});
-				}
-				if (keyCode == KeyEvent.VK_ESCAPE)
-				{
-					MenuFunctions.selectedNodes = null;
-					MenuFunctions.SelectedElems = null;
-				}
-			}
-	
-			@Override
-			public void keyReleased(KeyEvent evt)
-			{
-				
-			}
-	
-			@Override
-			public void keyTyped(KeyEvent evt)
-			{
-				
-			}        	
-	    });
- 
+	    }) ;
+	   
+		int translationSpeed = 10 ;
+		
+		bindKey(KeyEvent.VK_Q,  () -> canvas.incAngles(- Math.PI/180.0, 0, 0)) ;
+		bindKey(KeyEvent.VK_W,  () -> canvas.incAngles(+ Math.PI/180.0, 0, 0)) ;
+		bindKey(KeyEvent.VK_A,  () -> canvas.incAngles(0,  + Math.PI/180.0, 0)) ;
+		bindKey(KeyEvent.VK_S,  () -> canvas.incAngles(0,  - Math.PI/180.0, 0)) ;
+		bindKey(KeyEvent.VK_Z,  () -> canvas.incAngles(0,  0,  + Math.PI/180.0)) ;
+		bindKey(KeyEvent.VK_X,  () -> canvas.incAngles(0,  0,  - Math.PI/180.0)) ;
+		
+		bindKey(KeyEvent.VK_E,  () -> canvas.topView()) ;
+		bindKey(KeyEvent.VK_D,  () -> canvas.frontView()) ;
+		bindKey(KeyEvent.VK_C,  () -> canvas.sideView()) ;
+
+		bindKey(KeyEvent.VK_RIGHT,  () -> canvas.incDrawingPos(+ translationSpeed, 0)) ;
+		bindKey(KeyEvent.VK_LEFT,  () -> canvas.incDrawingPos(- translationSpeed, 0)) ;
+		bindKey(KeyEvent.VK_UP,  () -> canvas.incDrawingPos(0, - translationSpeed)) ;
+		bindKey(KeyEvent.VK_DOWN,  () -> canvas.incDrawingPos(0, + translationSpeed)) ;
+
+		bindKey(KeyEvent.VK_ESCAPE,  () -> {
+			MenuFunctions.selectedNodes = null ;
+			MenuFunctions.SelectedElems = null ;
+		}) ;
+
 	    this.setSize(initialSize);
 	    this.setFocusable(true);
 	    this.requestFocusInWindow();
 	    this.setPreferredSize(initialSize);
 		
 	}
+
+	private void bindKey(int keyCode, Runnable action)
+	{
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyCode, 0), String.valueOf(keyCode));
+		
+		AbstractAction abstractAction = new AbstractAction()
+		{
+            @Override
+            public void actionPerformed(ActionEvent e)
+			{
+                action.run();
+            }
+        };
+
+        getActionMap().put(String.valueOf(keyCode), abstractAction);
+    }
 
 	public void ElemAddition(Structure structure, MyCanvas MainCanvas, int[] MainPanelPos)
 	{
@@ -351,46 +255,6 @@ public class MainPanel extends JPanel
 		}
 	}
 
-
-	public static void MouseWheel(int[] MainPanelPos, MyCanvas MainCanvas, int WheelRot, boolean[] AssignmentIsOn)
-	{
-		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]);
-		if (canvasIsVisible & Util.MouseIsInside(MenuFunctions.mousePos, MainPanelPos, MainCanvas.getPos(), MainCanvas.getSize()[0], MainCanvas.getSize()[1]))
-		{
-			MainCanvas.getDimension()[0] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[0])*WheelRot, 1);
-			MainCanvas.getDimension()[1] += Util.Round(0.2*Math.log10(MainCanvas.getDimension()[1])*WheelRot, 1);
-		}
-		if (AssignmentIsOn[0] & !MouseIsInMainCanvas)
-		{
-			selectedMatID += WheelRot;
-			selectedMatID = Math.min(Math.max(selectedMatID, 0), MenuFunctions.matTypes.size() - 1);
-		}
-		if (AssignmentIsOn[1] & !MouseIsInMainCanvas)
-		{
-			selectedSecID += WheelRot;
-			selectedSecID = Math.min(Math.max(selectedSecID, 0), MenuFunctions.secTypes.size() - 1);
-		}
-		if (AssignmentIsOn[2] & !MouseIsInMainCanvas)
-		{
-			selectedSupID += WheelRot;
-			selectedSupID = Math.min(Math.max(selectedSupID, 0), MenuFunctions.SupType.length - 1);
-		}
-		if (AssignmentIsOn[3] & !MouseIsInMainCanvas)
-		{
-			selectedConcLoadID += WheelRot;
-			selectedConcLoadID = Math.min(Math.max(selectedConcLoadID, 0), MenuFunctions.ConcLoadType.length - 1);
-		}
-		if (AssignmentIsOn[4] & !MouseIsInMainCanvas)
-		{
-			selectedDistLoadID += WheelRot;
-			selectedDistLoadID = Math.min(Math.max(selectedDistLoadID, 0), MenuFunctions.DistLoadType.length - 1);
-		}
-		if (AssignmentIsOn[5] & !MouseIsInMainCanvas)
-		{
-			selectedNodalDispID += WheelRot;
-			selectedNodalDispID = Math.min(Math.max(selectedNodalDispID, 0), MenuFunctions.NodalDispType.length - 1);
-		}
-	}
 
 	public void displayCanvasElements(MyCanvas canvas, boolean ShowCanvas, boolean ShowGrid, boolean ShowMousePos)
 	{
@@ -959,6 +823,105 @@ public class MainPanel extends JPanel
 		ShowStressContour = false;
 		ShowStrainContour = false;
 		ShowInternalForces = false;
+	}
+
+
+	private void handleMousePress(MouseEvent evt)
+	{
+		if (evt.getButton() == 1)	// Left click
+		{
+			if (StructureCreationIsOn)
+			{
+				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, MenuFunctions.SnipToGridIsOn);
+				Menus.getInstance().EnableButtons();
+				Menus.getInstance().updateInstructionPanel();
+			}
+			if (!StructureCreationIsOn)
+			{
+				Menus.getInstance().StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
+				Menus.getInstance().UpperToolbarButton[0].setEnabled(false);
+				Menus.getInstance().UpperToolbarButton[0].setVisible(false);
+				Menus.getInstance().UpperToolbarButton[1].setEnabled(false);
+				Menus.getInstance().UpperToolbarButton[1].setVisible(false);
+			}
+			if (MenuFunctions.NodeSelectionIsOn)
+			{
+				NodeAddition(panelPos);
+				if (MenuFunctions.selectedNodes != null)
+				{
+					if (!MenuFunctions.selectedNodes.isEmpty() && -1 < MenuFunctions.selectedNodes.get(0).getID())
+					{
+						Menus.getInstance().ResetEastPanels();
+						//AddNodeInfoPanel(MenuFunctions.Node[MenuFunctions.SelectedNodes[0]]);
+					}
+				}
+			}
+			if (MenuFunctions.ElemSelectionIsOn)
+			{
+				ElemAddition(MainPanel.structure, canvas, panelPos);
+				if (MenuFunctions.SelectedElems != null)
+				{
+					if (-1 < MenuFunctions.SelectedElems[0])
+					{
+						Menus.getInstance().ResetEastPanels();
+						//AddElemInfoPanel(MenuFunctions.Elem[MenuFunctions.SelectedElems[0]]);
+					}
+				}
+			}
+		}
+
+		if (evt.getButton() == 3)	// Right click
+		{
+			MainPanel.structure.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MainPanel.structure.getSupports(), loading);
+			MenuFunctions.ElemDetailsView();
+		}
+	}
+
+	private void handleMouseWheel(MouseWheelEvent evt)
+	{
+		boolean[] assignmentIsOn = new boolean[] {Menus.getInstance().MatAssignmentIsOn, Menus.getInstance().SecAssignmentIsOn, Menus.getInstance().SupAssignmentIsOn,
+			Menus.getInstance().ConcLoadsAssignmentIsOn, Menus.getInstance().DistLoadsAssignmentIsOn, Menus.getInstance().NodalDispsAssignmentIsOn} ;
+		double qtdRotation = evt.getWheelRotation() ;
+
+		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1]);
+		if (canvasIsVisible & Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1]))
+		{
+			canvas.getDimension()[0] += Util.Round(0.2*Math.log10(canvas.getDimension()[0])*qtdRotation, 1);
+			canvas.getDimension()[1] += Util.Round(0.2*Math.log10(canvas.getDimension()[1])*qtdRotation, 1);
+		}
+		if (assignmentIsOn[0] & !MouseIsInMainCanvas)
+		{
+			selectedMatID += qtdRotation;
+			selectedMatID = Math.min(Math.max(selectedMatID, 0), MenuFunctions.matTypes.size() - 1);
+		}
+		if (assignmentIsOn[1] & !MouseIsInMainCanvas)
+		{
+			selectedSecID += qtdRotation;
+			selectedSecID = Math.min(Math.max(selectedSecID, 0), MenuFunctions.secTypes.size() - 1);
+		}
+		if (assignmentIsOn[2] & !MouseIsInMainCanvas)
+		{
+			selectedSupID += qtdRotation;
+			selectedSupID = Math.min(Math.max(selectedSupID, 0), MenuFunctions.SupType.length - 1);
+		}
+		if (assignmentIsOn[3] & !MouseIsInMainCanvas)
+		{
+			selectedConcLoadID += qtdRotation;
+			selectedConcLoadID = Math.min(Math.max(selectedConcLoadID, 0), MenuFunctions.ConcLoadType.length - 1);
+		}
+		if (assignmentIsOn[4] & !MouseIsInMainCanvas)
+		{
+			selectedDistLoadID += qtdRotation;
+			selectedDistLoadID = Math.min(Math.max(selectedDistLoadID, 0), MenuFunctions.DistLoadType.length - 1);
+		}
+		if (assignmentIsOn[5] & !MouseIsInMainCanvas)
+		{
+			selectedNodalDispID += qtdRotation;
+			selectedNodalDispID = Math.min(Math.max(selectedNodalDispID, 0), MenuFunctions.NodalDispType.length - 1);
+		}
+	
+
+		MenuFunctions.updateDiagramScale(canvas, evt.getWheelRotation());
 	}
 
 	@Override
