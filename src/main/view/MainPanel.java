@@ -150,13 +150,14 @@ public class MainPanel extends JPanel
 	    }) ;
 	   
 		int translationSpeed = 10 ;
+		double rotationSpeed = Math.PI/180.0 ;
 		
-		bindKey(KeyEvent.VK_Q,  () -> canvas.incAngles(- Math.PI/180.0, 0, 0)) ;
-		bindKey(KeyEvent.VK_W,  () -> canvas.incAngles(+ Math.PI/180.0, 0, 0)) ;
-		bindKey(KeyEvent.VK_A,  () -> canvas.incAngles(0,  + Math.PI/180.0, 0)) ;
-		bindKey(KeyEvent.VK_S,  () -> canvas.incAngles(0,  - Math.PI/180.0, 0)) ;
-		bindKey(KeyEvent.VK_Z,  () -> canvas.incAngles(0,  0,  + Math.PI/180.0)) ;
-		bindKey(KeyEvent.VK_X,  () -> canvas.incAngles(0,  0,  - Math.PI/180.0)) ;
+		bindKey(KeyEvent.VK_Q,  () -> canvas.incAngles(- rotationSpeed, 0, 0)) ;
+		bindKey(KeyEvent.VK_W,  () -> canvas.incAngles(+ rotationSpeed, 0, 0)) ;
+		bindKey(KeyEvent.VK_A,  () -> canvas.incAngles(0,  + rotationSpeed, 0)) ;
+		bindKey(KeyEvent.VK_S,  () -> canvas.incAngles(0,  - rotationSpeed, 0)) ;
+		bindKey(KeyEvent.VK_Z,  () -> canvas.incAngles(0,  0,  + rotationSpeed)) ;
+		bindKey(KeyEvent.VK_X,  () -> canvas.incAngles(0,  0,  - rotationSpeed)) ;
 		
 		bindKey(KeyEvent.VK_E,  () -> canvas.topView()) ;
 		bindKey(KeyEvent.VK_D,  () -> canvas.frontView()) ;
