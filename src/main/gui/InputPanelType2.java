@@ -3,8 +3,10 @@ package main.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,59 +14,55 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import main.view.MainPanel;
+
 public class InputPanelType2 extends JDialog implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 	private JLabel[] Labels;
 	private String Input;
-	private JButton[] Buttons;
-	
-	public InputPanelType2 (JFrame parent, String PanelName, int[] Location, JLabel[] Labels, JButton[] Buttons, boolean[] Enabled, int[][] ButtonSizes)
+	private List<JButton> Buttons;
+
+	public InputPanelType2 (String PanelName, Point location, JLabel[] Labels, List<JButton> Buttons)
 	{
-		super(parent, PanelName, true);
+		setTitle(PanelName);
 		this.Labels = Labels;
-		this.Buttons = Buttons;
-		for (int i = 0; i <= Buttons.length - 1; i += 1)
-		{
-			this.Buttons[i].setSize(ButtonSizes[i][0], ButtonSizes[i][1]);
-			this.Buttons[i].setEnabled(Enabled[i]);
-			this.Buttons[i].addActionListener(this);
-		}
+		this.Buttons = Buttons ;
+		Buttons.forEach(button -> button.addActionListener(this)) ;
 		JPanel panel = DrawScreen();
-		setLocation(Location[0], Location[1]);
+		setLocation(location);
 		getContentPane().add(panel);
 		pack();
+	}
+
+
+	public InputPanelType2 (String PanelName, JLabel[] Labels, List<JButton> Buttons)
+	{
+		this(PanelName, Menus.frameTopLeft, Labels, Buttons);
+	}
+	
+	public InputPanelType2 (String PanelName, List<JButton> Buttons)
+	{
+		this(PanelName, null,  Buttons);
 	}
 	
 	public void actionPerformed(ActionEvent ae) 
 	{
 		Object source = ae.getSource();
-		for (int i = 0; i <= Buttons.length - 1; i += 1)
+		for (int i = 0; i <= Buttons.size() - 1; i += 1)
 		{
-			if (source == Buttons[i] & !Buttons[i].getText().equals("Cancel")) 
+			if (source == Buttons.get(i) & !Buttons.get(i).getText().equals("Cancel")) 
 			{
-				this.Input = Buttons[i].getText();
+				this.Input = Buttons.get(i).getText();
 				dispose();
 			}
-			else if(Buttons[i].getText().equals("Cancel"))
+			else if(Buttons.get(i).getText().equals("Cancel"))
 			{
 				dispose();
 			}
 		}
 	}
 	
-	private GridBagConstraints SetGridPos(GridBagConstraints gbc, int gridx, int gridy)
-	{
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		return gbc;
-	}
-	
-	private void AddButton(JPanel panel, GridBagConstraints gbc, JButton Button, int gridx, int gridy)
-	{
-		gbc = SetGridPos(gbc, gridx, gridy);
-		panel.add(Button, gbc);
-	}
 	
 	private JPanel DrawScreen()
 	{	
@@ -74,15 +72,21 @@ public class InputPanelType2 extends JDialog implements ActionListener
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.weightx = 1;
-		for (int i = 0; i <= Labels.length - 1; i += 1)
+		if (Labels != null)
 		{
-			gbc = SetGridPos(gbc, i + 1, 0);
-			panel.add(Labels[i], gbc);
+			for (int i = 0; i <= Labels.length - 1; i += 1)
+			{
+				gbc.gridx = i + 1;
+				gbc.gridy = 0;
+				panel.add(Labels[i], gbc);
+			}
 		}
 		int gridx = 0, gridy = 1;
-		for (int i = 0; i <= Buttons.length - 1; i += 1)
+		for (int i = 0; i <= Buttons.size() - 1; i += 1)
 		{
-			AddButton(panel, gbc, Buttons[i], gridx, gridy);
+			gbc.gridx = gridx;
+			gbc.gridy = gridy;
+			panel.add(Buttons.get(i), gbc);
 			gridx += 1;
 		}
 		return panel;
@@ -91,7 +95,6 @@ public class InputPanelType2 extends JDialog implements ActionListener
 	public String run() 
 	{
 		this.setVisible(true);
-		//Here the program will "stop" until it's "dispose()"d, when the "dispose()" happens, the next line will happen
 		return Input;
 	}
 }

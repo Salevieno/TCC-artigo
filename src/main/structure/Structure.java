@@ -491,7 +491,10 @@ public class Structure
 	{
 		System.out.println(" *** Structure information ***");
 		System.out.println(name);
-		mesh.print() ;
+		if (mesh != null)
+		{
+			mesh.print() ;
+		}
 		if (mats != null)
 		{			
 			System.out.println();

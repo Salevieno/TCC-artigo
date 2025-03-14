@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
@@ -98,58 +98,65 @@ public class Menus extends JFrame
 	Dimension defaultPanelSize = new Dimension(260, 300);
 	private static final Dimension initialSize = new Dimension(1084, 700) ;
 	
-	/* Global variables */	
 	private static MyCanvas MainCanvas ;
 
-	int[] FrameTopLeftPos;
 	boolean ShowElems, ShowReactionArrows, ShowReactionValues, ShowLoadsValues;
     boolean ShowCanvas, ShowGrid, ShowMousePos;
     public boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
     boolean ReadyForAnalysis;
     public boolean[] StepIsComplete;	
 	
-	/*
-		* Neutral: 0, 1, 2, 3
-		* Primary: 4, 5, 6, 7, 8, 9, 10
-		* Contrast: 5 w 9, 4 w 9, 5 w 8, 6 w 9, 6 w 7, 6 w 8
-		* 
-		* Main background: 3
-		* Menu background: 6
-		* 
-		* Unselected: 0
-		* Selection: 10
-		* Loads: 7
-		* Supports: 7
-		* Displacements: 4
-		* Reactions: 8
-	*/
-	public static final Color[] palette = new Color[]		
-	{
-		new Color(35, 31, 31),	// black
-		new Color(204, 204, 204),	// gray
-		new Color(250, 246, 246),	// white
-		new Color(225, 211, 211),	// red white
-		new Color(32, 95, 102),	// blue green
-		new Color(90, 93, 136),	// dark blue
-		new Color(84, 87, 80),	// dark gray green
-		new Color(228, 137, 92),	// red
-		new Color(143, 226, 210),	// red pink
-		new Color(206, 235, 160),	// orange
-		new Color(237, 100, 91),	// green yellow
-		new Color(237, 91, 176)	// light blue
-	} ;
+	public static final Point frameTopLeft;
+	public static final Color[] palette  ;
+	private static final Menus instance ;
 
-	private static final Menus instance = new Menus();
+	static
+	{
+		frameTopLeft = new Point(150, 50);
+
+		/*
+			* Neutral: 0, 1, 2, 3
+			* Primary: 4, 5, 6, 7, 8, 9, 10
+			* Contrast: 5 w 9, 4 w 9, 5 w 8, 6 w 9, 6 w 7, 6 w 8
+			* 
+			* Main background: 3
+			* Menu background: 6
+			* 
+			* Unselected: 0
+			* Selection: 10
+			* Loads: 7
+			* Supports: 7
+			* Displacements: 4
+			* Reactions: 8
+		*/
+		palette = new Color[]		
+		{
+			new Color(35, 31, 31),	// black
+			new Color(204, 204, 204),	// gray
+			new Color(250, 246, 246),	// white
+			new Color(225, 211, 211),	// red white
+			new Color(32, 95, 102),	// blue green
+			new Color(90, 93, 136),	// dark blue
+			new Color(84, 87, 80),	// dark gray green
+			new Color(228, 137, 92),	// red
+			new Color(143, 226, 210),	// red pink
+			new Color(206, 235, 160),	// orange
+			new Color(237, 100, 91),	// green yellow
+			new Color(237, 91, 176)	// light blue
+		};
+
+		instance = new Menus();
+	}
 	
 	private Menus()
 	{
-		FrameTopLeftPos = new int[] {200, 50};
-		mainPanel = new MainPanel(new Point(FrameTopLeftPos[0], FrameTopLeftPos[1])) ;
+		
+		mainPanel = new MainPanel(frameTopLeft) ;
 		legendPanel = new LegendPanel();
 		diagramsPanel = new DiagramsPanel();
 		jpLists = new ListPanel();
 
-		setLocation(FrameTopLeftPos[0], FrameTopLeftPos[1]);
+		setLocation(frameTopLeft);
 	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
 
 	    MainCanvas = new MyCanvas (new Point(575, 25), new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);	    
@@ -177,7 +184,7 @@ public class Menus extends JFrame
 	
 	public static MyCanvas getMainCanvas() { return MainCanvas ;}
 	
-	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), FrameTopLeftPos) ;}
+	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), frameTopLeft) ;}
 	
 	public boolean[] getAqueleBooleanGrande() { return new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn} ;}
 
@@ -247,26 +254,18 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				//StructureMenuCreateStructureTyping();
-				String[] ElemTypes = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};
-				JLabel[] Labels = new JLabel[] {};
-				JButton[] Buttons = new JButton[ElemTypes.length];
-				boolean[] Enabled = new boolean[ElemTypes.length];
-				Arrays.fill(Enabled, true);
-				for (int b = 0; b <= Buttons.length - 1; b += 1)
+				List<JButton> Buttons = new ArrayList<>();
+				for (int b = 0; b <= 14 - 1; b += 1) // 14 = qtd tipos de elementos
 				{
-					Buttons[b] = new JButton (ElemTypes[b]);
+					Buttons.add(new JButton (String.valueOf(b))) ;
 				}
-				int[][] ButtonSizes = new int[Buttons.length][];
-				Arrays.fill(ButtonSizes, new int[] {30, 20});
-				InputPanelType2 CIT = new InputPanelType2((JFrame) getParent(), "Elem types", FrameTopLeftPos, Labels, Buttons, Enabled, ButtonSizes);
+				InputPanelType2 CIT = new InputPanelType2("Elem types", Buttons);
 				String exampleid = CIT.run();
 				if (exampleid != null)
 				{
 					MenuFunctions.RunExample(Integer.parseInt(exampleid));
 					ActivatePostAnalysisView();
 				}
-				//StructureMenuCreateStructureOnClick(StructShapes);
 			}
 		});
 	    jb[2].addActionListener(new ActionListener()
@@ -1154,18 +1153,17 @@ public class Menus extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				JLabel[] Labels = new JLabel[] {};
-				JButton[] Buttons = new JButton[ElemType.values().length];
-				boolean[] Enabled = new boolean[ElemType.values().length];
-				Arrays.fill(Enabled, true);
-				for (int b = 0; b <= Buttons.length - 1; b += 1)
+				List<JButton> buttons = new ArrayList<JButton>();
+				for (ElemType elemType : ElemType.values())
 				{
-					Buttons[b] = new JButton (ElemType.values()[b].toString());
+					JButton newButton = new JButton(elemType.toString()) ;
+					newButton.setSize(new Dimension(30, 20)) ;
+					newButton.setEnabled(true) ;
+					buttons.add(newButton) ;
 				}
-				int[][] ButtonSizes = new int[Buttons.length][];
-				Arrays.fill(ButtonSizes, new int[] {30, 20});
-				InputPanelType2 CIT = new InputPanelType2((JFrame) getParent(), "Elem types", FrameTopLeftPos, Labels, Buttons, Enabled, ButtonSizes);
+				InputPanelType2 CIT = new InputPanelType2("Elem types", buttons);
 				MainPanel.setElemType(CIT.run());
+				System.out.println(MenuFunctions.SelectedElemType);
 				StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
 				EnableButtons();
 				updateInstructionPanel();
@@ -1306,10 +1304,10 @@ public class Menus extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				JLabel[] Labels = new JLabel[] {new JLabel ("x (m)"), new JLabel ("y (m)"), new JLabel ("z (m)")};
-				JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
-				int[][] ButtonSizes = new int[][] {{100, 20}, {30, 20}, {30, 20}, {30, 20}};
-				InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Coordenadas", "No", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-				double[][] StructCoords = CI.run();
+				InputPanelType1 CI = new InputPanelType1("Coordenadas", "No", Labels, false);
+				double[][] StructCoords = CI.retrieveInput();
+				System.out.println(Arrays.deepToString(StructCoords));
+
 				if (StructCoords != null)
 				{
 					EnableButtons();
@@ -1336,18 +1334,15 @@ public class Menus extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				System.out.println("ClickNodes");
-				JLabel[] Labels = new JLabel[] {};
-				JButton[] Buttons = new JButton[StructureShape.values().length];
-				boolean[] Enabled = new boolean[StructureShape.values().length];
-				for (int b = 0; b <= Buttons.length - 1; b += 1)
+				List<JButton> Buttons = new ArrayList<>();
+				for (int b = 0; b <= Buttons.size() - 1; b += 1)
 				{
-					Buttons[b] = new JButton (StructureShape.values()[b].toString());
+					Buttons.add(new JButton (StructureShape.values()[b].toString())) ;
 				}
-				int[][] ButtonSizes = new int[Buttons.length][];
-				Arrays.fill(ButtonSizes, new int[] {30, 20});
-				Arrays.fill(Enabled, true);
-				InputPanelType2 CIT = new InputPanelType2((JFrame) getParent(), "Structure shape", FrameTopLeftPos, Labels, Buttons, Enabled, ButtonSizes);
-				MainPanel.CreateStructureOnClick(StructureShape.valueOf(CIT.run()));
+				InputPanelType2 CIT = new InputPanelType2("Structure shape", Buttons);
+				// String input = CIT.run() ;
+				// MainPanel.CreateStructureOnClick(StructureShape.valueOf(input));
+
 				MenuFunctions.SnipToGridIsOn = false;
 				UpperToolbarButton[0].setEnabled(true);
 				UpperToolbarButton[0].setVisible(true);
@@ -1607,17 +1602,12 @@ public class Menus extends JFrame
 				if (ReadyForAnalysis)
 				{
 					String[] ButtonNames = new String[] {"Linear elâstica", "Geometria nâo-linear", "Material nâo-linear", "Ambos nâo-lineares"};
-					JLabel[] Labels = new JLabel[] {};
-					JButton[] Buttons = new JButton[4];
-					boolean[] Enabled = new boolean[4];
-					for (int b = 0; b <= Buttons.length - 1; b += 1)
+					List<JButton> Buttons = new ArrayList<>();
+					for (int b = 0; b <= Buttons.size() - 1; b += 1)
 					{
-						Buttons[b] = new JButton (ButtonNames[b]);
+						Buttons.add(new JButton (ButtonNames[b])) ;
 					}
-					int[][] ButtonSizes = new int[Buttons.length][];
-					Arrays.fill(ButtonSizes, new int[] {30, 20});
-					Arrays.fill(Enabled, true);
-					InputPanelType2 CIT = new InputPanelType2((JFrame) getParent(), "Analysis types", FrameTopLeftPos, Labels, Buttons, Enabled, ButtonSizes);
+					InputPanelType2 CIT = new InputPanelType2("Analysis types", Buttons);
 					String AnalysisType = CIT.run();
 					
 					int NIter = 1, NLoadSteps = 1;
@@ -1884,19 +1874,17 @@ public class Menus extends JFrame
 	public void StructureMenuCreateMesh(MeshType meshType)
 	{
 		JLabel[] Labels = new JLabel[2];
-		JButton[] Buttons = new JButton[] {new JButton ("Ok"), new JButton ("Cancel")};
-		int[][] ButtonSizes = new int[Buttons.length][];
-		Arrays.fill(ButtonSizes, new int[] {30, 20});
 		if (meshType.equals(MeshType.cartesian))
 		{
-			Labels = new JLabel[] {new JLabel ("Nâ pontos em x"), new JLabel ("Nâ pontos em y")};
+			Labels = new JLabel[] {new JLabel ("N° pontos em x"), new JLabel ("N° pontos em y")};
 		}
 		else if (meshType.equals(MeshType.radial))
 		{
-			Labels = new JLabel[] {new JLabel ("Nâ camadas"), new JLabel ("Nâ pontos por camada")};
+			Labels = new JLabel[] {new JLabel ("N° camadas"), new JLabel ("N° pontos por camada")};
 		}
-		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Propriedades da malha", "Malha", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(CI.run());
+		InputPanelType1 CI = new InputPanelType1("Propriedades da malha", "Malha", Labels, false);
+		double[][] input = CI.retrieveInput() ;
+		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(input);
 		
 		MainPanel.structure.removeSupports() ;
 		MainPanel.loading.clearLoads() ;
@@ -1911,10 +1899,8 @@ public class Menus extends JFrame
 	public void StructureMenuCreateMaterials()
 	{
 		JLabel[] Labels = new JLabel[] {new JLabel ("E (GPa)"), new JLabel ("v"), new JLabel ("fu (MPa)")};
-		JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
-		int[][] ButtonSizes = new int[][] {{100, 20}, {30, 20}, {30, 20}, {30, 20}};
-		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Materials", "Mat", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		double[][] createdMaterials = CI.run() ;
+		InputPanelType1 CI = new InputPanelType1("Materials", "Mat", Labels, true);
+		double[][] createdMaterials = CI.retrieveInput() ;
 		System.out.println("\ncreated materials" + Arrays.deepToString(createdMaterials));
 		List<Material> mats = new ArrayList<>() ;
 		for (int i = 0 ; i <= createdMaterials.length - 1 ; i += 1)
@@ -1928,10 +1914,8 @@ public class Menus extends JFrame
 	public void StructureMenuCreateSections()
 	{
 		JLabel[] Labels = new JLabel[] {new JLabel ("espessura (mm)")};
-		JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
-		int[][] ButtonSizes = new int[][] {{100, 20}, {50, 20}, {30, 20}, {50, 20}};
-		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Cross sections", "Sec", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		double[][] createdSections = CI.run() ;
+		InputPanelType1 CI = new InputPanelType1("Cross sections", "Sec", Labels, true);
+		double[][] createdSections = CI.retrieveInput() ;
 		List<Section> secs = new ArrayList<>() ;
 		for (int i = 0 ; i <= createdSections.length - 1 ; i += 1)
 		{
@@ -1944,30 +1928,24 @@ public class Menus extends JFrame
 	public void StructureMenuCreateConcLoads()
 	{
 		JLabel[] Labels = new JLabel[] {new JLabel ("Fx (kN)"), new JLabel ("Fy (kN)"), new JLabel ("Fz (kN)"), new JLabel ("Mx (kNm)"), new JLabel ("My (kNm)"), new JLabel ("Mz (kNm)")};
-		JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
-		int[][] ButtonSizes = new int[][] {{100, 20}, {50, 20}, {30, 20}, {50, 20}};
-		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Nodal loads", "Nodal load", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		MainPanel.DefineConcLoadTypes(CI.run());
+		InputPanelType1 CI = new InputPanelType1("Nodal loads", "Nodal load", Labels, true);
+		MainPanel.DefineConcLoadTypes(CI.retrieveInput());
 		EnableButtons();
 	}
 	
 	public void StructureMenuCreateDistLoads()
 	{
 		JLabel[] Labels = new JLabel[] {new JLabel ("Load type"), new JLabel ("Load i (kN / kNm)")};
-		JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
-		int[][] ButtonSizes = new int[][] {{100, 20}, {50, 20}, {30, 20}, {50, 20}};
-		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Member loads", "Member load", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		MainPanel.DefineDistLoadTypes(CI.run());
+		InputPanelType1 CI = new InputPanelType1("Member loads", "Member load", Labels, true);
+		MainPanel.DefineDistLoadTypes(CI.retrieveInput());
 		EnableButtons();
 	}
 	
 	public void StructureMenuCreateNodalDisp()
 	{
 		JLabel[] Labels = new JLabel[] {new JLabel ("disp x"), new JLabel ("disp y"), new JLabel ("disp z"), new JLabel ("rot x"), new JLabel ("rot y"), new JLabel ("rot z")};
-		JButton[] Buttons = new JButton[] {new JButton ("Add"), new JButton ("Remove"), new JButton ("Ok"), new JButton ("Cancel")};
-		int[][] ButtonSizes = new int[][] {{100, 20}, {50, 20}, {30, 20}, {50, 20}};
-		InputPanelType1 CI = new InputPanelType1((JFrame) getParent(), "Nodal displacements", "Nodal disp", FrameTopLeftPos, Labels, Buttons, ButtonSizes);
-		MainPanel.DefineNodalDispTypes(CI.run());
+		InputPanelType1 CI = new InputPanelType1("Nodal displacements", "Nodal disp", Labels, true);
+		MainPanel.DefineNodalDispTypes(CI.retrieveInput());
 		EnableButtons();
 	}
 

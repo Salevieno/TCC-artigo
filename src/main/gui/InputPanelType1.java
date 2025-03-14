@@ -1,15 +1,18 @@
 package main.gui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -21,25 +24,55 @@ public class InputPanelType1 extends JDialog implements ActionListener
 	private String NameLabel;
 	private ArrayList<JTextField[]> Lines = new ArrayList<JTextField[]>();	
 	private double[][] Input;
-	private JButton[] Buttons;
-	
-	public InputPanelType1 (JFrame parent, String PanelName, String NameLabel, int[] Location, JLabel[] Labels, JButton[] Buttons, int[][] ButtonSizes)
+	private List<JButton> Buttons;
+
+	private static final JButton addButton ;
+	private static final JButton removeButton ;
+	private static final JButton okButton ;
+	private static final JButton cancelButton ;
+
+	static
 	{
-		super(parent, PanelName, true);
+		addButton = new JButton("Add");
+		addButton.setSize(100, 20);
+		removeButton = new JButton("Remove");
+		removeButton.setSize(30, 20);
+		okButton = new JButton("Ok");
+		okButton.setSize(30, 20);
+		cancelButton = new JButton("Cancel");
+		cancelButton.setSize(30, 20);
+	}
+	
+	public InputPanelType1(String PanelName, String NameLabel, Point location, JLabel[] Labels, boolean AddRemoveButtons)
+	{
+		setTitle(PanelName);
 		this.Lines.add(CreateLineTextFields(Labels.length));
 		this.NameLabel = NameLabel;
 		this.Labels = Labels;
-		this.Buttons = Buttons;
-		for (int i = 0; i <= Buttons.length - 1; i += 1)
+		this.Buttons = new ArrayList<>();
+		
+		if (AddRemoveButtons)
 		{
-			this.Buttons[i].setSize(ButtonSizes[i][0], ButtonSizes[i][1]);
-			this.Buttons[i].addActionListener(this);
+			this.Buttons.add(addButton);
+			this.Buttons.add(removeButton);
 		}
+		
+		this.Buttons.add(okButton);
+		this.Buttons.add(cancelButton);
+		Buttons.forEach(button -> button.addActionListener(this));
+
+		setVisible(true);
 		JPanel panel = DrawScreen();
-		setLocation(Location[0], Location[1]);
+		setLocation(location);
 		getContentPane().add(panel);
 		pack();
 	}
+
+	public InputPanelType1(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons)
+	{
+		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons);
+	}
+
 
 	private JTextField[] CreateLineTextFields(int NTextField)
 	{
@@ -54,9 +87,9 @@ public class InputPanelType1 extends JDialog implements ActionListener
 	public void actionPerformed(ActionEvent ae) 
 	{
 		Object source = ae.getSource();
-		for (int i = 0; i <= Buttons.length - 1; i += 1)
+		for (int i = 0; i <= Buttons.size() - 1; i += 1)
 		{
-			if (source == Buttons[i] & Buttons[i].getText().contains("Add"))
+			if (source == Buttons.get(i) & Buttons.get(i).getText().contains("Add"))
 			{
 				Lines.add(CreateLineTextFields(Labels.length));
 				getContentPane().removeAll();
@@ -64,7 +97,7 @@ public class InputPanelType1 extends JDialog implements ActionListener
 				getContentPane().add(panel);
 				pack();
 			}
-			if(source == Buttons[i] & Buttons[i].getText().contains("Remove"))
+			if(source == Buttons.get(i) & Buttons.get(i).getText().contains("Remove"))
 			{
 				Lines.remove(Lines.size() - 1);
 				getContentPane().removeAll();
@@ -72,7 +105,7 @@ public class InputPanelType1 extends JDialog implements ActionListener
 				getContentPane().add(panel);
 				pack();
 			}
-			if (source == Buttons[i] & Buttons[i].getText().equals("Ok")) 
+			if (source == Buttons.get(i) & Buttons.get(i).getText().equals("Ok")) 
 			{
 				this.Input = new double[Lines.size()][Lines.get(0).length];
 				for(int j = 0; j < Lines.size(); j += 1)
@@ -82,10 +115,12 @@ public class InputPanelType1 extends JDialog implements ActionListener
 						this.Input[j][k] = Double.parseDouble(Lines.get(j)[k].getText());
 					}
 				}
+				System.out.println("Ok clicado");
 				dispose();
 			}
-			if(source == Buttons[i] & Buttons[i].getText().equals("Cancel"))
+			if(source == Buttons.get(i) & Buttons.get(i).getText().equals("Cancel"))
 			{
+				System.out.println("Cancel clicado");
 				dispose();
 			}
 		}
@@ -133,29 +168,30 @@ public class InputPanelType1 extends JDialog implements ActionListener
 			gridx = 0;
 			gridy += 1;
 		}
-		AddButton(panel, gbc, Buttons[0], gridx, gridy);
+		AddButton(panel, gbc, Buttons.get(0), gridx, gridy);
 		gridx += 1;
 		if (1 < Lines.size())
 		{
-			AddButton(panel, gbc, Buttons[1], gridx, gridy);
+			AddButton(panel, gbc, Buttons.get(1), gridx, gridy);
 			gridx += 1;
 		}
-		if (2 < Buttons.length)
+		if (2 < Buttons.size())
 		{
-			AddButton(panel, gbc, Buttons[2], gridx, gridy);
+			AddButton(panel, gbc, Buttons.get(2), gridx, gridy);
 			gridx += 1;
 		}
-		if (3 < Buttons.length)
+		if (3 < Buttons.size())
 		{
-			AddButton(panel, gbc, Buttons[3], gridx, gridy);
+			AddButton(panel, gbc, Buttons.get(3), gridx, gridy);
 			gridx += 1;
 		}
 		return panel;
 	}
 
-	public double[][] run() 
+	public double[][] retrieveInput() 
 	{
-		this.setVisible(true);
+		// this.setVisible(true);
+		System.out.println("returned input" + Arrays.deepToString(Input));
 		//Here the program will "stop" until it's "dispose()"d, when the "dispose()" happens, the next line will happen
 		return Input;
 	}

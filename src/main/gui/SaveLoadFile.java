@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,14 +32,14 @@ public class SaveLoadFile extends JDialog implements ActionListener
 		return File;
 	}
 	
-	public SaveLoadFile (JFrame parent, int[] Location)
+	public SaveLoadFile (JFrame parent, Point Location)
 	{
 		super(parent,"File Name",true);
 		//this.parent = parent;
 		this.FileName.add(CreateLineTextField());
 		JPanel panel = DrawScreen();
 
-		setLocation(Location[0], Location[1]);
+		setLocation(Location);
 		getContentPane().add(panel);
 		pack();
 	}
