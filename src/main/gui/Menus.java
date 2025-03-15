@@ -192,296 +192,6 @@ public class Menus extends JFrame
 	
 	public void setStepIsComplete(boolean[] StepIsComplete) {this.StepIsComplete = StepIsComplete ;}
 	
-	
-	private JPanel createToolbar1()
-	{
-		/* Botâes no primeiro painel*/
-		JPanel toolbar1Panel = new JPanel();		
-	    JButton[] jb = new JButton[28];
-	    String[] ButtonNames = new String[jb.length];
-	    Color ButtonBGColor = palette[1];
-		toolbar1Panel.setLayout(new GridLayout(4, 0));
-		toolbar1Panel.setBackground(palette[1]);
-	    ButtonNames[0] = "Especial";
-	    ButtonNames[1] = "Exemplo";
-	    ButtonNames[2] = "Criar malha";
-	    ButtonNames[3] = "Criar materiais";
-	    ButtonNames[4] = "Criar seçõs";
-	    ButtonNames[5] = "Criar cargas concentradas";
-	    ButtonNames[6] = "Criar cargas distribuâdas";
-	    ButtonNames[7] = "Criar deslocamentos nodais";
-	    ButtonNames[8] = "Adicionar materiais aos elementos";
-	    ButtonNames[9] = "Adicionar seçõs aos elementos";
-	    ButtonNames[10] = "Adicionar apoios aos nós";
-	    ButtonNames[11] = "Adicionar cargas concentradas aos nós";
-	    ButtonNames[12] = "Adicionar cargas distribuâdas aos elementos";
-	    ButtonNames[13] = "Adicionar deslocamentos nodais aos nós";
-	    ButtonNames[14] = "Mostrar graus de liberdade";
-	    ButtonNames[15] = "Mostrar nâmeros dos nós";
-	    ButtonNames[16] = "Mostrar nâmeros dos elementos";
-	    ButtonNames[17] = "Mostrar materiais dos elementos";
-	    ButtonNames[18] = "Mostrar seçõs dos elementos";
-	    ButtonNames[19] = "Mostrar nós";
-	    ButtonNames[20] = "Mostrar elementos";
-	    ButtonNames[21] = "Mostrar contornos dos elementos";
-	    ButtonNames[22] = "Mostrar apoios";
-	    ButtonNames[23] = "Mostrar cargas concentradas";
-	    ButtonNames[24] = "Mostrar cargas distribuâdas";
-	    ButtonNames[25] = "Mostrar deslocamentos nodais";
-	    ButtonNames[26] = "Mostrar valores das cargas e reaçõs";
-	    ButtonNames[27] = "Mostrar reaçõs";
-	    for (int b = 0; b <= jb.length - 1; b += 1)
-	    {
-			jb[b] = AddButton(null, new int[2], new int[] {32, 32}, 12, new int[] {0, 0, 0, 0}, ButtonBGColor);
-		    jb[b].setToolTipText(ButtonNames[b]);
-			jb[b].setIcon(new ImageIcon("./Icons/Tb1B" + String.valueOf(b + 1) + ".png"));
-			jb[b].setFocusable(false);
-			jb[b].setHorizontalAlignment(SwingConstants.CENTER);
-		    toolbar1Panel.add(jb[b]);
-	    }
-	    
-	    jb[0].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.Especial();
-				ActivatePostAnalysisView();
-			}
-		});
-	    jb[1].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				List<JButton> Buttons = new ArrayList<>();
-				for (int b = 0; b <= 14 - 1; b += 1) // 14 = qtd tipos de elementos
-				{
-					Buttons.add(new JButton (String.valueOf(b))) ;
-				}
-				InputPanelType2 CIT = new InputPanelType2("Elem types", Buttons);
-				String exampleid = CIT.run();
-				if (exampleid != null)
-				{
-					MenuFunctions.RunExample(Integer.parseInt(exampleid));
-					ActivatePostAnalysisView();
-				}
-			}
-		});
-	    jb[2].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//StructureMenuCreateMesh("Cartesian", ElemType, ElemShape, Anal);
-				StructureMenuCreateMesh(MeshType.radial);
-			}
-		});
-	    jb[3].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuCreateMaterials();
-			}
-		});
-	    jb[4].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuCreateSections();
-			}
-		});
-	    jb[5].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuCreateConcLoads();
-			}
-		});
-	    jb[6].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuCreateDistLoads();
-			}
-		});
-	    jb[7].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuCreateNodalDisp();
-			}
-		});
-	    jb[8].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuAssignMaterials();
-			}
-		});
-	    jb[9].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuAssignSections();
-			}
-		});
-	    jb[10].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuAssignSupports();
-			}
-		});
-	    jb[11].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuAssignConcLoads();
-			}
-		});
-	    jb[12].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuAssignDistLoads();
-			}
-		});
-	    jb[13].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				StructureMenuAssignNodalDisp();
-			}
-		});
-	    jb[14].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.DOFNumberView();
-			}
-		});
-	    jb[15].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.NodeNumberView();
-			}
-		});
-	    jb[16].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.ElemNumberView();
-			}
-		});
-	    jb[17].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.MatView();
-			}
-		});
-	    jb[18].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.SecView();
-			}
-		});
-	    jb[19].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.NodeView();
-			}
-		});
-	    jb[20].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.ElemView();
-			}
-		});
-	    jb[21].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.ElemContourView();
-			}
-		});
-	    jb[22].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.SupView();
-			}
-		});
-	    jb[23].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.ConcLoadsView();
-			}
-		});
-	    jb[24].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.DistLoadsView();
-			}
-		});
-	    jb[25].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.NodalDispsView();
-			}
-		});
-	    jb[26].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.LoadsValuesView();
-				MenuFunctions.ReactionValuesView();
-			}
-		});
-	    jb[27].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.ReactionArrowsView();
-			}
-		});
-
-		return toolbar1Panel;
-	}
-	
 	private JPanel createToolbar2()
 	{
 		/* Listas no segundo painel*/
@@ -540,7 +250,7 @@ public class Menus extends JFrame
 		
 		for (int b = 0; b <= UpperToolbarButton.length - 1; b += 1)
 		{
-			UpperToolbarButton[b] = AddButton(ButtonNames[b], new int[2], new int[] {ButtonLength[b], 30}, 11, new int[] {2, 2, 2, 2}, ButtonBgColor);
+			UpperToolbarButton[b] = ToolbarButtons.AddButton(ButtonNames[b], new int[2], new int[] {ButtonLength[b], 30}, 11, new int[] {2, 2, 2, 2}, ButtonBgColor);
 			UpperToolbarButton[b].setEnabled(false);
 			UpperToolbarButton[b].setVisible(false);
 			UpperToolbarButton[b].setFocusable(false);
@@ -929,7 +639,8 @@ public class Menus extends JFrame
 	private JPanel createWestPanels(JPanel Listsplot)
 	{
 		JPanel W = new JPanel(new GridLayout(0, 1));
-		tb1 = createToolbar1();
+		tb1 = new ToolbarButtons();
+		System.out.println(tb1);
 		tb2 = createToolbar2();
 		tb2.setVisible(false);
 		ListsPanel = Listsplot;
@@ -1061,7 +772,7 @@ public class Menus extends JFrame
 		SaveResults.setEnabled(false);
 	}
 
-	private void ActivatePostAnalysisView()
+	public void ActivatePostAnalysisView()
 	{
 		if (!((Double)MainPanel.structure.getU()[0]).isNaN())
 		{
@@ -2022,17 +1733,6 @@ public class Menus extends JFrame
 	}
 
 
-	private static JButton AddButton(String Text, int[] Alignment, int[] Size, int FontSize, int[] margins, Color color)
-	{
-		JButton NewButton = new JButton(Text);
-		NewButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, FontSize));
-		NewButton.setVerticalAlignment(Alignment[0]);
-		NewButton.setHorizontalAlignment(Alignment[1]);
-		NewButton.setBackground(color);
-		NewButton.setPreferredSize(new Dimension(Size[0], Size[1]));
-		NewButton.setMargin(new Insets(margins[0], margins[1], margins[2], margins[3]));
-		return NewButton;
-	}
 	
 	public void showCanvasOn()
 	{
