@@ -2,9 +2,13 @@ package org.example.userInterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -12,10 +16,11 @@ import javax.swing.JPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.view.MainPanel;
+import org.example.view.NorthPanel;
 
 public class UpperToolbar extends JPanel
 {
-    private static final String[] ButtonNames = new String[]
+    private static final String[] buttonNames = new String[]
     {
         "Ligar ima",
         "Desligar ima",
@@ -26,26 +31,29 @@ public class UpperToolbar extends JPanel
         "Concluir",
         "Limpar"
     };
+	private static final Color stdButtonColor = Menus.palette[8];
+	private static final Font stdButtonFont = new Font(Font.SANS_SERIF, Font.BOLD, 11) ;
 
-    JButton[] buttons = new JButton[ButtonNames.length];
+    private List<JButton> buttons = new ArrayList<>();
     private boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
 
     public UpperToolbar()
     {
         this.setLayout(new GridBagLayout());
 		this.setBackground(Menus.palette[2]);
-		this.setPreferredSize(new Dimension(580, 30));
+		this.setPreferredSize(new Dimension(580, NorthPanel.stdButtonSize.height));
 
 		int[] ButtonLength = new int[] {62, 80, 138, 100, 50, 52, 50, 50};
-		Color ButtonBgColor = Menus.palette[8];
 		
-		for (int b = 0; b <= buttons.length - 1; b += 1)
+		for (int b = 0; b <= buttonNames.length - 1; b += 1)
 		{
-			buttons[b] = ToolbarButtons.AddButton(ButtonNames[b], new int[2], new int[] {ButtonLength[b], 30}, 11, new int[] {2, 2, 2, 2}, ButtonBgColor);
-			buttons[b].setEnabled(false);
-			buttons[b].setVisible(false);
-			buttons[b].setFocusable(false);
+			JButton newButton = createStdButton(buttonNames[b], new Dimension(ButtonLength[b], NorthPanel.stdButtonSize.height)) ;
+			buttons.add(newButton) ;
 		}
+
+		buttons.forEach(button -> button.setEnabled(false)) ;
+		buttons.forEach(button -> button.setVisible(false)) ;
+		buttons.forEach(button -> button.setFocusable(false)) ;
 		
 		/* Buttons: 
 		 * 0: snip to grid on
@@ -58,31 +66,31 @@ public class UpperToolbar extends JPanel
 		 * 7: clean
 		 * */
 		
-		buttons[0].addActionListener(new ActionListener()
+		buttons.get(0).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
 				MenuFunctions.SnipToGridIsOn = true;
-				buttons[0].setEnabled(false);
-				buttons[0].setVisible(false);
-				buttons[1].setEnabled(true);
-				buttons[1].setVisible(true);
+				buttons.get(0).setEnabled(false);
+				buttons.get(0).setVisible(false);
+				buttons.get(1).setEnabled(true);
+				buttons.get(1).setVisible(true);
 			}
 		});
-		buttons[1].addActionListener(new ActionListener()
+		buttons.get(1).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
 				MenuFunctions.SnipToGridIsOn = false;
-				buttons[1].setEnabled(false);
-				buttons[1].setVisible(false);
-				buttons[0].setEnabled(true);
-				buttons[0].setVisible(true);
+				buttons.get(1).setEnabled(false);
+				buttons.get(1).setVisible(false);
+				buttons.get(0).setEnabled(true);
+				buttons.get(0).setVisible(true);
 			}
 		});
-		buttons[2].addActionListener(new ActionListener()
+		buttons.get(2).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -101,7 +109,7 @@ public class UpperToolbar extends JPanel
 				}
 			}
 		});
-		buttons[3].addActionListener(new ActionListener()
+		buttons.get(3).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -120,7 +128,7 @@ public class UpperToolbar extends JPanel
 				}
 			}
 		});
-		buttons[4].addActionListener(new ActionListener()
+		buttons.get(4).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -128,7 +136,7 @@ public class UpperToolbar extends JPanel
 				MenuFunctions.DiagramScales[1] += 0.1*MenuFunctions.DiagramScales[1];
 			}
 		});
-		buttons[5].addActionListener(new ActionListener()
+		buttons.get(5).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -136,7 +144,7 @@ public class UpperToolbar extends JPanel
 				MenuFunctions.DiagramScales[1] += -0.1*MenuFunctions.DiagramScales[1];
 			}
 		});
-		buttons[6].addActionListener(new ActionListener()
+		buttons.get(6).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -144,7 +152,7 @@ public class UpperToolbar extends JPanel
 				assignToElement() ;
 			}
 		});
-		buttons[7].addActionListener(new ActionListener()
+		buttons.get(7).addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -153,18 +161,28 @@ public class UpperToolbar extends JPanel
 			}
 		});
 		
-		for (int b = 0; b <= buttons.length - 1; b += 1)
-		{
-			this.add(buttons[b]);
-		}
+		buttons.forEach(this::add) ;
     }
+	
+    
+	public static JButton createStdButton(String Text, Dimension size)
+	{
+		JButton NewButton = new JButton(Text);
+		NewButton.setFont(stdButtonFont);
+		NewButton.setVerticalAlignment(0);
+		NewButton.setHorizontalAlignment(0);
+		NewButton.setBackground(stdButtonColor);
+		NewButton.setPreferredSize(size);
+		NewButton.setMargin(new Insets(2, 2, 2, 2));
+		return NewButton;
+	}
 
     private void assignToElement()
     {
         if (!MatAssignmentIsOn && !SecAssignmentIsOn && !DistLoadsAssignmentIsOn) { return ;}
         
-        buttons[2].setEnabled(false);
-        buttons[2].setVisible(false);
+        buttons.get(2).setEnabled(false);
+        buttons.get(2).setVisible(false);
         
         if (MatAssignmentIsOn)
         {
@@ -191,15 +209,15 @@ public class UpperToolbar extends JPanel
     
         if (SupAssignmentIsOn | ConcLoadsAssignmentIsOn | NodalDispsAssignmentIsOn)
         {
-            buttons[3].setEnabled(false);
-            buttons[3].setVisible(false);
+            buttons.get(3).setEnabled(false);
+            buttons.get(3).setVisible(false);
         }
         Menus.getInstance().E1.remove(Menus.getInstance().bp1);
         Menus.getInstance().E1.remove(Menus.getInstance().bp2);
-        buttons[6].setEnabled(false);
-        buttons[6].setVisible(false);
-        buttons[7].setEnabled(false);
-        buttons[7].setVisible(false);
+        buttons.get(6).setEnabled(false);
+        buttons.get(6).setVisible(false);
+        buttons.get(7).setEnabled(false);
+        buttons.get(7).setVisible(false);
         MenuFunctions.selectedNodes = null;
         MenuFunctions.SelectedElems = null;
         MatAssignmentIsOn = false;
@@ -226,42 +244,42 @@ public class UpperToolbar extends JPanel
     public void enableDistLoadAssignment() { DistLoadsAssignmentIsOn = true ;}
     public void enableNodalDispAssignment() { NodalDispsAssignmentIsOn = true ;}
 
-	public void showButtonSnipToGridOn() { buttons[0].setVisible(true) ;}
+	public void showButtonSnipToGridOn() { buttons.get(0).setVisible(true) ;}
 	
 	public void enableButtonsSnipToGrid()
 	{
-		buttons[0].setEnabled(true) ;
-		buttons[0].setVisible(true) ;
-		buttons[1].setEnabled(true) ;
-		buttons[1].setVisible(true) ;
+		buttons.get(0).setEnabled(true) ;
+		buttons.get(0).setVisible(true) ;
+		buttons.get(1).setEnabled(true) ;
+		buttons.get(1).setVisible(true) ;
 	}
 
 	public void enableButtonsScale()
 	{
-		buttons[4].setEnabled(true) ;
-		buttons[4].setVisible(true) ;
-		buttons[5].setEnabled(true) ;
-		buttons[5].setVisible(true) ;
+		buttons.get(4).setEnabled(true) ;
+		buttons.get(4).setVisible(true) ;
+		buttons.get(5).setEnabled(true) ;
+		buttons.get(5).setVisible(true) ;
 	}
 
     public void assignToNodeView()
     {
-		buttons[3].setEnabled(SupAssignmentIsOn);
-		buttons[3].setVisible(SupAssignmentIsOn);
-		buttons[6].setEnabled(SupAssignmentIsOn);
-		buttons[6].setVisible(SupAssignmentIsOn);
-		buttons[7].setEnabled(SupAssignmentIsOn);
-		buttons[7].setVisible(SupAssignmentIsOn);
+		buttons.get(3).setEnabled(SupAssignmentIsOn);
+		buttons.get(3).setVisible(SupAssignmentIsOn);
+		buttons.get(6).setEnabled(SupAssignmentIsOn);
+		buttons.get(6).setVisible(SupAssignmentIsOn);
+		buttons.get(7).setEnabled(SupAssignmentIsOn);
+		buttons.get(7).setVisible(SupAssignmentIsOn);
     }
 
     public void assignToElemView()
     {
-		buttons[2].setEnabled(SupAssignmentIsOn);
-		buttons[2].setVisible(SupAssignmentIsOn);
-		buttons[6].setEnabled(SupAssignmentIsOn);
-		buttons[6].setVisible(SupAssignmentIsOn);
-		buttons[7].setEnabled(SupAssignmentIsOn);
-		buttons[7].setVisible(SupAssignmentIsOn);
+		buttons.get(2).setEnabled(SupAssignmentIsOn);
+		buttons.get(2).setVisible(SupAssignmentIsOn);
+		buttons.get(6).setEnabled(SupAssignmentIsOn);
+		buttons.get(6).setVisible(SupAssignmentIsOn);
+		buttons.get(7).setEnabled(SupAssignmentIsOn);
+		buttons.get(7).setVisible(SupAssignmentIsOn);
     }
 
     

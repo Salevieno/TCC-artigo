@@ -44,8 +44,6 @@ import org.example.view.NorthPanel;
 public class Menus extends JFrame
 {
 	private static final long serialVersionUID = 1L;
-
-	public static final int buttonSize = 32 ;
 	
 	public static final Dimension defaultPanelSize = new Dimension(260, 300);
 	private static final Dimension initialSize = new Dimension(1084, 700) ;

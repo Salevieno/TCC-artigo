@@ -94,7 +94,7 @@ public class MainPanel extends JPanel
 		
 		int[] screenTopLeft = new int[] {0, 0, 0} ;
 		canvas = new MyCanvas(new Point(575, 25), new int[] {(int) (0.4 * initialSize.width), (int) (0.8 * initialSize.height), 0}, new double[] {10, 10, 0}, screenTopLeft);
-		panelPos = new int[] {frameTopLeftPos.x + 7 * Menus.buttonSize + 8, frameTopLeftPos.y + 76 + 8, 0};
+		panelPos = new int[] {frameTopLeftPos.x + 7 * NorthPanel.stdButtonSize.width + 8, frameTopLeftPos.y + 76 + 8, 0};
 		int insets = 5;
 		
 		mouseXPosTextArea = new JTextArea();

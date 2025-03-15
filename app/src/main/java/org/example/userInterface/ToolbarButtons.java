@@ -344,16 +344,4 @@ public class ToolbarButtons extends JPanel
         // });
     }
     
-	public static JButton AddButton(String Text, int[] Alignment, int[] Size, int FontSize, int[] margins, Color color)
-	{
-		JButton NewButton = new JButton(Text);
-		NewButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, FontSize));
-		NewButton.setVerticalAlignment(Alignment[0]);
-		NewButton.setHorizontalAlignment(Alignment[1]);
-		NewButton.setBackground(color);
-		NewButton.setPreferredSize(new Dimension(Size[0], Size[1]));
-		NewButton.setMargin(new Insets(margins[0], margins[1], margins[2], margins[3]));
-		return NewButton;
-	}
-    
 }
