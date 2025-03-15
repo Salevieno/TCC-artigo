@@ -5,7 +5,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
-import main.gui.DrawingOnAPanel;
+import main.userInterface.DrawingOnAPanel;
 import main.utilidades.Point3D;
 
 public class MyCanvas

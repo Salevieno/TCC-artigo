@@ -8,11 +8,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
-import main.gui.DrawingOnAPanel;
-import main.gui.Menus;
 import main.mainTCC.MenuFunctions;
 import main.structure.Material;
 import main.structure.Section;
+import main.userInterface.DrawingOnAPanel;
+import main.userInterface.Menus;
 
 public class ListPanel extends JPanel
 {

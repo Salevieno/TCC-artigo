@@ -23,8 +23,6 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
-import main.gui.DrawingOnAPanel;
-import main.gui.Menus;
 import main.loading.Loading;
 import main.mainTCC.Analysis;
 import main.mainTCC.MenuFunctions;
@@ -46,6 +44,8 @@ import main.structure.Section;
 import main.structure.Structure;
 import main.structure.StructureShape;
 import main.structure.Supports;
+import main.userInterface.DrawingOnAPanel;
+import main.userInterface.Menus;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
 

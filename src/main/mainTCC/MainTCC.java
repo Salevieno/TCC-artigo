@@ -9,7 +9,7 @@ package main.mainTCC;
 
 import java.awt.EventQueue;
 
-import main.gui.Menus;
+import main.userInterface.Menus;
 
 public class MainTCC
 {

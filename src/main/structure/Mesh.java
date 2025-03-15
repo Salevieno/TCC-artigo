@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import main.gui.DrawingOnAPanel;
-import main.gui.Menus;
+import main.userInterface.DrawingOnAPanel;
+import main.userInterface.Menus;
 import main.utilidades.Point3D;
 import main.utilidades.Util;
 

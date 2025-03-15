@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import main.gui.DrawingOnAPanel;
 import main.mainTCC.MenuFunctions;
+import main.userInterface.DrawingOnAPanel;
 
 public class InstructionsPanel extends JPanel
 {

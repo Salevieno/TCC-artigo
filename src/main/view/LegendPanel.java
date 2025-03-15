@@ -8,10 +8,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import main.gui.DrawingOnAPanel;
-import main.gui.Menus;
-import main.mainTCC.MenuFunctions;
 import main.structure.Structure;
+import main.userInterface.DrawingOnAPanel;
+import main.userInterface.Menus;
 import main.utilidades.Util;
 
 public class LegendPanel extends JPanel

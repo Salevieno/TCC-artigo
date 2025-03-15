@@ -2,7 +2,7 @@ package main.structure;
 
 import java.awt.Color;
 
-import main.gui.Menus;
+import main.userInterface.Menus;
 
 public class Reactions
 {

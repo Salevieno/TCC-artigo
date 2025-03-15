@@ -1,4 +1,4 @@
-package main.gui;
+package main.userInterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -138,7 +138,7 @@ public class ToolbarButtons extends JPanel
             public void actionPerformed(ActionEvent e) 
             {
                 //StructureMenuCreateMesh("Cartesian", ElemType, ElemShape, Anal);
-                Menus.getInstance().StructureMenuCreateMesh(MeshType.radial);
+                Menus.getInstance().getMenuStructure().StructureMenuCreateMesh(MeshType.radial);
             }
         });
         buttonCreateMat.addActionListener(new ActionListener()
@@ -146,7 +146,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuCreateMaterials();
+                Menus.getInstance().getMenuStructure().createMaterials();
             }
         });
         buttonCreateSec.addActionListener(new ActionListener()
@@ -154,7 +154,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuCreateSections();
+                Menus.getInstance().getMenuStructure().createSections();
             }
         });
         buttonCreateConcLoad.addActionListener(new ActionListener()
@@ -162,7 +162,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuCreateConcLoads();
+                Menus.getInstance().getMenuStructure().createConcLoads();
             }
         });
         buttonCreateDistLoad.addActionListener(new ActionListener()
@@ -170,7 +170,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuCreateDistLoads();
+                Menus.getInstance().getMenuStructure().createDistLoads();
             }
         });
         buttonCreateNodalDisp.addActionListener(new ActionListener()
@@ -178,7 +178,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuCreateNodalDisp();
+                Menus.getInstance().getMenuStructure().createNodalDisp();
             }
         });
         buttonAddMat.addActionListener(new ActionListener()
@@ -186,7 +186,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuAssignMaterials();
+                Menus.getInstance().getMenuStructure().StructureMenuAssignMaterials();
             }
         });
         buttonAddSec.addActionListener(new ActionListener()
@@ -194,7 +194,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuAssignSections();
+                Menus.getInstance().getMenuStructure().StructureMenuAssignSections();
             }
         });
         buttonAddSup.addActionListener(new ActionListener()
@@ -202,7 +202,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuAssignSupports();
+                Menus.getInstance().getMenuStructure().StructureMenuAssignSupports();
             }
         });
         buttonAddConcLoads.addActionListener(new ActionListener()
@@ -210,7 +210,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuAssignConcLoads();
+                Menus.getInstance().getMenuStructure().StructureMenuAssignConcLoads();
             }
         });
         buttonAddDistLoads.addActionListener(new ActionListener()
@@ -218,7 +218,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuAssignDistLoads();
+                Menus.getInstance().getMenuStructure().StructureMenuAssignDistLoads();
             }
         });
         buttonAddNodalDisps.addActionListener(new ActionListener()
@@ -226,7 +226,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().StructureMenuAssignNodalDisp();
+                Menus.getInstance().getMenuStructure().StructureMenuAssignNodalDisp();
             }
         });
         buttonShowDOFs.addActionListener(new ActionListener()

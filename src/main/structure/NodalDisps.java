@@ -3,7 +3,7 @@ package main.structure;
 import java.awt.Color;
 import java.util.Arrays;
 
-import main.gui.Menus;
+import main.userInterface.Menus;
 
 public class NodalDisps
 {
