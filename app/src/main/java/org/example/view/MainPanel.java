@@ -652,42 +652,6 @@ public class MainPanel extends JPanel
 		MenuFunctions.NodalDispType = NodalDisps;
 	}
 	
-	public static void StructureMenuAssignMaterials()
-	{
-		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		selectedMatID = 0;
-	}
-	
-	public static void StructureMenuAssignSections()
-	{
-		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		selectedSecID = 0;
-	}
-	
-	public static void StructureMenuAssignSupports()
-	{
-		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		selectedSupID = 0;
-	}
-	
-	public static void StructureMenuAssignConcLoads()
-	{
-		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		selectedConcLoadID = 0;
-	}
-	
-	public static void StructureMenuAssignDistLoads()
-	{
-		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		selectedDistLoadID = 0;
-	}
-	
-	public static void StructureMenuAssignNodalDisps()
-	{
-		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		selectedNodalDispID = 0;
-	}
-	
 	public static Object[] CreatureStructure(List<Point3D> StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType,
 			Material CurrentMatType, List<Material> matTypes, Section CurrentSecType, List<Section> secTypes,
 			int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
@@ -840,10 +804,7 @@ public class MainPanel extends JPanel
 			if (!StructureCreationIsOn)
 			{
 				Menus.getInstance().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
-				Menus.getInstance().UpperToolbarButton[0].setEnabled(false);
-				Menus.getInstance().UpperToolbarButton[0].setVisible(false);
-				Menus.getInstance().UpperToolbarButton[1].setEnabled(false);
-				Menus.getInstance().UpperToolbarButton[1].setVisible(false);
+				Menus.getInstance().getNorthPanel().getUpperToolbar().enableButtonsSnipToGrid() ;
 			}
 			if (MenuFunctions.NodeSelectionIsOn)
 			{
@@ -880,8 +841,7 @@ public class MainPanel extends JPanel
 
 	private void handleMouseWheel(MouseWheelEvent evt)
 	{
-		boolean[] assignmentIsOn = new boolean[] {Menus.getInstance().MatAssignmentIsOn, Menus.getInstance().SecAssignmentIsOn, Menus.getInstance().SupAssignmentIsOn,
-			Menus.getInstance().ConcLoadsAssignmentIsOn, Menus.getInstance().DistLoadsAssignmentIsOn, Menus.getInstance().NodalDispsAssignmentIsOn} ;
+		boolean[] assignmentIsOn = Menus.getInstance().getNorthPanel().getUpperToolbar().getAqueleBooleanGrande() ;
 		double qtdRotation = evt.getWheelRotation() ;
 
 		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1]);
@@ -893,32 +853,32 @@ public class MainPanel extends JPanel
 		if (assignmentIsOn[0] & !MouseIsInMainCanvas)
 		{
 			selectedMatID += qtdRotation;
-			selectedMatID = Math.min(Math.max(selectedMatID, 0), MenuFunctions.matTypes.size() - 1);
+			selectedMatID = Util.clamp(selectedMatID, 0, MenuFunctions.matTypes.size() - 1) ;
 		}
 		if (assignmentIsOn[1] & !MouseIsInMainCanvas)
 		{
 			selectedSecID += qtdRotation;
-			selectedSecID = Math.min(Math.max(selectedSecID, 0), MenuFunctions.secTypes.size() - 1);
+			selectedSecID = Util.clamp(selectedSecID, 0, MenuFunctions.secTypes.size() - 1) ;
 		}
 		if (assignmentIsOn[2] & !MouseIsInMainCanvas)
 		{
 			selectedSupID += qtdRotation;
-			selectedSupID = Math.min(Math.max(selectedSupID, 0), MenuFunctions.SupType.length - 1);
+			selectedSupID = Util.clamp(selectedSupID, 0, MenuFunctions.SupType.length - 1) ;
 		}
 		if (assignmentIsOn[3] & !MouseIsInMainCanvas)
 		{
 			selectedConcLoadID += qtdRotation;
-			selectedConcLoadID = Math.min(Math.max(selectedConcLoadID, 0), MenuFunctions.ConcLoadType.length - 1);
+			selectedConcLoadID = Util.clamp(selectedConcLoadID, 0, MenuFunctions.ConcLoadType.length - 1) ;
 		}
 		if (assignmentIsOn[4] & !MouseIsInMainCanvas)
 		{
 			selectedDistLoadID += qtdRotation;
-			selectedDistLoadID = Math.min(Math.max(selectedDistLoadID, 0), MenuFunctions.DistLoadType.length - 1);
+			selectedDistLoadID = Util.clamp(selectedDistLoadID, 0, MenuFunctions.DistLoadType.length - 1) ;
 		}
 		if (assignmentIsOn[5] & !MouseIsInMainCanvas)
 		{
 			selectedNodalDispID += qtdRotation;
-			selectedNodalDispID = Math.min(Math.max(selectedNodalDispID, 0), MenuFunctions.NodalDispType.length - 1);
+			selectedNodalDispID = Util.clamp(selectedNodalDispID, 0, MenuFunctions.NodalDispType.length - 1) ;
 		}
 	
 

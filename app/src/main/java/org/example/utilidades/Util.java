@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.mainTCC.MenuFunctions;
 import org.example.mainTCC.ReadInput;
 import org.example.structure.ConcLoads;
 import org.example.structure.DistLoads;
@@ -768,6 +769,18 @@ public abstract class Util
 		return avr;
 	}
 	
+	public static int clamp(int value, int min, int max)
+	{
+		return Math.min(Math.max(value, min), max);
+	}
+
+	public static double clamp(double value, double min, double max)
+	{
+		return Math.min(Math.max(value, min), max);
+	}
+	
+	
+
 	public static Color AverageColor(Color[] colors)
 	{
 		double red = 0, green = 0, blue = 0;

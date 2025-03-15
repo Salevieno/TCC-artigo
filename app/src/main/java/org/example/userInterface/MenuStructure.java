@@ -260,8 +260,8 @@ public class MenuStructure extends JMenu
 				// MainPanel.CreateStructureOnClick(StructureShape.valueOf(input));
 
 				MenuFunctions.SnipToGridIsOn = false;
-				Menus.getInstance().UpperToolbarButton[0].setEnabled(true);
-				Menus.getInstance().UpperToolbarButton[0].setVisible(true);
+				Menus.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;
+				Menus.getInstance().getNorthPanel().getUpperToolbar().showButtonSnipToGridOn();
 				Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
 			}
 		});
@@ -377,74 +377,50 @@ public class MenuStructure extends JMenu
 
 	public void StructureMenuAssignMaterials()
 	{
-		Menus.getInstance().MatAssignmentIsOn = !Menus.getInstance().MatAssignmentIsOn;
-		MainPanel.StructureMenuAssignMaterials();
-		Menus.getInstance().UpperToolbarButton[2].setEnabled(Menus.getInstance().MatAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[2].setVisible(Menus.getInstance().MatAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setEnabled(Menus.getInstance().MatAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setVisible(Menus.getInstance().MatAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setEnabled(Menus.getInstance().MatAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setVisible(Menus.getInstance().MatAssignmentIsOn);
+		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
+		MainPanel.selectedMatID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;	
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
 	
 	public void StructureMenuAssignSections()
 	{
-		Menus.getInstance().SecAssignmentIsOn = !Menus.getInstance().SecAssignmentIsOn;
-		MainPanel.StructureMenuAssignSections();
-		Menus.getInstance().UpperToolbarButton[2].setEnabled(Menus.getInstance().SecAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[2].setVisible(Menus.getInstance().SecAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setEnabled(Menus.getInstance().SecAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setVisible(Menus.getInstance().SecAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setEnabled(Menus.getInstance().SecAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setVisible(Menus.getInstance().SecAssignmentIsOn);
+		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
+		MainPanel.selectedSecID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSectionAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
 	
 	public void StructureMenuAssignSupports()
 	{
-		Menus.getInstance().SupAssignmentIsOn = !Menus.getInstance().SupAssignmentIsOn;
-		MainPanel.StructureMenuAssignSupports();
-		Menus.getInstance().UpperToolbarButton[3].setEnabled(Menus.getInstance().SupAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[3].setVisible(Menus.getInstance().SupAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setEnabled(Menus.getInstance().SupAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setVisible(Menus.getInstance().SupAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setEnabled(Menus.getInstance().SupAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setVisible(Menus.getInstance().SupAssignmentIsOn);
+		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
+		MainPanel.selectedSupID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSupportAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
 	
 	public void StructureMenuAssignConcLoads()
 	{
-		Menus.getInstance().ConcLoadsAssignmentIsOn = !Menus.getInstance().ConcLoadsAssignmentIsOn;
-		MainPanel.StructureMenuAssignConcLoads();
-		Menus.getInstance().UpperToolbarButton[3].setEnabled(Menus.getInstance().ConcLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[3].setVisible(Menus.getInstance().ConcLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setEnabled(Menus.getInstance().ConcLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setVisible(Menus.getInstance().ConcLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setEnabled(Menus.getInstance().ConcLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setVisible(Menus.getInstance().ConcLoadsAssignmentIsOn);
+		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
+		MainPanel.selectedConcLoadID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableConcLoadAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
 	
 	public void StructureMenuAssignDistLoads()
 	{
-		Menus.getInstance().DistLoadsAssignmentIsOn = !Menus.getInstance().DistLoadsAssignmentIsOn;
-		MainPanel.StructureMenuAssignDistLoads();
-		Menus.getInstance().UpperToolbarButton[2].setEnabled(Menus.getInstance().DistLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[2].setVisible(Menus.getInstance().DistLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setEnabled(Menus.getInstance().DistLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setVisible(Menus.getInstance().DistLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setEnabled(Menus.getInstance().DistLoadsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setVisible(Menus.getInstance().DistLoadsAssignmentIsOn);
+		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
+		MainPanel.selectedDistLoadID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableDistLoadAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
 	
 	public void StructureMenuAssignNodalDisp()
 	{
-		Menus.getInstance().NodalDispsAssignmentIsOn = !Menus.getInstance().NodalDispsAssignmentIsOn;
-		MainPanel.StructureMenuAssignNodalDisps();
-		Menus.getInstance().UpperToolbarButton[3].setEnabled(Menus.getInstance().NodalDispsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[3].setVisible(Menus.getInstance().NodalDispsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setEnabled(Menus.getInstance().NodalDispsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[6].setVisible(Menus.getInstance().NodalDispsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setEnabled(Menus.getInstance().NodalDispsAssignmentIsOn);
-		Menus.getInstance().UpperToolbarButton[7].setVisible(Menus.getInstance().NodalDispsAssignmentIsOn);
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
+		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
+		MainPanel.selectedNodalDispID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
 
 	public void updateEnable()
@@ -498,10 +474,7 @@ public class MenuStructure extends JMenu
 			// StressContours.setEnabled(true);
 			// StrainContours.setEnabled(true);
 			// InternalForcesContours.setEnabled(true);
-			Menus.getInstance().UpperToolbarButton[4].setEnabled(true);
-			Menus.getInstance().UpperToolbarButton[4].setVisible(true);
-			Menus.getInstance().UpperToolbarButton[5].setEnabled(true);
-			Menus.getInstance().UpperToolbarButton[5].setVisible(true);
+			Menus.getInstance().getNorthPanel().getUpperToolbar().enableButtonsScale() ;
 			// for (int i = 0; i <= elems.get(0).getStrainTypes().length - 1; i += 1)
 			// {
 			// 	if (elems.get(0).getStrainTypes()[i] <= 5)

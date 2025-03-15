@@ -23,16 +23,15 @@ import javax.swing.JPanel;
 import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
-import org.example.structure.Material;
 import org.example.structure.MyCanvas;
 import org.example.structure.Node;
-import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
 import org.example.view.DiagramsPanel;
 import org.example.view.LegendPanel;
 import org.example.view.ListPanel;
 import org.example.view.MainPanel;
+import org.example.view.NorthPanel;
 
 /*
  Prâximas adiçõs
@@ -57,7 +56,8 @@ public class Menus extends JFrame
 	private final ToolbarButtons toolbarButtons = new ToolbarButtons() ;
 	private final ToolbarResults toolbarResults = new ToolbarResults() ;
 	private final InstructionsPanel instructionsPanel = new InstructionsPanel() ;
-	JPanel N1, E1, W1;
+	private final NorthPanel northPanel = new NorthPanel() ;
+	JPanel E1, W1;
 	JPanel mousePanel;
 	JPanel bp1, bp2, bp3;
 	JPanel LDpanel;
@@ -82,11 +82,8 @@ public class Menus extends JFrame
 	JMenuItem[] SubMenuInternalForces;		// Fx, Fy, Fz, Mx, My, Mz
 	JMenuItem Star;
 	
-	public JButton[] UpperToolbarButton;	// 0: Ligar âmâ, 1: Desligar âmâ, 2: Atribuir material, 3: Atribuir seââo, 4: Atribuir apoios, 5: Atribuir cargas conc, 6: Atribuir cargas dist, 7: Atribuir desl nodais, 8: +escala, 9: -escala
-
 	boolean ShowElems, ShowReactionArrows, ShowReactionValues, ShowLoadsValues;
     boolean ShowCanvas, ShowGrid, ShowMousePos;
-    public boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
     boolean ReadyForAnalysis;
 	
 	public static final Point frameTopLeft;
@@ -163,15 +160,6 @@ public class Menus extends JFrame
 		BorderLayout bl = new BorderLayout();
 		newContentPanel.setLayout(bl);
 
-		/* North panels */
-		N1 = new JPanel(new GridBagLayout());
-		JPanel utb = createUpperToolBar();
-		JPanel bp1 = stdPanel(new Dimension(7 * 32 + 4, 30), palette[2]);
-		JPanel bp2 = stdPanel(new Dimension(260, 30), palette[2]);
-		N1.add(bp1);
-		N1.add(utb);
-		N1.add(bp2);
-
 		/* West panels */
 		W1 = new JPanel(new GridLayout(0, 1));		
 		W1.add(toolbarButtons);
@@ -195,7 +183,7 @@ public class Menus extends JFrame
 		E1.add(legendPanel) ;
 		E1.add(LDpanel);
 		
-		newContentPanel.add(N1, BorderLayout.NORTH);
+		newContentPanel.add(northPanel, BorderLayout.NORTH);
 		newContentPanel.add(mainPanel, BorderLayout.CENTER);
 		newContentPanel.add(W1, BorderLayout.WEST);
 		newContentPanel.add(E1, BorderLayout.EAST);
@@ -211,212 +199,13 @@ public class Menus extends JFrame
 	
 	public MenuStructure getMenuStructure() { return menuStructure ;}
 
+	public NorthPanel getNorthPanel() { return northPanel ;}
+
 	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), frameTopLeft) ;}
 	
-	public boolean[] getAqueleBooleanGrande() { return new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn} ;}
-
 	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
 	
-	
-	private JPanel createUpperToolBar()
-	{
-		JPanel uToolbarPanel = new JPanel();
-		uToolbarPanel.setLayout(new GridBagLayout());
-		uToolbarPanel.setBackground(palette[2]);
-		uToolbarPanel.setPreferredSize(new Dimension(580, 30));
-
-		String[] ButtonNames = new String[] {
-			    "Ligar ima",
-			    "Desligar ima",
-			    "Atribuir aos elementos",
-			    "Atribuir aos nos",
-			    "+escala",
-			    "-escala",
-			    "Concluir",
-			    "Limpar"
-			};
-		UpperToolbarButton = new JButton[ButtonNames.length];
-		int[] ButtonLength = new int[] {62, 80, 138, 100, 50, 52, 50, 50};
-		Color ButtonBgColor = palette[8];
-		
-		for (int b = 0; b <= UpperToolbarButton.length - 1; b += 1)
-		{
-			UpperToolbarButton[b] = ToolbarButtons.AddButton(ButtonNames[b], new int[2], new int[] {ButtonLength[b], 30}, 11, new int[] {2, 2, 2, 2}, ButtonBgColor);
-			UpperToolbarButton[b].setEnabled(false);
-			UpperToolbarButton[b].setVisible(false);
-			UpperToolbarButton[b].setFocusable(false);
-		}
-		
-		/* Buttons: 
-		 * 0: snip to grid on
-		 * 1: snip to grid off
-		 * 2: add materials, sections and  dist loads to elements
-		 * 3: add supports, concentrated loads and nodal displacements to nodes
-		 * 4: increase diagrams scale
-		 * 5: decrease diagrams scale
-		 * 6: done
-		 * 7: clean
-		 * */
-		
-		UpperToolbarButton[0].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.SnipToGridIsOn = true;
-				UpperToolbarButton[0].setEnabled(false);
-				UpperToolbarButton[0].setVisible(false);
-				UpperToolbarButton[1].setEnabled(true);
-				UpperToolbarButton[1].setVisible(true);
-			}
-		});
-		UpperToolbarButton[1].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.SnipToGridIsOn = false;
-				UpperToolbarButton[1].setEnabled(false);
-				UpperToolbarButton[1].setVisible(false);
-				UpperToolbarButton[0].setEnabled(true);
-				UpperToolbarButton[0].setVisible(true);
-			}
-		});
-		UpperToolbarButton[2].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				if (MatAssignmentIsOn)
-				{
-					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.matTypes.get(MainPanel.selectedMatID));
-				}
-				if (SecAssignmentIsOn)
-				{
-					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.secTypes.get(MainPanel.selectedSecID));
-				}
-				if (DistLoadsAssignmentIsOn)
-				{
-					MainPanel.AddDistLoads();
-				}
-			}
-		});
-		UpperToolbarButton[3].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				if (SupAssignmentIsOn)
-				{
-					MainPanel.AddSupports();					
-				}
-				if (ConcLoadsAssignmentIsOn)
-				{
-					MainPanel.AddConcLoads();
-				}
-				if (NodalDispsAssignmentIsOn)
-				{
-					MainPanel.AddNodalDisps();
-				}
-			}
-		});
-		UpperToolbarButton[4].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.DiagramScales[1] += 0.1*MenuFunctions.DiagramScales[1];
-			}
-		});
-		UpperToolbarButton[5].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.DiagramScales[1] += -0.1*MenuFunctions.DiagramScales[1];
-			}
-		});
-		UpperToolbarButton[6].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				if (MatAssignmentIsOn | SecAssignmentIsOn | DistLoadsAssignmentIsOn)
-				{
-					UpperToolbarButton[2].setEnabled(false);
-					UpperToolbarButton[2].setVisible(false);
-					
-					if (MatAssignmentIsOn)
-					{
-						System.out.println("Mat types at menus: " + MenuFunctions.matTypes);
-						Element.createMatColors(MenuFunctions.matTypes);
-						for (Element elem : MainPanel.structure.getMesh().getElements())
-						{
-							int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;
-							if (colorID != -1)
-							{
-								elem.setMatColor(Element.matColors[colorID]);
-							}
-						}
-					}
-					if (SecAssignmentIsOn)
-					{
-						Element.setSecColors(MenuFunctions.secTypes);
-						for (Element elem : MainPanel.structure.getMesh().getElements())
-						{
-							int colorID = MenuFunctions.secTypes.indexOf(elem.getSec()) ;
-							elem.setSecColor(Element.SecColors[colorID]);
-						}
-					}
-				}
-				if (SupAssignmentIsOn | ConcLoadsAssignmentIsOn | NodalDispsAssignmentIsOn)
-				{
-					UpperToolbarButton[3].setEnabled(false);
-					UpperToolbarButton[3].setVisible(false);
-				}
-				E1.remove(bp1);
-				E1.remove(bp2);
-				UpperToolbarButton[6].setEnabled(false);
-				UpperToolbarButton[6].setVisible(false);
-				UpperToolbarButton[7].setEnabled(false);
-				UpperToolbarButton[7].setVisible(false);
-				MenuFunctions.selectedNodes = null;
-				MenuFunctions.SelectedElems = null;
-				MatAssignmentIsOn = false;
-				SecAssignmentIsOn = false;
-				SupAssignmentIsOn = false;
-				ConcLoadsAssignmentIsOn = false;
-				DistLoadsAssignmentIsOn = false;
-				NodalDispsAssignmentIsOn = false;
-				MenuFunctions.NodeSelectionIsOn = false;
-				MenuFunctions.ElemSelectionIsOn = false;
-				instructionsPanel.updateStepsCompletion() ;
-				ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
-				
-				if (ReadyForAnalysis)
-				{
-					RunAnalysis.setEnabled(true);
-				}
-			}
-		});
-		UpperToolbarButton[7].addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.Clean(MainPanel.structure, new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn});
-			}
-		});
-		
-		for (int b = 0; b <= UpperToolbarButton.length - 1; b += 1)
-		{
-			uToolbarPanel.add(UpperToolbarButton[b]);
-		}
-		
-		return uToolbarPanel;
-	}
-	
-	private static JPanel stdPanel(Dimension size, Color bgcolor)
+	public static JPanel stdPanel(Dimension size, Color bgcolor)
 	{
 		JPanel blankPanel = new JPanel();
 		blankPanel.setLayout(new GridLayout(1, 1));
@@ -591,10 +380,7 @@ public class Menus extends JFrame
 			StressContours.setEnabled(true);
 			StrainContours.setEnabled(true);
 			InternalForcesContours.setEnabled(true);
-			UpperToolbarButton[4].setEnabled(true);
-			UpperToolbarButton[4].setVisible(true);
-			UpperToolbarButton[5].setEnabled(true);
-			UpperToolbarButton[5].setVisible(true);
+			northPanel.getUpperToolbar().enableButtonsScale() ;
 			for (int i = 0; i <= elems.get(0).getStrainTypes().length - 1; i += 1)
 			{
 				if (elems.get(0).getStrainTypes()[i] <= 5)
