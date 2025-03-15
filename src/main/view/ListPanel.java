@@ -25,6 +25,7 @@ public class ListPanel extends JPanel
         setPreferredSize(initialSize);
         setBackground(Menus.palette[2]);
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		// setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
     }
 
     

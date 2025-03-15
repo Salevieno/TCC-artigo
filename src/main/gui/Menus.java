@@ -146,9 +146,10 @@ public class Menus extends JFrame
 		listsPanel = new ListPanel() ;
 
 		setLocation(frameTopLeft);
-	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
 
-	    MainCanvas = new MyCanvas (new Point(575, 25), new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0}, new double[] {10, 10, 0}, ScreenTopLeft);	    
+	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
+		int[] mainCanvasSize = new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0} ;
+	    MainCanvas = new MyCanvas (new Point(575, 25), mainCanvasSize, new double[] {10, 10, 0}, ScreenTopLeft);	    
 
 		SubMenuDisp = new JMenuItem[6];				// ux, uy, uz, tetax, tetay, tetaz
 		SubMenuStresses = new JMenuItem[6];			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
@@ -168,9 +169,37 @@ public class Menus extends JFrame
 		BorderLayout bl = new BorderLayout();
 		newContentPanel.setLayout(bl);
 
-		N1 = createNorthPanels();
-		W1 = createWestPanels();
-		E1 = createEastPanels();
+		/* North panels */
+		N1 = new JPanel(new GridBagLayout());
+		JPanel utb = createUpperToolBar();
+		JPanel bp1 = stdPanel(new Dimension(7 * 32 + 4, 30), palette[2]);
+		JPanel bp2 = stdPanel(new Dimension(260, 30), palette[2]);
+		N1.add(bp1);
+		N1.add(utb);
+		N1.add(bp2);
+
+		/* West panels */
+		W1 = new JPanel(new GridLayout(0, 1));		
+		W1.add(toolbarButtons);
+		W1.add(toolbarResults);
+		W1.add(listsPanel);
+		W1.add(instructionsPanel);
+
+		/* East panels */
+		E1 = new JPanel(new GridLayout(0, 1));
+		bp1 = stdPanel(defaultPanelSize, palette[2]);
+		bp2 = stdPanel(defaultPanelSize, palette[2]);
+		bp3 = stdPanel(defaultPanelSize, palette[2]);
+		LDpanel = stdPanel(defaultPanelSize, palette[2]);
+		bp1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		bp2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		bp3.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		LDpanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		E1.add(bp1);
+		E1.add(bp2);
+		E1.add(bp3);
+		E1.add(legendPanel) ;
+		E1.add(LDpanel);
 		
 		newContentPanel.add(N1, BorderLayout.NORTH);
 		newContentPanel.add(mainPanel, BorderLayout.CENTER);
@@ -367,7 +396,6 @@ public class Menus extends JFrame
 				MenuFunctions.ElemSelectionIsOn = false;
 				instructionsPanel.updateStepsCompletion() ;
 				ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
-				updateInstructionPanel();
 				
 				if (ReadyForAnalysis)
 				{
@@ -392,7 +420,7 @@ public class Menus extends JFrame
 		return uToolbarPanel;
 	}
 	
-	private JPanel createBlankPanel(Dimension size, Color bgcolor)
+	private static JPanel stdPanel(Dimension size, Color bgcolor)
 	{
 		JPanel blankPanel = new JPanel();
 		blankPanel.setLayout(new GridLayout(1, 1));
@@ -489,70 +517,6 @@ public class Menus extends JFrame
 		return ElemInfoPanel;
 	}
 	
-	public void updateInstructionPanel()
-	{
-
-        boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
-        
-		Color TextColor = palette[0];
-		// JLabel[] iStep = new JLabel[9];
-		
-		
-		// for (int step = 0; step <= iStep.length - 1; step += 1)
-		// {
-		// 	if (StepIsComplete[step])
-		// 	{
-		// 		iStep[step] = new JLabel(Label[step], OkIcon, 2);
-		// 		iStep[step].setForeground(TextColor);
-		// 		iStep[step].setFont(new Font("SansSerif", Font.BOLD, 12));
-		// 	}
-		// 	else
-		// 	{
-		// 		iStep[step] = new JLabel("    " + Label[step]);
-		// 		iStep[step].setForeground(TextColor);
-		// 		iStep[step].setFont(new Font("SansSerif", Font.BOLD, 12));
-		// 	}
-		// 	jpInstruction.add(iStep[step]);
-		// }
-		// if (ReadyForAnalysis)
-		// {
-		// 	jpInstruction.add(new JLabel("Pronta para anâlise!"));
-		// }
-	}
-	
-	private JPanel createNorthPanels()
-	{
-		JPanel N = new JPanel(new GridBagLayout());
-		JPanel utb = createUpperToolBar();
-		JPanel bp1 = createBlankPanel(new Dimension(7 * 32 + 4, 30), palette[2]);
-		JPanel bp2 = createBlankPanel(new Dimension(260, 30), palette[2]);
-		N.add(bp1);
-		N.add(utb);
-		N.add(bp2);
-		
-		return N;
-	}
-	
-	private JPanel createEastPanels()
-	{		
-		JPanel E = new JPanel(new GridLayout(0, 1));
-		bp1 = createBlankPanel(defaultPanelSize, palette[2]);
-		bp2 = createBlankPanel(defaultPanelSize, palette[2]);
-		bp3 = createBlankPanel(defaultPanelSize, palette[2]);
-		LDpanel = createBlankPanel(defaultPanelSize, palette[2]);
-		bp1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		bp2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		bp3.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		LDpanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		E.add(bp1);
-		E.add(bp2);
-		E.add(bp3);
-		E.add(legendPanel) ;
-		E.add(LDpanel);
-		
-		return E;
-	}
-	
 	public void ResetEastPanels()
 	{
 		if (MenuFunctions.selectedNodes != null)
@@ -578,21 +542,7 @@ public class Menus extends JFrame
 		E1.add(LDpanel);
 		repaint();
 	}
-	
-	private JPanel createWestPanels()
-	{
-		JPanel W = new JPanel(new GridLayout(0, 1));
 		
-		listsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		instructionsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		W.add(toolbarButtons);
-		W.add(toolbarResults);
-		W.add(listsPanel);
-		W.add(instructionsPanel);
-		
-		return W;
-	}
-	
 	public void EnableButtons()
 	{
 		Structure structure = MainPanel.structure;
@@ -794,7 +744,6 @@ public class Menus extends JFrame
 				System.out.println(MenuFunctions.SelectedElemType);
 				instructionsPanel.updateStepsCompletion() ;
 				EnableButtons();
-				updateInstructionPanel();
 			}
 		});
 		CreateMaterials.addActionListener(new ActionListener()
@@ -952,7 +901,7 @@ public class Menus extends JFrame
 					MainPanel.structure.updateMaxCoords() ;
 					MainCanvas.setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
 					MainCanvas.setDrawingPos(new int[2]);
-					updateInstructionPanel();
+					instructionsPanel.updateStepsCompletion() ;
 				}
 			}
 		});
@@ -974,7 +923,7 @@ public class Menus extends JFrame
 				MenuFunctions.SnipToGridIsOn = false;
 				UpperToolbarButton[0].setEnabled(true);
 				UpperToolbarButton[0].setVisible(true);
-				updateInstructionPanel();
+				instructionsPanel.updateStepsCompletion() ;
 			}
 		});
 		TypeNodes.setForeground(palette[5]);
@@ -1521,7 +1470,6 @@ public class Menus extends JFrame
 		MenuFunctions.ElemView();
 		instructionsPanel.updateStepsCompletion() ;
 		EnableButtons();
-		updateInstructionPanel();
 	}
 	
 	public void StructureMenuCreateMaterials()

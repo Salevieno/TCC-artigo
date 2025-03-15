@@ -50,6 +50,7 @@ public class InstructionsPanel extends JPanel
 		this.setBackground(Menus.palette[3]);
 		this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Menus.palette[1], null, Menus.palette[2])) ;
 		this.setSize(Menus.defaultPanelSize);
+        // setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
         
 		this.add(title);
 
@@ -70,6 +71,8 @@ public class InstructionsPanel extends JPanel
             ImageIcon updatedIcon = stepIsComplete.get(i) ? okIcon : null;
             label.setIcon(updatedIcon);
         }
+        
+        // boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
     }
     
 	public List<Boolean> CheckSteps(Structure structure)

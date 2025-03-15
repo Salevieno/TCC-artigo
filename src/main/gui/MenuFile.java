@@ -256,7 +256,7 @@ public abstract class MenuFile
 		Menus.getInstance().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
 		Menus.getInstance().DisableButtons();
 		Menus.getInstance().EnableButtons();
-		Menus.getInstance().updateInstructionPanel();
+		Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
 	}
 	
 }
