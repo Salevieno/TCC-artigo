@@ -60,7 +60,8 @@ public class Menus extends JFrame
 
 	/* panel variables */
 	JPanel N1, E1, W1;
-	JPanel tb1, tb2;
+	private final JPanel toolbarButtons = new ToolbarButtons() ;
+	private final JPanel toolbarResults = new ToolbarResults() ;
 	JPanel ListsPanel;
 	JPanel iPanel;
 	JPanel utb, mousePanel;
@@ -191,41 +192,6 @@ public class Menus extends JFrame
 	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
 	
 	public void setStepIsComplete(boolean[] StepIsComplete) {this.StepIsComplete = StepIsComplete ;}
-	
-	private JPanel createToolbar2()
-	{
-		/* Listas no segundo painel*/
-		JPanel toolbar1Panel = new JPanel();
-		toolbar1Panel.setLayout(new GridLayout(5, 0));
-		toolbar1Panel.setBackground(palette[1]);
-		
-		String[] ResultsNames = new String[]{"Deslocamentos", "Tensâes", "Deformaçõs", "Forâas Internas"};
-		JComboBox<String> cbResults = new JComboBox<>(ResultsNames);
-		cbResults.setFocusable(false);
-		toolbar1Panel.add(cbResults);
-		
-		String[] SubResultsNames = new String[]{"X", "Y", "Z", "Tx", "Ty", "Tz"};
-		JComboBox<String> cbSubRes = new JComboBox<>(SubResultsNames);
-		//cbSubRes.setEnable(false);
-		cbSubRes.setFocusable(false);
-		toolbar1Panel.add(cbSubRes);
-		
-		JButton btnCalcular = new JButton("Calcular");
-		btnCalcular.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.SelectedDiagram = cbResults.getSelectedIndex();
-				MainPanel.SelectedVar = cbSubRes.getSelectedIndex();
-				MainPanel.ShowResult(MainPanel.structure);
-			}
-		});
-		btnCalcular.setFocusable(false);
-		toolbar1Panel.add(btnCalcular);
-		
-		return toolbar1Panel;
-	}
 	
 	private JPanel createUpperToolBar()
 	{
@@ -639,18 +605,13 @@ public class Menus extends JFrame
 	private JPanel createWestPanels(JPanel Listsplot)
 	{
 		JPanel W = new JPanel(new GridLayout(0, 1));
-		tb1 = new ToolbarButtons();
-		System.out.println(tb1);
-		tb2 = createToolbar2();
-		tb2.setVisible(false);
+		
 		ListsPanel = Listsplot;
 		iPanel = createInstructionPanel();
-		tb1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		tb2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
 		ListsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
 		iPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		W.add(tb1);
-		W.add(tb2);
+		W.add(toolbarButtons);
+		W.add(toolbarResults);
 		W.add(ListsPanel);
 		W.add(iPanel);
 		
@@ -782,7 +743,7 @@ public class Menus extends JFrame
 			bp3 = legendPanel;
 			E1.add(bp3);
 			E1.add(LDpanel);
-			tb2.setVisible(true);
+			toolbarResults.setVisible(true);
 			EnableButtons();
 		}
 	}

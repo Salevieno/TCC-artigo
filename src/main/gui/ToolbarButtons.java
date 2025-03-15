@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -87,6 +88,7 @@ public class ToolbarButtons extends JPanel
         this.setLayout(new GridLayout(4, 0));
         this.setBackground(Menus.palette[1]);
         this.setVisible(true);
+        this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
     
         ButtonToolbarButtons.getAll().forEach(button -> {
             button.setToolTipText(button.getText());
