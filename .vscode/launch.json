@@ -15,7 +15,7 @@
             "type": "java",
             "name": "App",
             "request": "launch",
-            "mainClass": "org.example.App",
+            "mainClass": "org.example.Main",
             "projectName": "app"
         }
     ]

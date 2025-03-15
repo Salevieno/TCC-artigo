@@ -20,6 +20,8 @@ dependencies {
     testImplementation(libs.junit.jupiter)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // implementation 'com.google.code.gson:gson:2.12.1'
+    implementation("com.google.code.gson:gson:2.12.1")
 
     // This dependency is used by the application.
     implementation(libs.guava)
@@ -34,7 +36,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.App"
+    mainClass = "org.example.Main"
 }
 
 tasks.named<Test>("test") {
