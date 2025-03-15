@@ -1208,7 +1208,7 @@ public abstract class Util
 	
 	public static Object[] LoadEspecialInput()
 	{
-		String fileName = "Especial_input.txt";
+		String fileName = "examples/Especial.txt";
 		String[][] Input = ReadInput.ReadTxtFile(fileName);		
 		List<Point3D> especialCoords = new ArrayList<>();
 		for (int coord = 0; coord <= Input[0].length - 3; coord += 1)

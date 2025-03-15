@@ -1,9 +1,6 @@
 
 /**
-	By Salevieno
-	Last upgrade date: 01/01/0001	
-	Last update: 
-	Next improvements:
+	with love, by Salevieno
 **/
 package org.example;
 
