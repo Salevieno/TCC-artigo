@@ -769,13 +769,16 @@ public class DrawingOnAPanel
 		DrawRoundRect(Pos, "Left", L, H, boardthick, 3, 3, ColorGradient, ContourColor, true);*/
 		int t = 1;
 		int offset = 1;		
-		Color Light = Util.AddColor(FillColor, new double[] {50, 50, 50});
-		Color Shade = Util.AddColor(FillColor, new double[] {-50, -50, -50});
-		DrawRect(Pos, L, H, boardthick, "Left", 0, true, ContourColor, FillColor);
-		DrawLine(new int[] {Pos[0] + offset, Pos[1] + offset}, new int[] {Pos[0] + L - offset - t, Pos[1] + offset}, t, Light);
-		DrawLine(new int[] {Pos[0] + L - offset - t, Pos[1] + offset}, new int[] {Pos[0] + L - offset - t, Pos[1] + H - offset - t}, t, Light);
-		DrawLine(new int[] {Pos[0] + offset, Pos[1] + H - offset - t}, new int[] {Pos[0] + offset, Pos[1] + offset}, t, Shade);
-		DrawLine(new int[] {Pos[0] + offset, Pos[1] + H - offset - t}, new int[] {Pos[0] + L - offset - t, Pos[1] + H - offset - t}, t, Shade);
+		if (FillColor != null)
+		{
+			Color Light = Util.AddColor(FillColor, new double[] {50, 50, 50});
+			Color Shade = Util.AddColor(FillColor, new double[] {-50, -50, -50});
+			DrawRect(Pos, L, H, boardthick, "Left", 0, true, ContourColor, FillColor);
+			DrawLine(new int[] {Pos[0] + offset, Pos[1] + offset}, new int[] {Pos[0] + L - offset - t, Pos[1] + offset}, t, Light);
+			DrawLine(new int[] {Pos[0] + L - offset - t, Pos[1] + offset}, new int[] {Pos[0] + L - offset - t, Pos[1] + H - offset - t}, t, Light);
+			DrawLine(new int[] {Pos[0] + offset, Pos[1] + H - offset - t}, new int[] {Pos[0] + offset, Pos[1] + offset}, t, Shade);
+			DrawLine(new int[] {Pos[0] + offset, Pos[1] + H - offset - t}, new int[] {Pos[0] + L - offset - t, Pos[1] + H - offset - t}, t, Shade);
+		}
 	}
 	
 	private void DrawList(int[] Pos, int[] Size, int SelectedItem, String[] PropName, String Title, String ItemName, int[][] Input)

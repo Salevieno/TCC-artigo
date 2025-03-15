@@ -19,6 +19,8 @@ public class LegendPanel extends JPanel
     private static final long serialVersionUID = 1L;
 
     private static final Dimension initialSize = new Dimension(10, 100) ;
+	private static final int titleSize = 13;
+	private static final int fontSize = 13;
 	private static final DrawingOnAPanel DP = new DrawingOnAPanel() ;
 
     public LegendPanel()
@@ -26,61 +28,60 @@ public class LegendPanel extends JPanel
         setPreferredSize(initialSize);
         setBackground(Menus.palette[3]);
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createTitledBorder(""), "Legenda", TitledBorder.CENTER, TitledBorder.CENTER));
-		
+		setVisible(true);
     }
 
 
-	public static void DrawLegend(int[] Pos, String ColorSystem, String Title, int[] Size, double MinValue, double MaxValue, double unitfactor, DrawingOnAPanel DP)
+	public void DrawLegend(int[] Pos, String ColorSystem, String title, double MinValue, double MaxValue, double unitfactor)
 	{
+
+		Dimension panelSize = getSize() ;
+
 		double sx, sy;
 		int BarLength;
-		int TitleSize = Math.max(Size[0], Size[1]) / 16;
-		int FontSize = Math.max(Size[0], Size[1]) / 18;
-		int NumCat = 10, NumLines, NumColumns;
-		NumLines = 2;
-		NumColumns = (1 + NumCat) / NumLines;
-		BarLength = (Size[0] / NumColumns)/2;
+		int NumCat = 10 ;
+		int NumLines = 2;
+		int NumColumns = (1 + NumCat) / NumLines;
+		BarLength = (panelSize.width / NumColumns)/2;
 		sx = BarLength;
-		sy = Size[1] / (double)(NumLines);
-		DP.DrawText(new int[] {Pos[0] + Size[0] / 2, (int) (Pos[1] - 1.3 * FontSize)}, Title, "Center", 0, "Bold", TitleSize, Color.magenta);
-		DP.DrawWindow(Pos, Size[0], Size[1], 1, Color.white, Color.blue);
+		sy = panelSize.height / (double)(NumLines);
+		DP.DrawText(new int[] {Pos[0] + panelSize.width / 2, (int) (Pos[1])}, title, "Center", 0, "Bold", titleSize, Menus.palette[6]);
+		DP.DrawWindow(Pos, panelSize.width, panelSize.height, 1, null, Color.blue);
 		for (int i = 0; i <= NumCat - 1; i += 1)
 		{
 			double value = (MaxValue - MinValue)*i/(NumCat - 1) + MinValue;
 			Color color = Util.FindColor(value, MinValue, MaxValue, ColorSystem);
 			int[] InitPos = new int[] {(int) (Pos[0] + 2*(i % NumColumns)*sx + sx/2), (int) (Pos[1] + (i / NumColumns) * sy + sy / 4)};
 			DP.DrawLine(InitPos, new int[] {InitPos[0] + BarLength, InitPos[1]}, 2, color);
-			DP.DrawText(new int[] {InitPos[0] + BarLength/2, (int) (InitPos[1] + FontSize / 2 + FontSize / 4)}, String.valueOf(Util.Round(value / unitfactor, 2)), "Center", 0, "Plain", FontSize, color);
+			DP.DrawText(new int[] {InitPos[0] + BarLength/2, (int) (InitPos[1] + fontSize / 2 + fontSize / 4)}, String.valueOf(Util.Round(value / unitfactor, 2)), "Center", 0, "Plain", fontSize, color);
 		}
 	}
 
-	public static void display(Structure structure, int SelectedVar,
-    boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces,
-    DrawingOnAPanel DP)
+	public void display(Structure structure, int SelectedVar,
+    					boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces)
 	{
 		if (-1 < SelectedVar)
 		{
 			int[] LegendPos = new int[] {(int) (0.1 * initialSize.getWidth()), (int) (0.3 * initialSize.getHeight())};
-			int[] LegendSize = new int[] {(int) (0.8 * initialSize.getWidth()), (int) (0.6 * initialSize.getHeight())};
 			if (ShowDisplacementContour)
 			{
-				DrawLegend(LegendPos, "Red to green", "Campo de deslocamentos (m)", LegendSize,
-				structure.getResults().getDispMin()[SelectedVar], structure.getResults().getDispMax()[SelectedVar], 1, DP);
+				DrawLegend(LegendPos, "Red to green", "Campo de deslocamentos (m)",
+				structure.getResults().getDispMin()[SelectedVar], structure.getResults().getDispMax()[SelectedVar], 1);
 			}
 			if (ShowStressContour & structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null)
 			{
-				DrawLegend(LegendPos, "Red to green", "Campo de tensoes (MPa)", LegendSize,
-				structure.getResults().getStressMin()[SelectedVar], structure.getResults().getStressMax()[SelectedVar], 1000, DP);
+				DrawLegend(LegendPos, "Red to green", "Campo de tensoes (MPa)",
+				structure.getResults().getStressMin()[SelectedVar], structure.getResults().getStressMax()[SelectedVar], 1000);
 			}
 			if (ShowStrainContour & structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null)
 			{
-				DrawLegend(LegendPos, "Red to green", "Campo de deformacoes", LegendSize,
-				structure.getResults().getStrainMin()[SelectedVar], structure.getResults().getStrainMax()[SelectedVar], 1, DP);
+				DrawLegend(LegendPos, "Red to green", "Campo de deformacoes",
+				structure.getResults().getStrainMin()[SelectedVar], structure.getResults().getStrainMax()[SelectedVar], 1);
 			}
 			if (ShowInternalForces & structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null)
 			{
-				DrawLegend(LegendPos, "Red to green", "Forcas internas (kN ou kNm)", LegendSize,
-				structure.getResults().getInternalForcesMin()[SelectedVar], structure.getResults().getInternalForcesMax()[SelectedVar], 1, DP);
+				DrawLegend(LegendPos, "Red to green", "Forcas internas (kN ou kNm)",
+				structure.getResults().getInternalForcesMin()[SelectedVar], structure.getResults().getInternalForcesMax()[SelectedVar], 1);
 			}
 		}
 	}
@@ -91,7 +92,7 @@ public class LegendPanel extends JPanel
         super.paintComponent(g);
         DP.setG(g);
         DP.setRealStructCenter(MainPanel.structure.getCenter());
-        display(MainPanel.structure, MainPanel.SelectedVar, MainPanel.ShowDisplacementContour, MainPanel.ShowStressContour, MainPanel.ShowStrainContour, MainPanel.ShowInternalForces, DP);
+        display(MainPanel.structure, MainPanel.SelectedVar, MainPanel.ShowDisplacementContour, MainPanel.ShowStressContour, MainPanel.ShowStrainContour, MainPanel.ShowInternalForces);
         repaint();
     }
 }

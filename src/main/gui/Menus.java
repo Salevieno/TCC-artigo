@@ -51,20 +51,26 @@ public class Menus extends JFrame
 {
 	private static final long serialVersionUID = 1L;
 
+	public static final int buttonSize = 32 ;
+	
+	public static final Dimension defaultPanelSize = new Dimension(260, 300);
+	private static final Dimension initialSize = new Dimension(1084, 700) ;
+	
+	private static MyCanvas MainCanvas ;
+
 	/* panel variables */
-	JPanel N1, E1, W1;
 	private final ToolbarButtons toolbarButtons = new ToolbarButtons() ;
 	private final ToolbarResults toolbarResults = new ToolbarResults() ;
-	JPanel ListsPanel;
 	private final InstructionsPanel instructionsPanel = new InstructionsPanel() ;
-	JPanel utb, mousePanel;
+	JPanel N1, E1, W1;
+	JPanel mousePanel;
 	JPanel bp1, bp2, bp3;
 	JPanel LDpanel;
 	
 	private MainPanel mainPanel;
 	private LegendPanel legendPanel;
 	private DiagramsPanel diagramsPanel;
-	private ListPanel jpLists;
+	private ListPanel listsPanel ;
 
 	JMenuBar menuBar;
     public JMenu StructureMenu, ViewMenu, AnalysisMenu, ResultsMenu, EspecialMenu;
@@ -82,16 +88,7 @@ public class Menus extends JFrame
 	JMenuItem[] SubMenuInternalForces;		// Fx, Fy, Fz, Mx, My, Mz
 	JMenuItem Star;
 	
-	JButton AssignMaterialButton, AssignSectionButton, AssignSupButton, AssignConcLoadButton, AssignDistLoadButton, AssignNodalDispButton;
 	public JButton[] UpperToolbarButton;	// 0: Ligar âmâ, 1: Desligar âmâ, 2: Atribuir material, 3: Atribuir seââo, 4: Atribuir apoios, 5: Atribuir cargas conc, 6: Atribuir cargas dist, 7: Atribuir desl nodais, 8: +escala, 9: -escala
-
-	
-	public static final int buttonSize = 32 ;
-	
-	public static final Dimension defaultPanelSize = new Dimension(260, 300);
-	private static final Dimension initialSize = new Dimension(1084, 700) ;
-	
-	private static MyCanvas MainCanvas ;
 
 	boolean ShowElems, ShowReactionArrows, ShowReactionValues, ShowLoadsValues;
     boolean ShowCanvas, ShowGrid, ShowMousePos;
@@ -146,7 +143,7 @@ public class Menus extends JFrame
 		mainPanel = new MainPanel(frameTopLeft) ;
 		legendPanel = new LegendPanel();
 		diagramsPanel = new DiagramsPanel();
-		jpLists = new ListPanel();
+		listsPanel = new ListPanel() ;
 
 		setLocation(frameTopLeft);
 	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
@@ -167,7 +164,21 @@ public class Menus extends JFrame
 		pack();
 		/* Super frame sets its everything. Super frame is so independent! =,) */
 
-		setPanelsMain(jpLists);
+		JPanel newContentPanel = new JPanel(new GridBagLayout());
+		BorderLayout bl = new BorderLayout();
+		newContentPanel.setLayout(bl);
+
+		N1 = createNorthPanels();
+		W1 = createWestPanels();
+		E1 = createEastPanels();
+		
+		newContentPanel.add(N1, BorderLayout.NORTH);
+		newContentPanel.add(mainPanel, BorderLayout.CENTER);
+		newContentPanel.add(W1, BorderLayout.WEST);
+		newContentPanel.add(E1, BorderLayout.EAST);
+	
+		this.setContentPane(newContentPanel);
+		this.setVisible(true);
 	}
 	
 
@@ -512,7 +523,7 @@ public class Menus extends JFrame
 	private JPanel createNorthPanels()
 	{
 		JPanel N = new JPanel(new GridBagLayout());
-		utb = createUpperToolBar();
+		JPanel utb = createUpperToolBar();
 		JPanel bp1 = createBlankPanel(new Dimension(7 * 32 + 4, 30), palette[2]);
 		JPanel bp2 = createBlankPanel(new Dimension(260, 30), palette[2]);
 		N.add(bp1);
@@ -536,6 +547,7 @@ public class Menus extends JFrame
 		E.add(bp1);
 		E.add(bp2);
 		E.add(bp3);
+		E.add(legendPanel) ;
 		E.add(LDpanel);
 		
 		return E;
@@ -567,38 +579,18 @@ public class Menus extends JFrame
 		repaint();
 	}
 	
-	private JPanel createWestPanels(JPanel Listsplot)
+	private JPanel createWestPanels()
 	{
 		JPanel W = new JPanel(new GridLayout(0, 1));
 		
-		ListsPanel = Listsplot;
-		ListsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		listsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
 		instructionsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
 		W.add(toolbarButtons);
 		W.add(toolbarResults);
-		W.add(ListsPanel);
+		W.add(listsPanel);
 		W.add(instructionsPanel);
 		
 		return W;
-	}
-	
-	private void setPanelsMain(JPanel Listsplot)
-	{
-		JPanel newContentPanel = new JPanel(new GridBagLayout());
-		BorderLayout bl = new BorderLayout();
-		newContentPanel.setLayout(bl);
-
-		N1 = createNorthPanels();
-		W1 = createWestPanels(Listsplot);
-		E1 = createEastPanels();
-		
-		newContentPanel.add(N1, BorderLayout.NORTH);
-		newContentPanel.add(mainPanel, BorderLayout.CENTER);
-		newContentPanel.add(W1, BorderLayout.WEST);
-		newContentPanel.add(E1, BorderLayout.EAST);
-	
-		this.setContentPane(newContentPanel);
-		this.setVisible(true);
 	}
 	
 	public void EnableButtons()
