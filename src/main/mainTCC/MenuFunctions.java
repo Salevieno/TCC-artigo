@@ -138,58 +138,6 @@ public abstract class MenuFunctions
 		}
 	}
 	
-	public static boolean[] CheckSteps(Structure struct)
-	{
-		boolean[] StepIsComplete = new boolean[9];
-        if (struct.getMesh() != null && struct.getMesh().getElements() != null)
-        {
-    		if (Util.AllElemsHaveElemType(struct.getMesh().getElements()))
-    		{
-    			StepIsComplete[0] = true;
-    		}
-        }
-		if (SelectedElemType != null)
-		{
-			StepIsComplete[0] = true;
-		}
-        if (struct.getCoords() != null)
-        {
-    		StepIsComplete[1] = true;
-        }
-        if (struct.getMesh() != null && struct.getMesh().getNodes() != null && struct.getMesh().getElements() != null)
-        {
-    		StepIsComplete[2] = true;
-        }
-        if (struct.getMesh() != null && struct.getMesh().getElements() != null)
-        {
-    		if (Util.AllElemsHaveMat(struct.getMesh().getElements()))
-    		{
-    			StepIsComplete[3] = true;
-    		}
-    		if (Util.AllElemsHaveSec(struct.getMesh().getElements()))
-    		{
-    			StepIsComplete[4] = true;
-    		}
-        }
-		if (struct.getSupports() != null)
-		{
-			StepIsComplete[5] = true;
-		}
-		if (MainPanel.loading != null && MainPanel.loading.getConcLoads() != null)
-		{
-			StepIsComplete[6] = true;
-		}
-		if (MainPanel.loading != null && MainPanel.loading.getDistLoads() != null)
-		{
-			StepIsComplete[7] = true;
-		}
-		if (MainPanel.loading != null && MainPanel.loading.getNodalDisps() != null)
-		{
-			StepIsComplete[8] = true;
-		}
-		//System.out.println(Arrays.toString(StepIsComplete));
-		return StepIsComplete;
-	}
 	
 	/* Upper toolbar button functions */
 	public static void Clean(Structure struct, boolean[] AssignmentIsOn)

@@ -839,7 +839,7 @@ public class MainPanel extends JPanel
 			}
 			if (!StructureCreationIsOn)
 			{
-				Menus.getInstance().StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
+				Menus.getInstance().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
 				Menus.getInstance().UpperToolbarButton[0].setEnabled(false);
 				Menus.getInstance().UpperToolbarButton[0].setVisible(false);
 				Menus.getInstance().UpperToolbarButton[1].setEnabled(false);

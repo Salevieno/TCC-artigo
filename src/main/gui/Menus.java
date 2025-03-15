@@ -2,31 +2,24 @@ package main.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 
 import main.mainTCC.Analysis;
 import main.mainTCC.MenuFunctions;
@@ -60,14 +53,13 @@ public class Menus extends JFrame
 
 	/* panel variables */
 	JPanel N1, E1, W1;
-	private final JPanel toolbarButtons = new ToolbarButtons() ;
-	private final JPanel toolbarResults = new ToolbarResults() ;
+	private final ToolbarButtons toolbarButtons = new ToolbarButtons() ;
+	private final ToolbarResults toolbarResults = new ToolbarResults() ;
 	JPanel ListsPanel;
-	JPanel iPanel;
+	private final InstructionsPanel instructionsPanel = new InstructionsPanel() ;
 	JPanel utb, mousePanel;
 	JPanel bp1, bp2, bp3;
 	JPanel LDpanel;
-	JPanel jpInstruction;
 	
 	private MainPanel mainPanel;
 	private LegendPanel legendPanel;
@@ -96,7 +88,7 @@ public class Menus extends JFrame
 	
 	public static final int buttonSize = 32 ;
 	
-	Dimension defaultPanelSize = new Dimension(260, 300);
+	public static final Dimension defaultPanelSize = new Dimension(260, 300);
 	private static final Dimension initialSize = new Dimension(1084, 700) ;
 	
 	private static MyCanvas MainCanvas ;
@@ -105,7 +97,6 @@ public class Menus extends JFrame
     boolean ShowCanvas, ShowGrid, ShowMousePos;
     public boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
     boolean ReadyForAnalysis;
-    public boolean[] StepIsComplete;	
 	
 	public static final Point frameTopLeft;
 	public static final Color[] palette  ;
@@ -166,8 +157,7 @@ public class Menus extends JFrame
 		SubMenuStresses = new JMenuItem[6];			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
 		SubMenuStrains = new JMenuItem[6];			// ex, ey, ez, gxy, gxz, gyz
 		SubMenuInternalForces = new JMenuItem[6];	// Fx, Fy, Fz, Mx, My, Mz
-		StepIsComplete = new boolean[9];		// 0 = Elem type; 1 = Struct Coords; 2 = Nodes and Elems; 3 = Mat; 4 = Sec; 5 = Sup; 6 = Conc loads; 7 = Dist loads; 8 = Nodal disps
-	
+
 
 		AddMenus();
 		setJMenuBar(menuBar);
@@ -191,7 +181,6 @@ public class Menus extends JFrame
 
 	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
 	
-	public void setStepIsComplete(boolean[] StepIsComplete) {this.StepIsComplete = StepIsComplete ;}
 	
 	private JPanel createUpperToolBar()
 	{
@@ -365,7 +354,7 @@ public class Menus extends JFrame
 				NodalDispsAssignmentIsOn = false;
 				MenuFunctions.NodeSelectionIsOn = false;
 				MenuFunctions.ElemSelectionIsOn = false;
-				StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
+				instructionsPanel.updateStepsCompletion() ;
 				ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
 				updateInstructionPanel();
 				
@@ -489,59 +478,35 @@ public class Menus extends JFrame
 		return ElemInfoPanel;
 	}
 	
-	private JPanel createInstructionPanel()
-	{
-		jpInstruction = new JPanel(new GridLayout(0,1));
-		jpInstruction.setBackground(palette[3]);
-		jpInstruction.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Util.AddColor(palette[3], new double[] {50, 50, 50}), null, Util.AddColor(palette[3], new double[] {-50, -50, -50})));
-		jpInstruction.setSize(defaultPanelSize);
-		updateInstructionPanel();
-		
-		return jpInstruction;
-	}
-	
 	public void updateInstructionPanel()
-	{		
-		jpInstruction.removeAll();
+	{
 
-        boolean[] StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
         boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
-        ImageIcon OkIcon = new ImageIcon("./Icons/OkIcon.png");
+        
 		Color TextColor = palette[0];
-		JLabel[] iStep = new JLabel[9];
-		String[] Label = new String[iStep.length];		
-		Label[0] = "1. Tipo de elemento";
-		Label[1] = "2. Estrutura";
-		Label[2] = "3. Malha";
-		Label[3] = "4. Elementos com materiais";
-		Label[4] = "5. Elementos com seçõs";
-		Label[5] = "6. Apoios";
-		Label[6] = "7. Cargas concentradas";
-		Label[7] = "8. Cargas distribuâdas";
-		Label[8] = "9. Deslocamentos nodais";
-		JLabel FirstLabel = new JLabel("Passo a passo", 2);
-		FirstLabel.setForeground(TextColor);
-		jpInstruction.add(FirstLabel);
-		for (int step = 0; step <= iStep.length - 1; step += 1)
-		{
-			if (StepIsComplete[step])
-			{
-				iStep[step] = new JLabel(Label[step], OkIcon, 2);
-				iStep[step].setForeground(TextColor);
-				iStep[step].setFont(new Font("SansSerif", Font.BOLD, 12));
-			}
-			else
-			{
-				iStep[step] = new JLabel("    " + Label[step]);
-				iStep[step].setForeground(TextColor);
-				iStep[step].setFont(new Font("SansSerif", Font.BOLD, 12));
-			}
-			jpInstruction.add(iStep[step]);
-		}
-		if (ReadyForAnalysis)
-		{
-			jpInstruction.add(new JLabel("Pronta para anâlise!"));
-		}
+		// JLabel[] iStep = new JLabel[9];
+		
+		
+		// for (int step = 0; step <= iStep.length - 1; step += 1)
+		// {
+		// 	if (StepIsComplete[step])
+		// 	{
+		// 		iStep[step] = new JLabel(Label[step], OkIcon, 2);
+		// 		iStep[step].setForeground(TextColor);
+		// 		iStep[step].setFont(new Font("SansSerif", Font.BOLD, 12));
+		// 	}
+		// 	else
+		// 	{
+		// 		iStep[step] = new JLabel("    " + Label[step]);
+		// 		iStep[step].setForeground(TextColor);
+		// 		iStep[step].setFont(new Font("SansSerif", Font.BOLD, 12));
+		// 	}
+		// 	jpInstruction.add(iStep[step]);
+		// }
+		// if (ReadyForAnalysis)
+		// {
+		// 	jpInstruction.add(new JLabel("Pronta para anâlise!"));
+		// }
 	}
 	
 	private JPanel createNorthPanels()
@@ -607,13 +572,12 @@ public class Menus extends JFrame
 		JPanel W = new JPanel(new GridLayout(0, 1));
 		
 		ListsPanel = Listsplot;
-		iPanel = createInstructionPanel();
 		ListsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		iPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
+		instructionsPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
 		W.add(toolbarButtons);
 		W.add(toolbarResults);
 		W.add(ListsPanel);
-		W.add(iPanel);
+		W.add(instructionsPanel);
 		
 		return W;
 	}
@@ -836,7 +800,7 @@ public class Menus extends JFrame
 				InputPanelType2 CIT = new InputPanelType2("Elem types", buttons);
 				MainPanel.setElemType(CIT.run());
 				System.out.println(MenuFunctions.SelectedElemType);
-				StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
+				instructionsPanel.updateStepsCompletion() ;
 				EnableButtons();
 				updateInstructionPanel();
 			}
@@ -1563,7 +1527,7 @@ public class Menus extends JFrame
 		MainPanel.structure.createMesh(meshType, UserDefinedMesh, ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()));
 		MenuFunctions.NodeView();
 		MenuFunctions.ElemView();
-		StepIsComplete = MenuFunctions.CheckSteps(MainPanel.structure);
+		instructionsPanel.updateStepsCompletion() ;
 		EnableButtons();
 		updateInstructionPanel();
 	}
@@ -1709,5 +1673,11 @@ public class Menus extends JFrame
 	{
 		ShowMousePos = true ;
 	}
+
+
+    public InstructionsPanel getInstructionsPanel()
+	{
+		return instructionsPanel;
+    }
 
 }
