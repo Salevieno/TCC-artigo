@@ -53,27 +53,14 @@ public class Menus extends JFrame
 	
 	private final MyCanvas mainCanvas ;
 
-	
-	private static final String[] menuNames = new String[] {
-		"Arquivo",
-		"Estrutura",
-		"Visual",
-		"Analise",
-		"Resultados",
-		"Especial"
-	};	
-
 	private JMenuBar menuBar;
 	private MenuStructure menuStructure ;
     private MenuView viewMenu ;
 	private MenuAnalysis analysisMenu ;
 	private MenuResults resultsMenu ;
-	private JMenu EspecialMenu;
+	private MenuEspecial especialMenu;
 	private JMenuItem CreateMesh, AssignMaterials, AssignSections, AssignSupports, AssignConcLoads, AssignDistLoads ;	
 
-	private JMenuItem Star;
-
-	
 
 	static
 	{
@@ -124,28 +111,19 @@ public class Menus extends JFrame
 		int[] mainCanvasSize = new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0} ;
 	    mainCanvas = new MyCanvas (new Point(575, 25), mainCanvasSize, new double[] {10, 10, 0}, ScreenTopLeft);	    
 
-
-
-		
-		/* Defining menu bars */
 		menuBar = new JMenuBar();
 		menuStructure = new MenuStructure();
 		viewMenu = new MenuView() ;
 		analysisMenu = new MenuAnalysis() ;
 		resultsMenu = new MenuResults() ;
-		EspecialMenu = new JMenu(menuNames[5]);		// Especial
-
+		especialMenu = new MenuEspecial() ;
 		
-		EspecialMenu.setMnemonic(KeyEvent.VK_E);
 		menuBar.add(MenuFile.create());
 		menuBar.add(menuStructure);
 		menuBar.add(viewMenu);
 		menuBar.add(analysisMenu);
 		menuBar.add(resultsMenu);
-		menuBar.add(EspecialMenu);
-		AddEspecialMenuItems();
-
-
+		menuBar.add(especialMenu);
 
 		setJMenuBar(menuBar);
 		setTitle("TCC");				// Super frame sets its title
@@ -265,24 +243,6 @@ public class Menus extends JFrame
 			EnableButtons();
 			repaint();
 		}
-	}
-
-	public void AddEspecialMenuItems()
-	{
-		/* Defining items in the menu Especial */
-	    String[] EspecialMenuItemsNames = new String[] {"Estrela"};
-		Star = new JMenuItem(EspecialMenuItemsNames[0], KeyEvent.VK_S);
-		Star.setForeground(palette[7]);
-		EspecialMenu.add(Star);
-		Star.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.structure = MenuFunctions.Especial();
-				ActivatePostAnalysisView();
-			}
-		});
 	}
 
 }
