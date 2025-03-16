@@ -212,8 +212,8 @@ public class UpperToolbar extends JPanel
             buttons.get(3).setEnabled(false);
             buttons.get(3).setVisible(false);
         }
-        Menus.getInstance().E1.remove(Menus.getInstance().bp1);
-        Menus.getInstance().E1.remove(Menus.getInstance().bp2);
+        Menus.getInstance().getEastPanel().removeBp1Bp2();
+        Menus.getInstance().getEastPanel().removeBp1Bp2();
         buttons.get(6).setEnabled(false);
         buttons.get(6).setVisible(false);
         buttons.get(7).setEnabled(false);

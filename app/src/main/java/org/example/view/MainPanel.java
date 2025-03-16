@@ -813,7 +813,7 @@ public class MainPanel extends JPanel
 				{
 					if (!MenuFunctions.selectedNodes.isEmpty() && -1 < MenuFunctions.selectedNodes.get(0).getID())
 					{
-						Menus.getInstance().ResetEastPanels();
+						Menus.getInstance().getEastPanel().reset() ;
 						//AddNodeInfoPanel(MenuFunctions.Node[MenuFunctions.SelectedNodes[0]]);
 					}
 				}
@@ -825,7 +825,7 @@ public class MainPanel extends JPanel
 				{
 					if (-1 < MenuFunctions.SelectedElems[0])
 					{
-						Menus.getInstance().ResetEastPanels();
+						Menus.getInstance().getEastPanel().reset() ;
 						//AddElemInfoPanel(MenuFunctions.Elem[MenuFunctions.SelectedElems[0]]);
 					}
 				}

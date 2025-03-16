@@ -28,6 +28,7 @@ import org.example.structure.Node;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
 import org.example.view.DiagramsPanel;
+import org.example.view.EastPanel;
 import org.example.view.LegendPanel;
 import org.example.view.ListPanel;
 import org.example.view.MainPanel;
@@ -55,14 +56,11 @@ public class Menus extends JFrame
 	private final ToolbarResults toolbarResults = new ToolbarResults() ;
 	private final InstructionsPanel instructionsPanel = new InstructionsPanel() ;
 	private final NorthPanel northPanel = new NorthPanel() ;
-	JPanel E1, W1;
+	private final EastPanel eastPanel = new EastPanel() ;
+	JPanel W1;
 	JPanel mousePanel;
-	JPanel bp1, bp2, bp3;
-	JPanel LDpanel;
 	
 	private MainPanel mainPanel;
-	private LegendPanel legendPanel;
-	private DiagramsPanel diagramsPanel;
 	private ListPanel listsPanel ;
 
 	JMenuBar menuBar;
@@ -130,8 +128,6 @@ public class Menus extends JFrame
 	{
 		
 		mainPanel = new MainPanel(frameTopLeft) ;
-		legendPanel = new LegendPanel();
-		diagramsPanel = new DiagramsPanel();
 		listsPanel = new ListPanel() ;
 
 		setLocation(frameTopLeft);
@@ -164,27 +160,11 @@ public class Menus extends JFrame
 		W1.add(toolbarResults);
 		W1.add(listsPanel);
 		W1.add(instructionsPanel);
-
-		/* East panels */
-		E1 = new JPanel(new GridLayout(0, 1));
-		bp1 = stdPanel(defaultPanelSize, palette[2]);
-		bp2 = stdPanel(defaultPanelSize, palette[2]);
-		bp3 = stdPanel(defaultPanelSize, palette[2]);
-		LDpanel = stdPanel(defaultPanelSize, palette[2]);
-		bp1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		bp2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		bp3.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		LDpanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[1]));
-		E1.add(bp1);
-		E1.add(bp2);
-		E1.add(bp3);
-		E1.add(legendPanel) ;
-		E1.add(LDpanel);
 		
 		newContentPanel.add(northPanel, BorderLayout.NORTH);
 		newContentPanel.add(mainPanel, BorderLayout.CENTER);
 		newContentPanel.add(W1, BorderLayout.WEST);
-		newContentPanel.add(E1, BorderLayout.EAST);
+		newContentPanel.add(eastPanel, BorderLayout.EAST);
 	
 		this.setContentPane(newContentPanel);
 		this.setVisible(true);
@@ -199,6 +179,8 @@ public class Menus extends JFrame
 
 	public NorthPanel getNorthPanel() { return northPanel ;}
 
+	public EastPanel getEastPanel() { return eastPanel ;}
+
 	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), frameTopLeft) ;}
 	
 	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
@@ -210,120 +192,6 @@ public class Menus extends JFrame
 		blankPanel.setPreferredSize(size);
 		blankPanel.setBackground(bgcolor);
 		return blankPanel;
-	}
-	
-	private JPanel createNodeInfoPanel(Node Node)
-	{
-		JPanel NodeInfoPanel = new JPanel(new GridLayout(0,1));
-		Color TextColor = palette[4];
-		NodeInfoPanel.setBackground(palette[9]);
-		NodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[5]));
-		NodeInfoPanel.setSize(defaultPanelSize);		
-
-		String OriginalCoords = "", DeformedCoords = "";
-		String ConcLoads = String.valueOf(0 + "," + 0 + "," + 0 + "," + 0 + "," + 0 + "," + 0);
-		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().x, 2)) + "," ;
-		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().y, 2)) + "," ;
-		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().z, 2)) ;
-		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[0], 2)) + "," ;
-		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[1], 2)) + "," ;
-		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[2], 2)) + "," ;
-		if (Node.getConcLoads() != null)
-		{
-			ConcLoads = "";
-			for (int load = 0; load <= Node.getConcLoads().length - 1; load += 1)
-			{
-				for (int dof = 0; dof <= 6 - 1; dof += 1)
-				{
-					ConcLoads += String.valueOf(Util.Round(Node.getConcLoads()[load].getLoads()[dof], 2) + ", ");
-				}
-			}
-		}
-		
-		JLabel iLabel = new JLabel("Informaçõs do nâ");
-		NodeInfoPanel.add(iLabel);
-		iLabel.setForeground(TextColor);
-		
-		JLabel[] iInfo = new JLabel[4];
-		iInfo[0] = new JLabel(" Nâ: " + String.valueOf(Node.getID()));
-		iInfo[1] = new JLabel(" Original pos: " + OriginalCoords);
-		iInfo[2] = new JLabel(" Deslocamentos: " + DeformedCoords);
-		iInfo[3] = new JLabel(" Forâas: " + ConcLoads);
-		for (int i = 0; i <= iInfo.length - 1; i += 1)
-		{
-			NodeInfoPanel.add(iInfo[i]);
-		}
-		
-		return NodeInfoPanel;
-	}
-	
-	private JPanel createElemInfoPanel(Element elem)
-	{
-		JPanel ElemInfoPanel = new JPanel(new GridLayout(0,1));
-		Color TextColor = palette[4];
-		
-		ElemInfoPanel.setBackground(palette[9]);
-		ElemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, palette[5]));
-		ElemInfoPanel.setSize(defaultPanelSize);		
-
-		String NodesText = "";
-		for (int node = 0; node <= elem.getExternalNodes().length - 1; node += 1)
-		{
-			NodesText += String.valueOf(elem.getExternalNodes()[node] + " ");
-		}
-		String MatText = null;
-		if (elem.getMat() != null)
-		{
-			MatText = String.valueOf(Util.Round(elem.getMat().getE(), 2)) + " MPa v = " + String.valueOf(Util.Round(elem.getMat().getV(), 1)) + " G = " + String.valueOf(Util.Round(elem.getMat().getG(), 2)) + " Mpa";
-		}
-		String SecText = null;
-		if (elem.getSec() != null)
-		{
-			SecText = String.valueOf(Util.Round(elem.getSec().getT(), 0)) + " mm";
-		}
-		
-		JLabel iLabel = new JLabel("Informaçõs do elemento");
-		ElemInfoPanel.add(iLabel);
-		iLabel.setForeground(TextColor);
-		
-		JLabel[] iInfo = new JLabel[4];
-		iInfo[0] = new JLabel(" Elem: " + String.valueOf(elem.getID()));
-		iInfo[1] = new JLabel(" Nâs: " + NodesText);
-		iInfo[2] = new JLabel(" Material: E = " + MatText);
-		iInfo[3] = new JLabel(" Seââo: t = " + SecText);
-		
-		for (int i = 0; i <= iInfo.length - 1; i += 1)
-		{
-			ElemInfoPanel.add(iInfo[i]);
-		}
-		
-		return ElemInfoPanel;
-	}
-	
-	public void ResetEastPanels()
-	{
-		if (MenuFunctions.selectedNodes != null)
-		{
-			int nodeID = MenuFunctions.selectedNodes.get(0).getID() ;
-			if (-1 < nodeID)
-			{
-				bp1 = createNodeInfoPanel(MainPanel.structure.getMesh().getNodes().get(nodeID)) ;
-			}
-		}
-		if (MenuFunctions.SelectedElems != null)
-		{
-			int elemID = MenuFunctions.SelectedElems[0] ;
-			if (-1 < elemID)
-			{
-				bp2 = createElemInfoPanel(MainPanel.structure.getMesh().getElements().get(elemID)) ;
-			}
-		}
-		E1.removeAll();
-		E1.add(bp1);
-		E1.add(bp2);
-		E1.add(bp3);
-		E1.add(LDpanel);
-		repaint();
 	}
 		
 	public void EnableButtons()
@@ -424,14 +292,10 @@ public class Menus extends JFrame
 	{
 		if (!((Double)MainPanel.structure.getU()[0]).isNaN())
 		{
-			E1.remove(LDpanel);
-			E1.remove(bp3);
-			LDpanel = diagramsPanel;
-			bp3 = legendPanel;
-			E1.add(bp3);
-			E1.add(LDpanel);
+			eastPanel.activatePostAnalysisView() ;
 			toolbarResults.setVisible(true);
 			EnableButtons();
+			repaint();
 		}
 	}
 	
