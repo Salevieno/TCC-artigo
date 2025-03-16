@@ -56,11 +56,10 @@ public class Menus extends JFrame
 
 	private JMenuBar menuBar;
 	private MenuStructure menuStructure ;
-    private JMenu ViewMenu, AnalysisMenu, ResultsMenu, EspecialMenu;
+    private MenuView ViewMenu ;
+	private JMenu AnalysisMenu, ResultsMenu, EspecialMenu;
 	private JMenuItem CreateMesh, AssignMaterials, AssignSections, AssignSupports, AssignConcLoads, AssignDistLoads ;	
-	private JMenuItem DOFNumberView, NodeNumberView, ElemNumberView, MatView, SecView, NodeView, ElemView, ElemContourView, SupView, LoadsValuesView, ConcLoadsView, DistLoadsView, NodalDispsView, ReactionsView;
 
-	private JMenuItem ReactionValues, ReactionArrows;
 	private JMenuItem RunAnalysis;
 	private JMenuItem DisplacementContours, DeformedShape, StressContours, StrainContours, InternalForcesContours, SaveResults, SaveLoadDispCurve;
 	private JMenuItem[] SubMenuDisp;				// ux, uy, uz, tetax, tetay, tetaz
@@ -68,8 +67,7 @@ public class Menus extends JFrame
 	private JMenuItem[] SubMenuStrains;				// ex, ey, ez, gxy, gxz, gyz
 	private JMenuItem[] SubMenuInternalForces;		// Fx, Fy, Fz, Mx, My, Mz
 	private JMenuItem Star;
-	
-	private boolean ShowReactionArrows, ShowReactionValues ;
+
     private boolean ReadyForAnalysis;
 	
 
@@ -220,7 +218,7 @@ public class Menus extends JFrame
 		}
 		if (AnalysisIsComplete)
 		{
-			DOFNumberView.setEnabled(true);
+			ViewMenu.enableDofNumberView() ;
 			DeformedShape.setEnabled(true);
 			DisplacementContours.setEnabled(true);
 			StressContours.setEnabled(true);
@@ -249,7 +247,7 @@ public class Menus extends JFrame
 		AssignSections.setEnabled(false);
 		AssignDistLoads.setEnabled(false);
 		CreateMesh.setEnabled(false);
-		DOFNumberView.setEnabled(false);
+		ViewMenu.disableDofNumberView() ;
 		DeformedShape.setEnabled(false);
 		DisplacementContours.setEnabled(false);
 		StressContours.setEnabled(false);
@@ -293,12 +291,12 @@ public class Menus extends JFrame
 			};	
 		menuBar = new JMenuBar();
 		menuStructure = new MenuStructure();
-		ViewMenu = new JMenu(MenuNames[2]);			// View
+		ViewMenu = new MenuView() ;
 		AnalysisMenu = new JMenu(MenuNames[3]);		// Analysis
 		ResultsMenu = new JMenu(MenuNames[4]);		// Results
 		EspecialMenu = new JMenu(MenuNames[5]);		// Especial
 
-		ViewMenu.setMnemonic(KeyEvent.VK_V);
+		
 		ResultsMenu.setMnemonic(KeyEvent.VK_R);
 		EspecialMenu.setMnemonic(KeyEvent.VK_E);
 		menuBar.add(MenuFile.create());
@@ -307,221 +305,11 @@ public class Menus extends JFrame
 		menuBar.add(AnalysisMenu);
 		menuBar.add(ResultsMenu);
 		menuBar.add(EspecialMenu);
-		AddViewMenuItems();
 		AddAnalysisMenuItems();
 		AddResultsMenuItems();
 		AddEspecialMenuItems();
 	}
 
-
-	public void AddViewMenuItems()
-	{
-		/* Defining items in the menu View */
-	    String[] ViewMenuItemsNames = new String[] {
-			    "Nos",
-			    "Elementos",
-			    "Graus de liberdade",
-			    "Numeros dos nos",
-			    "Numeros dos elementos",
-			    "Materiais",
-			    "Secoes",
-			    "Contorno dos elementos",
-			    "Apoios",
-			    "Cargas concentradas",
-			    "Cargas distribuidas",
-			    "Deslocamentos nodais",
-			    "Valores das cargas",
-			    "Reacoes"
-			};
-		NodeView = new JMenuItem(ViewMenuItemsNames[0]);
-		ElemView = new JMenuItem(ViewMenuItemsNames[1]);
-		DOFNumberView = new JMenuItem(ViewMenuItemsNames[2], KeyEvent.VK_D);
-		NodeNumberView = new JMenuItem(ViewMenuItemsNames[3], KeyEvent.VK_N);
-		ElemNumberView = new JMenuItem(ViewMenuItemsNames[4], KeyEvent.VK_E);
-		MatView = new JMenuItem(ViewMenuItemsNames[5], KeyEvent.VK_M);
-		SecView = new JMenuItem(ViewMenuItemsNames[6], KeyEvent.VK_S);
-		ElemContourView = new JMenuItem(ViewMenuItemsNames[7]);
-		SupView = new JMenuItem(ViewMenuItemsNames[8]);
-		ConcLoadsView = new JMenuItem(ViewMenuItemsNames[9], KeyEvent.VK_C);
-		DistLoadsView = new JMenuItem(ViewMenuItemsNames[10]);
-		NodalDispsView = new JMenuItem(ViewMenuItemsNames[11]);
-		LoadsValuesView = new JMenuItem(ViewMenuItemsNames[12]);
-		ReactionsView = new JMenu(ViewMenuItemsNames[13]);
-		DOFNumberView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowDOFNumber = !ShowDOFNumber;
-				MenuFunctions.DOFNumberView();
-			}
-		});
-		NodeNumberView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowNodeNumber = !ShowNodeNumber;
-				MenuFunctions.NodeNumberView();
-			}
-		});
-		ElemNumberView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowElemNumber = !ShowElemNumber;
-				MenuFunctions.ElemNumberView();
-			}
-		});
-		MatView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowMatColor = !ShowMatColor;
-				MenuFunctions.MatView();
-			}
-		});
-		SecView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowSecColor = !ShowSecColor;
-				MenuFunctions.SecView();
-			}
-		});
-		NodeView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowNodes = !ShowNodes;
-				MenuFunctions.NodeView();
-			}
-		});
-		ElemView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowElems = !ShowElems;
-				MenuFunctions.ElemView();
-			}
-		});
-		ElemContourView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowElemContour = !ShowElemContour;
-				MenuFunctions.ElemContourView();
-			}
-		});
-		SupView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowSup = !ShowSup;
-				MenuFunctions.SupView();
-			}
-		});
-		LoadsValuesView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowLoadsValues = !ShowLoadsValues;
-				MenuFunctions.LoadsValuesView();
-			}
-		});
-		ConcLoadsView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowConcLoads = !ShowConcLoads;
-				MenuFunctions.ConcLoadsView();
-			}
-		});
-		DistLoadsView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowDistLoads = !ShowDistLoads;
-				MenuFunctions.DistLoadsView();
-			}
-		});
-		NodalDispsView.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				//ShowNodalDisps = !ShowNodalDisps;
-				MenuFunctions.NodalDispsView();
-			}
-		});
-		DOFNumberView.setForeground(palette[5]);
-		NodeNumberView.setForeground(palette[5]);
-		ElemNumberView.setForeground(palette[5]);
-		MatView.setForeground(palette[5]);
-		SecView.setForeground(palette[5]);
-		NodeView.setForeground(palette[5]);
-		ElemView.setForeground(palette[5]);
-		ElemContourView.setForeground(palette[5]);
-		SupView.setForeground(palette[5]);
-		ConcLoadsView.setForeground(palette[5]);
-		DistLoadsView.setForeground(palette[5]);
-		NodalDispsView.setForeground(palette[5]);
-		LoadsValuesView.setForeground(palette[5]);
-		ReactionsView.setForeground(palette[5]);
-		DOFNumberView.setEnabled(false);
-		ViewMenu.add(DOFNumberView);
-		ViewMenu.add(NodeNumberView);
-		ViewMenu.add(ElemNumberView);
-		ViewMenu.add(MatView);
-		ViewMenu.add(SecView);
-		ViewMenu.add(NodeView);
-		ViewMenu.add(ElemView);
-		ViewMenu.add(ElemContourView);
-		ViewMenu.add(SupView);
-		ViewMenu.add(ConcLoadsView);
-		ViewMenu.add(DistLoadsView);
-		ViewMenu.add(NodalDispsView);
-		ViewMenu.add(LoadsValuesView);
-		ViewMenu.add(ReactionsView);
-
-		/* Defining subitems in the menu ReactionsView */
-
-	    String[] ReactionsViewMenuNames = new String[] {"Desenhos", "Valores"};
-		ReactionArrows = new JMenuItem(ReactionsViewMenuNames[0], KeyEvent.VK_C);
-		ReactionValues = new JMenuItem(ReactionsViewMenuNames[1], KeyEvent.VK_C);
-		ReactionArrows.setForeground(palette[5]);
-		ReactionValues.setForeground(palette[5]);
-		ReactionArrows.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				ShowReactionArrows = !ShowReactionArrows;
-				repaint();
-			}
-		});
-		ReactionValues.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				ShowReactionValues = !ShowReactionValues;
-				repaint();
-			}
-		});
-		ReactionsView.add(ReactionArrows);
-		ReactionsView.add(ReactionValues);
-	}
 	
 	public void AddAnalysisMenuItems()
 	{
