@@ -65,16 +65,14 @@ public class Menus extends JFrame
 
 	private JMenuBar menuBar;
 	private MenuStructure menuStructure ;
-    private MenuView ViewMenu ;
-	private JMenu AnalysisMenu ;
-	private MenuResults ResultsMenu ;
+    private MenuView viewMenu ;
+	private MenuAnalysis analysisMenu ;
+	private MenuResults resultsMenu ;
 	private JMenu EspecialMenu;
 	private JMenuItem CreateMesh, AssignMaterials, AssignSections, AssignSupports, AssignConcLoads, AssignDistLoads ;	
 
-	private JMenuItem RunAnalysis;
 	private JMenuItem Star;
 
-    private boolean ReadyForAnalysis;
 	
 
 	static
@@ -132,20 +130,19 @@ public class Menus extends JFrame
 		/* Defining menu bars */
 		menuBar = new JMenuBar();
 		menuStructure = new MenuStructure();
-		ViewMenu = new MenuView() ;
-		AnalysisMenu = new JMenu(menuNames[3]);		// Analysis
-		ResultsMenu = new MenuResults() ;
+		viewMenu = new MenuView() ;
+		analysisMenu = new MenuAnalysis() ;
+		resultsMenu = new MenuResults() ;
 		EspecialMenu = new JMenu(menuNames[5]);		// Especial
 
 		
 		EspecialMenu.setMnemonic(KeyEvent.VK_E);
 		menuBar.add(MenuFile.create());
 		menuBar.add(menuStructure);
-		menuBar.add(ViewMenu);
-		menuBar.add(AnalysisMenu);
-		menuBar.add(ResultsMenu);
+		menuBar.add(viewMenu);
+		menuBar.add(analysisMenu);
+		menuBar.add(resultsMenu);
 		menuBar.add(EspecialMenu);
-		AddAnalysisMenuItems();
 		AddEspecialMenuItems();
 
 
@@ -182,9 +179,9 @@ public class Menus extends JFrame
 
 	public WestPanel getWestPanel() { return westPanel ;}
 
+	public MenuAnalysis getMenuAnalysis() { return analysisMenu ;}
+
 	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), frameTopLeft) ;}
-	
-	public void setRunAnalysis(boolean state) { RunAnalysis.setEnabled(state) ;}
 	
 	public static JPanel stdPanel(Dimension size, Color bgcolor)
 	{
@@ -241,8 +238,8 @@ public class Menus extends JFrame
 		if (AnalysisIsComplete)
 		{
 			northPanel.getUpperToolbar().enableButtonsScale() ;
-			ViewMenu.enableDofNumberView() ;
-			ResultsMenu.enableButtons() ;
+			viewMenu.enableDofNumberView() ;
+			resultsMenu.enableButtons() ;
 		}
 	}
 	
@@ -255,8 +252,8 @@ public class Menus extends JFrame
 		AssignSections.setEnabled(false);
 		AssignDistLoads.setEnabled(false);
 		CreateMesh.setEnabled(false);
-		ViewMenu.disableDofNumberView() ;
-		ResultsMenu.disableButtons() ;
+		viewMenu.disableDofNumberView() ;
+		resultsMenu.disableButtons() ;
 	}
 
 	public void ActivatePostAnalysisView()
@@ -269,72 +266,7 @@ public class Menus extends JFrame
 			repaint();
 		}
 	}
-	
-	public void AddAnalysisMenuItems()
-	{
-		/* Defining items in the menu Analysis */
-	    String[] AnalysisMenuItemsNames = new String[] {"Rodar análise", "Opções"};
-		RunAnalysis = new JMenuItem(AnalysisMenuItemsNames[0], KeyEvent.VK_R);
-		RunAnalysis.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				if (ReadyForAnalysis)
-				{
-					String[] ButtonNames = new String[] {"Linear elâstica", "Geometria nâo-linear", "Material nâo-linear", "Ambos nâo-lineares"};
-					List<JButton> Buttons = new ArrayList<>();
-					for (int b = 0; b <= Buttons.size() - 1; b += 1)
-					{
-						Buttons.add(new JButton (ButtonNames[b])) ;
-					}
-					InputPanelType2 CIT = new InputPanelType2("Analysis types", Buttons);
-					String AnalysisType = CIT.run();
-					
-					int NIter = 1, NLoadSteps = 1;
-					double MaxLoadFactor = 1;
-					boolean NonlinearGeo = false, NonlinearMat = false;
-					if (AnalysisType.equals(ButtonNames[0]))
-					{
-						NonlinearGeo = false;
-						NonlinearMat = false;
-					}
-					else if (AnalysisType.equals(ButtonNames[1]))
-					{
-						NonlinearGeo = true;
-						NonlinearMat = false;
-					}
-					else if (AnalysisType.equals(ButtonNames[2]))
-					{
-						NonlinearGeo = false;
-						NonlinearMat = true;
-					}
-					else if (AnalysisType.equals(ButtonNames[3]))
-					{
-						NonlinearGeo = true;
-						NonlinearMat = true;
-					}
 
-					MenuFunctions.CalcAnalysisParameters(MainPanel.structure);
-					Analysis.run(MainPanel.structure, MainPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
-				    MenuFunctions.PostAnalysis(MainPanel.structure);
-					for (Element elem : MainPanel.structure.getMesh().getElements())
-					{
-				    	elem.RecordResults(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getU(), NonlinearMat, NonlinearGeo);
-					}
-			        ActivatePostAnalysisView();
-				}
-				else
-				{
-					System.out.println("Structure is not ready for analysis");
-				}
-			}
-		});
-		RunAnalysis.setEnabled(false);
-		RunAnalysis.setForeground(palette[5]);
-		AnalysisMenu.add(RunAnalysis);
-	}
-	
 	public void AddEspecialMenuItems()
 	{
 		/* Defining items in the menu Especial */

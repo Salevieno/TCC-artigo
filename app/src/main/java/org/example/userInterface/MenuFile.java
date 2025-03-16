@@ -242,7 +242,7 @@ public abstract class MenuFile
 		MainPanel.structure = MenuFunctions.LoadFile("", filename);
 		MainPanel.structure.updateMaxCoords() ;
 		Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 1});
-		Menus.getInstance().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading));
+		Menus.getInstance().getMenuAnalysis().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading));
 		// Menus.getInstance().showCanvasOn() ;
 		// Menus.getInstance().showGrid() ;
 		// Menus.getInstance().showMousePos() ;

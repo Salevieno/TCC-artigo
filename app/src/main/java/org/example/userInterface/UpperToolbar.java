@@ -233,7 +233,7 @@ public class UpperToolbar extends JPanel
         
         if (ReadyForAnalysis)
         {
-            Menus.getInstance().setRunAnalysis(true) ;
+            Menus.getInstance().getMenuAnalysis().setRunAnalysis(true) ;
         }
     }
 
