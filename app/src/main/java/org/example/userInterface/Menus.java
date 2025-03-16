@@ -25,7 +25,6 @@ import org.example.structure.MyCanvas;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
 import org.example.view.EastPanel;
-import org.example.view.ListPanel;
 import org.example.view.MainPanel;
 import org.example.view.NorthPanel;
 import org.example.view.WestPanel;
@@ -42,45 +41,43 @@ public class Menus extends JFrame
 {
 	private static final long serialVersionUID = 1L;
 	
-	public static final Dimension defaultPanelSize = new Dimension(260, 300);
-	private static final Dimension initialSize = new Dimension(1084, 700) ;
-	
-	private static MyCanvas MainCanvas ;
-
-	/* panel variables */
-	private final NorthPanel northPanel = new NorthPanel() ;
-	private final EastPanel eastPanel = new EastPanel() ;
-	private final WestPanel westPanel = new WestPanel() ;
-	JPanel mousePanel;
-	
-	private MainPanel mainPanel;
-
-	JMenuBar menuBar;
-	private MenuStructure menuStructure ;
-    public JMenu ViewMenu, AnalysisMenu, ResultsMenu, EspecialMenu;
-	JMenuItem CreateMesh, CreateNodes, CreateMaterials, CreateSections, CreateConcLoads, CreateDistLoads, CreateNodalDisp, AssignMaterials, AssignSections, AssignSupports, AssignConcLoads, AssignDistLoads, AssignNodalDisp;	
-	JMenuItem DOFNumberView, NodeNumberView, ElemNumberView, MatView, SecView, NodeView, ElemView, ElemContourView, SupView, LoadsValuesView, ConcLoadsView, DistLoadsView, NodalDispsView, ReactionsView;
-
-	JMenuItem ReactionValues, ReactionArrows;
-	JMenuItem RunAnalysis;
-	JMenuItem DisplacementContours, DeformedShape, StressContours, StrainContours, InternalForcesContours, SaveResults, SaveLoadDispCurve;
-	JMenuItem[] SubMenuDisp;				// ux, uy, uz, tetax, tetay, tetaz
-	JMenuItem[] SubMenuStresses;			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
-	JMenuItem[] SubMenuStrains;				// ex, ey, ez, gxy, gxz, gyz
-	JMenuItem[] SubMenuInternalForces;		// Fx, Fy, Fz, Mx, My, Mz
-	JMenuItem Star;
-	
-	boolean ShowElems, ShowReactionArrows, ShowReactionValues, ShowLoadsValues;
-    boolean ShowCanvas, ShowGrid, ShowMousePos;
-    boolean ReadyForAnalysis;
-	
+	public static final Dimension defaultPanelSize ;
+	private static final Dimension initialSize ;
+	private static final Menus instance ;
 	public static final Point frameTopLeft;
 	public static final Color[] palette  ;
-	private static final Menus instance ;
+	
+	private final NorthPanel northPanel = new NorthPanel() ;
+	private final MainPanel mainPanel = new MainPanel(frameTopLeft) ;
+	private final EastPanel eastPanel = new EastPanel() ;
+	private final WestPanel westPanel = new WestPanel() ;
+	
+	private final MyCanvas mainCanvas ;
+
+	private JMenuBar menuBar;
+	private MenuStructure menuStructure ;
+    private JMenu ViewMenu, AnalysisMenu, ResultsMenu, EspecialMenu;
+	private JMenuItem CreateMesh, AssignMaterials, AssignSections, AssignSupports, AssignConcLoads, AssignDistLoads ;	
+	private JMenuItem DOFNumberView, NodeNumberView, ElemNumberView, MatView, SecView, NodeView, ElemView, ElemContourView, SupView, LoadsValuesView, ConcLoadsView, DistLoadsView, NodalDispsView, ReactionsView;
+
+	private JMenuItem ReactionValues, ReactionArrows;
+	private JMenuItem RunAnalysis;
+	private JMenuItem DisplacementContours, DeformedShape, StressContours, StrainContours, InternalForcesContours, SaveResults, SaveLoadDispCurve;
+	private JMenuItem[] SubMenuDisp;				// ux, uy, uz, tetax, tetay, tetaz
+	private JMenuItem[] SubMenuStresses;			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
+	private JMenuItem[] SubMenuStrains;				// ex, ey, ez, gxy, gxz, gyz
+	private JMenuItem[] SubMenuInternalForces;		// Fx, Fy, Fz, Mx, My, Mz
+	private JMenuItem Star;
+	
+	private boolean ShowReactionArrows, ShowReactionValues ;
+    private boolean ReadyForAnalysis;
+	
 
 	static
 	{
 		frameTopLeft = new Point(150, 50);
+		defaultPanelSize = new Dimension(260, 300);
+		initialSize = new Dimension(1084, 700) ;
 
 		/*
 			* Neutral: 0, 1, 2, 3
@@ -118,14 +115,12 @@ public class Menus extends JFrame
 	
 	private Menus()
 	{
-		
-		mainPanel = new MainPanel(frameTopLeft) ;
 
 		setLocation(frameTopLeft);
 
 	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
 		int[] mainCanvasSize = new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0} ;
-	    MainCanvas = new MyCanvas (new Point(575, 25), mainCanvasSize, new double[] {10, 10, 0}, ScreenTopLeft);	    
+	    mainCanvas = new MyCanvas (new Point(575, 25), mainCanvasSize, new double[] {10, 10, 0}, ScreenTopLeft);	    
 
 		SubMenuDisp = new JMenuItem[6];				// ux, uy, uz, tetax, tetay, tetaz
 		SubMenuStresses = new JMenuItem[6];			// Sigmax, Sigmay, Sigmaz, Taux, Tauy, Tauz
@@ -156,7 +151,7 @@ public class Menus extends JFrame
 
 	public static Menus getInstance() { return instance ;}
 	
-	public static MyCanvas getMainCanvas() { return MainCanvas ;}
+	public MyCanvas getMainCanvas() { return mainCanvas ;}
 	
 	public MenuStructure getMenuStructure() { return menuStructure ;}
 
@@ -690,7 +685,6 @@ public class Menus extends JFrame
 				{
 					//SelectedDiagram = 0;
 					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), d2);
-					ShowElems = false;
 					//DrawDisplacementContours(SelectedVar);
 					//ResetE1Panel();
 				}
@@ -720,7 +714,6 @@ public class Menus extends JFrame
 				{
 					//SelectedDiagram = 1;
 					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
-					ShowElems = false;
 					//DrawStressContours(SelectedVar);
 					//ResetE1Panel();
 				}
@@ -750,7 +743,6 @@ public class Menus extends JFrame
 				{
 					//SelectedDiagram = 2;
 					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
-					ShowElems = false;
 					//DrawStrainContours(SelectedVar);
 					//ResetE1Panel();
 				}
@@ -780,7 +772,6 @@ public class Menus extends JFrame
 				{
 					//SelectedDiagram = 3;
 					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), f2);
-					ShowElems = false;
 					//DrawInternalForcesContours(Util.ElemPosInArray(Elem[0].getDOFs(), f2));
 					//ResetE1Panel();
 				}
@@ -807,21 +798,6 @@ public class Menus extends JFrame
 				ActivatePostAnalysisView();
 			}
 		});
-	}
-	
-	public void showCanvasOn()
-	{
-		ShowCanvas = true ;
-	}
-
-	public void showGrid()
-	{
-		ShowGrid = true ;
-	}
-
-	public void showMousePos()
-	{
-		ShowMousePos = true ;
 	}
 
 }

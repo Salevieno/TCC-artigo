@@ -210,7 +210,7 @@ public abstract class MenuFile
 			public void actionPerformed(ActionEvent e) 
 			{
 				String filename = Menus.getInstance().getSaveLoadFile().run().getText();
-				SaveFile(filename, Menus.getMainCanvas(), MainPanel.structure, MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(),
+				SaveFile(filename, Menus.getInstance().getMainCanvas(), MainPanel.structure, MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(),
 						MainPanel.structure.getSupports(), MainPanel.loading, MenuFunctions.matTypes,
 						MenuFunctions.secTypes);
 			}
@@ -241,11 +241,11 @@ public abstract class MenuFile
 		String filename = Menus.getInstance().getSaveLoadFile().run().getText();
 		MainPanel.structure = MenuFunctions.LoadFile("", filename);
 		MainPanel.structure.updateMaxCoords() ;
-		Menus.getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 1});
+		Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 1});
 		Menus.getInstance().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading));
-		Menus.getInstance().showCanvasOn() ;
-		Menus.getInstance().showGrid() ;
-		Menus.getInstance().showMousePos() ;
+		// Menus.getInstance().showCanvasOn() ;
+		// Menus.getInstance().showGrid() ;
+		// Menus.getInstance().showMousePos() ;
 		MenuFunctions.NodeView();
 		MenuFunctions.ElemView();
 		MenuFunctions.ElemContourView();

@@ -238,8 +238,8 @@ public class MenuStructure extends JMenu
 					MainPanel.structure.updateCenter() ;
 					MainPanel.structure.updateMinCoords() ;
 					MainPanel.structure.updateMaxCoords() ;
-					Menus.getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
-					Menus.getMainCanvas().setDrawingPos(new int[2]);
+					Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
+					Menus.getInstance().getMainCanvas().setDrawingPos(new int[2]);
 					Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 				}
 			}
