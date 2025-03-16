@@ -228,7 +228,7 @@ public class UpperToolbar extends JPanel
         NodalDispsAssignmentIsOn = false;
         MenuFunctions.NodeSelectionIsOn = false;
         MenuFunctions.ElemSelectionIsOn = false;
-        Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
+        Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
         boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
         
         if (ReadyForAnalysis)

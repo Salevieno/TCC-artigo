@@ -81,7 +81,7 @@ public class MenuStructure extends JMenu
 				InputPanelType2 CIT = new InputPanelType2("Elem types", buttons);
 				MainPanel.setElemType(CIT.run());
 				System.out.println(MenuFunctions.SelectedElemType);
-				Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
+				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 				updateEnable();
 			}
 		});
@@ -240,7 +240,7 @@ public class MenuStructure extends JMenu
 					MainPanel.structure.updateMaxCoords() ;
 					Menus.getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
 					Menus.getMainCanvas().setDrawingPos(new int[2]);
-					Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
+					Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 				}
 			}
 		});
@@ -262,7 +262,7 @@ public class MenuStructure extends JMenu
 				MenuFunctions.SnipToGridIsOn = false;
 				Menus.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;
 				Menus.getInstance().getNorthPanel().getUpperToolbar().showButtonSnipToGridOn();
-				Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
+				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 			}
 		});
 		TypeNodes.setForeground(Menus.palette[5]);
@@ -317,7 +317,7 @@ public class MenuStructure extends JMenu
 		MainPanel.structure.createMesh(meshType, UserDefinedMesh, ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()));
 		MenuFunctions.NodeView();
 		MenuFunctions.ElemView();
-		Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
+		Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 		updateEnable();
 	}
 

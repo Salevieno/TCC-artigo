@@ -1,6 +1,7 @@
 package org.example.userInterface;
 
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import javax.swing.border.BevelBorder;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
+import org.example.view.DiagramsPanel;
 import org.example.view.MainPanel;
 
 public class InstructionsPanel extends JPanel
@@ -36,6 +38,7 @@ public class InstructionsPanel extends JPanel
     List<Boolean> stepIsComplete = new ArrayList<>(Collections.nCopies(9, false)) ;
     private static final JLabel title ;
     private static final ImageIcon okIcon ;
+	private static final DrawingOnAPanel DP = new DrawingOnAPanel() ;
 
     static
     {
@@ -128,4 +131,13 @@ public class InstructionsPanel extends JPanel
 		return stepIsComplete;
 	}
 
+    @Override
+    public void paintComponent(Graphics g) 
+    {
+        super.paintComponent(g);
+        DP.setG(g);
+        DP.setRealStructCenter(MainPanel.structure.getCenter());
+        DiagramsPanel.display(MainPanel.structure, MenuFunctions.selectedNodes, MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP);
+        repaint();
+    }
 }

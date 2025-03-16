@@ -799,11 +799,11 @@ public class MainPanel extends JPanel
 			{
 				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, MenuFunctions.SnipToGridIsOn);
 				Menus.getInstance().EnableButtons();
-				Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
+				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 			}
 			if (!StructureCreationIsOn)
 			{
-				Menus.getInstance().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
+				Menus.getInstance().getWestPanel().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
 				Menus.getInstance().getNorthPanel().getUpperToolbar().enableButtonsSnipToGrid() ;
 			}
 			if (MenuFunctions.NodeSelectionIsOn)

@@ -11,10 +11,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -24,15 +22,13 @@ import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.MyCanvas;
-import org.example.structure.Node;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
-import org.example.view.DiagramsPanel;
 import org.example.view.EastPanel;
-import org.example.view.LegendPanel;
 import org.example.view.ListPanel;
 import org.example.view.MainPanel;
 import org.example.view.NorthPanel;
+import org.example.view.WestPanel;
 
 /*
  Prâximas adiçõs
@@ -52,16 +48,12 @@ public class Menus extends JFrame
 	private static MyCanvas MainCanvas ;
 
 	/* panel variables */
-	private final ToolbarButtons toolbarButtons = new ToolbarButtons() ;
-	private final ToolbarResults toolbarResults = new ToolbarResults() ;
-	private final InstructionsPanel instructionsPanel = new InstructionsPanel() ;
 	private final NorthPanel northPanel = new NorthPanel() ;
 	private final EastPanel eastPanel = new EastPanel() ;
-	JPanel W1;
+	private final WestPanel westPanel = new WestPanel() ;
 	JPanel mousePanel;
 	
 	private MainPanel mainPanel;
-	private ListPanel listsPanel ;
 
 	JMenuBar menuBar;
 	private MenuStructure menuStructure ;
@@ -128,7 +120,6 @@ public class Menus extends JFrame
 	{
 		
 		mainPanel = new MainPanel(frameTopLeft) ;
-		listsPanel = new ListPanel() ;
 
 		setLocation(frameTopLeft);
 
@@ -152,18 +143,10 @@ public class Menus extends JFrame
 
 		JPanel newContentPanel = new JPanel(new GridBagLayout());
 		BorderLayout bl = new BorderLayout();
-		newContentPanel.setLayout(bl);
-
-		/* West panels */
-		W1 = new JPanel(new GridLayout(0, 1));		
-		W1.add(toolbarButtons);
-		W1.add(toolbarResults);
-		W1.add(listsPanel);
-		W1.add(instructionsPanel);
-		
+		newContentPanel.setLayout(bl);		
 		newContentPanel.add(northPanel, BorderLayout.NORTH);
 		newContentPanel.add(mainPanel, BorderLayout.CENTER);
-		newContentPanel.add(W1, BorderLayout.WEST);
+		newContentPanel.add(westPanel, BorderLayout.WEST);
 		newContentPanel.add(eastPanel, BorderLayout.EAST);
 	
 		this.setContentPane(newContentPanel);
@@ -180,6 +163,8 @@ public class Menus extends JFrame
 	public NorthPanel getNorthPanel() { return northPanel ;}
 
 	public EastPanel getEastPanel() { return eastPanel ;}
+
+	public WestPanel getWestPanel() { return westPanel ;}
 
 	public SaveLoadFile getSaveLoadFile() { return new SaveLoadFile((JFrame) getParent(), frameTopLeft) ;}
 	
@@ -293,7 +278,7 @@ public class Menus extends JFrame
 		if (!((Double)MainPanel.structure.getU()[0]).isNaN())
 		{
 			eastPanel.activatePostAnalysisView() ;
-			toolbarResults.setVisible(true);
+			westPanel.getToolbarResults().setVisible(true);
 			EnableButtons();
 			repaint();
 		}
@@ -838,11 +823,5 @@ public class Menus extends JFrame
 	{
 		ShowMousePos = true ;
 	}
-
-
-    public InstructionsPanel getInstructionsPanel()
-	{
-		return instructionsPanel;
-    }
 
 }

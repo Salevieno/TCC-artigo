@@ -253,10 +253,10 @@ public abstract class MenuFile
 		MenuFunctions.ConcLoadsView();
 		MenuFunctions.DistLoadsView();
 		MenuFunctions.NodalDispsView();
-		Menus.getInstance().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
+		Menus.getInstance().getWestPanel().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
 		Menus.getInstance().DisableButtons();
 		Menus.getInstance().EnableButtons();
-		Menus.getInstance().getInstructionsPanel().updateStepsCompletion() ;
+		Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 	}
 	
 }
