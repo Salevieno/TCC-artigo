@@ -186,25 +186,24 @@ public class UpperToolbar extends JPanel
         
         if (MatAssignmentIsOn)
         {
-            System.out.println("Mat types at menus: " + MenuFunctions.matTypes);
             Element.createMatColors(MenuFunctions.matTypes);
-            for (Element elem : MainPanel.structure.getMesh().getElements())
-            {
-                int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;
-                if (colorID != -1)
-                {
-                    elem.setMatColor(Element.matColors[colorID]);
-                }
-            }
+            // for (Element elem : MainPanel.structure.getMesh().getElements())
+            // {
+                // int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;
+                // if (colorID != -1)
+                // {
+                //     elem.setMatColor(Element.matColors[colorID]);
+                // }
+            // }
         }
         if (SecAssignmentIsOn)
         {
-            Element.setSecColors(MenuFunctions.secTypes);
-            for (Element elem : MainPanel.structure.getMesh().getElements())
-            {
-                int colorID = MenuFunctions.secTypes.indexOf(elem.getSec()) ;
-                elem.setSecColor(Element.SecColors[colorID]);
-            }
+            // Element.setSecColors(MenuFunctions.secTypes);
+            // for (Element elem : MainPanel.structure.getMesh().getElements())
+            // {
+            //     int colorID = MenuFunctions.secTypes.indexOf(elem.getSec()) ;
+            //     elem.setSecColor(Element.SecColors[colorID]);
+            // }
         }
     
         if (SupAssignmentIsOn | ConcLoadsAssignmentIsOn | NodalDispsAssignmentIsOn)

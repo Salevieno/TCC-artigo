@@ -40,8 +40,8 @@ public class Element
 	private double[] CenterCoords;
 	private int[][] NodeDOF = null;
 	private int[] CumDOFs = null;
-	private Color MatColor;
-	private Color SecColor;
+	// private Color MatColor;
+	// private Color SecColor;
 
 	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, Material mat, Section sec, ElemType type)
 	{
@@ -88,8 +88,8 @@ public class Element
 	public ElemType getType() {return type;}
 	public int[][] getNodeDOF() {return NodeDOF;}
 	public int[] getCumDOFs() {return CumDOFs;}
-	public Color getMatColor () {return MatColor;}
-	public Color getSecColor () {return SecColor;}
+	// public Color getMatColor () {return MatColor;}
+	// public Color getSecColor () {return SecColor;}
 	public void setID(int I) {ID = I;}
 	public void setShape(ElemShape S) {Shape = S;}
 	public void setDOFs(int[] D) {DOFs = D;}
@@ -107,8 +107,8 @@ public class Element
 	public void setType(ElemType T) {type = T;}
 	public void setCumDOFs(int[] C) {CumDOFs = C;}
 	public void setNodeDOF(int[][] N) {NodeDOF = N;}
-	public void setMatColor (Color color) {MatColor = color;}
-	public void setSecColor (Color color) {SecColor = color;}
+	// public void setMatColor (Color color) {MatColor = color;}
+	// public void setSecColor (Color color) {SecColor = color;}
 
 	public void DefineProperties(ElemType type)
 	{

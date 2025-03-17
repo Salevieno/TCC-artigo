@@ -10,7 +10,7 @@ public class StructureDTO
 	private String name;
 	private StructureShape shape;
 	private List<Point3D> coords;
-	// private Mesh mesh ;
+	private MeshDTO meshDTO ;
 	private List<Supports> supports;
 	private Results results ;
 
@@ -24,7 +24,7 @@ public class StructureDTO
         this.name = structure.getName() ;
         this.shape = structure.getShape() ;
         this.coords = structure.getCoords() ;
-        // this.mesh = structure.getMesh() ;
+        this.meshDTO = new MeshDTO(structure.getMesh()) ;
         this.supports = structure.getSupports() ;
         this.results = structure.getResults() ;
     }

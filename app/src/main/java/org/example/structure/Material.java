@@ -1,18 +1,25 @@
 package org.example.structure;
 
+import java.awt.Color;
+
 import org.example.mainTCC.InputFunctions;
+import org.example.utilidades.Util;
 
 public class Material
 {
 	private double E;
 	private double v;
-	private double G;	
+	private double G;
+
+	private transient Color color ;
 	
 	public Material(double E, double v, double G)
 	{
 		this.E = E;
 		this.v = v;
 		this.G = G;
+
+		color = Util.RandomColors(1)[0] ;
 	}
 	
 	public static Material loadFromJson(String filename)
@@ -45,5 +52,5 @@ public class Material
 		this.G = fu;
 	}
 	
-	
+	public Color getColor() { return color ;}
 }

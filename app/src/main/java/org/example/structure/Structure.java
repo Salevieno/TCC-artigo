@@ -109,7 +109,7 @@ public class Structure
 		for (Element elem : structure.getMesh().getElements())
 		{
 			int matColorID = matTypes.indexOf(elem.getMat()) ;
-			elem.setMatColor(Element.matColors[matColorID]);
+			// elem.setMatColor(Element.matColors[matColorID]);
 		}
 
 		/* 4. Atribuir seções */		
@@ -118,7 +118,7 @@ public class Structure
 		for (Element elem : structure.getMesh().getElements())
 		{
 			int secID = secTypes.indexOf(elem.getSec()) ;
-			elem.setSecColor(Element.SecColors[secID]);
+			// elem.setSecColor(Element.SecColors[secID]);
 		}
 		
 		/* 5. Atribuir apoios */

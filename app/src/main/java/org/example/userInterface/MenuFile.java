@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuFileService;
+import org.example.structure.StructureDTO;
 import org.example.view.MainPanel;
 
 public abstract class MenuFile
@@ -35,9 +36,10 @@ public abstract class MenuFile
 			public void actionPerformed(ActionEvent e) 
 			{
 				String filename = Menus.getInstance().getSaveLoadFile().run().getText();
-				MenuFileService.SaveFile(filename, Menus.getInstance().getMainCanvas(), MainPanel.structure, MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(),
-						MainPanel.structure.getSupports(), MainPanel.loading, MenuFunctions.matTypes,
-						MenuFunctions.secTypes);
+				// MenuFileService.SaveFile(filename, Menus.getInstance().getMainCanvas(), MainPanel.structure, MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(),
+				// 		MainPanel.structure.getSupports(), MainPanel.loading, MenuFunctions.matTypes,
+				// 		MenuFunctions.secTypes);
+				MenuFileService.saveStructure(filename, new StructureDTO(MainPanel.structure)) ;
 			}
 		});
 		Load.addActionListener(new ActionListener()

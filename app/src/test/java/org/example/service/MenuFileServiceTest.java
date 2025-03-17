@@ -39,6 +39,7 @@ public class MenuFileServiceTest
 
         int supConfig = 1 ;
         Structure structure = Structure.create(coords, meshType, meshSizes, elemType, currentMaterialType, matTypes, currentSecType, secTypes, supConfig) ;
+        structure.createMesh(meshType, new int[][] {{2, 5}}, elemType);
 
         MenuFileService.saveStructure("test save structure", new StructureDTO(structure)) ;
     }

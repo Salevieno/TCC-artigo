@@ -1049,11 +1049,11 @@ public class DrawingOnAPanel
 			}
 			if (showmatcolor & Elem.get(elem).getMat() != null)
 			{
-				color = Elem.get(elem).getMatColor();
+				color = Elem.get(elem).getMat().getColor() ;
 			}
 			if (showseccolor & Elem.get(elem).getSec() != null)
 			{
-				color = Elem.get(elem).getSecColor();
+				color = Elem.get(elem).getSec().getColor() ;
 			}
 			for (int node = 0; node <= Nodes.length - 1; node += 1)
 			{
