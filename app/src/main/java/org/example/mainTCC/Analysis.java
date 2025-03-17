@@ -202,11 +202,11 @@ public abstract class Analysis
 		double[] P = new double[NFreeDOFs];
 		List<Node> Node = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
-		if (loading.getConcLoads() != null)
+		if (loading.getConcLoads() != null && !loading.getConcLoads().isEmpty())
 		{
 			for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
 			{
-				int node = loading.getConcLoads().get(load).getNode();
+				int node = loading.getConcLoads().get(load).getNodeID();
 				for (int dof = 0; dof <= Node.get(node).getDOFType().length - 1; dof += 1)
 				{
 					if (-1 < Node.get(node).dofs[dof])
@@ -262,7 +262,7 @@ public abstract class Analysis
 			}
 		}
 		
-		if (loading.getNodalDisps() != null)
+		if (loading.getNodalDisps() != null && !loading.getNodalDisps().isEmpty())
 		{
 			double[] Uapplied = new double[NFreeDOFs];
 			for (int disp = 0; disp <= loading.getNodalDisps().size() - 1; disp += 1)
@@ -294,8 +294,7 @@ public abstract class Analysis
 		return P;
 	}
 
-	public static double[] run(Structure struct, Loading loading,
-										boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
+	public static double[] run(Structure structure, Loading loading, boolean NonlinearMat, boolean NonlinearGeo, int NIter, int NLoadSteps, double MaxLoadFactor)
 	{
 		/*
 		 * NIter = Nâmero de iteraçõs em cada passo (para convergir)
@@ -307,20 +306,20 @@ public abstract class Analysis
 		for (int loadstep = 0; loadstep <= NLoadSteps - 1; loadstep += 1)
 		{
 			double loadfactor = 0 + (loadstep + 1)*loadinc;
-			struct.setP(LoadVector(struct.getMesh(), struct.NFreeDOFs, loading, NonlinearMat, NonlinearGeo, loadfactor));
+			structure.setP(LoadVector(structure.getMesh(), structure.NFreeDOFs, loading, NonlinearMat, NonlinearGeo, loadfactor));
 		    for (int iter = 0; iter <= NIter - 1; iter += 1)
 			{
-		    	struct.setK(Structure.StructureStiffnessMatrix(struct.NFreeDOFs, struct.getMesh().getNodes(), struct.getMesh().getElements(), NonlinearMat, NonlinearGeo));
-		    	struct.setU(SolveLinearSystem(struct.getK(), struct.getP()));
-			    for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
+		    	structure.setK(Structure.StructureStiffnessMatrix(structure.NFreeDOFs, structure.getMesh().getNodes(), structure.getMesh().getElements(), NonlinearMat, NonlinearGeo));
+		    	structure.setU(SolveLinearSystem(structure.getK(), structure.getP()));
+			    for (int node = 0; node <= structure.getMesh().getNodes().size() - 1; node += 1)
 			    {
-			    	struct.getMesh().getNodes().get(node).setDisp(GetNodeDisplacements(struct.getMesh().getNodes(), struct.getU())[node]);
+			    	structure.getMesh().getNodes().get(node).setDisp(GetNodeDisplacements(structure.getMesh().getNodes(), structure.getU())[node]);
 			    }
 			    if (NonlinearMat)
 			    {
-					for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
+					for (int elem = 0; elem <= structure.getMesh().getElements().size() - 1; elem += 1)
 				    {
-						struct.getMesh().getElements().get(elem).setStrain(struct.getMesh().getElements().get(elem).StrainVec(struct.getMesh().getNodes(), struct.getU(), NonlinearGeo));
+						structure.getMesh().getElements().get(elem).setStrain(structure.getMesh().getElements().get(elem).StrainVec(structure.getMesh().getNodes(), structure.getU(), NonlinearGeo));
 				    }
 			    }
 				/*for (int elem = 0; elem <= Elem.length - 1; elem += 1)
@@ -330,21 +329,21 @@ public abstract class Analysis
 				//UtilText.PrintMatrix(struct.getK());
 			    //UtilText.PrintVector(struct.getP());
 		        //UtilText.PrintVector(struct.getU());
-				System.out.println("iter: " + iter + " max disp: " + Util.FindMaxAbs(struct.getU()));
+				System.out.println("iter: " + iter + " max disp: " + Util.FindMaxAbs(structure.getU()));
 			}
-			for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
+			for (int node = 0; node <= structure.getMesh().getNodes().size() - 1; node += 1)
 			{
-				struct.getMesh().getNodes().get(node).addLoadDispCurve(struct.getU(), loadfactor);
+				structure.getMesh().getNodes().get(node).addLoadDispCurve(structure.getU(), loadfactor);
 			}
 		}
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
 		System.out.println("Tempo de anâlise = " + AnalysisTime / 1000.0 + " seg");
-		if (((Double)struct.getU()[0]).isNaN())
+		if (((Double)structure.getU()[0]).isNaN())
 		{
 			System.out.println("Displacement results are NaN at Menus -> RunAnalysis");
 		}
 		
-		return struct.getU();
+		return structure.getU();
 	}
 
     public static double DispOnPoint(List<Node> Node, Element Elem, double e, double n, int dof, double[] u)

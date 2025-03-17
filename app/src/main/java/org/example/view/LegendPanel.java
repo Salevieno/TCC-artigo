@@ -20,6 +20,7 @@ public class LegendPanel extends JPanel
     private static final Dimension initialSize = new Dimension(10, 100) ;
 	private static final int titleSize = 13;
 	private static final int fontSize = 13;
+	private Structure structure ;
 	private static final DrawingOnAPanel DP = new DrawingOnAPanel() ;
 
     public LegendPanel()
@@ -56,8 +57,7 @@ public class LegendPanel extends JPanel
 		}
 	}
 
-	public void display(Structure structure, int SelectedVar,
-    					boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces)
+	public void display(Structure structure, int SelectedVar, boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces)
 	{
 		if (-1 < SelectedVar)
 		{
@@ -85,13 +85,16 @@ public class LegendPanel extends JPanel
 		}
 	}
 
+	public void setStructure(Structure structure) { this.structure = structure ;}	
+
     @Override
     public void paintComponent(Graphics g) 
     {
         super.paintComponent(g);
         DP.setG(g);
         DP.setRealStructCenter(MainPanel.structure.getCenter());
-        display(MainPanel.structure, MainPanel.SelectedVar, MainPanel.ShowDisplacementContour, MainPanel.ShowStressContour, MainPanel.ShowStrainContour, MainPanel.ShowInternalForces);
+        display(structure, MainPanel.SelectedVar, MainPanel.ShowDisplacementContour, MainPanel.ShowStressContour, MainPanel.ShowStrainContour, MainPanel.ShowInternalForces);
         repaint();
     }
+
 }

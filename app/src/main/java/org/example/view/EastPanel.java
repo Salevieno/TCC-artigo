@@ -182,4 +182,9 @@ public class EastPanel extends JPanel
 		
 		return ElemInfoPanel;
 	}
+
+
+
+	public LegendPanel getLegendPanel() { return legendPanel ;}
+
 }

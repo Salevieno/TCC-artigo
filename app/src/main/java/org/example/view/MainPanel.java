@@ -562,7 +562,7 @@ public class MainPanel extends JPanel
 		}
 	}
 	
-	public static void AddConcLoads()
+	public static void AddConcLoads(Loading loading)
 	{
 		if (-1 < selectedConcLoadID & MenuFunctions.selectedNodes != null & MenuFunctions.ConcLoadType != null)
 		{
@@ -573,7 +573,7 @@ public class MainPanel extends JPanel
 				{
 					ConcLoads newConcLoad = new ConcLoads(loadid, MenuFunctions.selectedNodes.get(i), MenuFunctions.ConcLoadType[selectedConcLoadID]);
 					loading.getConcLoads().add(newConcLoad);
-					MenuFunctions.selectedNodes.get(i).AddConcLoads(newConcLoad);
+					MenuFunctions.selectedNodes.get(i).addConcLoad(newConcLoad);
 				}
 			}
 			MenuFunctions.ShowConcLoads = true;
@@ -581,7 +581,7 @@ public class MainPanel extends JPanel
 		}
 	}
 	
-	public static void AddDistLoads()
+	public static void AddDistLoads(Structure structure, Loading loading)
 	{
 		if (-1 < selectedDistLoadID & MenuFunctions.SelectedElems != null & MenuFunctions.DistLoadType != null)
 		{
@@ -595,7 +595,7 @@ public class MainPanel extends JPanel
 					double Intensity = MenuFunctions.DistLoadType[selectedDistLoadID][1];
 					DistLoads newDistLoad = new DistLoads(loadid, MenuFunctions.SelectedElems[i], LoadType, Intensity) ;
 					loading.getDistLoads().add(newDistLoad);
-					MainPanel.structure.getMesh().getElements().get(elem).setDistLoads(Util.AddElem(MainPanel.structure.getMesh().getElements().get(elem).getDistLoads(), newDistLoad));
+					structure.getMesh().getElements().get(elem).setDistLoads(Util.AddElem(structure.getMesh().getElements().get(elem).getDistLoads(), newDistLoad));
 				}
 			}
 			MenuFunctions.ShowDistLoads = true;
@@ -614,7 +614,7 @@ public class MainPanel extends JPanel
 				{
 					NodalDisps newNodalDisp = new NodalDisps(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[selectedNodalDispID]) ;
 					loading.getNodalDisps().add(newNodalDisp);
-					MenuFunctions.selectedNodes.get(i).AddNodalDisps(newNodalDisp);
+					MenuFunctions.selectedNodes.get(i).addNodalDisp(newNodalDisp);
 				}
 			}
 			MenuFunctions.ShowNodalDisps = true;
@@ -651,91 +651,6 @@ public class MainPanel extends JPanel
 	{
 		MenuFunctions.NodalDispType = NodalDisps;
 	}
-	
-	public static Object[] CreatureStructure(List<Point3D> StructCoords, MeshType meshType, int[] MeshSizes, ElemType elemType,
-			Material CurrentMatType, List<Material> matTypes, Section CurrentSecType, List<Section> secTypes,
-			int SupConfig, int SelConcLoad, int SelDistLoad, int ConcLoadConfig, int DistLoadConfig)
-	{
-		/* Tipo de elemento, materiais, seçõs, apoios e cargas jâ estâo definidos */
-		
-		/* 1. Criar polâgono */
-		MainPanel.structure = new Structure("Especial", StructureShape.rectangular, StructCoords);
-		
-		/* 2. Criar malha */		
-		MainPanel.structure.removeSupports() ;
-		loading.clearLoads() ;
-		MainPanel.structure.createMesh(meshType, new int[][] {MeshSizes}, elemType);
-		
-		/* 3. Atribuir materiais */
-		for (int elem = 0; elem <= MainPanel.structure.getMesh().getElements().size() - 1; elem += 1)
-		{
-			MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
-		}
-		AddMaterialToElements(MenuFunctions.SelectedElems, CurrentMatType);
-		Element.createMatColors(matTypes);
-		for (Element elem : MainPanel.structure.getMesh().getElements())
-		{
-			int matColorID = matTypes.indexOf(elem.getMat()) ;
-			elem.setMatColor(Element.matColors[matColorID]);
-		}
-
-		/* 4. Atribuir seçõs */
-		for (int elem = 0; elem <= MainPanel.structure.getMesh().getElements().size() - 1; elem += 1)
-		{
-			MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
-		}
-		AddSectionsToElements(MenuFunctions.SelectedElems, CurrentSecType);
-		Element.setSecColors(secTypes);
-		for (Element elem : MainPanel.structure.getMesh().getElements())
-		{
-			int secID = secTypes.indexOf(elem.getSec()) ;
-			elem.setSecColor(Element.SecColors[secID]);
-		}
-		
-		/* 5. Atribuir apoios */
-		Supports[] supports = Util.AddEspecialSupports(MainPanel.structure.getMesh().getNodes(), Element.typeToShape(elemType), meshType, new int[] {MeshSizes[0], MeshSizes[1]}, SupConfig);
-		for (Supports sup : supports)
-		{
-			MainPanel.structure.addSupport(sup);
-		}
-
-		/* 6. Atribuir cargas */
-		if (ConcLoadConfig == 1)
-		{
-			MenuFunctions.selectedNodes = new ArrayList<Node>();
-			if (MainPanel.structure.getMesh().getElements().get(0).getShape().equals(ElemShape.rectangular))
-			{
-				int nodeID = (MeshSizes[1] / 2 * (MeshSizes[0] + 1) + MeshSizes[0] / 2) ;
-				MenuFunctions.selectedNodes.add(MainPanel.structure.getMesh().getNodes().get(nodeID));
-			}
-			else if (MainPanel.structure.getMesh().getElements().get(0).getShape().equals(ElemShape.r8))
-			{
-				int nodeID = (MeshSizes[1] / 2 * (2 * MeshSizes[0] + 1 + MeshSizes[0] + 1) + MeshSizes[0]) ;
-				MenuFunctions.selectedNodes.add(MainPanel.structure.getMesh().getNodes().get(nodeID));
-			}
-		}
-		selectedConcLoadID = SelConcLoad;
-		AddConcLoads();
-		selectedDistLoadID = SelDistLoad;
-		if (-1 < SelDistLoad)
-		{
-			MenuFunctions.SelectedElems = null;
-			for (int elem = 0; elem <= MainPanel.structure.getMesh().getElements().size() - 1; elem += 1)
-			{
-				MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
-			}
-			AddDistLoads();
-		}
-		
-		/* 7. Calcular parâmetros para a anâlise */
-		MenuFunctions.CalcAnalysisParameters(MainPanel.structure);
-		
-		MenuFunctions.selectedNodes = null;
-		MenuFunctions.SelectedElems = null;
-		return new Object[] {MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(), MainPanel.structure.getSupports(),
-			loading.getConcLoads(), loading.getDistLoads(), null};
-	}
-
 
 	public static void ShowResult(Structure struct)
 	{

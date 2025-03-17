@@ -58,8 +58,7 @@ public class Menus extends JFrame
     private MenuView viewMenu ;
 	private MenuAnalysis analysisMenu ;
 	private MenuResults resultsMenu ;
-	private MenuEspecial especialMenu;
-	private JMenuItem CreateMesh, AssignMaterials, AssignSections, AssignSupports, AssignConcLoads, AssignDistLoads ;	
+	private MenuEspecial especialMenu;	
 
 
 	static
@@ -172,47 +171,8 @@ public class Menus extends JFrame
 		
 	public void EnableButtons()
 	{
-		Structure structure = MainPanel.structure;
-		// List<Node> nodes = MainPanel.structure.getMesh() != null ? MainPanel.structure.getMesh().getNodes() : null ;
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
-		String SelectedElemType = MenuFunctions.SelectedElemType;
-		// List<Material> MatTypes = MenuFunctions.matTypes;
-		// List<Section> SecTypes = MenuFunctions.secTypes;
-		// double[][] ConcLoadTypes = MenuFunctions.ConcLoadType;
-		// double[][] DistLoadTypes = MenuFunctions.DistLoadType;
-		// double[][] NodalDispTypes = MenuFunctions.NodalDispType;
-		// if ( nodes != null )
-		// {
-		// 	AssignSupports.setEnabled(true);
-		// 	if (ConcLoadTypes != null)
-		// 	{
-		// 		AssignConcLoads.setEnabled(true);
-		// 	}
-		// 	if (NodalDispTypes != null)
-		// 	{
-		// 		AssignNodalDisp.setEnabled(true);
-		// 	}
-		// }
-		// if ( elems != null )
-		// {
-		// 	if (MatTypes != null)
-		// 	{
-		// 		AssignMaterials.setEnabled(true);
-		// 	}
-		// 	if (SecTypes != null)
-		// 	{
-		// 		AssignSections.setEnabled(true);
-		// 	}
-		// 	if (DistLoadTypes != null)
-		// 	{
-		// 		AssignDistLoads.setEnabled(true);
-		// 	}
-		// }
 		menuStructure.updateEnable() ;
-		if ( SelectedElemType != null & structure.getCoords() != null)
-		{
-			CreateMesh.setEnabled(true);
-		}
 		if (AnalysisIsComplete)
 		{
 			northPanel.getUpperToolbar().enableButtonsScale() ;
@@ -223,20 +183,13 @@ public class Menus extends JFrame
 	
 	public void DisableButtons()
 	{
-		AssignSupports.setEnabled(false);
-		AssignConcLoads.setEnabled(false);
-		AssignDistLoads.setEnabled(false);
-		AssignMaterials.setEnabled(false);
-		AssignSections.setEnabled(false);
-		AssignDistLoads.setEnabled(false);
-		CreateMesh.setEnabled(false);
 		viewMenu.disableDofNumberView() ;
 		resultsMenu.disableButtons() ;
 	}
 
-	public void ActivatePostAnalysisView()
+	public void ActivatePostAnalysisView(Structure structure)
 	{
-		if (!((Double)MainPanel.structure.getU()[0]).isNaN())
+		if (!((Double)structure.getU()[0]).isNaN())
 		{
 			eastPanel.activatePostAnalysisView() ;
 			westPanel.getToolbarResults().setVisible(true);

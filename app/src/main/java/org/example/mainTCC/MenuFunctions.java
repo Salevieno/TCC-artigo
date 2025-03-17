@@ -4,6 +4,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.Loading;
@@ -11,6 +12,7 @@ import org.example.output.Results;
 import org.example.output.SaveOutput;
 import org.example.structure.ConcLoads;
 import org.example.structure.DistLoads;
+import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -22,6 +24,7 @@ import org.example.structure.Reactions;
 import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.structure.Supports;
+import org.example.userInterface.Menus;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
@@ -256,9 +259,9 @@ public abstract class MenuFunctions
 					ConcLoads NewConcLoad;
 					NewConcLoad = new ConcLoads(-1, -1, null);
 					NewConcLoad.setID(Integer.parseInt(Line[0]));
-					NewConcLoad.setNode(Integer.parseInt(Line[1]));
+					NewConcLoad.setNodeID(Integer.parseInt(Line[1]));
 					NewConcLoad.setLoads(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
-					ConcLoadType = Util.AddElem(ConcLoadType, new double[] {NewConcLoad.getNode(), NewConcLoad.getLoads()[0], NewConcLoad.getLoads()[1], NewConcLoad.getLoads()[2], NewConcLoad.getLoads()[3], NewConcLoad.getLoads()[4], NewConcLoad.getLoads()[5]});
+					ConcLoadType = Util.AddElem(ConcLoadType, new double[] {NewConcLoad.getNodeID(), NewConcLoad.getLoads()[0], NewConcLoad.getLoads()[1], NewConcLoad.getLoads()[2], NewConcLoad.getLoads()[3], NewConcLoad.getLoads()[4], NewConcLoad.getLoads()[5]});
 					MainPanel.loading.addConcLoad(NewConcLoad);
 				}
 				for (int distload = 0; distload <= Input[8].length - 4; distload += 1)
@@ -385,7 +388,7 @@ public abstract class MenuFunctions
 	}
 	
 	/* Analysis menu functions */
-	public static void CalcAnalysisParameters(Structure struct)
+	public static void CalcAnalysisParameters(Structure struct, Loading loading)
 	{
 		struct.NFreeDOFs = -1;
 		for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
@@ -425,8 +428,8 @@ public abstract class MenuFunctions
 				int nodeid = (int) ConcLoadType[loadid][1];
 				if (-1 < nodeid)
 				{
-					MainPanel.loading.getConcLoads().set(loadid, new ConcLoads(loadid, nodeid, ConcLoadType[loadid])) ;
-					struct.getMesh().getNodes().get(nodeid).setConcLoads(Util.AddElem(struct.getMesh().getNodes().get(nodeid).getConcLoads(), MainPanel.loading.getConcLoads().get(loadid)));
+					loading.getConcLoads().set(loadid, new ConcLoads(loadid, nodeid, ConcLoadType[loadid])) ;
+					struct.getMesh().getNodes().get(nodeid).setConcLoads(Util.AddElem(struct.getMesh().getNodes().get(nodeid).getConcLoads(), loading.getConcLoads().get(loadid)));
 				}
 			}
 		}
@@ -439,25 +442,26 @@ public abstract class MenuFunctions
 				double Intensity = DistLoadType[loadid][2];
 				if (-1 < elemid)
 				{
-					MainPanel.loading.getDistLoads().set(loadid, new DistLoads(loadid, elemid, LoadType, Intensity)) ;
-					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), MainPanel.loading.getDistLoads().get(loadid)));
+					loading.getDistLoads().set(loadid, new DistLoads(loadid, elemid, LoadType, Intensity)) ;
+					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
 				}
 			}
 		}
 	}
 	
 
-	public static void PostAnalysis(Structure struct)
+	public static void PostAnalysis(Structure structure)
 	{
 		/* Record results and set up their view*/
-		struct.setU(struct.getU());
-		Reactions[] reactions = Analysis.Reactions(struct.getMesh(), struct.getSupports(), NonlinearMat, NonlinearGeo, struct.getU());
-		struct.setReactions(reactions);
-		for (Element elem : struct.getMesh().getElements())
+		structure.setU(structure.getU());
+		Reactions[] reactions = Analysis.Reactions(structure.getMesh(), structure.getSupports(), NonlinearMat, NonlinearGeo, structure.getU());
+		structure.setReactions(reactions);
+		for (Element elem : structure.getMesh().getElements())
 		{
-			elem.RecordResults(struct.getMesh().getNodes(), struct.getU(), NonlinearMat, NonlinearGeo);
+			elem.RecordResults(structure.getMesh().getNodes(), structure.getU(), NonlinearMat, NonlinearGeo);
 		}
-		struct.getResults().register(struct.getMesh(), struct.getSupports(), struct.getU(), NonlinearMat, NonlinearGeo);
+		structure.getResults().register(structure.getMesh(), structure.getSupports(), structure.getU(), NonlinearMat, NonlinearGeo);
+		System.out.println(structure.getResults()) ;
 		ShowNodes = true;
 		ShowElems = true;
 		NodeSelectionIsOn = true;
@@ -466,13 +470,16 @@ public abstract class MenuFunctions
 		ShowReactionArrows = true;
 		ShowDeformedStructure = true;
 		DiagramScales[1] = 1;
-		double MaxDisp = Util.FindMaxAbs(struct.getU());
+		double MaxDisp = Util.FindMaxAbs(structure.getU());
 		if (0 < MaxDisp)
 		{
 			DiagramScales[1] = 1 / MaxDisp;
 		}
+		Reactions.setSumReactions(Analysis.SumReactions(reactions));
+
+		Menus.getInstance().getWestPanel().setStructure(structure) ;
+				
 		System.out.println("Max disp: " + MaxDisp);
-		Reactions.setSumReactions(Analysis.SumReactions(reactions));		
 	}
 	
 	/* Results menu functions */
@@ -605,6 +612,42 @@ public abstract class MenuFunctions
 
 	/* Especial menu functions */
 	
+	public static Loading createLoading(Structure structure, int ConcLoadConfig, int[] MeshSizes, int SelConcLoad, int SelDistLoad)
+	{
+		Loading loading = new Loading() ;
+
+		if (ConcLoadConfig == 1)
+		{
+			MenuFunctions.selectedNodes = new ArrayList<Node>();
+			if (structure.getMesh().getElements().get(0).getShape().equals(ElemShape.rectangular))
+			{
+				int nodeID = (MeshSizes[1] / 2 * (MeshSizes[0] + 1) + MeshSizes[0] / 2) ;
+				MenuFunctions.selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
+			}
+			else if (structure.getMesh().getElements().get(0).getShape().equals(ElemShape.r8))
+			{
+				int nodeID = (MeshSizes[1] / 2 * (2 * MeshSizes[0] + 1 + MeshSizes[0] + 1) + MeshSizes[0]) ;
+				MenuFunctions.selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
+			}
+		}
+		MainPanel.selectedConcLoadID = SelConcLoad;
+		MainPanel.AddConcLoads(loading);
+
+
+		MainPanel.selectedDistLoadID = SelDistLoad;
+		if (-1 < SelDistLoad)
+		{
+			MenuFunctions.SelectedElems = null;
+			for (int elem = 0; elem <= structure.getMesh().getElements().size() - 1; elem += 1)
+			{
+				MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
+			}
+			MainPanel.AddDistLoads(structure, loading);
+		}
+
+		return loading ;
+	}
+
 	public static Structure Especial()
 	{
 		/* Load input */
@@ -651,6 +694,7 @@ public abstract class MenuFunctions
 		String[][][] vars = new String[Sections.length][][];
 		
 		vars[0] = new String[NumberOfRuns][11];
+		Structure structure2 = null ;
 		for (int run = 0; run <= NumberOfRuns - 1; run += 1)
 		{				
 			int[] MeshSize = EspecialMeshSizes[Par[1]];
@@ -659,37 +703,33 @@ public abstract class MenuFunctions
 			int supConfig = SupConfig[Par[4]];
 			int SelConcLoad = Par[5];
 			int SelDistLoad = Par[6];
-			
 
-			Object[] Structure = MainPanel.CreatureStructure(EspecialCoords, meshType, MeshSize, elemType, matTypes.get(Mat), matTypes, secTypes.get(Sec), secTypes,
-																supConfig, SelConcLoad, SelDistLoad, ConcLoadConfig, DistLoadConfig);
-			List<ConcLoads> ConcLoad = (List<ConcLoads>) Structure[3];
-			List<DistLoads> DistLoad = (List<DistLoads>) Structure[4];
-			List<NodalDisps> NodalDisp = (List<NodalDisps>) Structure[5];
-			Loading loading = new Loading(ConcLoad, DistLoad, NodalDisp) ;
-			
-			// System.out.println("meshType: " + meshType);
-			// System.out.println("MeshSize: " + MeshSize);
-			// System.out.println("elemType: " + elemType);
-			// System.out.println("matTypes.get(Mat): " + matTypes.get(Mat));
-			// System.out.println("matTypes: " + matTypes);
-			// System.out.println("secTypes.get(Sec): " + secTypes.get(Sec));
-			// System.out.println("secTypes: " + secTypes);
-			// System.out.println("supConfig: " + supConfig);
-			// System.out.println("SelConcLoad: " + SelConcLoad);
-			// System.out.println("SelDistLoad: " + SelDistLoad);
-			// System.out.println("ConcLoadConfig: " + ConcLoadConfig);
-			// System.out.println("DistLoadConfig: " + DistLoadConfig);
+			structure2 = Structure.create(EspecialCoords, meshType, MeshSize, elemType, matTypes.get(Mat), matTypes, secTypes.get(Sec), secTypes, supConfig) ;
+			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad) ;			
+			MenuFunctions.CalcAnalysisParameters(structure2, loading);
+			MainPanel.structure = structure2 ;
+
+
+			// structure2.assignLoads(ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad) ;
+			Menus.getInstance().getEastPanel().getLegendPanel().setStructure(structure2) ;
+
+			// System.out.println("\nStructure 1");
+			// System.out.println(MainPanel.structure);
+
+			System.out.println("\nStructure 2");
+			System.out.println(structure2.getMesh().toString());
 			
 			System.out.print("Anâlise num " + run + ": ");
-			//UtilComponents.PrintStructure(MeshType, Node, Elem, EspecialMat, EspecialSec, Sup, ConcLoads, DistLoads, NodalDisps);
 
 			boolean NonlinearMat = true;
 			boolean NonlinearGeo = false;
-			Analysis.run(MainPanel.structure, loading, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
+			Analysis.run(structure2, loading, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
+
+			System.out.println("\nresults structure 2");
+			System.out.println(Arrays.toString(structure2.getU()));
 			
 			/* Analysis is complete */
-			PostAnalysis(MainPanel.structure);
+			PostAnalysis(structure2);
 
 			/*vars[0][run][0] = String.valueOf(run) + "	";
 			vars[0][run][1] = ElemType + "	";
@@ -713,6 +753,8 @@ public abstract class MenuFunctions
 				vars[0][run][9] = String.valueOf("-	");
 			}*/
 			//vars[0][run][10] = String.valueOf(AnalysisTime / 1000.0);
+
+
 			for (int par = 0; par <= NumPar.length - 1; par += 1)
 			{
 				if (Par[par] < NumPar[par] - 1)
@@ -726,9 +768,11 @@ public abstract class MenuFunctions
 				}
 			}
 		}
+		Menus.getInstance().ActivatePostAnalysisView(structure2);
+
 		//Re.SaveOutput("Especial", Sections, vars);
 		
-		return MainPanel.structure;
+		return structure2;
 	}
 
 	public static void RunExample(int exampleID)
@@ -795,7 +839,7 @@ public abstract class MenuFunctions
 			structure = LoadFile(".\\Exemplos\\", "13-vigadeaco");
  		}
 		MainPanel.structure = structure ;
- 		CalcAnalysisParameters(MainPanel.structure);
+ 		CalcAnalysisParameters(MainPanel.structure, MainPanel.loading);
 		long AnalysisTime = System.currentTimeMillis();
 		Analysis.run(MainPanel.structure, MainPanel.loading, NonlinearMat, NonlinearGeo, 1, 1, 1);
 		PostAnalysis(MainPanel.structure);

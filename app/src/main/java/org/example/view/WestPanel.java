@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
+import org.example.structure.Structure;
 import org.example.userInterface.InstructionsPanel;
 import org.example.userInterface.ToolbarButtons;
 import org.example.userInterface.ToolbarResults;
@@ -32,6 +33,8 @@ public class WestPanel extends JPanel
     public ToolbarResults getToolbarResults() { return toolbarResults ;}
 
     public ListPanel getListsPanel() { return listsPanel ;}
+
+	public void setStructure(Structure structure) { toolbarResults.setStructure(structure) ;}
 
     
 

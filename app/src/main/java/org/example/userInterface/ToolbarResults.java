@@ -9,10 +9,13 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import org.example.structure.Structure;
 import org.example.view.MainPanel;
 
 public class ToolbarResults extends JPanel
 {
+    Structure structure ;
+
     public ToolbarResults()
     {
         /* Listas no segundo painel*/
@@ -37,12 +40,17 @@ public class ToolbarResults extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MainPanel.SelectedDiagram = cbResults.getSelectedIndex();
-                MainPanel.SelectedVar = cbSubRes.getSelectedIndex();
-                MainPanel.ShowResult(MainPanel.structure);
+                if (structure != null)
+                {
+                    MainPanel.SelectedDiagram = cbResults.getSelectedIndex();
+                    MainPanel.SelectedVar = cbSubRes.getSelectedIndex();
+                    MainPanel.ShowResult(structure);
+                }
             }
         });
         btnCalcular.setFocusable(false);
         this.add(btnCalcular);
     }
+
+    public void setStructure(Structure structure) { this.structure = structure ;}
 }

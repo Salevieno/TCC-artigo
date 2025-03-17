@@ -42,7 +42,7 @@ public class Element
 	private int[] CumDOFs = null;
 	private Color MatColor;
 	private Color SecColor;
-	
+
 	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, Material mat, Section sec, ElemType type)
 	{
 		this.ID = ID;
@@ -68,13 +68,6 @@ public class Element
 	public Element(int ID, int[] ExternalNodes, ElemType type)
 	{
 		this(ID, ExternalNodes, null, type);
-	}
-
-
-	@Override
-	public String toString()
-	{
-		return ID + "	" + type + "	" + ExternalNodes + "	" + mat + "	" + sec + "	" + Arrays.toString(DistLoads) ;
 	}
 
 
@@ -228,11 +221,6 @@ public class Element
 		IntForces = new double[StrainTypes.length];
 	}
 
-	public Object[] GetProp()
-	{
-		return new Object[] {Shape, DOFs, StrainTypes, DOFsPerNode};
-	}
-
 	public double[] calcHalfSize(List<Node> nodes)
 	{
 		double[] size = new double[2];
@@ -273,12 +261,17 @@ public class Element
 		}
 	}
 	
-	public double[][] getUndeformedCoords(){return UndeformedCoords;}
+	public double[][] getUndeformedCoords(){ return UndeformedCoords ;}
 	
-	public double[][] getDeformedCoords(){return DeformedCoords;}
+	public double[][] getDeformedCoords(){ return DeformedCoords ;}
 	
-	public double[] getCenterCoords(){return CenterCoords;}	
+	public double[] getCenterCoords(){ return CenterCoords ;}	
 	
+	public void addDistLoad(DistLoads distLoad)
+	{
+		DistLoads = Util.AddElem(DistLoads, distLoad) ;
+	}
+
 	public void setUndeformedCoords(List<Node> nodes)
 	{
 		UndeformedCoords = new double[ExternalNodes.length][];
@@ -1305,4 +1298,11 @@ public class Element
 		setIntForces(InternalForcesVec(Node, U, NonlinearMat, NonlinearGeo));
     
 	}
+
+	@Override
+	public String toString()
+	{
+		return ID + "	" + type + "	" + ExternalNodes + "	" + mat + "	" + sec + "	" + Arrays.toString(DistLoads) ;
+	}
+
 }

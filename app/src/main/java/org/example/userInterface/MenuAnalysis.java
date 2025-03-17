@@ -68,14 +68,14 @@ public class MenuAnalysis extends JMenu
 						NonlinearMat = true;
 					}
 
-					MenuFunctions.CalcAnalysisParameters(MainPanel.structure);
+					MenuFunctions.CalcAnalysisParameters(MainPanel.structure, MainPanel.loading);
 					Analysis.run(MainPanel.structure, MainPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, NIter, NLoadSteps, MaxLoadFactor);
 				    MenuFunctions.PostAnalysis(MainPanel.structure);
 					for (Element elem : MainPanel.structure.getMesh().getElements())
 					{
 				    	elem.RecordResults(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getU(), NonlinearMat, NonlinearGeo);
 					}
-			        Menus.getInstance().ActivatePostAnalysisView();
+			        Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
 				}
 				else
 				{

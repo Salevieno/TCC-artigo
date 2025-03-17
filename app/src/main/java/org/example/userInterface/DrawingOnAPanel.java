@@ -1138,7 +1138,7 @@ public class DrawingOnAPanel
 		double MaxLoad = Util.FindMaxConcLoad(concLoads);
 		for (int l = 0; l <= concLoads.size() - 1; l += 1)
 		{
-			int node = concLoads.get(l).getNode();
+			int node = concLoads.get(l).getNodeID();
 			double[] RealDefCoords = Node.get(node).getOriginalCoords().asArray();
 			if (condition)
 			{

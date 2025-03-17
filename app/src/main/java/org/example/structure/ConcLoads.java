@@ -8,7 +8,7 @@ import org.example.userInterface.Menus;
 public class ConcLoads
 {
 	private int ID;
-	private int Node;		// Node
+	private int NodeID;		// Node
 	private double[] Loads;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
 
 	public static Color color = Menus.palette[7];
@@ -18,23 +18,23 @@ public class ConcLoads
 		this(ID, Node.getID(), Loads);
 	}
 
-	public ConcLoads(int ID, int Node, double[] Loads)
+	public ConcLoads(int ID, int NodeID, double[] Loads)
 	{
 		this.ID = ID;
-		this.Node = Node;
+		this.NodeID = NodeID;
 		this.Loads = Loads;
 	}
 
 	public int getID() {return ID;}
-	public int getNode() {return Node;}
+	public int getNodeID() {return NodeID;}
 	public double[] getLoads() {return Loads;}
 	public void setID(int I) {ID = I;}
-	public void setNode(int N) {Node = N;}
+	public void setNodeID(int N) {NodeID = N;}
 	public void setLoads(double[] L) {Loads = L;}
 
 	@Override
 	public String toString() {
-		return ID + "	" + Node + "	" + Arrays.toString(Loads) ;
+		return ID + "	" + NodeID + "	" + Arrays.toString(Loads) ;
 	}
 
 }

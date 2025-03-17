@@ -151,7 +151,7 @@ public abstract class MenuFile
 			for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
 			{
 				values[7][load][0] = loading.getConcLoads().get(load).getID();
-				values[7][load][1] = loading.getConcLoads().get(load).getNode();
+				values[7][load][1] = loading.getConcLoads().get(load).getNodeID();
 				values[7][load][2] = loading.getConcLoads().get(load).getLoads()[0];
 				values[7][load][3] = loading.getConcLoads().get(load).getLoads()[1];
 				values[7][load][4] = loading.getConcLoads().get(load).getLoads()[2];

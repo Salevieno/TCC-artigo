@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.MeshType;
+import org.example.view.MainPanel;
 
 public class ToolbarButtons extends JPanel
 {
@@ -110,7 +111,6 @@ public class ToolbarButtons extends JPanel
             public void actionPerformed(ActionEvent e) 
             {
                 MenuFunctions.Especial();
-                Menus.getInstance().ActivatePostAnalysisView();
             }
         });
         buttonExample.addActionListener(new ActionListener()
@@ -128,7 +128,7 @@ public class ToolbarButtons extends JPanel
                 if (exampleid != null)
                 {
                     MenuFunctions.RunExample(Integer.parseInt(exampleid));
-                    Menus.getInstance().ActivatePostAnalysisView();
+                    // Menus.getInstance().ActivatePostAnalysisView();
                 }
             }
         });

@@ -29,7 +29,7 @@ public class MenuEspecial extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				MainPanel.structure = MenuFunctions.Especial();
-				Menus.getInstance().ActivatePostAnalysisView();
+				Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
 			}
 		}) ;	
 

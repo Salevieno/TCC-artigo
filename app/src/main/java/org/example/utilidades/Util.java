@@ -1196,7 +1196,7 @@ public abstract class Util
 	public static int[] DefineDOFsOnNode(List<Element> Elem)
 	{
 		int[] DOFsOnNode = null;  
-		int[][] DOFsPerNode = (int[][]) Elem.get(0).GetProp()[3];
+		int[][] DOFsPerNode = (int[][]) Elem.get(0).getDOFsPerNode() ;
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
         {
         	for (int elemnode = 0; elemnode <= Elem.get(elem).getExternalNodes().length - 1; elemnode += 1)

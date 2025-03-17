@@ -105,7 +105,7 @@ public class UpperToolbar extends JPanel
 				}
 				if (DistLoadsAssignmentIsOn)
 				{
-					MainPanel.AddDistLoads();
+					MainPanel.AddDistLoads(MainPanel.structure, MainPanel.loading);
 				}
 			}
 		});
@@ -120,7 +120,7 @@ public class UpperToolbar extends JPanel
 				}
 				if (ConcLoadsAssignmentIsOn)
 				{
-					MainPanel.AddConcLoads();
+					MainPanel.AddConcLoads(MainPanel.loading);
 				}
 				if (NodalDispsAssignmentIsOn)
 				{

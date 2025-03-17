@@ -62,28 +62,16 @@ public class Loading
         nodalDisps = new ArrayList<NodalDisps>();
     }
 
-    public List<ConcLoads> getConcLoads() {
-        return concLoads;
-    }
+    public List<ConcLoads> getConcLoads() { return concLoads ;}
 
-    public void setConcLoads(List<ConcLoads> concLoads) {
-        this.concLoads = concLoads;
-    }
+    public void setConcLoads(List<ConcLoads> concLoads) { this.concLoads = concLoads ;}
 
-    public List<DistLoads> getDistLoads() {
-        return distLoads;
-    }
+    public List<DistLoads> getDistLoads() { return distLoads ;}
 
-    public void setDistLoads(List<DistLoads> distLoads) {
-        this.distLoads = distLoads;
-    }
+    public void setDistLoads(List<DistLoads> distLoads) { this.distLoads = distLoads ;}
 
-    public List<NodalDisps> getNodalDisps() {
-        return nodalDisps;
-    }
+    public List<NodalDisps> getNodalDisps() { return nodalDisps ;}
 
-    public void setNodalDisps(List<NodalDisps> nodalDisps) {
-        this.nodalDisps = nodalDisps;
-    }
+    public void setNodalDisps(List<NodalDisps> nodalDisps) { this.nodalDisps = nodalDisps ;}
     
 }

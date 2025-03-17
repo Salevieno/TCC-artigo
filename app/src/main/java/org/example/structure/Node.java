@@ -34,15 +34,6 @@ public class Node
 		DOFType = null;
 	}
 
-	@Override
-	public String toString()
-	{
-		return ID + "	" + coords.toString() + "	" + Arrays.toString(Disp)
-				+ "	" + Arrays.toString(Sup) + "	" + Arrays.toString(ConcLoad) + "	"
-				+ Arrays.toString(NodalDisp) + "	" + Arrays.toString(dofs) + "	"
-				+ Arrays.toString(DOFType) + "	" + Arrays.toString(LoadDisp);
-	}
-
 	
 	public double[] deformedPos()
 	{
@@ -124,12 +115,12 @@ public class Node
 		}
 		NodalDisp[NodalDisp.length - 1].setDisps(nodalDisp);
 	}
-	public void AddConcLoads(ConcLoads newConcLoad)
+	public void addConcLoad(ConcLoads newConcLoad)
 	{
 		ConcLoad = Util.IncreaseArraySize(ConcLoad, 1);
 		ConcLoad[ConcLoad.length - 1] = newConcLoad;
 	}
-	public void AddNodalDisps(NodalDisps newNodalDisp)
+	public void addNodalDisp(NodalDisps newNodalDisp)
 	{
 		NodalDisp = Util.IncreaseArraySize(NodalDisp, 1);
 		NodalDisp[NodalDisp.length - 1] = newNodalDisp;
@@ -154,4 +145,19 @@ public class Node
 	    	}
 		}
 	}
+
+	@Override
+	public String toString()
+	{
+		return ID + "	(" + coords.toString() + ")	" + Arrays.toString(Sup) + "	" + Arrays.toString(ConcLoad) + "	" + Arrays.toString(NodalDisp) + "	" + Arrays.toString(DOFType) ;
+	}
+
+	// @Override
+	// public String toString()
+	// {
+	// 	return ID + "	(" + coords.toString() + ")	" + Arrays.toString(Disp)
+	// 			+ "	" + Arrays.toString(Sup) + "	" + Arrays.toString(ConcLoad) + "	"
+	// 			+ Arrays.toString(NodalDisp) + "	" + Arrays.toString(dofs) + "	"
+	// 			+ Arrays.toString(DOFType) + "	" + Arrays.toString(LoadDisp);
+	// }
 }
