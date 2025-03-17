@@ -1,5 +1,6 @@
 package org.example.mainTCC;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.example.structure.MeshType;
@@ -17,8 +18,6 @@ public class InputDTO
     double[][] ConcLoadType ;
     double[][] DistLoadType ;
     int[] SupConfig ;
-
-
     
     public InputDTO(List<Point3D> especialCoords, MeshType meshType, String[] especialElemTypes,
             int[][] especialMeshSizes, double[][] inputMatTypes, double[][] inputSecTypes, double[][] concLoadType,
@@ -34,7 +33,7 @@ public class InputDTO
         DistLoadType = distLoadType;
         SupConfig = supConfig;
     }
-    
+
     public List<Point3D> getEspecialCoords() { return EspecialCoords ;}
     public MeshType getMeshType() { return meshType ;}
     public String[] getEspecialElemTypes() { return EspecialElemTypes ;}
@@ -44,5 +43,14 @@ public class InputDTO
     public double[][] getConcLoadType() { return ConcLoadType ;}
     public double[][] getDistLoadType() { return DistLoadType ;}
     public int[] getSupConfig() { return SupConfig ;}
+
+    @Override
+    public String toString() {
+        return "InputDTO [EspecialCoords=" + EspecialCoords + ", meshType=" + meshType + ", EspecialElemTypes="
+                + Arrays.toString(EspecialElemTypes) + ", EspecialMeshSizes=" + Arrays.toString(EspecialMeshSizes)
+                + ", inputMatTypes=" + Arrays.toString(inputMatTypes) + ", inputSecTypes="
+                + Arrays.toString(inputSecTypes) + ", ConcLoadType=" + Arrays.toString(ConcLoadType) + ", DistLoadType="
+                + Arrays.toString(DistLoadType) + ", SupConfig=" + Arrays.toString(SupConfig) + "]";
+    }    
 
 }

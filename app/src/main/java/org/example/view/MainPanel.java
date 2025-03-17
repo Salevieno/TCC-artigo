@@ -562,44 +562,64 @@ public class MainPanel extends JPanel
 		}
 	}
 	
-	public static void AddConcLoads(Loading loading)
+	public static void AddConcLoads(Loading loading, List<Node> selectedNodes, double[][] ConcLoadType)
 	{
-		if (-1 < selectedConcLoadID & MenuFunctions.selectedNodes != null & MenuFunctions.ConcLoadType != null)
+		if (-1 < selectedConcLoadID && selectedNodes != null && ConcLoadType != null && 1 <= ConcLoadType.length)
 		{
-			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
+			for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 			{
-				int loadid = loading.getConcLoads().size() - MenuFunctions.selectedNodes.size() + i;
-				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
+				int loadid = loading.getConcLoads().size() - selectedNodes.size() + i;
+				if (-1 < selectedNodes.get(i).getID())
 				{
-					ConcLoads newConcLoad = new ConcLoads(loadid, MenuFunctions.selectedNodes.get(i), MenuFunctions.ConcLoadType[selectedConcLoadID]);
+					ConcLoads newConcLoad = new ConcLoads(loadid, selectedNodes.get(i), ConcLoadType[selectedConcLoadID]);
 					loading.getConcLoads().add(newConcLoad);
-					MenuFunctions.selectedNodes.get(i).addConcLoad(newConcLoad);
+					selectedNodes.get(i).addConcLoad(newConcLoad);
 				}
 			}
 			MenuFunctions.ShowConcLoads = true;
-			MenuFunctions.selectedNodes = null;
+			selectedNodes = null;
 		}
 	}
 	
-	public static void AddDistLoads(Structure structure, Loading loading)
+	public static void AddDistLoads(Structure structure, Loading loading, List<Element> selectedElems, double[][] DistLoadType)
 	{
-		if (-1 < selectedDistLoadID & MenuFunctions.SelectedElems != null & MenuFunctions.DistLoadType != null)
+		if (-1 < selectedDistLoadID & selectedElems != null & DistLoadType != null)
 		{
-			for (int i = 0; i <= MenuFunctions.SelectedElems.length - 1; i += 1)
+			for (int i = 0; i <= selectedElems.size() - 1; i += 1)
 			{
-				int loadid = loading.getDistLoads().size() - MenuFunctions.SelectedElems.length + i;
-				if (-1 < MenuFunctions.SelectedElems[i])
+				int loadid = loading.getDistLoads().size() - selectedElems.size() + i;
+				Element elem = selectedElems.get(i);
+				int LoadType = (int) DistLoadType[selectedDistLoadID][0];
+				double Intensity = DistLoadType[selectedDistLoadID][1];
+				DistLoads newDistLoad = new DistLoads(loadid, selectedElems.get(i).getID(), LoadType, Intensity) ;
+				loading.getDistLoads().add(newDistLoad);
+				elem.setDistLoads(Util.AddElem(elem.getDistLoads(), newDistLoad));
+				
+			}
+			MenuFunctions.ShowDistLoads = true;
+			selectedElems = null;
+		}
+	}
+	
+	public static void AddDistLoads2(Structure structure, Loading loading, int[] selectedElemIDs, double[][] DistLoadType)
+	{
+		if (-1 < selectedDistLoadID & selectedElemIDs != null & DistLoadType != null)
+		{
+			for (int i = 0; i <= selectedElemIDs.length - 1; i += 1)
+			{
+				int loadid = loading.getDistLoads().size() - selectedElemIDs.length + i;
+				if (-1 < selectedElemIDs[i])
 				{
-					int elem = MenuFunctions.SelectedElems[i];
-					int LoadType = (int) MenuFunctions.DistLoadType[selectedDistLoadID][0];
-					double Intensity = MenuFunctions.DistLoadType[selectedDistLoadID][1];
-					DistLoads newDistLoad = new DistLoads(loadid, MenuFunctions.SelectedElems[i], LoadType, Intensity) ;
+					int elem = selectedElemIDs[i];
+					int LoadType = (int) DistLoadType[selectedDistLoadID][0];
+					double Intensity = DistLoadType[selectedDistLoadID][1];
+					DistLoads newDistLoad = new DistLoads(loadid, selectedElemIDs[i], LoadType, Intensity) ;
 					loading.getDistLoads().add(newDistLoad);
 					structure.getMesh().getElements().get(elem).setDistLoads(Util.AddElem(structure.getMesh().getElements().get(elem).getDistLoads(), newDistLoad));
 				}
 			}
 			MenuFunctions.ShowDistLoads = true;
-			MenuFunctions.SelectedElems = null;
+			selectedElemIDs = null;
 		}
 	}
 	

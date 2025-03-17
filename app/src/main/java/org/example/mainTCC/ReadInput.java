@@ -37,6 +37,7 @@ public abstract class ReadInput
 				}
 			}
 			bufferedReader.close();
+			System.out.println("Loaded file successfully");
 		}
 		catch(FileNotFoundException ex) 
 		{

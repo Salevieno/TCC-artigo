@@ -73,5 +73,10 @@ public class Loading
     public List<NodalDisps> getNodalDisps() { return nodalDisps ;}
 
     public void setNodalDisps(List<NodalDisps> nodalDisps) { this.nodalDisps = nodalDisps ;}
-    
+
+    @Override
+    public String toString() {
+        return "Loading [concLoads=" + concLoads + ", distLoads=" + distLoads + ", nodalDisps=" + nodalDisps + "]";
+    }
+
 }

@@ -1219,9 +1219,8 @@ public abstract class Util
         return CumDOFsOnElem;
 	}
 	
-	public static InputDTO LoadEspecialInput()
+	public static InputDTO LoadEspecialInput(String fileName)
 	{
-		String fileName = "examples/Especial.txt";
 		String[][] Input = ReadInput.ReadTxtFile(fileName);
 
 		List<Point3D> especialCoords = new ArrayList<>();

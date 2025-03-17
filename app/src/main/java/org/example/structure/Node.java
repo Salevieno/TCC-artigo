@@ -46,6 +46,7 @@ public class Node
 	public int[] getSup() {return Sup;}
 	public ConcLoads[] getConcLoads() {return ConcLoad;}
 	public NodalDisps[] getNodalDisps() {return NodalDisp;}
+	public int[] getDOFs() { return dofs ;}
 	public int[] getDOFType() {return DOFType;}
 	public void setID(int I) {ID = I;}
 	public void setOriginalCoords(Point3D C) {coords = C;}

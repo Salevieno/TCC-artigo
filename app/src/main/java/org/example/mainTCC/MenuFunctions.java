@@ -612,37 +612,38 @@ public abstract class MenuFunctions
 
 	/* Especial menu functions */
 	
-	public static Loading createLoading(Structure structure, int ConcLoadConfig, int[] MeshSizes, int SelConcLoad, int SelDistLoad)
+	public static Loading createLoading(Structure structure, int ConcLoadConfig, int[] MeshSizes, int SelConcLoad, int SelDistLoad,
+										List<Node> selectedNodes, double[][] ConcLoadType, List<Element> SelectedElems, double[][] DistLoadType)
 	{
 		Loading loading = new Loading() ;
 
 		if (ConcLoadConfig == 1)
 		{
-			MenuFunctions.selectedNodes = new ArrayList<Node>();
+			selectedNodes = new ArrayList<Node>();
 			if (structure.getMesh().getElements().get(0).getShape().equals(ElemShape.rectangular))
 			{
 				int nodeID = (MeshSizes[1] / 2 * (MeshSizes[0] + 1) + MeshSizes[0] / 2) ;
-				MenuFunctions.selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
+				selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
 			}
 			else if (structure.getMesh().getElements().get(0).getShape().equals(ElemShape.r8))
 			{
 				int nodeID = (MeshSizes[1] / 2 * (2 * MeshSizes[0] + 1 + MeshSizes[0] + 1) + MeshSizes[0]) ;
-				MenuFunctions.selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
+				selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
 			}
 		}
 		MainPanel.selectedConcLoadID = SelConcLoad;
-		MainPanel.AddConcLoads(loading);
+		MainPanel.AddConcLoads(loading, selectedNodes, ConcLoadType);
 
 
 		MainPanel.selectedDistLoadID = SelDistLoad;
 		if (-1 < SelDistLoad)
 		{
-			MenuFunctions.SelectedElems = null;
-			for (int elem = 0; elem <= structure.getMesh().getElements().size() - 1; elem += 1)
-			{
-				MenuFunctions.SelectedElems = Util.AddElem(MenuFunctions.SelectedElems, elem);
-			}
-			MainPanel.AddDistLoads(structure, loading);
+			// SelectedElems = null;
+			// for (int elem = 0; elem <= structure.getMesh().getElements().size() - 1; elem += 1)
+			// {
+			// 	SelectedElems = Util.AddElem(SelectedElems, elem);
+			// }
+			MainPanel.AddDistLoads(structure, loading, SelectedElems, DistLoadType);
 		}
 
 		return loading ;
@@ -651,33 +652,27 @@ public abstract class MenuFunctions
 	public static Structure Especial()
 	{
 		/* Load input */
-		InputDTO InputData = Util.LoadEspecialInput();
-		List<Point3D> EspecialCoords = InputData.getEspecialCoords();
-		MeshType meshType = InputData.getMeshType() ;
-		String[] EspecialElemTypes = InputData.getEspecialElemTypes();
-		int[][] EspecialMeshSizes = InputData.getEspecialMeshSizes();
+		InputDTO inputDTO = Util.LoadEspecialInput("examples/Especial.txt");
 
-		double[][] inputMatTypes = InputData.getInputMatTypes() ;
-		for (int i = 0 ; i <= inputMatTypes.length - 1 ; i += 1)
+		for (int i = 0 ; i <= inputDTO.getInputMatTypes().length - 1 ; i += 1)
 		{
-			matTypes.add(new Material(inputMatTypes[i][0], inputMatTypes[i][1], inputMatTypes[i][2])) ;
+			matTypes.add(new Material(inputDTO.getInputMatTypes()[i][0], inputDTO.getInputMatTypes()[i][1], inputDTO.getInputMatTypes()[i][2])) ;
 		}
 		
-		double[][] inputSecTypes = InputData.getInputSecTypes() ;
-		for (int i = 0 ; i <= inputSecTypes.length - 1 ; i += 1)
+		for (int i = 0 ; i <= inputDTO.getInputSecTypes().length - 1 ; i += 1)
 		{
-			secTypes.add(new Section(inputSecTypes[i][0])) ;
+			secTypes.add(new Section(inputDTO.getInputSecTypes()[i][0])) ;
 		}
 
-		ConcLoadType = InputData.getConcLoadType() ;
-		DistLoadType = InputData.getDistLoadType() ;
-		int[] SupConfig = InputData.getSupConfig() ;
+		ConcLoadType = inputDTO.getConcLoadType() ;
+		DistLoadType = inputDTO.getDistLoadType() ;
+		int[] SupConfig = inputDTO.getSupConfig() ;
 
 		/* Define structure parameters */
 		int ConcLoadConfig = 1;
 		int DistLoadConfig = 1;
 		
-		int[] NumPar = new int[] {EspecialElemTypes.length, EspecialMeshSizes.length, matTypes.size(), secTypes.size(), SupConfig.length, ConcLoadType.length, DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
+		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, matTypes.size(), secTypes.size(), SupConfig.length, ConcLoadType.length, DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
 		int[] Par = new int[NumPar.length];
 		if (ConcLoadType.length == 0)
 		{
@@ -689,7 +684,7 @@ public abstract class MenuFunctions
 		}
 		int NumberOfRuns = Util.ProdVec(NumPar);
 
-		ElemType elemType = ElemType.valueOf(EspecialElemTypes[Par[0]].toUpperCase());
+		ElemType elemType = ElemType.valueOf(inputDTO.getEspecialElemTypes()[Par[0]].toUpperCase());
 		String[] Sections = new String[] {"Anâlise		Elem	Malha (nx x ny)	Mat		Sec		Apoio		Carga		Min deslocamento (m)		Max deslocamento (m)		Desl. sob a carga (m)		Tempo (seg)"};
 		String[][][] vars = new String[Sections.length][][];
 		
@@ -697,28 +692,29 @@ public abstract class MenuFunctions
 		Structure structure2 = null ;
 		for (int run = 0; run <= NumberOfRuns - 1; run += 1)
 		{				
-			int[] MeshSize = EspecialMeshSizes[Par[1]];
+			int[] MeshSize = inputDTO.getEspecialMeshSizes()[Par[1]];
 			int Mat = Par[2];
 			int Sec = Par[3];
 			int supConfig = SupConfig[Par[4]];
 			int SelConcLoad = Par[5];
 			int SelDistLoad = Par[6];
 
-			structure2 = Structure.create(EspecialCoords, meshType, MeshSize, elemType, matTypes.get(Mat), matTypes, secTypes.get(Sec), secTypes, supConfig) ;
-			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad) ;			
+			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
+											matTypes.get(Mat), matTypes, secTypes.get(Sec), secTypes, supConfig) ;
+			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
+			MenuFunctions.selectedNodes, MenuFunctions.ConcLoadType, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
 			MenuFunctions.CalcAnalysisParameters(structure2, loading);
 			MainPanel.structure = structure2 ;
-
 
 			// structure2.assignLoads(ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad) ;
 			Menus.getInstance().getEastPanel().getLegendPanel().setStructure(structure2) ;
 
-			// System.out.println("\nStructure 1");
-			// System.out.println(MainPanel.structure);
-
 			System.out.println("\nStructure 2");
 			System.out.println(structure2.getMesh().toString());
 			
+			System.out.println("\nloading");
+			System.out.println(loading);
+
 			System.out.print("Anâlise num " + run + ": ");
 
 			boolean NonlinearMat = true;
