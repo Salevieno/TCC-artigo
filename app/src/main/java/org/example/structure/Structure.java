@@ -17,7 +17,7 @@ public class Structure
 {
 	private String name;
 	private StructureShape shape;
-	private List<Point3D> coords;	// Structure edge coordinates [x, y, z]
+	private List<Point3D> coords;
 	private Point3D center;
 	private Point3D minCoords;
 	private Point3D maxCoords;
@@ -36,6 +36,11 @@ public class Structure
 	private static final int NCirclePoints = 20;
 	public static final Color color = Menus.palette[5];
 	
+	public Structure()
+	{
+
+	}
+
 	public Structure(String name, StructureShape shape, List<Point3D> coords)
 	{
 		this.name = name;

@@ -6,23 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.Loading;
 import org.example.mainTCC.Analysis;
 import org.example.mainTCC.InputDTO;
 import org.example.mainTCC.MenuFunctions;
-import org.example.mainTCC.ReadInput;
 import org.example.structure.ElemType;
 import org.example.structure.Material;
-import org.example.structure.MeshType;
 import org.example.structure.Section;
 import org.example.structure.Structure;
-import org.example.userInterface.Menus;
-import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
 import org.junit.jupiter.api.Test;
 
 public class EspecialTest

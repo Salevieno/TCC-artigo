@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.Loading;
-import org.example.output.Results;
 import org.example.output.SaveOutput;
 import org.example.structure.ConcLoads;
 import org.example.structure.DistLoads;
@@ -16,7 +15,6 @@ import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
-import org.example.structure.MeshType;
 import org.example.structure.MyCanvas;
 import org.example.structure.NodalDisps;
 import org.example.structure.Node;
