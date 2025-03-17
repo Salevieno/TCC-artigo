@@ -651,27 +651,27 @@ public abstract class MenuFunctions
 	public static Structure Especial()
 	{
 		/* Load input */
-		Object[] InputData = Util.LoadEspecialInput();
-		List<Point3D> EspecialCoords = (List<Point3D>) InputData[0];
-		MeshType meshType = MeshType.valueOf(((String) InputData[1]).toLowerCase());
-		String[] EspecialElemTypes = (String[]) InputData[2];
-		int[][] EspecialMeshSizes = (int[][]) InputData[3];
+		InputDTO InputData = Util.LoadEspecialInput();
+		List<Point3D> EspecialCoords = InputData.getEspecialCoords();
+		MeshType meshType = InputData.getMeshType() ;
+		String[] EspecialElemTypes = InputData.getEspecialElemTypes();
+		int[][] EspecialMeshSizes = InputData.getEspecialMeshSizes();
 
-		double[][] inputMatTypes = (double[][]) InputData[4] ;
+		double[][] inputMatTypes = InputData.getInputMatTypes() ;
 		for (int i = 0 ; i <= inputMatTypes.length - 1 ; i += 1)
 		{
 			matTypes.add(new Material(inputMatTypes[i][0], inputMatTypes[i][1], inputMatTypes[i][2])) ;
 		}
 		
-		double[][] inputSecTypes = (double[][]) InputData[5] ;
+		double[][] inputSecTypes = InputData.getInputSecTypes() ;
 		for (int i = 0 ; i <= inputSecTypes.length - 1 ; i += 1)
 		{
 			secTypes.add(new Section(inputSecTypes[i][0])) ;
 		}
 
-		ConcLoadType = (double[][]) InputData[6];
-		DistLoadType = (double[][]) InputData[7];
-		int[] SupConfig = (int[]) InputData[8];
+		ConcLoadType = InputData.getConcLoadType() ;
+		DistLoadType = InputData.getDistLoadType() ;
+		int[] SupConfig = InputData.getSupConfig() ;
 
 		/* Define structure parameters */
 		int ConcLoadConfig = 1;

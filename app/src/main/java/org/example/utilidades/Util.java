@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.mainTCC.MenuFunctions;
+import org.example.mainTCC.InputDTO;
 import org.example.mainTCC.ReadInput;
 import org.example.structure.ConcLoads;
 import org.example.structure.DistLoads;
@@ -1219,17 +1219,19 @@ public abstract class Util
         return CumDOFsOnElem;
 	}
 	
-	public static Object[] LoadEspecialInput()
+	public static InputDTO LoadEspecialInput()
 	{
 		String fileName = "examples/Especial.txt";
-		String[][] Input = ReadInput.ReadTxtFile(fileName);		
+		String[][] Input = ReadInput.ReadTxtFile(fileName);
+
 		List<Point3D> especialCoords = new ArrayList<>();
 		for (int coord = 0; coord <= Input[0].length - 3; coord += 1)
 		{
 			String[] Line = Input[0][coord + 1].split(",");
 			especialCoords.add(new Point3D(Double.parseDouble(Line[0]), Double.parseDouble(Line[1]), Double.parseDouble(Line[2]))) ;
-		}		
-		String MeshType = Input[1][1];
+		}
+
+		String MeshTypeInput = Input[1][1];
 		String[] EspecialElemTypes = Arrays.copyOfRange(Input[2], 1, Input[2].length - 1);		
 		int[][] EspecialMeshSizes = new int[Input[3].length - 2][2];
 		for (int mesh = 0; mesh <= Input[3].length - 3; mesh += 1)
@@ -1238,6 +1240,8 @@ public abstract class Util
 			EspecialMeshSizes[mesh][0] = Integer.parseInt(Line[0]);
 			EspecialMeshSizes[mesh][1] = Integer.parseInt(Line[1]);
 		}
+		MeshType meshType = MeshType.valueOf(MeshTypeInput.toLowerCase()) ;
+
 		double[][] EspecialMat = new double[Input[4].length - 2][3];
 		for (int mat = 0; mat <= Input[4].length - 3; mat += 1)
 		{
@@ -1280,7 +1284,8 @@ public abstract class Util
 			EspecialSupConfig[supconfig] = Integer.parseInt(Line[0]);
 		}
 		
-		return new Object[] {especialCoords, MeshType, EspecialElemTypes, EspecialMeshSizes, EspecialMat, EspecialSec, EspecialConcLoads, EspecialDistLoads, EspecialSupConfig};
+		return new InputDTO(especialCoords, meshType, EspecialElemTypes, EspecialMeshSizes, EspecialMat, EspecialSec,
+							EspecialConcLoads, EspecialDistLoads, EspecialSupConfig) ;
 	}
 	
 	public static Supports[] AddSupports(List<Node> Node, Supports[] sup, int[] SelectedNodes, int[] SupType)
