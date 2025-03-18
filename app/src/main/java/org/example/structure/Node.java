@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.loading.ConcLoads;
+import org.example.loading.NodalDisps;
 import org.example.userInterface.Menus;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;

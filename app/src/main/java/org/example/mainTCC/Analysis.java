@@ -2,14 +2,14 @@ package org.example.mainTCC;
 
 import java.util.List;
 
+import org.example.loading.ConcLoads;
+import org.example.loading.DistLoads;
 import org.example.loading.Loading;
-import org.example.structure.ConcLoads;
-import org.example.structure.DistLoads;
+import org.example.loading.NodalDisps;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
 import org.example.structure.Mesh;
-import org.example.structure.NodalDisps;
 import org.example.structure.Node;
 import org.example.structure.Reactions;
 import org.example.structure.Section;

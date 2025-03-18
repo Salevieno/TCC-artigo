@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
+import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;

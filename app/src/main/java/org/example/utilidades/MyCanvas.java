@@ -1,4 +1,4 @@
-package org.example.structure;
+package org.example.utilidades;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -6,7 +6,6 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 
 import org.example.userInterface.DrawingOnAPanel;
-import org.example.utilidades.Point3D;
 
 public class MyCanvas
 {

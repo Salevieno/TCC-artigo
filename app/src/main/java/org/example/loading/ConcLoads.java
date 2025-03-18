@@ -1,8 +1,9 @@
-package org.example.structure;
+package org.example.loading;
 
 import java.awt.Color;
 import java.util.Arrays;
 
+import org.example.structure.Node;
 import org.example.userInterface.Menus;
 
 public class ConcLoads

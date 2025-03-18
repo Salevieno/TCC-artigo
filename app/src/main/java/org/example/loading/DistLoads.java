@@ -1,4 +1,4 @@
-package org.example.structure;
+package org.example.loading;
 
 import java.awt.Color;
 

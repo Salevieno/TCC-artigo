@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.loading.ConcLoads;
+import org.example.loading.DistLoads;
 import org.example.loading.Loading;
 import org.example.mainTCC.MenuFunctions;
 import org.example.output.Results;

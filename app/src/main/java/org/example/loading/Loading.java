@@ -3,10 +3,6 @@ package org.example.loading;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.example.structure.ConcLoads;
-import org.example.structure.DistLoads;
-import org.example.structure.NodalDisps;
-
 public class Loading
 {
 

@@ -1,5 +1,7 @@
 package org.example.structure;
 
+import org.example.loading.ConcLoads;
+import org.example.loading.NodalDisps;
 import org.example.utilidades.Point3D;
 
 public class NodeDTO

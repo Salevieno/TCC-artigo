@@ -4,10 +4,10 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.example.structure.MyCanvas;
 import org.example.structure.Node;
 import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
+import org.example.utilidades.MyCanvas;
 
 public class SelectionWindow
 {

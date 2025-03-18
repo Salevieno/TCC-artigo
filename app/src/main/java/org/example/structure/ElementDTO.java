@@ -1,5 +1,7 @@
 package org.example.structure;
 
+import org.example.loading.DistLoads;
+
 public class ElementDTO
 {
 	private int ID;
