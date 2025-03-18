@@ -36,6 +36,4 @@ public class WestPanel extends JPanel
 
 	public void setStructure(Structure structure) { toolbarResults.setStructure(structure) ;}
 
-    
-
 }

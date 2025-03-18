@@ -100,7 +100,7 @@ public abstract class MenuFunctions
 			for (int j = 0; j <= NGridPoints[1]; j += 1)
 			{	
 				int[] Pos = new int[] {(int) (canvas.getPos().x + (double)(i)/NGridPoints[0]*canvas.getSize()[0]), (int) (canvas.getPos().y + (double)(j)/NGridPoints[1]*canvas.getSize()[1])};
-				if (Math.abs(MousePos.x - Pos[0]) <= SnipPower*canvas.getGridSpacing()[0]/2 & Math.abs(MousePos.y - Pos[1]) <= SnipPower*canvas.getGridSpacing()[1]/2)
+				if (Math.abs(MousePos.x - Pos[0]) <= SnipPower*canvas.getGridSpacing()[0]/2 && Math.abs(MousePos.y - Pos[1]) <= SnipPower*canvas.getGridSpacing()[1]/2)
 				{
 					GridNodePos = new Point(Pos[0], Pos[1]) ;
 				}
@@ -126,7 +126,7 @@ public abstract class MenuFunctions
 	public static boolean CheckIfAnalysisIsReady(Structure structure, Loading loading)
 	{
 		if (structure.getMesh() != null &&
-			structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null &&
+			structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null &&
 			structure.getMesh().allElementsHaveMat() && structure.getMesh().allElementsHaveSec() && structure.getSupports() != null &&
 			loading != null)
 		{
@@ -772,7 +772,7 @@ public abstract class MenuFunctions
 		
 		Structure structure = new Structure(null, null, null);
 		MainPanel.loading.clearLoads() ;
-		MainPanel.resetDisplay() ;
+		Menus.getInstance().getMainPanel().resetDisplay() ;
 		resetDisplay();
 		if (exampleID == 0)
 		{
@@ -862,7 +862,7 @@ public abstract class MenuFunctions
 	
 	public static void updateDiagramScale(MyCanvas MainCanvas, int WheelRot)
 	{
-		if (AnalysisIsComplete & !Util.MouseIsInsideCanvas(mousePos, MainCanvas))
+		if (AnalysisIsComplete && !Util.MouseIsInsideCanvas(mousePos, MainCanvas))
 		{
 			DiagramScales[1] += -Util.Round(10 * Math.log10(DiagramScales[1]) * WheelRot, 10);
 			DiagramScales[1] = Math.max(DiagramScales[1], 0.001);

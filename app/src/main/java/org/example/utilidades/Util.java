@@ -790,7 +790,7 @@ public abstract class Util
 			LastChar = FirstChar + Math.min(NumberOfChars, Math.min((i + 1)*NumberOfChars, inputstring.length() - i*NumberOfChars) + CharsExeeding);
 			char[] chararray = new char[NumberOfChars];
 			inputstring.getChars(FirstChar, LastChar, chararray, 0);
-			if (chararray[LastChar - FirstChar - 1] != ' ' & chararray[LastChar - FirstChar - 1] != '.' & chararray[LastChar - FirstChar - 1] != '?' & chararray[LastChar - FirstChar - 1] != '!' & chararray[LastChar - FirstChar - 1] != '/' & chararray[LastChar - FirstChar - 1] != ':')
+			if (chararray[LastChar - FirstChar - 1] != ' ' && chararray[LastChar - FirstChar - 1] != '.' && chararray[LastChar - FirstChar - 1] != '?' && chararray[LastChar - FirstChar - 1] != '!' && chararray[LastChar - FirstChar - 1] != '/' && chararray[LastChar - FirstChar - 1] != ':')
 			{
 				for (int j = chararray.length - 1; 0 <= j; j += -1)
 				{
@@ -811,7 +811,7 @@ public abstract class Util
 				newstring[i] = String.valueOf(chararray);
 			}
 			i += 1;
-		} while(LastChar != inputstring.length() & i != inputstring.length());		
+		} while(LastChar != inputstring.length() && i != inputstring.length());		
 		String[] newstring2 = new String[i];
 		for (int j = 0; j <= newstring2.length - 1; j += 1)
 		{
@@ -915,7 +915,7 @@ public abstract class Util
 	public static boolean MouseIsInside(Point MousePos, int[] PanelPos, int[] RectPos, int L, int H)
 	{
 		int[] rectPos = new int[] {RectPos[0], RectPos[1]};
-		if (rectPos[0] <= MousePos.x & rectPos[1] <= MousePos.y & MousePos.x <= rectPos[0] + L & MousePos.y <= rectPos[1] + H)
+		if (rectPos[0] <= MousePos.x && rectPos[1] <= MousePos.y && MousePos.x <= rectPos[0] + L && MousePos.y <= rectPos[1] + H)
 		{
 			return true;
 		} 
@@ -941,7 +941,7 @@ public abstract class Util
 			double y1 = GetNodePos(nodes.get(elems.getExternalNodes()[2]), condition)[1];
 			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
 			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
-			if (InitPoint[0] <= MousePosRealCoords[0] & MousePosRealCoords[0] <= FinalPoint[0] & FinalPoint[1] <= MousePosRealCoords[1] & MousePosRealCoords[1] <= InitPoint[1])
+			if (InitPoint[0] <= MousePosRealCoords[0] && MousePosRealCoords[0] <= FinalPoint[0] && FinalPoint[1] <= MousePosRealCoords[1] && MousePosRealCoords[1] <= InitPoint[1])
 			{
 				return true;
 			}
@@ -978,7 +978,7 @@ public abstract class Util
 			double y1 = GetNodePos(nodes.get(elems.getExternalNodes()[4]), condition)[1];
 			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
 			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
-			if (InitPoint[0] <= MousePosRealCoords[0] & MousePosRealCoords[0] <= FinalPoint[0] & FinalPoint[1] <= MousePosRealCoords[1] & MousePosRealCoords[1] <= InitPoint[1])
+			if (InitPoint[0] <= MousePosRealCoords[0] && MousePosRealCoords[0] <= FinalPoint[0] && FinalPoint[1] <= MousePosRealCoords[1] && MousePosRealCoords[1] <= InitPoint[1])
 			{
 				return true;
 			}
@@ -1013,7 +1013,7 @@ public abstract class Util
 	public static boolean MouseIsInsideCanvas(Point MousePos, MyCanvas canvas)
 	{
 		int[] rectPos = new int[] {canvas.getPos().x, canvas.getPos().y};
-		if (rectPos[0] <= MousePos.x & rectPos[1] <= MousePos.y & MousePos.x <= rectPos[0] + canvas.getDimension()[0] & MousePos.y <= rectPos[1] + canvas.getDimension()[1])
+		if (rectPos[0] <= MousePos.x && rectPos[1] <= MousePos.y && MousePos.x <= rectPos[0] + canvas.getDimension()[0] && MousePos.y <= rectPos[1] + canvas.getDimension()[1])
 		{
 			return true;
 		} 
@@ -1054,7 +1054,7 @@ public abstract class Util
 			//int[] DrawingCoords = ConvertToDrawingCoords(RealNodePos, CanvasPos, CanvasSize, CanvasDim, DrawingPos);
 			Point DrawingCoords = canvas.inDrawingCoords(new Point2D.Double(RealNodePos[0], RealNodePos[1])); ;
 			// Util.ConvertToDrawingCoords2(RealNodePos, RealStructCenter, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			if (WindowTopLeft[0] <= DrawingCoords.x & DrawingCoords.x <= WindowBotRight.x & WindowTopLeft[1] <= DrawingCoords.y & DrawingCoords.y <= WindowBotRight.y)
+			if (WindowTopLeft[0] <= DrawingCoords.x && DrawingCoords.x <= WindowBotRight.x && WindowTopLeft[1] <= DrawingCoords.y && DrawingCoords.y <= WindowBotRight.y)
 			{
 				NodesInsideWindow = AddElem(NodesInsideWindow, node);
 			}

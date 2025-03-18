@@ -196,7 +196,7 @@ public class Structure
         	            for (int dofj = 0; dofj <= nodes.get(nodej).getDOFType().length - 1; dofj += 1)
             	        {
         	            	int GlobalDOFi = nodes.get(nodei).dofs[dofi], GlobalDOFj = nodes.get(nodej).dofs[dofj];
-            	            if (-1 < GlobalDOFi & -1 < GlobalDOFj)
+            	            if (-1 < GlobalDOFi && -1 < GlobalDOFj)
             	            {
             	               K[GlobalDOFi][GlobalDOFj] += k[LocalDOFj][LocalDOFi];
             	            }

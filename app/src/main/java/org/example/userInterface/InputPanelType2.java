@@ -51,7 +51,7 @@ public class InputPanelType2 extends JDialog implements ActionListener
 		Object source = ae.getSource();
 		for (int i = 0; i <= Buttons.size() - 1; i += 1)
 		{
-			if (source == Buttons.get(i) & !Buttons.get(i).getText().equals("Cancel")) 
+			if (source == Buttons.get(i) && !Buttons.get(i).getText().equals("Cancel")) 
 			{
 				this.Input = Buttons.get(i).getText();
 				dispose();

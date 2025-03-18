@@ -462,7 +462,7 @@ public class MenuStructure extends JMenu
 				AssignDistLoads.setEnabled(true);
 			}
 		}
-		if ( SelectedElemType != null & structure.getCoords() != null)
+		if ( SelectedElemType != null && structure.getCoords() != null)
 		{
 			CreateMesh.setEnabled(true);
 		}

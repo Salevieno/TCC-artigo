@@ -20,7 +20,7 @@ public class MenuFileService
 		
 		MainPanel.structure = new Structure(null, null, null);
 		MainPanel.loading.clearLoads() ;		
-		MainPanel.resetDisplay() ;
+		Menus.getInstance().getMainPanel().resetDisplay() ;
 		MenuFunctions.resetDisplay();
 		
 		String filename = Menus.getInstance().getSaveLoadFile().run().getText();

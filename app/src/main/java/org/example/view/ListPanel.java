@@ -39,7 +39,7 @@ public class ListPanel extends JPanel
 		double[][] DistLoadType = MenuFunctions.DistLoadType;
 		double[][] NodalDispType = MenuFunctions.NodalDispType;
 
-		if (AssignmentIsOn[0] & matType != null)
+		if (AssignmentIsOn[0] && matType != null)
 		{
 			String[] MatNames = new String[] {
 				    "Nome",
@@ -49,12 +49,12 @@ public class ListPanel extends JPanel
 				};
 //			TODO DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", matType);
 		}
-		if (AssignmentIsOn[1] & SecType != null)
+		if (AssignmentIsOn[1] && SecType != null)
 		{
 			String[] SecNames = new String[] {"Nome", "Espessura (mm)"};
 //			DP.DrawLists(jpListSize, SelectedSec, SecNames, "Sections list", "Sec", SecType);
 		}
-		if (AssignmentIsOn[2] & SupType != null)
+		if (AssignmentIsOn[2] && SupType != null)
 		{
 			String[] SupNames = new String[] {
 				    "Nome",
@@ -67,7 +67,7 @@ public class ListPanel extends JPanel
 				};
 			DP.DrawLists(initialSize, SelectedSup, SupNames, "Supports list", "Sup", SupType);
 		}
-		if (AssignmentIsOn[3] & ConcLoadType != null)
+		if (AssignmentIsOn[3] && ConcLoadType != null)
 		{
 			String[] ConcLoadNames = new String[] {
 				    "Nome",
@@ -80,7 +80,7 @@ public class ListPanel extends JPanel
 				};
 			DP.DrawLists(initialSize, SelectedConcLoad, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType);
 		}
-		if (AssignmentIsOn[4] & DistLoadType != null)
+		if (AssignmentIsOn[4] && DistLoadType != null)
 		{
 			String[] DistLoadNames = new String[] {
 				    "Nome",
@@ -92,7 +92,7 @@ public class ListPanel extends JPanel
 				};
 			DP.DrawLists(initialSize, SelectedDistLoad, DistLoadNames, "Dist loads list", "Dist load", DistLoadType);
 		}
-		if (AssignmentIsOn[5] & NodalDispType != null)
+		if (AssignmentIsOn[5] && NodalDispType != null)
 		{
 			String[] NodalDispNames = new String[] {
 				    "Nome",

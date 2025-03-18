@@ -21,6 +21,12 @@ public class LegendPanel extends JPanel
 	private static final int titleSize = 13;
 	private static final int fontSize = 13;
 	private Structure structure ;
+
+	private int selectedVar ;
+	private boolean showDisplacementContour ; 
+	private boolean showStressContour ; 
+	private boolean showStrainContour ; 
+	private boolean showInternalForces  ;
 	private static final DrawingOnAPanel DP = new DrawingOnAPanel() ;
 
     public LegendPanel()
@@ -30,6 +36,17 @@ public class LegendPanel extends JPanel
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createTitledBorder(""), "Legenda", TitledBorder.CENTER, TitledBorder.CENTER));
 		setVisible(true);
     }
+
+	public void switchDisplay(int selectedDiagram, int selectedVar)
+	{
+		if (selectedVar <= -1) { return ;}
+		
+		this.selectedVar = selectedVar ;
+		showDisplacementContour = selectedDiagram == 0;
+		showStressContour = selectedDiagram == 1;
+		showStrainContour = selectedDiagram == 2;
+		showInternalForces = selectedDiagram == 3;
+	}
 
 
 	public void DrawLegend(int[] Pos, String ColorSystem, String title, double MinValue, double MaxValue, double unitfactor)
@@ -57,30 +74,30 @@ public class LegendPanel extends JPanel
 		}
 	}
 
-	public void display(Structure structure, int SelectedVar, boolean ShowDisplacementContour, boolean ShowStressContour, boolean ShowStrainContour, boolean ShowInternalForces)
+	public void display(Structure structure, int selectedVar, boolean showDisplacementContour, boolean showStressContour, boolean showStrainContour, boolean showInternalForces)
 	{
-		if (-1 < SelectedVar)
+		if (-1 < selectedVar)
 		{
 			int[] LegendPos = new int[] {(int) (0.1 * initialSize.getWidth()), (int) (0.3 * initialSize.getHeight())};
-			if (ShowDisplacementContour)
+			if (showDisplacementContour)
 			{
 				DrawLegend(LegendPos, "Red to green", "Campo de deslocamentos (m)",
-				structure.getResults().getDispMin()[SelectedVar], structure.getResults().getDispMax()[SelectedVar], 1);
+				structure.getResults().getDispMin()[selectedVar], structure.getResults().getDispMax()[selectedVar], 1);
 			}
-			if (ShowStressContour & structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null)
+			if (showStressContour && structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null)
 			{
 				DrawLegend(LegendPos, "Red to green", "Campo de tensoes (MPa)",
-				structure.getResults().getStressMin()[SelectedVar], structure.getResults().getStressMax()[SelectedVar], 1000);
+				structure.getResults().getStressMin()[selectedVar], structure.getResults().getStressMax()[selectedVar], 1000);
 			}
-			if (ShowStrainContour & structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null)
+			if (showStrainContour && structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null)
 			{
 				DrawLegend(LegendPos, "Red to green", "Campo de deformacoes",
-				structure.getResults().getStrainMin()[SelectedVar], structure.getResults().getStrainMax()[SelectedVar], 1);
+				structure.getResults().getStrainMin()[selectedVar], structure.getResults().getStrainMax()[selectedVar], 1);
 			}
-			if (ShowInternalForces & structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null)
+			if (showInternalForces && structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null)
 			{
 				DrawLegend(LegendPos, "Red to green", "Forcas internas (kN ou kNm)",
-				structure.getResults().getInternalForcesMin()[SelectedVar], structure.getResults().getInternalForcesMax()[SelectedVar], 1);
+				structure.getResults().getInternalForcesMin()[selectedVar], structure.getResults().getInternalForcesMax()[selectedVar], 1);
 			}
 		}
 	}
@@ -93,7 +110,7 @@ public class LegendPanel extends JPanel
         super.paintComponent(g);
         DP.setG(g);
         DP.setRealStructCenter(MainPanel.structure.getCenter());
-        display(structure, MainPanel.SelectedVar, MainPanel.ShowDisplacementContour, MainPanel.ShowStressContour, MainPanel.ShowStrainContour, MainPanel.ShowInternalForces);
+        display(structure, selectedVar, showDisplacementContour, showStressContour, showStrainContour, showInternalForces);
         repaint();
     }
 

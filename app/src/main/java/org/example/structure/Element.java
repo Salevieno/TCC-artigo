@@ -861,15 +861,15 @@ public class Element
 			Bs2 = Util.MultMatrix(Bs2, -15 * a1 * Math.pow(w, 2) / 4.0);
 		}
     	
-    	if (option == 1 & Bs1 != null)
+    	if (option == 1 && Bs1 != null)
     	{
     		return Bs1 ;
     	}
-    	else if (option == 2 & Bs2 != null)
+    	else if (option == 2 && Bs2 != null)
     	{
     		return Bs2 ;
     	}
-    	else if (Bs1 != null & Bs2 != null)
+    	else if (Bs1 != null && Bs2 != null)
     	{
     		return Util.AddMatrix(Bs1, Bs2) ;
     	}

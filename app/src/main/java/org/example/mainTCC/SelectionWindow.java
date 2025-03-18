@@ -32,7 +32,7 @@ public class SelectionWindow
 
 		int[] RectPos = new int[] {topLeftPos.x, topLeftPos.y};
 		int l = mousePos.x - topLeftPos.x, h = mousePos.y - topLeftPos.y;
-		if (topLeftPos.x <= mousePos.x & topLeftPos.y <= mousePos.y)
+		if (topLeftPos.x <= mousePos.x && topLeftPos.y <= mousePos.y)
 		{
 			DP.DrawRect(RectPos, l, h, 1, "Left", 0, false, Menus.palette[0], null);
 		}

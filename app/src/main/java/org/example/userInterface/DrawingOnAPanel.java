@@ -277,7 +277,7 @@ public class DrawingOnAPanel
 		}
 		if (2 <= colors.length)
 		{
-			if (colors[0] != null & colors[1] != null)
+			if (colors[0] != null && colors[1] != null)
 			{
 			    GradientPaint gradient = new GradientPaint(Corner[0], Corner[1], colors[0], Corner[0], Corner[1] + h, colors[1]);
 			    G.setPaint(gradient);
@@ -860,7 +860,7 @@ public class DrawingOnAPanel
 	{
 		int[] RectPos = new int[] {InitPos.x, InitPos.y};
 		int l = FinalPos.x - InitPos.x, h = FinalPos.y - InitPos.y;
-		if (InitPos.x <= FinalPos.x & InitPos.y <= FinalPos.y)
+		if (InitPos.x <= FinalPos.x && InitPos.y <= FinalPos.y)
 		{
 			DrawRect(RectPos, l, h, 1, "Left", 0, false, Color.black, null);
 		}
@@ -1047,11 +1047,11 @@ public class DrawingOnAPanel
 			{
 				color = Util.AddColor(color, new double[] {0, -50, 100});
 			}
-			if (showmatcolor & Elem.get(elem).getMat() != null)
+			if (showmatcolor && Elem.get(elem).getMat() != null)
 			{
 				color = Elem.get(elem).getMat().getColor() ;
 			}
-			if (showseccolor & Elem.get(elem).getSec() != null)
+			if (showseccolor && Elem.get(elem).getSec() != null)
 			{
 				color = Elem.get(elem).getSec().getColor() ;
 			}
@@ -1337,7 +1337,7 @@ public class DrawingOnAPanel
     		GraphType = 1;
     	}
     	DrawGraph(Pos, size, GraphType, TextColor, GridColor);
-		if (XValues != null & YValues != null)
+		if (XValues != null && YValues != null)
 		{
 			if (XValues.length == YValues.length)
 			{

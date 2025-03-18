@@ -9,8 +9,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import org.example.mainTCC.Analysis;
+import org.example.output.Results;
 import org.example.structure.Structure;
-import org.example.view.MainPanel;
+import org.example.utilidades.Util;
 
 public class ToolbarResults extends JPanel
 {
@@ -42,9 +44,25 @@ public class ToolbarResults extends JPanel
             {
                 if (structure != null)
                 {
-                    MainPanel.SelectedDiagram = cbResults.getSelectedIndex();
-                    MainPanel.SelectedVar = cbSubRes.getSelectedIndex();
-                    MainPanel.ShowResult(structure);
+                    int selectedDiagram = cbResults.getSelectedIndex();
+                    int selectedVar = cbSubRes.getSelectedIndex();
+
+                    //DrawDisplacementContours(selectedVar);
+                    structure.getResults().setDispMin(Results.FindMinDisps(structure.getU(), structure.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(structure.getMesh().getNodes()))) ;
+                    structure.getResults().setDispMax(Results.FindMaxDisps(structure.getU(), structure.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(structure.getMesh().getNodes()))) ;
+                    
+                    for (int node = 0; node <= structure.getMesh().getElements().get(0).getExternalNodes().length - 1; node += 1)
+                    {
+                        selectedVar = Util.ElemPosInArray(structure.getMesh().getElements().get(0).getDOFsPerNode()[node], selectedVar);
+                        if (-1 < selectedVar)
+                        {
+                            break ;
+                        }
+                    }
+
+                    // ShowResult(structure);
+                    Menus.getInstance().getEastPanel().getLegendPanel().switchDisplay(selectedDiagram, selectedVar) ;
+                    Menus.getInstance().getMainPanel().switchDisplay(selectedDiagram, selectedVar) ;
                 }
             }
         });

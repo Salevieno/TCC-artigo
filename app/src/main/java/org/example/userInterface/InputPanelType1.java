@@ -89,7 +89,7 @@ public class InputPanelType1 extends JDialog implements ActionListener
 		Object source = ae.getSource();
 		for (int i = 0; i <= Buttons.size() - 1; i += 1)
 		{
-			if (source == Buttons.get(i) & Buttons.get(i).getText().contains("Add"))
+			if (source == Buttons.get(i) && Buttons.get(i).getText().contains("Add"))
 			{
 				Lines.add(CreateLineTextFields(Labels.length));
 				getContentPane().removeAll();
@@ -97,7 +97,7 @@ public class InputPanelType1 extends JDialog implements ActionListener
 				getContentPane().add(panel);
 				pack();
 			}
-			if(source == Buttons.get(i) & Buttons.get(i).getText().contains("Remove"))
+			if(source == Buttons.get(i) && Buttons.get(i).getText().contains("Remove"))
 			{
 				Lines.remove(Lines.size() - 1);
 				getContentPane().removeAll();
@@ -105,7 +105,7 @@ public class InputPanelType1 extends JDialog implements ActionListener
 				getContentPane().add(panel);
 				pack();
 			}
-			if (source == Buttons.get(i) & Buttons.get(i).getText().equals("Ok")) 
+			if (source == Buttons.get(i) && Buttons.get(i).getText().equals("Ok")) 
 			{
 				this.Input = new double[Lines.size()][Lines.get(0).length];
 				for(int j = 0; j < Lines.size(); j += 1)
@@ -118,7 +118,7 @@ public class InputPanelType1 extends JDialog implements ActionListener
 				System.out.println("Ok clicado");
 				dispose();
 			}
-			if(source == Buttons.get(i) & Buttons.get(i).getText().equals("Cancel"))
+			if(source == Buttons.get(i) && Buttons.get(i).getText().equals("Cancel"))
 			{
 				System.out.println("Cancel clicado");
 				dispose();

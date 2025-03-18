@@ -152,6 +152,8 @@ public class Menus extends JFrame
 
 	public NorthPanel getNorthPanel() { return northPanel ;}
 
+	public MainPanel getMainPanel() { return mainPanel ;}
+
 	public EastPanel getEastPanel() { return eastPanel ;}
 
 	public WestPanel getWestPanel() { return westPanel ;}
