@@ -203,9 +203,6 @@ public class MainPanel extends JPanel
 				}
 				Point3D newCoord = MenuFunctions.getCoordFromMouseClick(canvas, mousePos, SnipToGridIsOn) ;
 				structure.addCoordFromMouseClick(newCoord) ;
-				System.out.println("Mouse pos: " + mousePos);
-				System.out.println("New coord: " + newCoord);
-				System.out.println(structure);
 			}
 			else if (structure.getShape().equals(StructureShape.polygonal))
 			{
@@ -318,10 +315,8 @@ public class MainPanel extends JPanel
 	public void displayContent(Structure structure, int[] MainPanelPos, DrawingOnAPanel DP)
 	{
 		displayCanvasElements(canvas, showCanvas, showGrid, showMousePos);
-		// System.out.println(MenuFunctions.struct.getCoords());
 		if (structure.getCoords() != null && structure.getCenter() != null)
 		{
-			// System.out.println(canvas);
 			DP.DrawStructureContour3D(structure.getCoords(), Structure.color, canvas);
 		}
 
@@ -429,7 +424,6 @@ public class MainPanel extends JPanel
 	{
 		List<Node> nodes = structure.getMesh().getNodes();
 		List<Element> elems = structure.getMesh().getElements();
-		System.out.println(selectedvar + " " + ShowDisplacementContour);
 		if (-1 < selectedvar && nodes != null && elems != null)
 		{
 			if (ShowDisplacementContour)
@@ -470,7 +464,6 @@ public class MainPanel extends JPanel
 		
 		if (!selectionWindow.isActive())
 		{
-			System.out.println("\nMouse pos: " + canvas.inRealCoords(MenuFunctions.mousePos) + " -> " + canvas.inDrawingCoords(canvas.inRealCoords(MenuFunctions.mousePos)));
 			selectionWindow.setTopLeft(MenuFunctions.mousePos);
 			return ;
 		}

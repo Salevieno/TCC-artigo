@@ -45,7 +45,7 @@ public class InstructionsPanel extends JPanel
     {
         title = new JLabel("Passo a passo", 2) ;
 		title.setForeground(Menus.palette[0]);
-        okIcon = new ImageIcon("./Icons/OkIcon.png");
+        okIcon = new ImageIcon("./assets/OkIcon.png");
     }
 
     public InstructionsPanel()
@@ -116,19 +116,20 @@ public class InstructionsPanel extends JPanel
 		{
 			stepIsComplete.set(5, true) ;
 		}
-		if (loading != null && loading.getConcLoads() != null)
+		if (loading != null && loading.getConcLoads() != null && !loading.getConcLoads().isEmpty())
 		{
 			stepIsComplete.set(6, true) ;
 		}
-		if (loading != null && loading.getDistLoads() != null)
+		if (loading != null && loading.getDistLoads() != null && !loading.getDistLoads().isEmpty())
 		{
 			stepIsComplete.set(7, true) ;
 		}
-		if (loading != null && loading.getNodalDisps() != null)
+		if (loading != null && loading.getNodalDisps() != null && !loading.getNodalDisps().isEmpty())
 		{
 			stepIsComplete.set(8, true) ;
 		}
 
+        repaint() ;
 		return stepIsComplete;
 	}
 

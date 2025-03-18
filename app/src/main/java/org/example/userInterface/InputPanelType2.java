@@ -10,24 +10,26 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.example.view.MainPanel;
+import org.example.mainTCC.MenuFunctions;
 
 public class InputPanelType2 extends JDialog implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 	private JLabel[] Labels;
-	private String Input;
 	private List<JButton> Buttons;
+	private ActionWithString okActionWithInput ;
+	private Runnable okAction ;
 
-	public InputPanelType2 (String PanelName, Point location, JLabel[] Labels, List<JButton> Buttons)
+	public InputPanelType2 (String PanelName, Point location, JLabel[] Labels, List<JButton> Buttons, ActionWithString okActionWithInput, Runnable okAction)
 	{
 		setTitle(PanelName);
 		this.Labels = Labels;
 		this.Buttons = Buttons ;
+		this.okActionWithInput = okActionWithInput ;
+		this.okAction = okAction ;
 		Buttons.forEach(button -> button.addActionListener(this)) ;
 		JPanel panel = DrawScreen();
 		setLocation(location);
@@ -36,14 +38,19 @@ public class InputPanelType2 extends JDialog implements ActionListener
 	}
 
 
-	public InputPanelType2 (String PanelName, JLabel[] Labels, List<JButton> Buttons)
+	public InputPanelType2 (String PanelName, JLabel[] Labels, List<JButton> Buttons, ActionWithString okActionWithInput, Runnable okAction)
 	{
-		this(PanelName, Menus.frameTopLeft, Labels, Buttons);
+		this(PanelName, Menus.frameTopLeft, Labels, Buttons, okActionWithInput, okAction) ;
 	}
 	
-	public InputPanelType2 (String PanelName, List<JButton> Buttons)
+	public InputPanelType2 (String PanelName, List<JButton> Buttons, ActionWithString okActionWithInput, Runnable okAction)
 	{
-		this(PanelName, null,  Buttons);
+		this(PanelName, null, Buttons, okActionWithInput, okAction) ;
+	}
+
+	public InputPanelType2 (String PanelName, List<JButton> Buttons, ActionWithString okActionWithInput)
+	{
+		this(PanelName, null, Buttons, okActionWithInput, null) ;
 	}
 	
 	public void actionPerformed(ActionEvent ae) 
@@ -53,7 +60,11 @@ public class InputPanelType2 extends JDialog implements ActionListener
 		{
 			if (source == Buttons.get(i) && !Buttons.get(i).getText().equals("Cancel")) 
 			{
-				this.Input = Buttons.get(i).getText();
+				okActionWithInput.act(Buttons.get(i).getText()) ;
+				if (okAction != null)
+				{
+					okAction.run() ;
+				}
 				dispose();
 			}
 			else if(Buttons.get(i).getText().equals("Cancel"))
@@ -92,9 +103,8 @@ public class InputPanelType2 extends JDialog implements ActionListener
 		return panel;
 	}
 
-	public String run() 
+	public void activate() 
 	{
 		this.setVisible(true);
-		return Input;
 	}
 }

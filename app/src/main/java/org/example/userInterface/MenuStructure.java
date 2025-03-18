@@ -45,20 +45,41 @@ public class MenuStructure extends JMenu
         "Colocar cargas distribuidas",
         "Colocar deslocamentos nodais"
     };
-    JMenuItem DefineElemType = new JMenuItem(StructureMenuItemsNames[0], KeyEvent.VK_E);
-    JMenu CreateNodes = new JMenu(StructureMenuItemsNames[1]);
-    JMenu CreateMesh = new JMenu(StructureMenuItemsNames[2]);
-    JMenuItem CreateMaterials = new JMenuItem(StructureMenuItemsNames[3], KeyEvent.VK_M);
-    JMenuItem CreateSections = new JMenuItem(StructureMenuItemsNames[4], KeyEvent.VK_S);
-    JMenuItem CreateConcLoads = new JMenuItem(StructureMenuItemsNames[5], KeyEvent.VK_C);
-    JMenuItem CreateDistLoads = new JMenuItem(StructureMenuItemsNames[6], KeyEvent.VK_D);
-    JMenuItem CreateNodalDisp = new JMenuItem(StructureMenuItemsNames[7]);
-    JMenuItem AssignMaterials = new JMenuItem(StructureMenuItemsNames[8]);
-    JMenuItem AssignSections = new JMenuItem(StructureMenuItemsNames[9]);
-    JMenuItem AssignSupports = new JMenuItem(StructureMenuItemsNames[10]);
-    JMenuItem AssignConcLoads = new JMenuItem(StructureMenuItemsNames[11]);
-    JMenuItem AssignDistLoads = new JMenuItem(StructureMenuItemsNames[12]);
-    JMenuItem AssignNodalDisp = new JMenuItem(StructureMenuItemsNames[13]);
+    private final JMenuItem DefineElemType = new JMenuItem(StructureMenuItemsNames[0], KeyEvent.VK_E);
+    private final JMenu CreateNodes = new JMenu(StructureMenuItemsNames[1]);
+    private final JMenu CreateMesh = new JMenu(StructureMenuItemsNames[2]);
+    private final JMenuItem CreateMaterials = new JMenuItem(StructureMenuItemsNames[3], KeyEvent.VK_M);
+    private final JMenuItem CreateSections = new JMenuItem(StructureMenuItemsNames[4], KeyEvent.VK_S);
+    private final JMenuItem CreateConcLoads = new JMenuItem(StructureMenuItemsNames[5], KeyEvent.VK_C);
+    private final JMenuItem CreateDistLoads = new JMenuItem(StructureMenuItemsNames[6], KeyEvent.VK_D);
+    private final JMenuItem CreateNodalDisp = new JMenuItem(StructureMenuItemsNames[7]);
+    private final JMenuItem AssignMaterials = new JMenuItem(StructureMenuItemsNames[8]);
+    private final JMenuItem AssignSections = new JMenuItem(StructureMenuItemsNames[9]);
+    private final JMenuItem AssignSupports = new JMenuItem(StructureMenuItemsNames[10]);
+    private final JMenuItem AssignConcLoads = new JMenuItem(StructureMenuItemsNames[11]);
+    private final JMenuItem AssignDistLoads = new JMenuItem(StructureMenuItemsNames[12]);
+    private final JMenuItem AssignNodalDisp = new JMenuItem(StructureMenuItemsNames[13]);
+
+	private static final InputPanelType2 InputPanelElemTypes ;
+
+	static
+	{
+		List<JButton> buttons = new ArrayList<JButton>();
+		for (ElemType elemType : ElemType.values())
+		{
+			JButton newButton = new JButton(elemType.toString()) ;
+			newButton.setSize(new Dimension(30, 20)) ;
+			newButton.setEnabled(true) ;
+			buttons.add(newButton) ;
+		}
+		
+		Runnable updateInstructionsPanel = () -> {
+			Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
+			// updateEnable() ;
+		} ;
+		ActionWithString defineElemType = (String elemType) -> MainPanel.setElemType(elemType) ;
+		InputPanelElemTypes = new InputPanelType2("Elem types", buttons, defineElemType, updateInstructionsPanel);
+	}
 
     public MenuStructure()
     {
@@ -70,19 +91,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				List<JButton> buttons = new ArrayList<JButton>();
-				for (ElemType elemType : ElemType.values())
-				{
-					JButton newButton = new JButton(elemType.toString()) ;
-					newButton.setSize(new Dimension(30, 20)) ;
-					newButton.setEnabled(true) ;
-					buttons.add(newButton) ;
-				}
-				InputPanelType2 CIT = new InputPanelType2("Elem types", buttons);
-				MainPanel.setElemType(CIT.run());
-				System.out.println(MenuFunctions.SelectedElemType);
-				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
-				updateEnable();
+				InputPanelElemTypes.activate() ;
 			}
 		});
 		CreateMaterials.addActionListener(new ActionListener()

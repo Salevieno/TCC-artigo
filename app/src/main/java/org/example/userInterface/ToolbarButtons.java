@@ -51,6 +51,10 @@ public class ToolbarButtons extends JPanel
     private static final JButton buttonShowNodalDisps ;
     private static final JButton buttonShowLoadsReactions ;
     private static final JButton buttonShowReactions ;
+    
+    private static String exampleid ;
+    private static final InputPanelType2 exampleInputPanel ;
+    private static final String assetsPath = "./assets/Tb1B" ;
 
     static
     {
@@ -82,6 +86,22 @@ public class ToolbarButtons extends JPanel
         buttonShowNodalDisps = new ButtonToolbarButtons("Mostrar deslocamentos nodais");
         buttonShowLoadsReactions = new ButtonToolbarButtons("Mostrar valores das cargas e reações");
         buttonShowReactions = new ButtonToolbarButtons("Mostrar reações");
+
+        List<JButton> Buttons = new ArrayList<>();
+        for (int b = 0; b <= 14 - 1; b += 1) // 14 = qtd tipos de elementos
+        {
+            Buttons.add(new JButton (String.valueOf(b))) ;
+        }
+
+        Runnable updateInstructionsPanel = () -> {
+            if (exampleid != null)
+            {
+                MenuFunctions.RunExample(Integer.parseInt(exampleid));
+                Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
+            }
+        } ;
+		ActionWithString defineExampleID = (String exampleID) -> exampleid = exampleID ;
+        exampleInputPanel = new InputPanelType2("Example input panel", Buttons, defineExampleID, updateInstructionsPanel) ;
     }
 
     public ToolbarButtons()
@@ -93,7 +113,7 @@ public class ToolbarButtons extends JPanel
     
         ButtonToolbarButtons.getAll().forEach(button -> {
             button.setToolTipText(button.getText());
-            button.setIcon(new ImageIcon("./Icons/Tb1B" + button.getText() + ".png"));
+            button.setIcon(new ImageIcon(assetsPath + button.getText() + ".png"));
             button.setFocusable(false);
             button.setHorizontalAlignment(SwingConstants.CENTER);
             button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -118,18 +138,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                List<JButton> Buttons = new ArrayList<>();
-                for (int b = 0; b <= 14 - 1; b += 1) // 14 = qtd tipos de elementos
-                {
-                    Buttons.add(new JButton (String.valueOf(b))) ;
-                }
-                InputPanelType2 CIT = new InputPanelType2("Elem types", Buttons);
-                String exampleid = CIT.run();
-                if (exampleid != null)
-                {
-                    MenuFunctions.RunExample(Integer.parseInt(exampleid));
-                    // Menus.getInstance().ActivatePostAnalysisView();
-                }
+                exampleInputPanel.activate() ;                
             }
         });
         buttonCreateMesh.addActionListener(new ActionListener()
