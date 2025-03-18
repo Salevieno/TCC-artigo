@@ -103,6 +103,57 @@ public class Mesh
     public List<Node> getNodes()  { return nodes ;}
     public List<Element> getElements() { return elems ;}
 
+	private boolean hasNodes() { return nodes != null && !nodes.isEmpty() ;}
+
+	private boolean hasElements() { return elems != null && !elems.isEmpty() ;}
+
+	public boolean allElementsHaveType()
+	{
+
+		if (!hasElements()) { return false ;}
+
+		for (Element elem : elems)
+		{
+			if (elem.getType() == null)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public boolean allElementsHaveMat()
+	{
+
+		if (!hasElements()) { return false ;}
+
+		for (Element elem : elems)
+		{
+			if (elem.getMat() == null)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public boolean allElementsHaveSec()
+	{
+
+		if (!hasElements()) { return false ;}
+
+		for (Element elem : elems)
+		{
+			if (elem.getSec() == null)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	public static Mesh CreateMesh(List<Point3D> structureCoords, Point3D structureCenter, MeshType meshType, int[][] meshInfo, List<Node> nodes, List<Element> elems, ElemType elemType)
 	{		

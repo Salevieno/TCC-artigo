@@ -38,7 +38,7 @@ public class MenuFileService
 		MenuFunctions.ConcLoadsView();
 		MenuFunctions.DistLoadsView();
 		MenuFunctions.NodalDispsView();
-		Menus.getInstance().getWestPanel().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
+		Menus.getInstance().getWestPanel().getInstructionsPanel().updateSteps(MainPanel.structure, MainPanel.loading) ;
 		Menus.getInstance().DisableButtons();
 		Menus.getInstance().EnableButtons();
 		Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;

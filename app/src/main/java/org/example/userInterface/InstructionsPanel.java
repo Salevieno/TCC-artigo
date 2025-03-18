@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import org.example.loading.Loading;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
@@ -67,7 +68,7 @@ public class InstructionsPanel extends JPanel
 
     public void updateStepsCompletion()
     {
-        stepIsComplete = CheckSteps(MainPanel.structure);
+        stepIsComplete = updateSteps(MainPanel.structure, MainPanel.loading);
         for (int i = 0; i < stepIsComplete.size(); i++)
         {
             JLabel label = (JLabel) this.getComponent(i+1);
@@ -78,12 +79,12 @@ public class InstructionsPanel extends JPanel
         // boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
     }
     
-	public List<Boolean> CheckSteps(Structure structure)
+	public List<Boolean> updateSteps(Structure structure, Loading loading)
 	{
 		List<Boolean> stepIsComplete = new ArrayList<>(Collections.nCopies(9, false)) ;
         if (structure.getMesh() != null && structure.getMesh().getElements() != null)
         {
-    		if (Util.AllElemsHaveElemType(structure.getMesh().getElements()))
+    		if (structure.getMesh().allElementsHaveType())
     		{
     			stepIsComplete.set(0, true) ;
     		}
@@ -102,11 +103,11 @@ public class InstructionsPanel extends JPanel
         }
         if (structure.getMesh() != null && structure.getMesh().getElements() != null)
         {
-    		if (Util.AllElemsHaveMat(structure.getMesh().getElements()))
+    		if (structure.getMesh().allElementsHaveMat())
     		{
     			stepIsComplete.set(3, true) ;
     		}
-    		if (Util.AllElemsHaveSec(structure.getMesh().getElements()))
+    		if (structure.getMesh().allElementsHaveSec())
     		{
     			stepIsComplete.set(4, true) ;
     		}
@@ -115,15 +116,15 @@ public class InstructionsPanel extends JPanel
 		{
 			stepIsComplete.set(5, true) ;
 		}
-		if (MainPanel.loading != null && MainPanel.loading.getConcLoads() != null)
+		if (loading != null && loading.getConcLoads() != null)
 		{
 			stepIsComplete.set(6, true) ;
 		}
-		if (MainPanel.loading != null && MainPanel.loading.getDistLoads() != null)
+		if (loading != null && loading.getDistLoads() != null)
 		{
 			stepIsComplete.set(7, true) ;
 		}
-		if (MainPanel.loading != null && MainPanel.loading.getNodalDisps() != null)
+		if (loading != null && loading.getNodalDisps() != null)
 		{
 			stepIsComplete.set(8, true) ;
 		}

@@ -123,20 +123,18 @@ public abstract class MenuFunctions
 
 	}
 
-	public static boolean CheckIfAnalysisIsReady(Structure struct, Loading loading)
+	public static boolean CheckIfAnalysisIsReady(Structure structure, Loading loading)
 	{
-		if (struct.getMesh() != null &&
-			struct.getMesh().getNodes() != null & struct.getMesh().getElements() != null &
-			Util.AllElemsHaveMat(struct.getMesh().getElements()) &
-			Util.AllElemsHaveSec(struct.getMesh().getElements()) &
-			struct.getSupports() != null & loading != null)
+		if (structure.getMesh() != null &&
+			structure.getMesh().getNodes() != null & structure.getMesh().getElements() != null &&
+			structure.getMesh().allElementsHaveMat() && structure.getMesh().allElementsHaveSec() && structure.getSupports() != null &&
+			loading != null)
 		{
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		
+		return false;
+		
 	}
 	
 	

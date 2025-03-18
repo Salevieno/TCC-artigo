@@ -272,24 +272,6 @@ public abstract class Util
 		}
  	}
  	
- 	public static NodalDisps[] AddElem(NodalDisps[] OriginalArray, NodalDisps NewElem)
- 	{
- 		if (OriginalArray == null)
-		{
-			return new NodalDisps[] {NewElem};
-		}
-		else
-		{
-			NodalDisps[] NewArray = new NodalDisps[OriginalArray.length + 1];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			NewArray[OriginalArray.length] = NewElem;
-			return NewArray;
-		}
- 	}
- 	
 	public static String[][] AddElem(String[][] OriginalArray, String[] NewElem)
 	{
 		if (OriginalArray == null)
@@ -1137,59 +1119,6 @@ public abstract class Util
 		{
 			return null;
 		}
-	}
-
-	public static boolean AllElemsHaveMat(List<Element> Elem)
-	{
-		if (Elem != null)
-		{
-			boolean allElemsHaveMat = true;
-			for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-			{
-				if (Elem.get(elem).getMat() == null)
-				{
-					allElemsHaveMat = false;
-				}
-			}
-			return allElemsHaveMat;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	public static boolean AllElemsHaveSec(List<Element> Elem)
-	{
-		if (Elem != null)
-		{
-			boolean allElemsHaveSec = true;
-			for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-			{
-				if (Elem.get(elem).getSec() == null)
-				{
-					allElemsHaveSec = false;
-				}
-			}
-			return allElemsHaveSec;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	public static boolean AllElemsHaveElemType(List<Element> Elem)
-	{
-		boolean allElemsHaveMat = true;
-		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-		{
-			if (Elem.get(elem).getType() == null)
-			{
-				allElemsHaveMat = false;
-			}
-		}
-		return allElemsHaveMat;
 	}
 	
 	public static int[] DefineDOFsOnNode(List<Element> Elem)

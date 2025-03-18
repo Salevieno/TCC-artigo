@@ -735,7 +735,7 @@ public class MainPanel extends JPanel
 			}
 			if (!StructureCreationIsOn)
 			{
-				Menus.getInstance().getWestPanel().getInstructionsPanel().CheckSteps(MainPanel.structure) ;
+				Menus.getInstance().getWestPanel().getInstructionsPanel().updateSteps(MainPanel.structure, MainPanel.loading) ;
 				Menus.getInstance().getNorthPanel().getUpperToolbar().enableButtonsSnipToGrid() ;
 			}
 			if (MenuFunctions.NodeSelectionIsOn)
