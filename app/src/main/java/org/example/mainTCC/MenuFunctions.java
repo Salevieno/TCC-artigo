@@ -37,7 +37,6 @@ public abstract class MenuFunctions
 	public static boolean SnipToGridIsOn;
 	public static boolean AnalysisIsComplete;
 	public static boolean ShowDeformedStructure ;
-	public static boolean NodeSelectionIsOn, ElemSelectionIsOn;
 	
 	
 	public static int[] SelectedElems;
@@ -46,8 +45,6 @@ public abstract class MenuFunctions
 	public static double[] DiagramScales;
 	
 	public static String SelectedElemType;
-	public static List<Material> matTypes ;
-	public static List<Section> secTypes ;
 	public static double[][] ConcLoadType, DistLoadType, NodalDispType;
 	public static int[][] SupType;
 	public static boolean NonlinearMat;
@@ -57,8 +54,6 @@ public abstract class MenuFunctions
 	
 	static
 	{
-		matTypes = new ArrayList<>() ;
-		secTypes = new ArrayList<>() ;
 		mousePos = new Point();
 		SnipToGridIsOn = false;
 		ShowDeformedStructure = false;			
@@ -70,8 +65,6 @@ public abstract class MenuFunctions
 		NonlinearGeo = false;
 		
 		AnalysisIsComplete = false;
-		NodeSelectionIsOn = false;
-		ElemSelectionIsOn = false;
 
 		DiagramScales = new double[2];
 		
@@ -460,8 +453,8 @@ public abstract class MenuFunctions
 		System.out.println(structure.getResults()) ;
 		ShowNodes = true;
 		ShowElems = true;
-		NodeSelectionIsOn = true;
-		ElemSelectionIsOn = true;
+		MainPanel.nodeSelectionIsActive = true;
+		MainPanel.elemSelectionIsActive = true;
 		AnalysisIsComplete = true;
 		ShowReactionArrows = true;
 		ShowDeformedStructure = true;
@@ -649,15 +642,17 @@ public abstract class MenuFunctions
 	{
 		/* Load input */
 		InputDTO inputDTO = Util.LoadEspecialInput("examples/Especial.txt");
+		List<Material> materials = new ArrayList<>() ;
+		List<Section> sections = new ArrayList<>() ;
 
 		for (int i = 0 ; i <= inputDTO.getInputMatTypes().length - 1 ; i += 1)
 		{
-			matTypes.add(new Material(inputDTO.getInputMatTypes()[i][0], inputDTO.getInputMatTypes()[i][1], inputDTO.getInputMatTypes()[i][2])) ;
+			materials.add(new Material(inputDTO.getInputMatTypes()[i][0], inputDTO.getInputMatTypes()[i][1], inputDTO.getInputMatTypes()[i][2])) ;
 		}
 		
 		for (int i = 0 ; i <= inputDTO.getInputSecTypes().length - 1 ; i += 1)
 		{
-			secTypes.add(new Section(inputDTO.getInputSecTypes()[i][0])) ;
+			sections.add(new Section(inputDTO.getInputSecTypes()[i][0])) ;
 		}
 
 		ConcLoadType = inputDTO.getConcLoadType() ;
@@ -668,7 +663,7 @@ public abstract class MenuFunctions
 		int ConcLoadConfig = 1;
 		int DistLoadConfig = 1;
 		
-		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, matTypes.size(), secTypes.size(), SupConfig.length, ConcLoadType.length, DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
+		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, materials.size(), sections.size(), SupConfig.length, ConcLoadType.length, DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
 		int[] Par = new int[NumPar.length];
 		if (ConcLoadType.length == 0)
 		{
@@ -696,7 +691,7 @@ public abstract class MenuFunctions
 			int SelDistLoad = Par[6];
 
 			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
-											matTypes.get(Mat), matTypes, secTypes.get(Sec), secTypes, supConfig) ;
+				materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
 			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
 			MenuFunctions.selectedNodes, MenuFunctions.ConcLoadType, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
 			MenuFunctions.CalcAnalysisParameters(structure2, loading);
@@ -842,8 +837,8 @@ public abstract class MenuFunctions
         	elem.setDeformedCoords(MainPanel.structure.getMesh().getNodes());
 		}
 		MainPanel.structure.getResults().register(MainPanel.structure.getMesh(), MainPanel.structure.getSupports(), MainPanel.structure.getU(), NonlinearMat, NonlinearGeo);
-		NodeSelectionIsOn = true;
-		ElemSelectionIsOn = true;
+		MainPanel.nodeSelectionIsActive = true;
+		MainPanel.elemSelectionIsActive = true;
 		AnalysisIsComplete = true;
 		ShowReactionArrows = true;
 		ShowReactionValues = true;
@@ -871,8 +866,6 @@ public abstract class MenuFunctions
 
 	public static void resetDisplay()
 	{
-		matTypes = null;
-		secTypes = null;
 		ConcLoadType = null ;
 		DistLoadType = null ;
 		NodalDispType = null ;

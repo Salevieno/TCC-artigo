@@ -22,6 +22,11 @@ import org.example.structure.Node;
 import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.structure.StructureShape;
+import org.example.userInterface.InputDialogs.CreateMeshDialog;
+import org.example.userInterface.InputDialogs.DefineElementTypeDialog;
+import org.example.userInterface.InputDialogs.InputDialogWithGrid;
+import org.example.userInterface.InputDialogs.StructureShapeDialog;
+import org.example.userInterface.InputDialogs.InputDialogWithButtons;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
@@ -29,7 +34,7 @@ import org.example.view.MainPanel;
 public class MenuStructure extends JMenu
 {
 
-    String[] StructureMenuItemsNames = new String[] {
+    private static final String[] StructureMenuItemsNames = new String[] {
         "Definir tipo dos elementos",
         "Criar nos",
         "Criar malha",
@@ -47,38 +52,49 @@ public class MenuStructure extends JMenu
     };
     private final JMenuItem DefineElemType = new JMenuItem(StructureMenuItemsNames[0], KeyEvent.VK_E);
     private final JMenu CreateNodes = new JMenu(StructureMenuItemsNames[1]);
-    private final JMenu CreateMesh = new JMenu(StructureMenuItemsNames[2]);
+    private final static JMenu CreateMesh = new JMenu(StructureMenuItemsNames[2]);
     private final JMenuItem CreateMaterials = new JMenuItem(StructureMenuItemsNames[3], KeyEvent.VK_M);
     private final JMenuItem CreateSections = new JMenuItem(StructureMenuItemsNames[4], KeyEvent.VK_S);
     private final JMenuItem CreateConcLoads = new JMenuItem(StructureMenuItemsNames[5], KeyEvent.VK_C);
     private final JMenuItem CreateDistLoads = new JMenuItem(StructureMenuItemsNames[6], KeyEvent.VK_D);
     private final JMenuItem CreateNodalDisp = new JMenuItem(StructureMenuItemsNames[7]);
-    private final JMenuItem AssignMaterials = new JMenuItem(StructureMenuItemsNames[8]);
-    private final JMenuItem AssignSections = new JMenuItem(StructureMenuItemsNames[9]);
-    private final JMenuItem AssignSupports = new JMenuItem(StructureMenuItemsNames[10]);
-    private final JMenuItem AssignConcLoads = new JMenuItem(StructureMenuItemsNames[11]);
-    private final JMenuItem AssignDistLoads = new JMenuItem(StructureMenuItemsNames[12]);
-    private final JMenuItem AssignNodalDisp = new JMenuItem(StructureMenuItemsNames[13]);
+    private final static JMenuItem AssignMaterials = new JMenuItem(StructureMenuItemsNames[8]);
+    private final static JMenuItem AssignSections = new JMenuItem(StructureMenuItemsNames[9]);
+    private final static JMenuItem AssignSupports = new JMenuItem(StructureMenuItemsNames[10]);
+    private final static JMenuItem AssignConcLoads = new JMenuItem(StructureMenuItemsNames[11]);
+    private final static JMenuItem AssignDistLoads = new JMenuItem(StructureMenuItemsNames[12]);
+    private final static JMenuItem AssignNodalDisp = new JMenuItem(StructureMenuItemsNames[13]);
 
-	private static final InputPanelType2 InputPanelElemTypes ;
+	private static StructureShape structureShape ;
+	private static MeshType meshType ;
+	private static double[][] createdMaterials ;
+	private static double[][] meshData ;
+
+	private static final DefineElementTypeDialog elemTypesInputPanel ;
+	private static final StructureShapeDialog structureShapeInputPanel ;
+	private static final CreateMeshDialog createMeshInputPanel ;
+	// private static final InputDialogWithGrid materialsInputPanel ;
 
 	static
 	{
-		List<JButton> buttons = new ArrayList<JButton>();
-		for (ElemType elemType : ElemType.values())
-		{
-			JButton newButton = new JButton(elemType.toString()) ;
-			newButton.setSize(new Dimension(30, 20)) ;
-			newButton.setEnabled(true) ;
-			buttons.add(newButton) ;
-		}
 		
-		Runnable updateInstructionsPanel = () -> {
-			Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
-			// updateEnable() ;
+		elemTypesInputPanel = new DefineElementTypeDialog();
+		structureShapeInputPanel = new StructureShapeDialog();
+		createMeshInputPanel = new CreateMeshDialog();
+
+		
+		JLabel[] Labels = new JLabel[] {new JLabel ("E (GPa)"), new JLabel ("v"), new JLabel ("fu (MPa)")};		
+		ActionWithDoubleArray receiveCreatedMaterials = (double[][] newMaterials) -> createdMaterials = newMaterials;
+		Runnable setMainPanelMaterials = () -> {
+			for (int i = 0 ; i <= createdMaterials.length - 1 ; i += 1)
+			{
+				MainPanel.addMaterial(new Material(createdMaterials[i][0], createdMaterials[i][1], createdMaterials[i][2])) ;
+			}
+			updateEnabledSubMenus();
 		} ;
-		ActionWithString defineElemType = (String elemType) -> MainPanel.setElemType(elemType) ;
-		InputPanelElemTypes = new InputPanelType2("Elem types", buttons, defineElemType, updateInstructionsPanel);
+		// materialsInputPanel = new InputDialogWithGrid("Materials", "Mat", Labels, true, receiveCreatedMaterials, setMainPanelMaterials);
+
+	
 	}
 
     public MenuStructure()
@@ -91,7 +107,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				InputPanelElemTypes.activate() ;
+				elemTypesInputPanel.activate() ;
 			}
 		});
 		CreateMaterials.addActionListener(new ActionListener()
@@ -99,7 +115,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				createMaterials();
+				// materialsInputPanel.activate() ;
 			}
 		});
 		CreateSections.addActionListener(new ActionListener()
@@ -139,7 +155,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuAssignMaterials();
+				Menus.getInstance().getMainPanel().activateMaterialAssignment();
 			}
 		});
 		AssignSections.addActionListener(new ActionListener()
@@ -147,7 +163,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuAssignSections();
+				Menus.getInstance().getMainPanel().activateSectionAssignment();
 			}
 		});
 		AssignSupports.addActionListener(new ActionListener()
@@ -155,7 +171,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuAssignSupports();
+				Menus.getInstance().getMainPanel().activateSupportAssignment();
 			}
 		});
 		AssignConcLoads.addActionListener(new ActionListener()
@@ -163,7 +179,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuAssignConcLoads();
+				Menus.getInstance().getMainPanel().activateConcLoadAssignment();
 			}
 		});
 		AssignDistLoads.addActionListener(new ActionListener()
@@ -171,7 +187,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuAssignDistLoads();
+				Menus.getInstance().getMainPanel().activateDistLoadAssignment();
 			}
 		});
 		AssignNodalDisp.addActionListener(new ActionListener()
@@ -179,7 +195,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuAssignNodalDisp();
+				Menus.getInstance().getMainPanel().activateNodalDispAssignment();
 			}
 		});
 		
@@ -228,29 +244,29 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				JLabel[] Labels = new JLabel[] {new JLabel ("x (m)"), new JLabel ("y (m)"), new JLabel ("z (m)")};
-				InputPanelType1 CI = new InputPanelType1("Coordenadas", "No", Labels, false);
-				double[][] StructCoords = CI.retrieveInput();
-				System.out.println(Arrays.deepToString(StructCoords));
+				// JLabel[] Labels = new JLabel[] {new JLabel ("x (m)"), new JLabel ("y (m)"), new JLabel ("z (m)")};
+				// InputPanelType1 CI = new InputPanelType1("Coordenadas", "No", Labels, false);
+				// double[][] StructCoords = CI.retrieveInput();
+				// System.out.println(Arrays.deepToString(StructCoords));
 
-				if (StructCoords != null)
-				{
-					updateEnable();
+				// if (StructCoords != null)
+				// {
+				// 	updateEnable();
 
-					List<Point3D> structCoordsAsPoints = new ArrayList<Point3D>() ;
-					for (int i = 0 ; i <= StructCoords.length - 1 ; i += 1)
-					{
-						structCoordsAsPoints.add(new Point3D(StructCoords[i][0], StructCoords[i][1], StructCoords[i][2])) ;
-					}
+				// 	List<Point3D> structCoordsAsPoints = new ArrayList<Point3D>() ;
+				// 	for (int i = 0 ; i <= StructCoords.length - 1 ; i += 1)
+				// 	{
+				// 		structCoordsAsPoints.add(new Point3D(StructCoords[i][0], StructCoords[i][1], StructCoords[i][2])) ;
+				// 	}
 
-					MainPanel.structure.setCoords(structCoordsAsPoints);
-					MainPanel.structure.updateCenter() ;
-					MainPanel.structure.updateMinCoords() ;
-					MainPanel.structure.updateMaxCoords() ;
-					Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
-					Menus.getInstance().getMainCanvas().setDrawingPos(new int[2]);
-					Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
-				}
+				// 	MainPanel.structure.setCoords(structCoordsAsPoints);
+				// 	MainPanel.structure.updateCenter() ;
+				// 	MainPanel.structure.updateMinCoords() ;
+				// 	MainPanel.structure.updateMaxCoords() ;
+				// 	Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
+				// 	Menus.getInstance().getMainCanvas().setDrawingPos(new int[2]);
+				// 	Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
+				// }
 			}
 		});
 		ClickNodes.addActionListener(new ActionListener()
@@ -258,20 +274,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				System.out.println("ClickNodes");
-				List<JButton> Buttons = new ArrayList<>();
-				for (int b = 0; b <= Buttons.size() - 1; b += 1)
-				{
-					Buttons.add(new JButton (StructureShape.values()[b].toString())) ;
-				}
-				// InputPanelType2 CIT = new InputPanelType2("Structure shape", Buttons);
-				// String input = CIT.run() ;
-				// MainPanel.CreateStructureOnClick(StructureShape.valueOf(input));
-
-				MenuFunctions.SnipToGridIsOn = false;
-				Menus.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;
-				Menus.getInstance().getNorthPanel().getUpperToolbar().showButtonSnipToGridOn();
-				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
+				structureShapeInputPanel.activate() ;
 			}
 		});
 		TypeNodes.setForeground(Menus.palette[5]);
@@ -288,7 +291,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuCreateMesh(MeshType.cartesian);
+				createMeshInputPanel.activate() ;
 			}
 		});
 		RadialMesh.addActionListener(new ActionListener()
@@ -296,7 +299,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				StructureMenuCreateMesh(MeshType.radial);
+				// createMeshInputPanel.activate() ;
 			}
 		});
 		CartesianMesh.setForeground(Menus.palette[5]);
@@ -305,142 +308,53 @@ public class MenuStructure extends JMenu
 		CreateMesh.add(RadialMesh);
     }
 
-    
-	public void StructureMenuCreateMesh(MeshType meshType)
-	{
-		JLabel[] Labels = new JLabel[2];
-		if (meshType.equals(MeshType.cartesian))
-		{
-			Labels = new JLabel[] {new JLabel ("N° pontos em x"), new JLabel ("N° pontos em y")};
-		}
-		else if (meshType.equals(MeshType.radial))
-		{
-			Labels = new JLabel[] {new JLabel ("N° camadas"), new JLabel ("N° pontos por camada")};
-		}
-		InputPanelType1 CI = new InputPanelType1("Propriedades da malha", "Malha", Labels, false);
-		double[][] input = CI.retrieveInput() ;
-		int[][] UserDefinedMesh = Util.MatrixDoubleToInt(input);
-		
-		MainPanel.structure.removeSupports() ;
-		MainPanel.loading.clearLoads() ;
-		MainPanel.structure.createMesh(meshType, UserDefinedMesh, ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()));
-		MenuFunctions.NodeView();
-		MenuFunctions.ElemView();
-		Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
-		updateEnable();
-	}
-
-    
-	public void createMaterials()
-	{
-		JLabel[] Labels = new JLabel[] {new JLabel ("E (GPa)"), new JLabel ("v"), new JLabel ("fu (MPa)")};
-		InputPanelType1 CI = new InputPanelType1("Materials", "Mat", Labels, true);
-		double[][] createdMaterials = CI.retrieveInput() ;
-		System.out.println("\ncreated materials" + Arrays.deepToString(createdMaterials));
-		List<Material> mats = new ArrayList<>() ;
-		for (int i = 0 ; i <= createdMaterials.length - 1 ; i += 1)
-		{
-			mats.add(new Material(createdMaterials[i][0], createdMaterials[i][1], createdMaterials[i][2])) ;
-		}
-		MainPanel.setMaterials(mats);
-		updateEnable();
-	}   
-
 	public void createSections()
 	{
-		JLabel[] Labels = new JLabel[] {new JLabel ("espessura (mm)")};
-		InputPanelType1 CI = new InputPanelType1("Cross sections", "Sec", Labels, true);
-		double[][] createdSections = CI.retrieveInput() ;
-		List<Section> secs = new ArrayList<>() ;
-		for (int i = 0 ; i <= createdSections.length - 1 ; i += 1)
-		{
-			secs.add(new Section(createdSections[i][0])) ;
-		}
-		MainPanel.setSections(secs);
-		updateEnable();
+		// JLabel[] Labels = new JLabel[] {new JLabel ("espessura (mm)")};
+		// InputPanelType1 CI = new InputPanelType1("Cross sections", "Sec", Labels, true);
+		// double[][] createdSections = CI.retrieveInput() ;
+		// List<Section> secs = new ArrayList<>() ;
+		// for (int i = 0 ; i <= createdSections.length - 1 ; i += 1)
+		// {
+		// 	secs.add(new Section(createdSections[i][0])) ;
+		// }
+		// MainPanel.setSections(secs);
+		// updateEnable();
 	}
 	
 	public void createConcLoads()
 	{
-		JLabel[] Labels = new JLabel[] {new JLabel ("Fx (kN)"), new JLabel ("Fy (kN)"), new JLabel ("Fz (kN)"), new JLabel ("Mx (kNm)"), new JLabel ("My (kNm)"), new JLabel ("Mz (kNm)")};
-		InputPanelType1 CI = new InputPanelType1("Nodal loads", "Nodal load", Labels, true);
-		MainPanel.DefineConcLoadTypes(CI.retrieveInput());
-		updateEnable();
+		// JLabel[] Labels = new JLabel[] {new JLabel ("Fx (kN)"), new JLabel ("Fy (kN)"), new JLabel ("Fz (kN)"), new JLabel ("Mx (kNm)"), new JLabel ("My (kNm)"), new JLabel ("Mz (kNm)")};
+		// InputPanelType1 CI = new InputPanelType1("Nodal loads", "Nodal load", Labels, true);
+		// MainPanel.DefineConcLoadTypes(CI.retrieveInput());
+		// updateEnable();
 	}
 	
 	public void createDistLoads()
 	{
-		JLabel[] Labels = new JLabel[] {new JLabel ("Load type"), new JLabel ("Load i (kN / kNm)")};
-		InputPanelType1 CI = new InputPanelType1("Member loads", "Member load", Labels, true);
-		MainPanel.DefineDistLoadTypes(CI.retrieveInput());
-		updateEnable();
+		// JLabel[] Labels = new JLabel[] {new JLabel ("Load type"), new JLabel ("Load i (kN / kNm)")};
+		// InputPanelType1 CI = new InputPanelType1("Member loads", "Member load", Labels, true);
+		// MainPanel.DefineDistLoadTypes(CI.retrieveInput());
+		// updateEnable();
 	}
 	
 	public void createNodalDisp()
 	{
-		JLabel[] Labels = new JLabel[] {new JLabel ("disp x"), new JLabel ("disp y"), new JLabel ("disp z"), new JLabel ("rot x"), new JLabel ("rot y"), new JLabel ("rot z")};
-		InputPanelType1 CI = new InputPanelType1("Nodal displacements", "Nodal disp", Labels, true);
-		MainPanel.DefineNodalDispTypes(CI.retrieveInput());
-		updateEnable();
+		// JLabel[] Labels = new JLabel[] {new JLabel ("disp x"), new JLabel ("disp y"), new JLabel ("disp z"), new JLabel ("rot x"), new JLabel ("rot y"), new JLabel ("rot z")};
+		// InputPanelType1 CI = new InputPanelType1("Nodal displacements", "Nodal disp", Labels, true);
+		// MainPanel.DefineNodalDispTypes(CI.retrieveInput());
+		// updateEnable();
 	}
 
-	public void StructureMenuAssignMaterials()
-	{
-		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		MainPanel.selectedMatID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;	
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
-	}
-	
-	public void StructureMenuAssignSections()
-	{
-		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		MainPanel.selectedSecID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSectionAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
-	}
-	
-	public void StructureMenuAssignSupports()
-	{
-		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		MainPanel.selectedSupID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSupportAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
-	}
-	
-	public void StructureMenuAssignConcLoads()
-	{
-		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		MainPanel.selectedConcLoadID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableConcLoadAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
-	}
-	
-	public void StructureMenuAssignDistLoads()
-	{
-		MenuFunctions.ElemSelectionIsOn = !MenuFunctions.ElemSelectionIsOn;
-		MainPanel.selectedDistLoadID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableDistLoadAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
-	}
-	
-	public void StructureMenuAssignNodalDisp()
-	{
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
-		MenuFunctions.NodeSelectionIsOn = !MenuFunctions.NodeSelectionIsOn;
-		MainPanel.selectedNodalDispID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
-	}
-
-	public void updateEnable()
+	public static void updateEnabledSubMenus()
 	{
 		Structure structure = MainPanel.structure;
 		List<Node> nodes = MainPanel.structure.getMesh() != null ? MainPanel.structure.getMesh().getNodes() : null ;
 		List<Element> elems = MainPanel.structure.getMesh() != null ? MainPanel.structure.getMesh().getElements() : null;
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
 		String SelectedElemType = MenuFunctions.SelectedElemType;
-		List<Material> MatTypes = MenuFunctions.matTypes;
-		List<Section> SecTypes = MenuFunctions.secTypes;
+		List<Material> MatTypes = MainPanel.matTypes;
+		List<Section> SecTypes = MainPanel.secTypes;
 		double[][] ConcLoadTypes = MenuFunctions.ConcLoadType;
 		double[][] DistLoadTypes = MenuFunctions.DistLoadType;
 		double[][] NodalDispTypes = MenuFunctions.NodalDispType;

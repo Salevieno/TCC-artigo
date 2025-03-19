@@ -1,4 +1,4 @@
-package org.example.userInterface;
+package org.example.userInterface.InputDialogs;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -17,7 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class InputPanelType1 extends JDialog implements ActionListener
+import org.example.userInterface.ActionWithDoubleArray;
+import org.example.userInterface.Menus;
+import org.example.view.MainPanel;
+
+public abstract class InputDialogWithGrid extends JDialog implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 	private JLabel[] Labels;
@@ -25,6 +29,8 @@ public class InputPanelType1 extends JDialog implements ActionListener
 	private ArrayList<JTextField[]> Lines = new ArrayList<JTextField[]>();	
 	private double[][] Input;
 	private List<JButton> Buttons;
+	private ActionWithDoubleArray okActionWithInput ;
+	private Runnable okAction ;
 
 	private static final JButton addButton ;
 	private static final JButton removeButton ;
@@ -43,7 +49,7 @@ public class InputPanelType1 extends JDialog implements ActionListener
 		cancelButton.setSize(30, 20);
 	}
 	
-	public InputPanelType1(String PanelName, String NameLabel, Point location, JLabel[] Labels, boolean AddRemoveButtons)
+	public InputDialogWithGrid(String PanelName, String NameLabel, Point location, JLabel[] Labels, boolean AddRemoveButtons, ActionWithDoubleArray okActionWithInput, Runnable okAction)
 	{
 		setTitle(PanelName);
 		this.Lines.add(CreateLineTextFields(Labels.length));
@@ -60,19 +66,30 @@ public class InputPanelType1 extends JDialog implements ActionListener
 		this.Buttons.add(okButton);
 		this.Buttons.add(cancelButton);
 		Buttons.forEach(button -> button.addActionListener(this));
+		this.okActionWithInput = okActionWithInput ;
+		this.okAction = okAction ;
 
-		setVisible(true);
 		JPanel panel = DrawScreen();
 		setLocation(location);
 		getContentPane().add(panel);
 		pack();
 	}
 
-	public InputPanelType1(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons)
+	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons, ActionWithDoubleArray okActionWithInput, Runnable okAction)
 	{
-		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons);
+		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons, okActionWithInput, okAction);
 	}
 
+	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons, ActionWithDoubleArray okActionWithInput)
+	{
+		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons, okActionWithInput, null);
+	}
+	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons)
+	{
+		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons, null, null);
+	}
+
+	public abstract void onOkClick(double[][] input) ;
 
 	private JTextField[] CreateLineTextFields(int NTextField)
 	{
@@ -115,7 +132,10 @@ public class InputPanelType1 extends JDialog implements ActionListener
 						this.Input[j][k] = Double.parseDouble(Lines.get(j)[k].getText());
 					}
 				}
-				System.out.println("Ok clicado");
+				onOkClick(Input) ;
+				// okActionWithInput.act(this.Input) ;
+				// okAction.run() ;
+				System.out.println(MainPanel.structure);
 				dispose();
 			}
 			if(source == Buttons.get(i) && Buttons.get(i).getText().equals("Cancel"))
@@ -188,11 +208,8 @@ public class InputPanelType1 extends JDialog implements ActionListener
 		return panel;
 	}
 
-	public double[][] retrieveInput() 
+	public void activate() 
 	{
-		// this.setVisible(true);
-		System.out.println("returned input" + Arrays.deepToString(Input));
-		//Here the program will "stop" until it's "dispose()"d, when the "dispose()" happens, the next line will happen
-		return Input;
+		this.setVisible(true);
 	}
 }

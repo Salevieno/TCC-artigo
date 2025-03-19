@@ -32,8 +32,8 @@ public class ListPanel extends JPanel
 	public static void display(boolean[] AssignmentIsOn, int SelectedSup, int SelectedConcLoad, int SelectedDistLoad, int SelectedNodalDisp, DrawingOnAPanel DP)
 	{
 		
-		List<Material> matType = MenuFunctions.matTypes;
-		List<Section> SecType = MenuFunctions.secTypes;
+		List<Material> matType = MainPanel.matTypes;
+		List<Section> SecType = MainPanel.secTypes;
 		int[][] SupType = MenuFunctions.SupType;
 		double[][] ConcLoadType = MenuFunctions.ConcLoadType;
 		double[][] DistLoadType = MenuFunctions.DistLoadType;

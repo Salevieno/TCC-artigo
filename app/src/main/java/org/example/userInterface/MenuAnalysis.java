@@ -13,6 +13,7 @@ import javax.swing.JMenuItem;
 import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
+import org.example.userInterface.InputDialogs.InputDialogWithButtons;
 import org.example.view.MainPanel;
 
 public class MenuAnalysis extends JMenu
@@ -29,7 +30,7 @@ public class MenuAnalysis extends JMenu
 	private static Runnable updateInstructionsPanel = () -> runAnalysis() ;
 	
 	private static final String[] buttonNames ;
-	private static final InputPanelType2 analysisTypeInputPanel ;
+	// private static final InputDialogWithButtons analysisTypeInputPanel ;
 
 	static
 	{
@@ -43,7 +44,7 @@ public class MenuAnalysis extends JMenu
 
 		ActionWithString defineAnalysisType = (String inputAnalysisType) -> analysisType  = inputAnalysisType ;
 
-		analysisTypeInputPanel = new InputPanelType2("Analysis types", buttons, defineAnalysisType, updateInstructionsPanel) ;
+		// analysisTypeInputPanel = new InputDialogWithButtons("Analysis types", buttons, defineAnalysisType, updateInstructionsPanel) ;
 	}
     public MenuAnalysis()
     {
@@ -59,7 +60,7 @@ public class MenuAnalysis extends JMenu
 			{
 				if (isReadyForAnalysis)
 				{					
-					analysisTypeInputPanel.activate() ;					
+					// analysisTypeInputPanel.activate() ;					
 				}
 				else
 				{

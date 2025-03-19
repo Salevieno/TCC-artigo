@@ -174,7 +174,7 @@ public class Menus extends JFrame
 	public void EnableButtons()
 	{
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
-		menuStructure.updateEnable() ;
+		menuStructure.updateEnabledSubMenus() ;
 		if (AnalysisIsComplete)
 		{
 			northPanel.getUpperToolbar().enableButtonsScale() ;

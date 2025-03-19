@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -66,6 +67,9 @@ public class MainPanel extends JPanel
 	private boolean showMatColor, showSecColor, showElemContour ;
 	private static boolean ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces;
 	
+	public static boolean nodeSelectionIsActive ;
+	public static boolean elemSelectionIsActive;
+	
 	public static int SelectedDiagram = -1;
 	public static int SelectedVar = -1;
 	
@@ -74,10 +78,17 @@ public class MainPanel extends JPanel
 	private boolean showElemSelectionWindow;
 	
 	private static boolean StructureCreationIsOn = false;
+	public static List<Material> matTypes ;
+	public static List<Section> secTypes ;
 	
 	public static Structure structure ;
 	public static Loading loading ;
 	
+	static
+	{
+		matTypes = new ArrayList<>() ;
+		secTypes = new ArrayList<>() ;
+	}
 	public MainPanel(Point frameTopLeftPos)
 	{
 		showCanvas = true ;
@@ -482,6 +493,55 @@ public class MainPanel extends JPanel
 	}
 
 
+
+	public void activateMaterialAssignment()
+	{
+		MainPanel.elemSelectionIsActive = !MainPanel.elemSelectionIsActive;
+		MainPanel.selectedMatID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;	
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+	}
+	
+	public void activateSectionAssignment()
+	{
+		MainPanel.elemSelectionIsActive = !MainPanel.elemSelectionIsActive;
+		MainPanel.selectedSecID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSectionAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+	}
+	
+	public void activateSupportAssignment()
+	{
+		MainPanel.nodeSelectionIsActive = !MainPanel.nodeSelectionIsActive;
+		MainPanel.selectedSupID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSupportAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+	}
+	
+	public void activateConcLoadAssignment()
+	{
+		MainPanel.nodeSelectionIsActive = !MainPanel.nodeSelectionIsActive;
+		MainPanel.selectedConcLoadID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableConcLoadAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+	}
+	
+	public void activateDistLoadAssignment()
+	{
+		MainPanel.elemSelectionIsActive = !MainPanel.elemSelectionIsActive;
+		MainPanel.selectedDistLoadID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableDistLoadAssignment() ;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+	}
+	
+	public void activateNodalDispAssignment()
+	{
+		Menus.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
+		MainPanel.nodeSelectionIsActive = !MainPanel.nodeSelectionIsActive;
+		MainPanel.selectedNodalDispID = 0;
+		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+	}
+
 	public static void setElemType(String ElemType)
 	{
 		MenuFunctions.SelectedElemType = ElemType;
@@ -596,14 +656,24 @@ public class MainPanel extends JPanel
 		}
 	}
 	
-	public static void setMaterials(List<Material> materials)
+	public static void addMaterials(List<Material> newMaterials)
 	{
-		MenuFunctions.matTypes = materials;
+		matTypes.addAll(newMaterials) ;
 	}
 
-	public static void setSections(List<Section> sections)
+	public static void addMaterial(Material newMaterial)
 	{
-		MenuFunctions.secTypes = sections;
+		matTypes.add(newMaterial) ;
+	}
+
+	public static void addSections(List<Section> newSections)
+	{
+		secTypes.addAll(newSections);
+	}
+
+	public static void addSection(Section newSection)
+	{
+		secTypes.add(newSection);
 	}
 
 	public static void DefineConcLoadTypes(double[][] ConcLoads)
@@ -646,7 +716,7 @@ public class MainPanel extends JPanel
 				Menus.getInstance().getWestPanel().getInstructionsPanel().updateSteps(MainPanel.structure, MainPanel.loading) ;
 				Menus.getInstance().getNorthPanel().getUpperToolbar().enableButtonsSnipToGrid() ;
 			}
-			if (MenuFunctions.NodeSelectionIsOn)
+			if (nodeSelectionIsActive)
 			{
 				NodeAddition(panelPos);
 				if (MenuFunctions.selectedNodes != null)
@@ -658,7 +728,7 @@ public class MainPanel extends JPanel
 					}
 				}
 			}
-			if (MenuFunctions.ElemSelectionIsOn)
+			if (elemSelectionIsActive)
 			{
 				ElemAddition(MainPanel.structure, canvas, panelPos);
 				if (MenuFunctions.SelectedElems != null)
@@ -674,7 +744,7 @@ public class MainPanel extends JPanel
 
 		if (evt.getButton() == 3)	// Right click
 		{
-			MainPanel.structure.printStructure(MenuFunctions.matTypes, MenuFunctions.secTypes, MainPanel.structure.getSupports(), loading);
+			MainPanel.structure.printStructure(matTypes, secTypes, MainPanel.structure.getSupports(), loading);
 			MenuFunctions.ElemDetailsView();
 		}
 	}
@@ -693,12 +763,12 @@ public class MainPanel extends JPanel
 		if (assignmentIsOn[0] && !MouseIsInMainCanvas)
 		{
 			selectedMatID += qtdRotation;
-			selectedMatID = Util.clamp(selectedMatID, 0, MenuFunctions.matTypes.size() - 1) ;
+			selectedMatID = Util.clamp(selectedMatID, 0, matTypes.size() - 1) ;
 		}
 		if (assignmentIsOn[1] && !MouseIsInMainCanvas)
 		{
 			selectedSecID += qtdRotation;
-			selectedSecID = Util.clamp(selectedSecID, 0, MenuFunctions.secTypes.size() - 1) ;
+			selectedSecID = Util.clamp(selectedSecID, 0, secTypes.size() - 1) ;
 		}
 		if (assignmentIsOn[2] && !MouseIsInMainCanvas)
 		{

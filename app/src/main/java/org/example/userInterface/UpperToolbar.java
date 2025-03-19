@@ -97,11 +97,11 @@ public class UpperToolbar extends JPanel
 			{
 				if (MatAssignmentIsOn)
 				{
-					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MenuFunctions.matTypes.get(MainPanel.selectedMatID));
+					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MainPanel.matTypes.get(MainPanel.selectedMatID));
 				}
 				if (SecAssignmentIsOn)
 				{
-					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MenuFunctions.secTypes.get(MainPanel.selectedSecID));
+					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MainPanel.secTypes.get(MainPanel.selectedSecID));
 				}
 				if (DistLoadsAssignmentIsOn)
 				{
@@ -186,7 +186,7 @@ public class UpperToolbar extends JPanel
         
         if (MatAssignmentIsOn)
         {
-            Element.createMatColors(MenuFunctions.matTypes);
+            Element.createMatColors(MainPanel.matTypes);
             // for (Element elem : MainPanel.structure.getMesh().getElements())
             // {
                 // int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;
@@ -225,8 +225,8 @@ public class UpperToolbar extends JPanel
         ConcLoadsAssignmentIsOn = false;
         DistLoadsAssignmentIsOn = false;
         NodalDispsAssignmentIsOn = false;
-        MenuFunctions.NodeSelectionIsOn = false;
-        MenuFunctions.ElemSelectionIsOn = false;
+        MainPanel.nodeSelectionIsActive = false;
+        MainPanel.elemSelectionIsActive = false;
         Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
         boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
         
