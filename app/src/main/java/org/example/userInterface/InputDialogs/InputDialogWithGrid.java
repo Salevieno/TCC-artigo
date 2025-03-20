@@ -1,6 +1,5 @@
 package org.example.userInterface.InputDialogs;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,7 +7,6 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -17,28 +15,33 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.example.userInterface.ActionWithDoubleArray;
 import org.example.userInterface.Menus;
 import org.example.view.MainPanel;
 
 public abstract class InputDialogWithGrid extends JDialog implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
-	private JLabel[] Labels;
-	private String NameLabel;
-	private ArrayList<JTextField[]> Lines = new ArrayList<JTextField[]>();	
-	private double[][] Input;
-	private List<JButton> Buttons;
-	private ActionWithDoubleArray okActionWithInput ;
-	private Runnable okAction ;
+	private JLabel[] headers;
+	private String name;
+	private List<JTextField[]> rows ;	
+	private double[][] input;
+	private List<JButton> buttons;
 
-	private static final JButton addButton ;
-	private static final JButton removeButton ;
-	private static final JButton okButton ;
-	private static final JButton cancelButton ;
+	private final JButton addButton ;
+	private final JButton removeButton ;
+	private final JButton okButton ;
+	private final JButton cancelButton ;
 
-	static
+	public InputDialogWithGrid(String name, String label, Point location, JLabel[] headers, boolean multiLine)
 	{
+		
+		setTitle(name);
+		this.rows = new ArrayList<>() ;
+		this.rows.add(CreateLineTextFields(headers.length));
+		this.name = label;
+		this.headers = headers;
+		this.buttons = new ArrayList<>();
+
 		addButton = new JButton("Add");
 		addButton.setSize(100, 20);
 		removeButton = new JButton("Remove");
@@ -47,54 +50,34 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 		okButton.setSize(30, 20);
 		cancelButton = new JButton("Cancel");
 		cancelButton.setSize(30, 20);
-	}
-	
-	public InputDialogWithGrid(String PanelName, String NameLabel, Point location, JLabel[] Labels, boolean AddRemoveButtons, ActionWithDoubleArray okActionWithInput, Runnable okAction)
-	{
-		setTitle(PanelName);
-		this.Lines.add(CreateLineTextFields(Labels.length));
-		this.NameLabel = NameLabel;
-		this.Labels = Labels;
-		this.Buttons = new ArrayList<>();
 		
-		if (AddRemoveButtons)
+		if (multiLine)
 		{
-			this.Buttons.add(addButton);
-			this.Buttons.add(removeButton);
+			this.buttons.add(addButton);
+			this.buttons.add(removeButton);
 		}
 		
-		this.Buttons.add(okButton);
-		this.Buttons.add(cancelButton);
-		Buttons.forEach(button -> button.addActionListener(this));
-		this.okActionWithInput = okActionWithInput ;
-		this.okAction = okAction ;
+		this.buttons.add(okButton);
+		this.buttons.add(cancelButton);
+		buttons.forEach(button -> button.addActionListener(this));
 
-		JPanel panel = DrawScreen();
+		JPanel panel = createPanel();
 		setLocation(location);
 		getContentPane().add(panel);
 		pack();
 	}
 
-	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons, ActionWithDoubleArray okActionWithInput, Runnable okAction)
-	{
-		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons, okActionWithInput, okAction);
-	}
-
-	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons, ActionWithDoubleArray okActionWithInput)
-	{
-		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons, okActionWithInput, null);
-	}
 	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons)
 	{
-		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons, null, null);
+		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons);
 	}
 
 	public abstract void onOkClick(double[][] input) ;
 
-	private JTextField[] CreateLineTextFields(int NTextField)
+	private JTextField[] CreateLineTextFields(int qtdCol)
 	{
-		JTextField[] TF = new JTextField[NTextField];
-		for (int i = 0; i <= NTextField - 1; i += 1)
+		JTextField[] TF = new JTextField[qtdCol];
+		for (int i = 0; i <= qtdCol - 1; i += 1)
 		{
 			TF[i] = new JTextField();
 		}
@@ -104,41 +87,41 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 	public void actionPerformed(ActionEvent ae) 
 	{
 		Object source = ae.getSource();
-		for (int i = 0; i <= Buttons.size() - 1; i += 1)
+		for (int i = 0; i <= buttons.size() - 1; i += 1)
 		{
-			if (source == Buttons.get(i) && Buttons.get(i).getText().contains("Add"))
+			if (source == buttons.get(i) && buttons.get(i).getText().contains("Add"))
 			{
-				Lines.add(CreateLineTextFields(Labels.length));
+				rows.add(CreateLineTextFields(headers.length));
 				getContentPane().removeAll();
-				JPanel panel = DrawScreen();
+				JPanel panel = createPanel();
 				getContentPane().add(panel);
 				pack();
 			}
-			if(source == Buttons.get(i) && Buttons.get(i).getText().contains("Remove"))
+			if(source == buttons.get(i) && buttons.get(i).getText().contains("Remove"))
 			{
-				Lines.remove(Lines.size() - 1);
+				rows.remove(rows.size() - 1);
 				getContentPane().removeAll();
-				JPanel panel = DrawScreen();
+				JPanel panel = createPanel();
 				getContentPane().add(panel);
 				pack();
 			}
-			if (source == Buttons.get(i) && Buttons.get(i).getText().equals("Ok")) 
+			if (source == buttons.get(i) && buttons.get(i).getText().equals("Ok")) 
 			{
-				this.Input = new double[Lines.size()][Lines.get(0).length];
-				for(int j = 0; j < Lines.size(); j += 1)
+				this.input = new double[rows.size()][rows.get(0).length];
+				for(int j = 0; j < rows.size(); j += 1)
 				{
-					for(int k = 0; k < Lines.get(j).length; k += 1)
+					for(int k = 0; k < rows.get(j).length; k += 1)
 					{
-						this.Input[j][k] = Double.parseDouble(Lines.get(j)[k].getText());
+						this.input[j][k] = Double.parseDouble(rows.get(j)[k].getText());
 					}
 				}
-				onOkClick(Input) ;
+				onOkClick(input) ;
 				// okActionWithInput.act(this.Input) ;
 				// okAction.run() ;
 				System.out.println(MainPanel.structure);
 				dispose();
 			}
-			if(source == Buttons.get(i) && Buttons.get(i).getText().equals("Cancel"))
+			if(source == buttons.get(i) && buttons.get(i).getText().equals("Cancel"))
 			{
 				System.out.println("Cancel clicado");
 				dispose();
@@ -153,13 +136,7 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 		return gbc;
 	}
 	
-	private void AddButton(JPanel panel, GridBagConstraints gbc, JButton Button, int gridx, int gridy)
-	{
-		gbc = SetGridPos(gbc, gridx, gridy);
-		panel.add(Button, gbc);
-	}
-	
-	private JPanel DrawScreen()
+	private JPanel createPanel()
 	{	
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -167,42 +144,38 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.weightx = 1;
-		for (int i = 0; i <= Labels.length - 1; i += 1)
+		
+		int gridy = 0;
+		for (int i = 0; i <= headers.length - 1; i += 1)
 		{
-			gbc = SetGridPos(gbc, i + 1, 0);
-			panel.add(Labels[i], gbc);
+			gbc = SetGridPos(gbc, i + 1, gridy);
+			panel.add(headers[i], gbc);
 		}
-		int gridx = 0, gridy = 1;
-		for (int i = 0; i <= Lines.size() - 1; i += 1)
+		
+		gridy += 1;
+		for (int i = 0; i <= rows.size() - 1; i += 1)
 		{
-			JLabel MatLabel = new JLabel (NameLabel + " " + (i + 1));
-			JTextField[] line = Lines.get(i);
-			gbc = SetGridPos(gbc, gridx, gridy);
-			panel.add(MatLabel, gbc);
-			for(int j = 0; j <= line.length - 1; j += 1)
+			JLabel rowLabel = new JLabel (name + " " + (i + 1));
+			gbc = SetGridPos(gbc, 0, gridy);
+			panel.add(rowLabel, gbc);
+
+			int gridx = 1 ;
+			JTextField[] cols = rows.get(i);
+			for (JTextField col : cols)
 			{
-				gridx += 1;
 				gbc = SetGridPos(gbc, gridx, gridy);
-				panel.add(line[j], gbc);
+				panel.add(col, gbc);
+				gridx += 1;
 			}
-			gridx = 0;
 			gridy += 1;
 		}
-		AddButton(panel, gbc, Buttons.get(0), gridx, gridy);
-		gridx += 1;
-		if (1 < Lines.size())
+
+		// gbc = SetGridPos(gbc, 0, gridy);
+		int gridx = 1 ;
+		for (JButton button : buttons)
 		{
-			AddButton(panel, gbc, Buttons.get(1), gridx, gridy);
-			gridx += 1;
-		}
-		if (2 < Buttons.size())
-		{
-			AddButton(panel, gbc, Buttons.get(2), gridx, gridy);
-			gridx += 1;
-		}
-		if (3 < Buttons.size())
-		{
-			AddButton(panel, gbc, Buttons.get(3), gridx, gridy);
+			gbc = SetGridPos(gbc, gridx, gridy);
+			panel.add(button, gbc);
 			gridx += 1;
 		}
 		return panel;

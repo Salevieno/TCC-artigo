@@ -1,34 +1,24 @@
 package org.example.userInterface;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.mainTCC.MenuFunctions;
-import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
 import org.example.structure.MeshType;
 import org.example.structure.Node;
 import org.example.structure.Section;
 import org.example.structure.Structure;
-import org.example.structure.StructureShape;
+import org.example.userInterface.InputDialogs.CreateMaterialsDialog;
 import org.example.userInterface.InputDialogs.CreateMeshDialog;
 import org.example.userInterface.InputDialogs.DefineElementTypeDialog;
-import org.example.userInterface.InputDialogs.InputDialogWithGrid;
 import org.example.userInterface.InputDialogs.StructureShapeDialog;
-import org.example.userInterface.InputDialogs.InputDialogWithButtons;
-import org.example.utilidades.Point3D;
-import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 
 public class MenuStructure extends JMenu
@@ -65,15 +55,10 @@ public class MenuStructure extends JMenu
     private final static JMenuItem AssignDistLoads = new JMenuItem(StructureMenuItemsNames[12]);
     private final static JMenuItem AssignNodalDisp = new JMenuItem(StructureMenuItemsNames[13]);
 
-	private static StructureShape structureShape ;
-	private static MeshType meshType ;
-	private static double[][] createdMaterials ;
-	private static double[][] meshData ;
-
 	private static final DefineElementTypeDialog elemTypesInputPanel ;
 	private static final StructureShapeDialog structureShapeInputPanel ;
 	private static final CreateMeshDialog createMeshInputPanel ;
-	// private static final InputDialogWithGrid materialsInputPanel ;
+	private static final CreateMaterialsDialog materialsInputPanel ;
 
 	static
 	{
@@ -81,18 +66,8 @@ public class MenuStructure extends JMenu
 		elemTypesInputPanel = new DefineElementTypeDialog();
 		structureShapeInputPanel = new StructureShapeDialog();
 		createMeshInputPanel = new CreateMeshDialog();
+		materialsInputPanel = new CreateMaterialsDialog();
 
-		
-		JLabel[] Labels = new JLabel[] {new JLabel ("E (GPa)"), new JLabel ("v"), new JLabel ("fu (MPa)")};		
-		ActionWithDoubleArray receiveCreatedMaterials = (double[][] newMaterials) -> createdMaterials = newMaterials;
-		Runnable setMainPanelMaterials = () -> {
-			for (int i = 0 ; i <= createdMaterials.length - 1 ; i += 1)
-			{
-				MainPanel.addMaterial(new Material(createdMaterials[i][0], createdMaterials[i][1], createdMaterials[i][2])) ;
-			}
-			updateEnabledSubMenus();
-		} ;
-		// materialsInputPanel = new InputDialogWithGrid("Materials", "Mat", Labels, true, receiveCreatedMaterials, setMainPanelMaterials);
 
 	
 	}
@@ -115,7 +90,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				// materialsInputPanel.activate() ;
+				materialsInputPanel.activate() ;
 			}
 		});
 		CreateSections.addActionListener(new ActionListener()
