@@ -15,8 +15,12 @@ import org.example.structure.MeshType;
 import org.example.structure.Node;
 import org.example.structure.Section;
 import org.example.structure.Structure;
+import org.example.userInterface.InputDialogs.CreateConcLoadsDialog;
+import org.example.userInterface.InputDialogs.CreateDistLoadsDialog;
 import org.example.userInterface.InputDialogs.CreateMaterialsDialog;
 import org.example.userInterface.InputDialogs.CreateMeshDialog;
+import org.example.userInterface.InputDialogs.CreateNodalDispsDialog;
+import org.example.userInterface.InputDialogs.CreateSectionsDialog;
 import org.example.userInterface.InputDialogs.DefineElementTypeDialog;
 import org.example.userInterface.InputDialogs.StructureShapeDialog;
 import org.example.view.MainPanel;
@@ -59,6 +63,10 @@ public class MenuStructure extends JMenu
 	private static final StructureShapeDialog structureShapeInputPanel ;
 	private static final CreateMeshDialog createMeshInputPanel ;
 	private static final CreateMaterialsDialog materialsInputPanel ;
+	private static final CreateSectionsDialog sectionsInputPanel ;
+	private static final CreateConcLoadsDialog concLoadsInputPanel ;
+	private static final CreateDistLoadsDialog distLoadsInputPanel ;
+	private static final CreateNodalDispsDialog nodalDispsInputPanel ;
 
 	static
 	{
@@ -67,8 +75,10 @@ public class MenuStructure extends JMenu
 		structureShapeInputPanel = new StructureShapeDialog();
 		createMeshInputPanel = new CreateMeshDialog();
 		materialsInputPanel = new CreateMaterialsDialog();
-
-
+		sectionsInputPanel = new CreateSectionsDialog();
+		concLoadsInputPanel = new CreateConcLoadsDialog() ;
+		distLoadsInputPanel = new CreateDistLoadsDialog() ;
+		nodalDispsInputPanel = new CreateNodalDispsDialog() ;
 	
 	}
 
@@ -98,7 +108,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				createSections();
+				sectionsInputPanel.activate();
 			}
 		});
 		CreateConcLoads.addActionListener(new ActionListener()
@@ -106,7 +116,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				createConcLoads();
+				concLoadsInputPanel.activate() ;
 			}
 		});
 		CreateDistLoads.addActionListener(new ActionListener()
@@ -114,7 +124,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				createDistLoads();
+				distLoadsInputPanel.activate() ;
 			}
 		});
 		CreateNodalDisp.addActionListener(new ActionListener()
@@ -122,7 +132,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				createNodalDisp();
+				nodalDispsInputPanel.activate() ;
 			}
 		});
 		AssignMaterials.addActionListener(new ActionListener()
@@ -282,44 +292,6 @@ public class MenuStructure extends JMenu
 		CreateMesh.add(CartesianMesh);
 		CreateMesh.add(RadialMesh);
     }
-
-	public void createSections()
-	{
-		// JLabel[] Labels = new JLabel[] {new JLabel ("espessura (mm)")};
-		// InputPanelType1 CI = new InputPanelType1("Cross sections", "Sec", Labels, true);
-		// double[][] createdSections = CI.retrieveInput() ;
-		// List<Section> secs = new ArrayList<>() ;
-		// for (int i = 0 ; i <= createdSections.length - 1 ; i += 1)
-		// {
-		// 	secs.add(new Section(createdSections[i][0])) ;
-		// }
-		// MainPanel.setSections(secs);
-		// updateEnable();
-	}
-	
-	public void createConcLoads()
-	{
-		// JLabel[] Labels = new JLabel[] {new JLabel ("Fx (kN)"), new JLabel ("Fy (kN)"), new JLabel ("Fz (kN)"), new JLabel ("Mx (kNm)"), new JLabel ("My (kNm)"), new JLabel ("Mz (kNm)")};
-		// InputPanelType1 CI = new InputPanelType1("Nodal loads", "Nodal load", Labels, true);
-		// MainPanel.DefineConcLoadTypes(CI.retrieveInput());
-		// updateEnable();
-	}
-	
-	public void createDistLoads()
-	{
-		// JLabel[] Labels = new JLabel[] {new JLabel ("Load type"), new JLabel ("Load i (kN / kNm)")};
-		// InputPanelType1 CI = new InputPanelType1("Member loads", "Member load", Labels, true);
-		// MainPanel.DefineDistLoadTypes(CI.retrieveInput());
-		// updateEnable();
-	}
-	
-	public void createNodalDisp()
-	{
-		// JLabel[] Labels = new JLabel[] {new JLabel ("disp x"), new JLabel ("disp y"), new JLabel ("disp z"), new JLabel ("rot x"), new JLabel ("rot y"), new JLabel ("rot z")};
-		// InputPanelType1 CI = new InputPanelType1("Nodal displacements", "Nodal disp", Labels, true);
-		// MainPanel.DefineNodalDispTypes(CI.retrieveInput());
-		// updateEnable();
-	}
 
 	public static void updateEnabledSubMenus()
 	{

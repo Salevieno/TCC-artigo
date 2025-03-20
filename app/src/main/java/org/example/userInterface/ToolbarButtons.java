@@ -17,8 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.example.mainTCC.MenuFunctions;
-import org.example.structure.MeshType;
-import org.example.userInterface.InputDialogs.InputDialogWithButtons;
 import org.example.view.MainPanel;
 
 public class ToolbarButtons extends JPanel
@@ -164,7 +162,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMenuStructure().createSections();
+                // Menus.getInstance().getMenuStructure().createSections();
             }
         });
         buttonCreateConcLoad.addActionListener(new ActionListener()
@@ -172,7 +170,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMenuStructure().createConcLoads();
+                // Menus.getInstance().getMenuStructure().createConcLoads();
             }
         });
         buttonCreateDistLoad.addActionListener(new ActionListener()
@@ -180,7 +178,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMenuStructure().createDistLoads();
+                // Menus.getInstance().getMenuStructure().createDistLoads();
             }
         });
         buttonCreateNodalDisp.addActionListener(new ActionListener()
@@ -188,7 +186,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMenuStructure().createNodalDisp();
+                // Menus.getInstance().getMenuStructure().createNodalDisp();
             }
         });
         buttonAddMat.addActionListener(new ActionListener()

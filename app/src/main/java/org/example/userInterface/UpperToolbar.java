@@ -179,7 +179,7 @@ public class UpperToolbar extends JPanel
 
     private void assignToElement()
     {
-        if (!MatAssignmentIsOn && !SecAssignmentIsOn && !DistLoadsAssignmentIsOn) { return ;}
+        // if (!MatAssignmentIsOn && !SecAssignmentIsOn && !DistLoadsAssignmentIsOn) { return ;}
         
         buttons.get(2).setEnabled(false);
         buttons.get(2).setVisible(false);

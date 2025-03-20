@@ -201,9 +201,7 @@ public class MainPanel extends JPanel
 	}
 
 	public static void StructureCreation(int[] MainPanelPos, MyCanvas canvas, Point mousePos, boolean SnipToGridIsOn)
-	{
-		List<Point3D> StructCoords = structure.getCoords();
-		   
+	{		   
 		if (!Util.MouseIsInside(mousePos, new int[2], canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1])) { return ;}
 		
 		Point3D newCoord ;
@@ -211,7 +209,7 @@ public class MainPanel extends JPanel
 		{
 			case rectangular, circular:
 
-				if (StructCoords != null)
+				if (structure.getCoords() != null && !structure.getCoords().isEmpty())
 				{
 					StructureCreationIsOn = false;
 					structure.updateCenter() ;
@@ -223,10 +221,10 @@ public class MainPanel extends JPanel
 
 			case polygonal:
 
-				int prec = 10;
-				if (StructCoords != null)
+				int precision = 10;
+				if (structure.getCoords() != null && !structure.getCoords().isEmpty())
 				{
-					if (Util.dist(new double[] {mousePos.x, mousePos.y}, new double[] {StructCoords.get(0).x, StructCoords.get(0).y}) < prec)
+					if (mousePos.distance(structure.getCoords().get(0).asPoint()) < precision)
 					{
 						StructureCreationIsOn = false;
 						structure.updateCenter() ;
@@ -589,8 +587,8 @@ public class MainPanel extends JPanel
 			{
 				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
 				{
-					int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
-					Supports newSupport = new Supports(supid, MenuFunctions.selectedNodes.get(i), MenuFunctions.SupType[selectedSupID]);
+					// int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
+					Supports newSupport = new Supports(1, MenuFunctions.selectedNodes.get(i), MenuFunctions.SupType[selectedSupID]);
 					MainPanel.structure.addSupport(newSupport) ;
 					MenuFunctions.selectedNodes.get(i).setSup(MenuFunctions.SupType[selectedSupID]);
 				}
