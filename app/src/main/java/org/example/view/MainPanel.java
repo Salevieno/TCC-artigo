@@ -237,7 +237,7 @@ public class MainPanel extends JPanel
 		if (!StructureCreationIsOn)
 		{
 			structure.updateCenter() ;
-			canvas.setCenter(canvas.inDrawingCoords(structure.getCenter()));
+			// canvas.setCenter(canvas.inDrawingCoords(structure.getCenter()));
 		}
 	}
 
@@ -714,7 +714,7 @@ public class MainPanel extends JPanel
 			if (!StructureCreationIsOn)
 			{
 				Menus.getInstance().getWestPanel().getInstructionsPanel().updateSteps(MainPanel.structure, MainPanel.loading) ;
-				Menus.getInstance().getNorthPanel().getUpperToolbar().enableButtonsSnipToGrid() ;
+				Menus.getInstance().getNorthPanel().getUpperToolbar().disableButtonsSnipToGrid() ;
 			}
 			if (nodeSelectionIsActive)
 			{

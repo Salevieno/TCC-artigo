@@ -261,24 +261,32 @@ public class UpperToolbar extends JPanel
 		buttons.get(5).setVisible(true) ;
 	}
 
+	public void disableButtonsSnipToGrid()
+	{
+		buttons.get(0).setEnabled(false) ;
+		buttons.get(0).setVisible(false) ;
+		buttons.get(1).setEnabled(false) ;
+		buttons.get(1).setVisible(false) ;
+	}
+
     public void assignToNodeView()
     {
-		buttons.get(3).setEnabled(SupAssignmentIsOn);
-		buttons.get(3).setVisible(SupAssignmentIsOn);
-		buttons.get(6).setEnabled(SupAssignmentIsOn);
-		buttons.get(6).setVisible(SupAssignmentIsOn);
-		buttons.get(7).setEnabled(SupAssignmentIsOn);
-		buttons.get(7).setVisible(SupAssignmentIsOn);
+		buttons.get(3).setEnabled(true);
+		buttons.get(3).setVisible(true);
+		buttons.get(6).setEnabled(true);
+		buttons.get(6).setVisible(true);
+		buttons.get(7).setEnabled(true);
+		buttons.get(7).setVisible(true);
     }
 
     public void assignToElemView()
     {
-		buttons.get(2).setEnabled(SupAssignmentIsOn);
-		buttons.get(2).setVisible(SupAssignmentIsOn);
-		buttons.get(6).setEnabled(SupAssignmentIsOn);
-		buttons.get(6).setVisible(SupAssignmentIsOn);
-		buttons.get(7).setEnabled(SupAssignmentIsOn);
-		buttons.get(7).setVisible(SupAssignmentIsOn);
+		buttons.get(2).setEnabled(true);
+		buttons.get(2).setVisible(true);
+		buttons.get(6).setEnabled(true);
+		buttons.get(6).setVisible(true);
+		buttons.get(7).setEnabled(true);
+		buttons.get(7).setVisible(true);
     }
 
     
