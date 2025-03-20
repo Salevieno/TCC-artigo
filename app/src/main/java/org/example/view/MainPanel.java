@@ -204,40 +204,42 @@ public class MainPanel extends JPanel
 	{
 		List<Point3D> StructCoords = structure.getCoords();
 		   
-		if (Util.MouseIsInside(mousePos, new int[2], canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1]))
-	    {
-			if (structure.getShape().equals(StructureShape.rectangular) | structure.getShape().equals(StructureShape.circular))
-			{
+		if (!Util.MouseIsInside(mousePos, new int[2], canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1])) { return ;}
+		
+		Point3D newCoord ;
+		switch(structure.getShape())
+		{
+			case rectangular, circular:
+
 				if (StructCoords != null)
 				{
-    				StructureCreationIsOn = false;
+					StructureCreationIsOn = false;
+					structure.updateCenter() ;
 				}
-				Point3D newCoord = MenuFunctions.getCoordFromMouseClick(canvas, mousePos, SnipToGridIsOn) ;
+				newCoord = MenuFunctions.getCoordFromMouseClick(canvas, mousePos, SnipToGridIsOn) ;
 				structure.addCoordFromMouseClick(newCoord) ;
-			}
-			else if (structure.getShape().equals(StructureShape.polygonal))
-			{
+
+				return ;
+
+			case polygonal:
+
 				int prec = 10;
 				if (StructCoords != null)
 				{
 					if (Util.dist(new double[] {mousePos.x, mousePos.y}, new double[] {StructCoords.get(0).x, StructCoords.get(0).y}) < prec)
 					{
-	    				StructureCreationIsOn = false;
+						StructureCreationIsOn = false;
+						structure.updateCenter() ;
 					}
 				}
-				Point3D newCoord = MenuFunctions.getCoordFromMouseClick(canvas, mousePos, SnipToGridIsOn) ;
+				newCoord = MenuFunctions.getCoordFromMouseClick(canvas, mousePos, SnipToGridIsOn) ;
 				structure.addCoordFromMouseClick(newCoord) ;
-			}
-			else
-			{
-				System.out.println("Structure shape not identified at Menus -> CreateStructure");
-			}
-	    }
 
-		if (!StructureCreationIsOn)
-		{
-			structure.updateCenter() ;
-			// canvas.setCenter(canvas.inDrawingCoords(structure.getCenter()));
+				return ;
+
+			default: 
+				System.out.println("Structure shape not identified at Menus -> CreateStructure") ;
+				return ;
 		}
 	}
 
