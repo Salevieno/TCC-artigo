@@ -1,6 +1,8 @@
 package org.example.structure;
 
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +12,9 @@ import org.example.loading.DistLoads;
 import org.example.loading.Loading;
 import org.example.mainTCC.MenuFunctions;
 import org.example.output.Results;
+import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
+import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
@@ -289,6 +293,32 @@ public class Structure
 	}
 	
 	public void removeSupports() { supports = null ;}
+
+	public void displayShape(MyCanvas canvas, DrawingOnAPanel DP)
+	{		
+		int countourStroke = 2;
+		List<Point> drawingCoords = new ArrayList<>() ;
+
+		for (Point3D coord : coords)
+		{
+			Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(coord.x, coord.y)) ;
+			drawingCoords.add(drawingCoord) ;
+		}
+
+		DP.DrawPolygon(drawingCoords, countourStroke, true, true, color, color);
+	}
+
+	public void displayMesh(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
+	{
+		mesh.displayElements(canvas, Defscale, showmatcolor, showseccolor, showcontour, showdeformed, DP) ;
+		mesh.displayNodes(MenuFunctions.selectedNodes, Node.color, showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+	}
+
+	public void display()
+	{
+
+	}
+
 
 	public String getName() {return name;}
 	public StructureShape getShape() {return shape;}

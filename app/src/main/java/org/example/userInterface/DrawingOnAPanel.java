@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.awt.RadialGradientPaint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +26,6 @@ import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;
 import org.example.structure.Reactions;
-import org.example.structure.StructureShape;
 import org.example.structure.Supports;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
@@ -54,6 +54,10 @@ public class DrawingOnAPanel
 	{
 		G = (Graphics2D) g;
 	}	
+
+	public Point3D getRealStructCenter() {
+		return RealStructCenter;
+	}
 
 	public void setRealStructCenter(Point3D realStructCenter)
 	{
@@ -436,6 +440,13 @@ public class DrawingOnAPanel
     	}
     	G.setStroke(new BasicStroke(stdStroke));
     }
+    public void DrawPolygon(List<Point> points, int thickness, boolean contour, boolean fill, Color ContourColor, Color FillColor)
+    {
+		int[] x = points.stream().mapToInt(p -> p.x).toArray();
+        int[] y = points.stream().mapToInt(p -> p.y).toArray();
+    	DrawPolygon(x, y, thickness, contour, fill, ContourColor, FillColor) ;
+    }
+
     public void DrawArc(int[] Pos, int l, int h, double[] angle, String unit, Color color)
     {
     	if (unit.equals("rad"))
@@ -985,12 +996,23 @@ public class DrawingOnAPanel
 		int thick = 2;
 		int[] Xcoords = new int[coords.size()];
 		int[] Ycoords = new int[coords.size()];
+		List<Point> drawingCoords = new ArrayList<>() ;
+
+		for (Point3D coord : coords)
+		{
+			Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(coord.x, coord.y)) ;
+			drawingCoords.add(drawingCoord) ;
+		}
+
 		for (int c = 0; c <= Xcoords.length - 1; c += 1)
 		{
-			int[] Coord = Util.ConvertToDrawingCoords2Point3D(coords.get(c).asArray(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(),
-																canvas.getCenter(), canvas.getDrawingPos());
-			Xcoords[c] = Coord[0];
-			Ycoords[c] = Coord[1];
+			// int[] Coord = Util.ConvertToDrawingCoords2Point3D(coords.get(c).asArray(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(),
+			// 													canvas.getCenter(), canvas.getDrawingPos());
+			Point Coord = canvas.inDrawingCoords(new Point2D.Double(coords.get(c).x, coords.get(c).y)) ;
+			Xcoords[c] = Coord.x ;
+			Ycoords[c] = Coord.y ;
+			// Xcoords[c] = Coord[0];
+			// Ycoords[c] = Coord[1];
 		}
 		DrawPolygon(Xcoords, Ycoords, thick, true, true, structureColor, structureColor);
 	}

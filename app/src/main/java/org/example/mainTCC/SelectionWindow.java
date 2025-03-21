@@ -51,12 +51,9 @@ public class SelectionWindow
 
         List<Node> selectedNodes = new ArrayList<>();
         bottomRightPos = new Point(mousePos) ;
-        System.out.println("\nWindow topLeft: " + topLeftPos);
-        System.out.println("\nWindow bottomRight: " + bottomRightPos);
         for (Node node : allNodes)
         {
             Point nodeDrawingCoords = canvas.inDrawingCoords(node.getOriginalCoords()) ;
-            System.out.println("\node pos: " + nodeDrawingCoords);
             if (isInside(nodeDrawingCoords))
             {
                 selectedNodes.add(node);

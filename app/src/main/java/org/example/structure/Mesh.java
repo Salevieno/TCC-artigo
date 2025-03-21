@@ -526,6 +526,113 @@ public class Mesh
 		return -1;
 	}
 
+
+	public void displayElements(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
+	{		
+		int thick = 1;
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		
+		for (int elem = 0; elem <= elems.size() - 1; elem += 1)
+		{
+			int[] Nodes = elems.get(elem).getExternalNodes();
+			int[] ElemDOFs = elems.get(elem).getDOFs();
+			// int[][] DrawingCoord = new int[Nodes.length][2]; 
+			List<Point> DrawingCoord = new ArrayList<>() ;
+			int[] xCoords = new int[Nodes.length + 1], yCoords = new int[Nodes.length + 1];
+			Color color = new Color(0, 100, 55);
+			if (elems.get(elem).getMat() != null)
+			{
+				color = Util.AddColor(color, new double[] {0, -50, 100});
+			}
+			if (elems.get(elem).getSec() != null)
+			{
+				color = Util.AddColor(color, new double[] {0, -50, 100});
+			}
+			if (showmatcolor && elems.get(elem).getMat() != null)
+			{
+				color = elems.get(elem).getMat().getColor() ;
+			}
+			if (showseccolor && elems.get(elem).getSec() != null)
+			{
+				color = elems.get(elem).getSec().getColor() ;
+			}
+			for (int node = 0; node <= Nodes.length - 1; node += 1)
+			{
+				if (showdeformed)
+				{
+					double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(Nodes[node]).getOriginalCoords().asArray(), nodes.get(Nodes[node]).getDisp(), ElemDOFs, Defscale);
+					double[] rotatedCoords = Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()) ;
+					Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
+					DrawingCoord.add(drawingCoord) ;
+					// DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), RealCanvasCenter, canvas.getDrawingPos());
+				}
+				else
+				{
+					double[] OriginalCoords = Util.GetNodePos(nodes.get(Nodes[node]), showdeformed);
+					double[] rotatedCoords = Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()) ;
+					Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
+					DrawingCoord.add(drawingCoord) ;
+					// DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				}
+				xCoords[node] = DrawingCoord.get(node).x;
+				yCoords[node] = DrawingCoord.get(node).y;
+			}
+			xCoords[Nodes.length] = DrawingCoord.get(0).x;
+			yCoords[Nodes.length] = DrawingCoord.get(0).y;
+			DP.DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, color);
+			if (showcontour)
+			{
+				DP.DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, color);
+			}
+			// if (SelectedElems != null)
+			// {
+				// for (int i = 0; i <= SelectedElems.length - 1; i += 1)
+				// {
+				// 	if (elem == SelectedElems[i])
+				// 	{
+				// 		DP.DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
+				// 	}
+				// }
+			// }
+		}
+	}
+
+	public void displayNodes(List<Node> selectedNodes, Color NodeColor, boolean deformed, double Defscale, MyCanvas canvas, DrawingOnAPanel DP)
+	{
+		int[] DOFsPerNode = elems.get(0).getDOFs() ;
+		int size = 6;
+		int thick = 1;
+		// double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		Point2D.Double Center = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
+		List<Point> drawingCoords = new ArrayList<>() ;
+		for (int node = 0; node <= nodes.size() - 1; node += 1)
+		{
+			// int[][] DrawingCoords = new int[nodes.size()][3];
+			if (deformed)
+			{
+				double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(node).getOriginalCoords().asArray(), nodes.get(node).getDisp(), DOFsPerNode, Defscale);
+				double[] rotatedCoord = Util.RotateCoord(DeformedCoords, new double[] {Center.x, Center.y}, canvas.getAngles()) ;
+				drawingCoords.add(canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1]))) ;
+			}
+			else
+			{
+				double[] rotatedCoord = Util.RotateCoord(Util.GetNodePos(nodes.get(node), deformed), new double[] {Center.x, Center.y}, canvas.getAngles()) ;
+				drawingCoords.add(canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1]))) ;
+			}
+			DP.DrawCircle(drawingCoords.get(node), size, thick, false, true, Color.black, NodeColor);
+			if (selectedNodes != null)
+			{
+				for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
+				{
+					if (node == selectedNodes.get(i).getID())
+					{
+						DP.DrawCircle(drawingCoords.get(node), 2*size, thick, false, true, Color.black, Color.red);
+					}
+				}
+			}
+		}
+	}
+
 	private void printNodes()
 	{
 		System.out.println("\nNodes");
