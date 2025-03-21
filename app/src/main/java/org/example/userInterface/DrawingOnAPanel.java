@@ -328,6 +328,10 @@ public class DrawingOnAPanel
     	}
     	G.setStroke(new BasicStroke(stdStroke));
     }
+	public void DrawCircle(Point Pos, int r, int thickness, double[] theta, Color color)
+	{
+		DrawCircle(Pos, 2*r, thickness, true, true, color, color) ;
+	}
     public void DrawCircle3D(int[] Pos, int r, int thickness, double[] theta, Color color)
     {
     	int NPoints = 10;
@@ -340,6 +344,10 @@ public class DrawingOnAPanel
     		Coord[p] = Util.RotateCoord(Coord[p], Pos, theta);
     	}
     	DrawPolyLine(Coord, thickness, color);
+    }
+    public void DrawCircle3D(Point Pos, int r, int thickness, double[] theta, Color color)
+    {
+    	DrawCircle3D(new int[] {Pos.x, Pos.y}, r, thickness, theta, color) ;
     }
     public void DrawPolyLine(int[] x, int[] y, int thickness, Color color)
     {
@@ -728,49 +736,6 @@ public class DrawingOnAPanel
     // 		DrawPoint(Pos[i], size, fill, ContourColor, FillColor);
     // 	}
     // }
-    private void DrawBase(int[] Pos, int thickness, double angle, int size, Color color)
-    {
-    	int[][] PosInit = new int[][] {{(int) (Pos[0] - 0.5*size), Pos[1]}};
-    	int[][] PosFinal = new int[][] {{(int) (Pos[0] + 0.5*size), Pos[1]}};
-    	PosInit = Util.Rotation2D(Pos, PosInit, angle);
-    	PosFinal = Util.Rotation2D(Pos, PosFinal, angle);
-    	DrawLine(PosInit[0], PosFinal[0], thickness, color);
-    	for (int i = 0; i <= 10; i += 1)
-    	{
-        	DrawLine(new int[] {(int) (PosInit[0][0] + size*i/10*Math.cos(angle)), (int) (PosInit[0][1] - size*i/10*Math.sin(angle))}, new int[] {(int) (PosInit[0][0] - 0.12*size + size*i/10*Math.cos(angle)), (int) (PosInit[0][1] + 0.12*size - size*i/10*Math.sin(angle))}, thickness, color);
- 		}    	
-    }
-    private void DrawBase3D(int[] Pos, int thickness, double[] angles, int size, Color color)
-    {
-    	int[][] Points = new int[][] {{Pos[0] - 2*size, Pos[1] - 5*size/4, Pos[2]}, {Pos[0] - 2*size, Pos[1] + 5*size/4, Pos[2]}};
-    	int NHair = 6;
-    	double HairInclination = 0.12;
-    	Points[0] = Util.RotateCoord(Points[0], Pos, angles);
-    	Points[1] = Util.RotateCoord(Points[1], Pos, angles);
-    	DrawLine(Points[0], Points[1], thickness, color);
-    	for (int i = 0; i <= NHair - 1; i += 1)
-    	{
-    		double inc = i/(double)(NHair - 1);		// From 0 to 1
-    		int[] sizes = new int[] {Points[1][0] - Points[0][0], Points[1][1] - Points[0][1], Points[1][2] - Points[0][2]};
-    		int[] LineInitPos = new int[] {(int) (Points[0][0] + inc*sizes[0]*Math.cos(angles[0])), (int) (Points[0][1] + inc*sizes[1]*Math.cos(angles[1])), (int) (Points[0][2] + inc*sizes[2]*Math.cos(angles[2]))};
-    		int[] LineFinalPos = new int[] {(int) (Points[0][0] + inc*sizes[0]*Math.cos(angles[0]) - HairInclination*size), (int) (Points[0][1] + inc*sizes[1]*Math.cos(angles[1]) + HairInclination*size), (int) (Points[0][2] + inc*sizes[2]*Math.cos(angles[2]))};
-        	DrawLine(LineInitPos, LineFinalPos, thickness, color);
- 		}    	
-    }
-    private void DrawRoller3D(int[] Pos, int thickness, double[] angles, int size, Color color)
-    {
-    	DrawCircle3D(new int[] {Pos[0], Pos[1], 0}, size, thickness, angles, color);
-    	DrawBase3D(new int[] {Pos[0], Pos[1], 0}, thickness, angles, size, color);
-    }
-    private void DrawPin(int[] Pos, int thickness, double angle, int size, Color color)
-    {
-    	DrawPolygon(new int[] {Pos[0] - size/2, Pos[0] + size/2,  Pos[0]}, new int[] {Pos[1] + size, Pos[1] + size, Pos[1]}, thickness, true, true, color, color);  
-    	DrawBase(new int[] {Pos[0], Pos[1] + size}, thickness, angle, (int) (1.8*size), color);
-    }
-    private void DrawCantilever(int[] Pos, int thickness, double angle, int size, Color color)
-    {
-    	DrawBase(Pos, thickness, angle, (int) (1.8*size), color);
-    }
 
     // Visual functions
     public void DrawWindow(int[] Pos, int L, int H, int boardthick, Color FillColor, Color ContourColor)
@@ -1108,47 +1073,6 @@ public class DrawingOnAPanel
 						DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
 					}
 				}
-			}
-		}
-	}
-
-	public void DrawSup3D(List<Node> Node, List<Supports> Sup, Color SupColor, MyCanvas canvas)
-	{
-		int size = 6;
-		int thick = 2;
-		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		for (int s = 0; s <= Sup.size() - 1; s += 1)
-		{
-			int node = Sup.get(s).getNode();
-			int[][] Coords = new int[Node.size()][];
-			int suptype = Sup.get(s).typeFromDOFs();
-			Coords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Node.get(node).getOriginalCoords().asArray(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			if (suptype == 0)
-			{
-				double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1], -canvas.getAngles()[2]};
-				DrawRoller3D(Coords[node], thick, angles, size, SupColor);
-			}
-			else if (suptype == 1)
-			{
-				double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1], -canvas.getAngles()[2] - Math.PI/2.0};
-				DrawRoller3D(Coords[node], thick, angles, size, SupColor);
-			}
-			else if (suptype == 2)
-			{
-				double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1] + Math.PI/2.0, -canvas.getAngles()[2]};
-				DrawRoller3D(Coords[node], thick, angles, size, SupColor);
-			}
-			else if (suptype == 3)
-			{
-				DrawPin(Coords[node], thick, 0, size, SupColor);
-			}
-			else if (suptype == 4)
-			{
-				DrawCantilever(Coords[node], thick, -Math.PI/2, size, SupColor);
-			}
-			else if (suptype == 5)
-			{
-				DrawCantilever(Coords[node], thick, -Math.PI/2, size, SupColor);
 			}
 		}
 	}

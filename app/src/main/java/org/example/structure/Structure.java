@@ -313,6 +313,11 @@ public class Structure
 		mesh.display(canvas, Defscale, showmatcolor, showseccolor, showcontour, showdeformed, DP) ;
 	}
 
+	public void displaySupports(MyCanvas canvas, DrawingOnAPanel DP)
+	{
+		supports.forEach(sup -> sup.dispaly(canvas, DP)) ;
+	}
+
 	public void display()
 	{
 

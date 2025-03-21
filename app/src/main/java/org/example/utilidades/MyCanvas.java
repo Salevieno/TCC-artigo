@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 
 import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Menus;
 
 public class MyCanvas
 {
@@ -70,6 +71,11 @@ public class MyCanvas
 		}
 	}	
 	
+	public void drawCenter(DrawingOnAPanel DP)
+	{
+		DP.DrawCircle(Center, 10, 1, false, true, Menus.palette[0], Menus.palette[7]);
+	}
+
 	public static int[] CalculateNumberOfGridPoints(double[] CanvasDim)
 	{
 		int[] NPointsMin = new int[] {6, 6}, NPointsMax = new int[] {46, 46};

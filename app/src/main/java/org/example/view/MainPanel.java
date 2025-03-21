@@ -329,10 +329,9 @@ public class MainPanel extends JPanel
 		if (structure.getCoords() != null && structure.getCenter() != null)
 		{
 			structure.displayShape(canvas, DP) ;
-			// DP.DrawStructureContour3D(structure.getCoords(), Structure.color, canvas);
 		}
 
-		DP.DrawCircle(canvas.getCenter(), 10, 1, false, true, Menus.palette[0], Menus.palette[7]);
+		canvas.drawCenter(DP) ;
 		if (StructureCreationIsOn && structure.getCoords() != null)
 		{
 			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.mousePos, 2, structure.getShape(), Menus.palette[6], DP);
@@ -344,8 +343,6 @@ public class MainPanel extends JPanel
 				canvas.setTitle("Estrutura deformada (x " + String.valueOf(Util.Round(MenuFunctions.DiagramScales[1], 3)) + ")");
 			}
 			structure.displayMesh(canvas, MenuFunctions.DiagramScales[1], showMatColor, showSecColor, showElemContour, showDeformedStructure, DP) ;
-			// DP.DrawElements3D(structure.getMesh(), MenuFunctions.SelectedElems,
-			// showMatColor, showSecColor, showElemContour, showDeformedStructure, MenuFunctions.DiagramScales[1], canvas);
 		}
 		if (MenuFunctions.ShowNodes && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
@@ -368,7 +365,7 @@ public class MainPanel extends JPanel
 		}
 		if (MenuFunctions.ShowSup && structure.getSupports() != null)
 		{
-			DP.DrawSup3D(structure.getMesh().getNodes(), structure.getSupports(), Supports.color, canvas);
+			structure.displaySupports(canvas, DP) ;
 		}
 		if (MenuFunctions.ShowConcLoads && loading != null && loading.getConcLoads() != null)
 		{

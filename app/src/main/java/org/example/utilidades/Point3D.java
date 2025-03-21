@@ -1,6 +1,7 @@
 package org.example.utilidades;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public class Point3D
 {
@@ -17,6 +18,7 @@ public class Point3D
 	
 	public double[] asArray() { return new double[] {x, y, z} ;}
 	public Point asPoint() { return new Point((int)x, (int)y) ;}
+	public Point2D.Double asDoublePoint() { return new Point2D.Double(x, y) ;}
 
 	public void translate(double dx, double dy, double dz)
 	{
