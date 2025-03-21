@@ -310,8 +310,7 @@ public class Structure
 
 	public void displayMesh(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
 	{
-		mesh.displayElements(canvas, Defscale, showmatcolor, showseccolor, showcontour, showdeformed, DP) ;
-		mesh.displayNodes(MenuFunctions.selectedNodes, Node.color, showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+		mesh.display(canvas, Defscale, showmatcolor, showseccolor, showcontour, showdeformed, DP) ;
 	}
 
 	public void display()

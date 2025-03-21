@@ -48,7 +48,7 @@ public class Node
 		return new double[] {coords.x + Disp[0], coords.y + Disp[1], coords.z + Disp[2]} ;
 	}
 
-	public Point deformedDrawingPos(MyCanvas canvas, double defScale)
+	public Point deformedDrawingPos(MyCanvas canvas, int[] dofs, double defScale)
 	{
 		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
 		double[] deformedCoords = Util.ScaledDefCoords(coords.asArray(), Disp, dofs, defScale);
@@ -67,7 +67,7 @@ public class Node
 
 	public void display(MyCanvas canvas, int[] dofs, boolean deformed, double defScale, boolean selected, DrawingOnAPanel DP)
 	{
-		Point drawingCoords = deformed ? deformedDrawingPos(canvas, defScale) : undeformedDrawingPos(canvas) ;
+		Point drawingCoords = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
 		DP.DrawCircle(drawingCoords, size, stroke, false, true, Color.black, color);
 		// if (selectedNodes != null)
 		// {

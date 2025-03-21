@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.mainTCC.MenuFunctions;
 import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
@@ -527,80 +528,27 @@ public class Mesh
 	}
 
 
-	public void displayElements(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
+	public void displayElements(MyCanvas canvas, double defScale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
 	{		
-		int thick = 1;
-		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		
-		for (int elem = 0; elem <= elems.size() - 1; elem += 1)
-		{
-			int[] Nodes = elems.get(elem).getExternalNodes();
-			int[] ElemDOFs = elems.get(elem).getDOFs();
-			// int[][] DrawingCoord = new int[Nodes.length][2]; 
-			List<Point> DrawingCoord = new ArrayList<>() ;
-			int[] xCoords = new int[Nodes.length + 1], yCoords = new int[Nodes.length + 1];
-			Color color = new Color(0, 100, 55);
-			if (elems.get(elem).getMat() != null)
-			{
-				color = Util.AddColor(color, new double[] {0, -50, 100});
-			}
-			if (elems.get(elem).getSec() != null)
-			{
-				color = Util.AddColor(color, new double[] {0, -50, 100});
-			}
-			if (showmatcolor && elems.get(elem).getMat() != null)
-			{
-				color = elems.get(elem).getMat().getColor() ;
-			}
-			if (showseccolor && elems.get(elem).getSec() != null)
-			{
-				color = elems.get(elem).getSec().getColor() ;
-			}
-			for (int node = 0; node <= Nodes.length - 1; node += 1)
-			{
-				if (showdeformed)
-				{
-					double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(Nodes[node]).getOriginalCoords().asArray(), nodes.get(Nodes[node]).getDisp(), ElemDOFs, Defscale);
-					double[] rotatedCoords = Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()) ;
-					Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
-					DrawingCoord.add(drawingCoord) ;
-					// DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), RealCanvasCenter, canvas.getDrawingPos());
-				}
-				else
-				{
-					double[] OriginalCoords = Util.GetNodePos(nodes.get(Nodes[node]), showdeformed);
-					double[] rotatedCoords = Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()) ;
-					Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
-					DrawingCoord.add(drawingCoord) ;
-					// DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-				}
-				xCoords[node] = DrawingCoord.get(node).x;
-				yCoords[node] = DrawingCoord.get(node).y;
-			}
-			xCoords[Nodes.length] = DrawingCoord.get(0).x;
-			yCoords[Nodes.length] = DrawingCoord.get(0).y;
-			DP.DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, color);
-			if (showcontour)
-			{
-				DP.DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, color);
-			}
-			// if (SelectedElems != null)
-			// {
-				// for (int i = 0; i <= SelectedElems.length - 1; i += 1)
-				// {
-				// 	if (elem == SelectedElems[i])
-				// 	{
-				// 		DP.DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
-				// 	}
-				// }
-			// }
-		}
+		elems.forEach(elem -> elem.display(canvas, nodes, showmatcolor, showseccolor, showcontour, showdeformed, defScale, DP)) ;
 	}
 
-	public void displayNodes(List<Node> selectedNodes, Color NodeColor, boolean deformed, double Defscale, MyCanvas canvas, DrawingOnAPanel DP)
+	public void displayNodes(List<Node> selectedNodes, boolean deformed, double Defscale, MyCanvas canvas, DrawingOnAPanel DP)
 	{
 		int[] dofs = elems.get(0).getDOFs() ;
 		nodes.forEach(node -> node.display(canvas, dofs, deformed, Defscale, deformed, DP)) ;
+	}
+
+	public void display(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
+	{
+		if (elems != null && ! elems.isEmpty())
+		{
+			displayElements(canvas, Defscale, showmatcolor, showseccolor, showcontour, showdeformed, DP) ;
+		}
+		if (nodes != null && !nodes.isEmpty())
+		{
+			displayNodes(MenuFunctions.selectedNodes, showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+		}
 	}
 
 	private void printNodes()
