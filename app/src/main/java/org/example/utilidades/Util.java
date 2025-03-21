@@ -613,53 +613,53 @@ public abstract class Util
 	}
 
 
-	public static int[] RotateCoord(int[] OriCoord, int[] RefPoint, double[] angle)
-	{
-		int[] coord = new int[3];
-		int[] oriCoord = new int[3];
-		coord[0] = OriCoord[0];
-		coord[1] = OriCoord[1];
-		oriCoord[0] = OriCoord[0];
-		oriCoord[1] = OriCoord[1];
-		if (3 <= OriCoord.length)
-		{
-			coord[2] = OriCoord[2];
-			oriCoord[2] = OriCoord[2];
-		}
-		else
-		{
-			OriCoord = AddElem(OriCoord, 0);
-		}
-		if (angle.length < 3)
-		{
-			angle = AddElem(angle, 0);
-		}
-		if (RefPoint.length < 3)
-		{
-			RefPoint = AddElem(RefPoint, 0);
-		}
-		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referância (RefPoint)
-		// Rotation around z
-		coord[0] = (int) ((oriCoord[0] - RefPoint[0]) * Math.cos(angle[2]) - (oriCoord[1] - RefPoint[1]) * Math.sin(angle[2]));
-		coord[1] = (int) ((oriCoord[0] - RefPoint[0]) * Math.sin(angle[2]) + (oriCoord[1] - RefPoint[1]) * Math.cos(angle[2]));
-		oriCoord[0] = coord[0] + RefPoint[0];
-		oriCoord[1] = coord[1] + RefPoint[1];
-		// Rotation around y
-		coord[0] = (int) ((oriCoord[0] - RefPoint[0]) * Math.cos(angle[1]) - (oriCoord[2] - RefPoint[2]) * Math.sin(angle[1]));
-		coord[2] = (int) ((oriCoord[0] - RefPoint[0]) * Math.sin(angle[1]) + (oriCoord[2] - RefPoint[2]) * Math.cos(angle[1]));
-		oriCoord[0] = coord[0] + RefPoint[0];
-		oriCoord[2] = coord[2] + RefPoint[2];
-		// Rotation around x
-		coord[1] = (int) ((oriCoord[1] - RefPoint[1]) * Math.cos(angle[0]) - (oriCoord[2] - RefPoint[2]) * Math.sin(angle[0]));
-		coord[2] = (int) ((oriCoord[1] - RefPoint[1]) * Math.sin(angle[0]) + (oriCoord[2] - RefPoint[2]) * Math.cos(angle[0]));
-		oriCoord[1] = coord[1] + RefPoint[1];
-		oriCoord[2] = coord[2] + RefPoint[2];
+	// public static int[] RotateCoord(int[] OriCoord, int[] RefPoint, double[] angle)
+	// {
+	// 	int[] coord = new int[3];
+	// 	int[] oriCoord = new int[3];
+	// 	coord[0] = OriCoord[0];
+	// 	coord[1] = OriCoord[1];
+	// 	oriCoord[0] = OriCoord[0];
+	// 	oriCoord[1] = OriCoord[1];
+	// 	if (3 <= OriCoord.length)
+	// 	{
+	// 		coord[2] = OriCoord[2];
+	// 		oriCoord[2] = OriCoord[2];
+	// 	}
+	// 	else
+	// 	{
+	// 		OriCoord = AddElem(OriCoord, 0);
+	// 	}
+	// 	if (angle.length < 3)
+	// 	{
+	// 		angle = AddElem(angle, 0);
+	// 	}
+	// 	if (RefPoint.length < 3)
+	// 	{
+	// 		RefPoint = AddElem(RefPoint, 0);
+	// 	}
+	// 	// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referância (RefPoint)
+	// 	// Rotation around z
+	// 	coord[0] = (int) ((oriCoord[0] - RefPoint[0]) * Math.cos(angle[2]) - (oriCoord[1] - RefPoint[1]) * Math.sin(angle[2]));
+	// 	coord[1] = (int) ((oriCoord[0] - RefPoint[0]) * Math.sin(angle[2]) + (oriCoord[1] - RefPoint[1]) * Math.cos(angle[2]));
+	// 	oriCoord[0] = coord[0] + RefPoint[0];
+	// 	oriCoord[1] = coord[1] + RefPoint[1];
+	// 	// Rotation around y
+	// 	coord[0] = (int) ((oriCoord[0] - RefPoint[0]) * Math.cos(angle[1]) - (oriCoord[2] - RefPoint[2]) * Math.sin(angle[1]));
+	// 	coord[2] = (int) ((oriCoord[0] - RefPoint[0]) * Math.sin(angle[1]) + (oriCoord[2] - RefPoint[2]) * Math.cos(angle[1]));
+	// 	oriCoord[0] = coord[0] + RefPoint[0];
+	// 	oriCoord[2] = coord[2] + RefPoint[2];
+	// 	// Rotation around x
+	// 	coord[1] = (int) ((oriCoord[1] - RefPoint[1]) * Math.cos(angle[0]) - (oriCoord[2] - RefPoint[2]) * Math.sin(angle[0]));
+	// 	coord[2] = (int) ((oriCoord[1] - RefPoint[1]) * Math.sin(angle[0]) + (oriCoord[2] - RefPoint[2]) * Math.cos(angle[0]));
+	// 	oriCoord[1] = coord[1] + RefPoint[1];
+	// 	oriCoord[2] = coord[2] + RefPoint[2];
 		
-		coord[0] = oriCoord[0];
-		coord[1] = oriCoord[1];
-		coord[2] = oriCoord[2];
-		return coord;
-	}
+	// 	coord[0] = oriCoord[0];
+	// 	coord[1] = oriCoord[1];
+	// 	coord[2] = oriCoord[2];
+	// 	return coord;
+	// }
 	
 	public static double[] RotateCoord(double[] OriCoord, double[] RefPoint, double[] angle)
 	{
@@ -707,6 +707,12 @@ public abstract class Util
 		coord[1] = oriCoord[1];
 		coord[2] = oriCoord[2];
 		return coord;
+	}
+
+	public static Point3D RotateCoord(Point3D OriCoord, Point3D RefPoint, Point3D angle)
+	{
+		double[] rotatedCoords = RotateCoord(OriCoord.asArray(), RefPoint.asArray(), angle.asArray()) ;
+		return new Point3D(rotatedCoords[0], rotatedCoords[1], rotatedCoords[2]) ;
 	}
 
     public static int[][] MatrixDoubleToInt(double[][] matrix)

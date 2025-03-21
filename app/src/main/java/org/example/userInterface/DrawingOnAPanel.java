@@ -44,11 +44,11 @@ public class DrawingOnAPanel
 
 	}
 
-	public DrawingOnAPanel(Graphics g, Point3D RealStructCenter)
-	{
-		G = (Graphics2D) g;
-		this.RealStructCenter = RealStructCenter;
-	}
+	// public DrawingOnAPanel(Graphics g, Point3D RealStructCenter)
+	// {
+	// 	G = (Graphics2D) g;
+	// 	this.RealStructCenter = RealStructCenter;
+	// }
 
 	public void setG(Graphics g)
 	{
@@ -155,25 +155,26 @@ public class DrawingOnAPanel
     	G.drawString(Text, Pos[0] + Offset[0], Pos[1] + Offset[1]);
         G.setTransform(backup);
     }
-    public void DrawFitText(int[] Pos, String Text, String Alignment, float angle, String Style, int sy, int length, int size, Color color)
-	{
-		String[] FitText = Util.FitText(Text, length);
-		for (int i = 0; i <= FitText.length - 1; i += 1)
-		{
-			DrawText(new int[] {Pos[0], Pos[1] + i*sy}, FitText[i], Alignment, angle, Style, size, color);						
-		}
-	}
-    public void DrawPoint(int[] Pos, int size, boolean fill, Color ContourColor, Color FillColor)
-    {
-    	G.setColor(ContourColor);
-    	G.drawOval(Pos[0] - size/2, Pos[1] - size/2, size, size);
-    	if (fill)
-    	{
-        	G.setColor(FillColor);
-        	G.fillOval(Pos[0] - size/2, Pos[1] - size/2, size, size);
-    	}
-    }
-    public void DrawLine(int[] PosInit, int[] PosFinal, int thickness, Color color)
+    // public void DrawFitText(int[] Pos, String Text, String Alignment, float angle, String Style, int sy, int length, int size, Color color)
+	// {
+	// 	String[] FitText = Util.FitText(Text, length);
+	// 	for (int i = 0; i <= FitText.length - 1; i += 1)
+	// 	{
+	// 		DrawText(new int[] {Pos[0], Pos[1] + i*sy}, FitText[i], Alignment, angle, Style, size, color);						
+	// 	}
+	// }
+    // public void DrawPoint(int[] Pos, int size, boolean fill, Color ContourColor, Color FillColor)
+    // {
+    // 	G.setColor(ContourColor);
+    // 	G.drawOval(Pos[0] - size/2, Pos[1] - size/2, size, size);
+    // 	if (fill)
+    // 	{
+    //     	G.setColor(FillColor);
+    //     	G.fillOval(Pos[0] - size/2, Pos[1] - size/2, size, size);
+    // 	}
+    // }
+    
+	public void DrawLine(int[] PosInit, int[] PosFinal, int thickness, Color color)
     {
     	G.setColor(color);
     	G.setStroke(new BasicStroke(thickness));
@@ -184,32 +185,33 @@ public class DrawingOnAPanel
     {
     	DrawLine(new int[] {PosInit.x, PosInit.y}, new int[] {PosFinal.x, PosFinal.y}, thickness, color) ;
     }
-    public void DrawGradRect(int[] Pos, int l, int h, Color leftTop, Color rightTop, Color leftBottom, Color rightBottom)
-    {
-    	float size = (float) ((l + h) / 2.0);
-    	float radius = size-(size/4);
-        float[] dist = {0f, 1.0f};
-        Point2D center = new Point2D.Float(Pos[0], Pos[1]);
-        Color noColor = new Color(1f, 1f, 1f, 0f);
-    	GradientPaint twoColorGradient = new GradientPaint(Pos[0] + l, Pos[1], rightTop, Pos[0], Pos[1] + h, leftBottom);
-        Color[] colors = {leftTop, noColor};
-        RadialGradientPaint thirdColor = new RadialGradientPaint(center, radius, dist, colors);
+    // public void DrawGradRect(int[] Pos, int l, int h, Color leftTop, Color rightTop, Color leftBottom, Color rightBottom)
+    // {
+    // 	float size = (float) ((l + h) / 2.0);
+    // 	float radius = size-(size/4);
+    //     float[] dist = {0f, 1.0f};
+    //     Point2D center = new Point2D.Float(Pos[0], Pos[1]);
+    //     Color noColor = new Color(1f, 1f, 1f, 0f);
+    // 	GradientPaint twoColorGradient = new GradientPaint(Pos[0] + l, Pos[1], rightTop, Pos[0], Pos[1] + h, leftBottom);
+    //     Color[] colors = {leftTop, noColor};
+    //     RadialGradientPaint thirdColor = new RadialGradientPaint(center, radius, dist, colors);
 
 
-        center = new Point2D.Float(Pos[0] + l, Pos[1] + h);
-        Color[] colors2 = {rightBottom, noColor};
-        RadialGradientPaint fourthColor = new RadialGradientPaint(center, radius, dist, colors2);
+    //     center = new Point2D.Float(Pos[0] + l, Pos[1] + h);
+    //     Color[] colors2 = {rightBottom, noColor};
+    //     RadialGradientPaint fourthColor = new RadialGradientPaint(center, radius, dist, colors2);
         
-    	G.setPaint(twoColorGradient);
-    	G.fillRect(Pos[0], Pos[1], l, h);
+    // 	G.setPaint(twoColorGradient);
+    // 	G.fillRect(Pos[0], Pos[1], l, h);
     	
-    	G.setPaint(thirdColor);
-    	G.fillRect(Pos[0], Pos[1], l, h);
+    // 	G.setPaint(thirdColor);
+    // 	G.fillRect(Pos[0], Pos[1], l, h);
     	
-    	G.setPaint(fourthColor);
-    	G.fillRect(Pos[0], Pos[1], l, h);
-    }
-    public void DrawRect(int[] Pos, int l, int h, int thickness, String Alignment, float angle, boolean fill, Color ContourColor, Color FillColor)
+    // 	G.setPaint(fourthColor);
+    // 	G.fillRect(Pos[0], Pos[1], l, h);
+    // }
+   
+	public void DrawRect(int[] Pos, int l, int h, int thickness, String Alignment, float angle, boolean fill, Color ContourColor, Color FillColor)
     {
 		AffineTransform Tx = new AffineTransform();
 		Tx.translate(0, 22);    // Translation to correct positions
@@ -332,23 +334,23 @@ public class DrawingOnAPanel
 	{
 		DrawCircle(Pos, 2*r, thickness, true, true, color, color) ;
 	}
-    public void DrawCircle3D(int[] Pos, int r, int thickness, double[] theta, Color color)
-    {
-    	int NPoints = 10;
-    	int[] Center = new int[] {Pos[0] - r, Pos[1], Pos[2]};
-    	int[][] Coord = new int[NPoints][2];
-    	for (int p = 0; p <= NPoints - 1; p += 1)
-    	{
-    		double a = 2*Math.PI*p/(double)(NPoints - 1);
-    		Coord[p] = new int[] {(int) (Center[0] + r*Math.cos(a)), (int) (Center[1] + r*Math.sin(a)), Center[2]};
-    		Coord[p] = Util.RotateCoord(Coord[p], Pos, theta);
-    	}
-    	DrawPolyLine(Coord, thickness, color);
-    }
-    public void DrawCircle3D(Point Pos, int r, int thickness, double[] theta, Color color)
-    {
-    	DrawCircle3D(new int[] {Pos.x, Pos.y}, r, thickness, theta, color) ;
-    }
+    // public void DrawCircle3D(int[] Pos, int r, int thickness, double[] theta, Color color)
+    // {
+    // 	int NPoints = 10;
+    // 	int[] Center = new int[] {Pos[0] - r, Pos[1], Pos[2]};
+    // 	int[][] Coord = new int[NPoints][2];
+    // 	for (int p = 0; p <= NPoints - 1; p += 1)
+    // 	{
+    // 		double a = 2*Math.PI*p/(double)(NPoints - 1);
+    // 		Coord[p] = new int[] {(int) (Center[0] + r*Math.cos(a)), (int) (Center[1] + r*Math.sin(a)), Center[2]};
+    // 		Coord[p] = Util.RotateCoord(Coord[p], Pos, theta);
+    // 	}
+    // 	DrawPolyLine(Coord, thickness, color);
+    // }
+    // public void DrawCircle3D(Point Pos, int r, int thickness, double[] theta, Color color)
+    // {
+    // 	DrawCircle3D(new int[] {Pos.x, Pos.y}, r, thickness, theta, color) ;
+    // }
     public void DrawPolyLine(int[] x, int[] y, int thickness, Color color)
     {
     	G.setColor(color);
@@ -356,47 +358,47 @@ public class DrawingOnAPanel
     	G.drawPolyline(x, y, x.length);
     	G.setStroke(new BasicStroke(stdStroke));
     }
-    public void DrawPolyLine(int[][] Coords, int thickness, Color color)
-    {
-    	int[] x = new int[Coords.length];
-    	int[] y = new int[Coords.length];
-    	for (int c = 0; c <= Coords.length - 1; c += 1)
-    	{
-    		x[c] = Coords[c][0];
-    		y[c] = Coords[c][1];
-    	}
-    	G.setColor(color);
-    	G.setStroke(new BasicStroke(thickness));
-    	G.drawPolyline(x, y, x.length);
-    	G.setStroke(new BasicStroke(stdStroke));
-    }
-    public void DrawGradPolygon(int[] x, int[] y, int thickness, boolean contour, boolean fill, Color ContourColor, Color[] FillColor)
-    {
-    	int npoints = x.length;
-    	int[] Center = new int[2];
-    	Center[0] = Util.Average(x);
-    	Center[1] = Util.Average(y);
-    	Color CenterColor = Color.black;
-    	if (contour)
-    	{
-        	G.setColor(ContourColor);
-        	G.setStroke(new BasicStroke(thickness));
-        	G.drawPolygon(x, y, x.length);
-    	}
-    	if (fill)
-    	{
-    		for (int p = 0; p <= npoints - 2; p += 1)
-    		{
-        		GradientPaint ColorGradient = new GradientPaint((x[p] + x[p + 1]) / 2, (y[p] + y[p + 1]) / 2, FillColor[p], Center[0], Center[1], CenterColor);
-        		G.setPaint(ColorGradient);
-            	G.fillPolygon(new int[] {x[p], x[p + 1], Center[0]}, new int[] {y[p], y[p + 1], Center[1]}, 3);
-    		}
-    		GradientPaint ColorGradient = new GradientPaint((x[npoints - 1] + x[0]) / 2, (y[npoints - 1] + y[0]) / 2, FillColor[npoints - 1], Center[0], Center[1], CenterColor);
-    		G.setPaint(ColorGradient);
-        	G.fillPolygon(new int[] {x[npoints - 1], x[0], Center[0]}, new int[] {y[npoints - 1], y[0], Center[1]}, 3);
-    	}
-    	G.setStroke(new BasicStroke(stdStroke));
-    }
+    // public void DrawPolyLine(int[][] Coords, int thickness, Color color)
+    // {
+    // 	int[] x = new int[Coords.length];
+    // 	int[] y = new int[Coords.length];
+    // 	for (int c = 0; c <= Coords.length - 1; c += 1)
+    // 	{
+    // 		x[c] = Coords[c][0];
+    // 		y[c] = Coords[c][1];
+    // 	}
+    // 	G.setColor(color);
+    // 	G.setStroke(new BasicStroke(thickness));
+    // 	G.drawPolyline(x, y, x.length);
+    // 	G.setStroke(new BasicStroke(stdStroke));
+    // }
+    // public void DrawGradPolygon(int[] x, int[] y, int thickness, boolean contour, boolean fill, Color ContourColor, Color[] FillColor)
+    // {
+    // 	int npoints = x.length;
+    // 	int[] Center = new int[2];
+    // 	Center[0] = Util.Average(x);
+    // 	Center[1] = Util.Average(y);
+    // 	Color CenterColor = Color.black;
+    // 	if (contour)
+    // 	{
+    //     	G.setColor(ContourColor);
+    //     	G.setStroke(new BasicStroke(thickness));
+    //     	G.drawPolygon(x, y, x.length);
+    // 	}
+    // 	if (fill)
+    // 	{
+    // 		for (int p = 0; p <= npoints - 2; p += 1)
+    // 		{
+    //     		GradientPaint ColorGradient = new GradientPaint((x[p] + x[p + 1]) / 2, (y[p] + y[p + 1]) / 2, FillColor[p], Center[0], Center[1], CenterColor);
+    //     		G.setPaint(ColorGradient);
+    //         	G.fillPolygon(new int[] {x[p], x[p + 1], Center[0]}, new int[] {y[p], y[p + 1], Center[1]}, 3);
+    // 		}
+    // 		GradientPaint ColorGradient = new GradientPaint((x[npoints - 1] + x[0]) / 2, (y[npoints - 1] + y[0]) / 2, FillColor[npoints - 1], Center[0], Center[1], CenterColor);
+    // 		G.setPaint(ColorGradient);
+    //     	G.fillPolygon(new int[] {x[npoints - 1], x[0], Center[0]}, new int[] {y[npoints - 1], y[0], Center[1]}, 3);
+    // 	}
+    // 	G.setStroke(new BasicStroke(stdStroke));
+    // }
     public void DrawGradPolygon2(int[] x, int[] y, int thickness, boolean contour, boolean fill, Color ContourColor, Color[] FillColor)
     {
     	int npoints = x.length;
@@ -455,73 +457,76 @@ public class DrawingOnAPanel
     	DrawPolygon(x, y, thickness, contour, fill, ContourColor, FillColor) ;
     }
 
-    public void DrawArc(int[] Pos, int l, int h, double[] angle, String unit, Color color)
-    {
-    	if (unit.equals("rad"))
-    	{
-    		angle[0] = 180.0/Math.PI*angle[0];
-    		angle[1] = 180.0/Math.PI*angle[1];
-    	}
-    	G.drawArc(Pos[0] - Math.abs(l/2), Pos[1] - Math.abs(h/2), l, h, (int) angle[0], (int) angle[1]);
-    }
-    public void DrawArc3D(int[] Pos, int rx, int ry, double[] angle, double[] theta, String unit, Color color)
-    {
-    	if (unit.equals("rad"))
-    	{
-    		angle[0] = 180.0/Math.PI*angle[0];
-    		angle[1] = 180.0/Math.PI*angle[1];
-    	}
-    	int thick = 2;
-    	int NPoints = 10;
-    	double[][] Coord = new double[NPoints][2];
-    	int[] xCoord = new int[NPoints];
-    	int[] yCoord = new int[NPoints];
-    	for (int p = 0; p <= NPoints - 1; p += 1)
-    	{
-    		double a = angle[0] + (angle[1] - angle[0])*p/(double)(NPoints - 1);
-    		Coord[p] = new double[] {Pos[0] + rx*Math.cos(a), Pos[1] + ry*Math.sin(a)};
-    	}
-    	for (int p = 0; p <= NPoints - 1; p += 1)
-    	{
-    		Coord[p] = Util.RotateCoord(Coord[p], new double[] {Pos[0], Pos[1], Pos[2]}, theta);
-    		xCoord[p] = (int) (Coord[p][0]);
-    		yCoord[p] = (int) (Coord[p][1]);
-    	}
-    	DrawPolyLine(xCoord, yCoord, thick, color);
-    }
-    public void DrawTriangle(int[] Pos, int size, int thickness, double theta, boolean fill, double ArrowSize, Color color)
-    {
-    	double thetaop = Math.PI/8.0;	// opening
-    	int ax1 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta) + ArrowSize*Math.sin(thetaop)*Math.sin(theta));
-    	int ay1 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta) - ArrowSize*Math.sin(thetaop)*Math.cos(theta));
-    	int ax2 = Pos[0];
-    	int ay2 = Pos[1];
-     	int ax3 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta) - ArrowSize*Math.sin(thetaop)*Math.sin(theta));
-     	int ay3 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta) + ArrowSize*Math.sin(thetaop)*Math.cos(theta));
-     	DrawPolygon(new int[] {ax1, ax2, ax3}, new int[] {ay1, ay2, ay3}, thickness, true, fill, color, color);
-    }
-    public void DrawTriangle3D(int[] Pos, int size, int thickness, double theta2D, double[] theta3D, boolean fill, double ArrowSize, Color color)
-    {
-    	double thetaop = Math.PI/8.0;	// opening
-    	int ax1 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta2D) + ArrowSize*Math.sin(thetaop)*Math.sin(theta2D));
-    	int ay1 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta2D) - ArrowSize*Math.sin(thetaop)*Math.cos(theta2D));
-    	int az1 = Pos[2];
-    	int ax2 = Pos[0];
-    	int ay2 = Pos[1];
-    	int az2 = Pos[2];
-     	int ax3 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta2D) - ArrowSize*Math.sin(thetaop)*Math.sin(theta2D));
-     	int ay3 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta2D) + ArrowSize*Math.sin(thetaop)*Math.cos(theta2D));
-    	int az3 = Pos[2];
+    // public void DrawArc(int[] Pos, int l, int h, double[] angle, String unit, Color color)
+    // {
+    // 	if (unit.equals("rad"))
+    // 	{
+    // 		angle[0] = 180.0/Math.PI*angle[0];
+    // 		angle[1] = 180.0/Math.PI*angle[1];
+    // 	}
+    // 	G.drawArc(Pos[0] - Math.abs(l/2), Pos[1] - Math.abs(h/2), l, h, (int) angle[0], (int) angle[1]);
+    // }
+    
+	// public void DrawArc3D(int[] Pos, int rx, int ry, double[] angle, double[] theta, String unit, Color color)
+    // {
+    // 	if (unit.equals("rad"))
+    // 	{
+    // 		angle[0] = 180.0/Math.PI*angle[0];
+    // 		angle[1] = 180.0/Math.PI*angle[1];
+    // 	}
+    // 	int thick = 2;
+    // 	int NPoints = 10;
+    // 	double[][] Coord = new double[NPoints][2];
+    // 	int[] xCoord = new int[NPoints];
+    // 	int[] yCoord = new int[NPoints];
+    // 	for (int p = 0; p <= NPoints - 1; p += 1)
+    // 	{
+    // 		double a = angle[0] + (angle[1] - angle[0])*p/(double)(NPoints - 1);
+    // 		Coord[p] = new double[] {Pos[0] + rx*Math.cos(a), Pos[1] + ry*Math.sin(a)};
+    // 	}
+    // 	for (int p = 0; p <= NPoints - 1; p += 1)
+    // 	{
+    // 		Coord[p] = Util.RotateCoord(Coord[p], new double[] {Pos[0], Pos[1], Pos[2]}, theta);
+    // 		xCoord[p] = (int) (Coord[p][0]);
+    // 		yCoord[p] = (int) (Coord[p][1]);
+    // 	}
+    // 	DrawPolyLine(xCoord, yCoord, thick, color);
+    // }
+    // public void DrawTriangle(int[] Pos, int size, int thickness, double theta, boolean fill, double ArrowSize, Color color)
+    // {
+    // 	double thetaop = Math.PI/8.0;	// opening
+    // 	int ax1 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta) + ArrowSize*Math.sin(thetaop)*Math.sin(theta));
+    // 	int ay1 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta) - ArrowSize*Math.sin(thetaop)*Math.cos(theta));
+    // 	int ax2 = Pos[0];
+    // 	int ay2 = Pos[1];
+    //  	int ax3 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta) - ArrowSize*Math.sin(thetaop)*Math.sin(theta));
+    //  	int ay3 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta) + ArrowSize*Math.sin(thetaop)*Math.cos(theta));
+    //  	DrawPolygon(new int[] {ax1, ax2, ax3}, new int[] {ay1, ay2, ay3}, thickness, true, fill, color, color);
+    // }
+    
+	// public void DrawTriangle3D(int[] Pos, int size, int thickness, double theta2D, double[] theta3D, boolean fill, double ArrowSize, Color color)
+    // {
+    // 	double thetaop = Math.PI/8.0;	// opening
+    // 	int ax1 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta2D) + ArrowSize*Math.sin(thetaop)*Math.sin(theta2D));
+    // 	int ay1 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta2D) - ArrowSize*Math.sin(thetaop)*Math.cos(theta2D));
+    // 	int az1 = Pos[2];
+    // 	int ax2 = Pos[0];
+    // 	int ay2 = Pos[1];
+    // 	int az2 = Pos[2];
+    //  	int ax3 = (int)(Pos[0] - ArrowSize*Math.cos(thetaop)*Math.cos(theta2D) - ArrowSize*Math.sin(thetaop)*Math.sin(theta2D));
+    //  	int ay3 = (int)(Pos[1] - ArrowSize*Math.cos(thetaop)*Math.sin(theta2D) + ArrowSize*Math.sin(thetaop)*Math.cos(theta2D));
+    // 	int az3 = Pos[2];
      	
-     	double[] P1 = Util.RotateCoord(new double[] {ax1, ay1, az1}, new double[] {Pos[0], Pos[1], Pos[2]}, theta3D);
-     	double[] P2 = Util.RotateCoord(new double[] {ax2, ay2, az2}, new double[] {Pos[0], Pos[1], Pos[2]}, theta3D);
-     	double[] P3 = Util.RotateCoord(new double[] {ax3, ay3, az3}, new double[] {Pos[0], Pos[1], Pos[2]}, theta3D);
-     	/*double[] P1 = new double[] {ax1, ay1, az1};
-     	double[] P2 = new double[] {ax2, ay2, az2};
-     	double[] P3 = new double[] {ax3, ay3, az3};*/
-     	DrawPolygon(new int[] {(int) P1[0], (int) P2[0], (int) P3[0]}, new int[] {(int) P1[1], (int) P2[1], (int) P3[1]}, thickness, true, fill, color, color);
-    }
-    public void DrawAxisArrow3D(int[] Pos, int thickness, double[] theta, boolean fill, double Size, double ArrowSize, Color color)
+    //  	double[] P1 = Util.RotateCoord(new double[] {ax1, ay1, az1}, new double[] {Pos[0], Pos[1], Pos[2]}, theta3D);
+    //  	double[] P2 = Util.RotateCoord(new double[] {ax2, ay2, az2}, new double[] {Pos[0], Pos[1], Pos[2]}, theta3D);
+    //  	double[] P3 = Util.RotateCoord(new double[] {ax3, ay3, az3}, new double[] {Pos[0], Pos[1], Pos[2]}, theta3D);
+    //  	/*double[] P1 = new double[] {ax1, ay1, az1};
+    //  	double[] P2 = new double[] {ax2, ay2, az2};
+    //  	double[] P3 = new double[] {ax3, ay3, az3};*/
+    //  	DrawPolygon(new int[] {(int) P1[0], (int) P2[0], (int) P3[0]}, new int[] {(int) P1[1], (int) P2[1], (int) P3[1]}, thickness, true, fill, color, color);
+    // }
+    
+	public void DrawAxisArrow3D(int[] Pos, int thickness, double[] theta, boolean fill, double Size, double ArrowSize, Color color)
     {
     	double thetaop = Math.PI/8.0;	// opening
     	double[][] Coords = new double[6][3];
@@ -658,55 +663,56 @@ public class DrawingOnAPanel
      	DrawPolyLine(new int[] {xCoords[1], xCoords[4]}, new int[] {yCoords[1], yCoords[4]}, thickness, color);
      	DrawPolyLine(new int[] {xCoords[1], xCoords[5]}, new int[] {yCoords[1], yCoords[5]}, thickness, color);
     }
-    public void DrawMoment3D(int[] Pos, int thickness, double[] angles, int dof, double Size, double ArrowSize, Color color)
-    {
-    	double thetaop = Math.PI/8.0;	// opening
-    	double offset = 0.2;
-    	double[][] Coords = new double[7][3];
-    	int[] xCoords = new int[Coords.length], yCoords = new int[Coords.length];
-     	double[] canvasAngles = new double[3];
-     	if (dof == 3)
-     	{
-     		canvasAngles = new double[] {angles[0], angles[1] - Math.PI/2.0, angles[2]};
-     	}
-     	else if (dof == 4)
-     	{
-     		canvasAngles = new double[] {angles[0], angles[1], angles[2] - Math.PI/2.0};
-     	}
-     	else if (dof == 5)
-     	{
-     		canvasAngles = new double[] {angles[0], angles[1], angles[2]};
-     	}
+    // public void DrawMoment3D(int[] Pos, int thickness, double[] angles, int dof, double Size, double ArrowSize, Color color)
+    // {
+    // 	double thetaop = Math.PI/8.0;	// opening
+    // 	double offset = 0.2;
+    // 	double[][] Coords = new double[7][3];
+    // 	int[] xCoords = new int[Coords.length], yCoords = new int[Coords.length];
+    //  	double[] canvasAngles = new double[3];
+    //  	if (dof == 3)
+    //  	{
+    //  		canvasAngles = new double[] {angles[0], angles[1] - Math.PI/2.0, angles[2]};
+    //  	}
+    //  	else if (dof == 4)
+    //  	{
+    //  		canvasAngles = new double[] {angles[0], angles[1], angles[2] - Math.PI/2.0};
+    //  	}
+    //  	else if (dof == 5)
+    //  	{
+    //  		canvasAngles = new double[] {angles[0], angles[1], angles[2]};
+    //  	}
 
-    	Coords[0] = new double[] {Pos[0] - Size, Pos[1], Pos[2]};
-    	Coords[1] = new double[] {Pos[0], Pos[1], Pos[2]};
-    	Coords[2] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2]};
-    	Coords[3] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2]};
-    	Coords[4] = new double[] {Pos[0] - offset*Size, Pos[1], Pos[2]};
-    	Coords[5] = new double[] {Pos[0] - offset*Size - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2]};
-    	Coords[6] = new double[] {Pos[0] - offset*Size - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2]};
-    	for (int c = 0; c <= Coords.length - 1; c += 1)
-    	{
-         	Coords[c] = Util.RotateCoord(Coords[c], new double[] {Pos[0], Pos[1], Pos[2]}, canvasAngles);
-         	xCoords[c] = (int) Coords[c][0];
-         	yCoords[c] = (int) Coords[c][1];
-    	}   	
-     	DrawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, thickness, color);
-     	DrawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, thickness, color);
-     	DrawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, thickness, color);
-     	DrawPolyLine(new int[] {xCoords[4], xCoords[5]}, new int[] {yCoords[4], yCoords[5]}, thickness, color);
-     	DrawPolyLine(new int[] {xCoords[4], xCoords[6]}, new int[] {yCoords[4], yCoords[6]}, thickness, color);
+    // 	Coords[0] = new double[] {Pos[0] - Size, Pos[1], Pos[2]};
+    // 	Coords[1] = new double[] {Pos[0], Pos[1], Pos[2]};
+    // 	Coords[2] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2]};
+    // 	Coords[3] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2]};
+    // 	Coords[4] = new double[] {Pos[0] - offset*Size, Pos[1], Pos[2]};
+    // 	Coords[5] = new double[] {Pos[0] - offset*Size - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2]};
+    // 	Coords[6] = new double[] {Pos[0] - offset*Size - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2]};
+    // 	for (int c = 0; c <= Coords.length - 1; c += 1)
+    // 	{
+    //      	Coords[c] = Util.RotateCoord(Coords[c], new double[] {Pos[0], Pos[1], Pos[2]}, canvasAngles);
+    //      	xCoords[c] = (int) Coords[c][0];
+    //      	yCoords[c] = (int) Coords[c][1];
+    // 	}   	
+    //  	DrawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, thickness, color);
+    //  	DrawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, thickness, color);
+    //  	DrawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, thickness, color);
+    //  	DrawPolyLine(new int[] {xCoords[4], xCoords[5]}, new int[] {yCoords[4], yCoords[5]}, thickness, color);
+    //  	DrawPolyLine(new int[] {xCoords[4], xCoords[6]}, new int[] {yCoords[4], yCoords[6]}, thickness, color);
      	
-     	int[] Center = new int[] {Pos[0], Pos[1], Pos[2]};
-    	int r = 20;
-    	int asize = r/2;
-    	double arcanglei = 80*Math.PI/180.0, arcanglef = 280*Math.PI/180.0;
-     	double[] TriPos = new double[] {Center[0] + r*Math.cos(arcanglei) + asize*Math.sin(arcanglei), Center[1] - r*Math.sin(arcanglei) + asize*Math.cos(arcanglei), Center[2]};    	
-     	TriPos = Util.RotateCoord(TriPos, new double[] {Center[0], Center[1], Center[2]}, canvasAngles);
-     	DrawArc3D(Center, r, r, new double[] {arcanglei, arcanglef}, canvasAngles, "degree", color);
-     	DrawTriangle3D(new int[] {(int) TriPos[0], (int) TriPos[1], (int) TriPos[2]}, asize, thickness, Math.PI/2.0 - arcanglei, canvasAngles, true, asize, color);
-    }
-    public void DrawPL3D(double[] RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas)
+    //  	int[] Center = new int[] {Pos[0], Pos[1], Pos[2]};
+    // 	int r = 20;
+    // 	int asize = r/2;
+    // 	double arcanglei = 80*Math.PI/180.0, arcanglef = 280*Math.PI/180.0;
+    //  	double[] TriPos = new double[] {Center[0] + r*Math.cos(arcanglei) + asize*Math.sin(arcanglei), Center[1] - r*Math.sin(arcanglei) + asize*Math.cos(arcanglei), Center[2]};    	
+    //  	TriPos = Util.RotateCoord(TriPos, new double[] {Center[0], Center[1], Center[2]}, canvasAngles);
+    //  	DrawArc3D(Center, r, r, new double[] {arcanglei, arcanglef}, canvasAngles, "degree", color);
+    //  	DrawTriangle3D(new int[] {(int) TriPos[0], (int) TriPos[1], (int) TriPos[2]}, asize, thickness, Math.PI/2.0 - arcanglei, canvasAngles, true, asize, color);
+    // }
+   
+	public void DrawPL3D(double[] RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas)
     {
     	if (dof == 0)		// Fx
     	{
@@ -956,31 +962,31 @@ public class DrawingOnAPanel
 		}	
 	}
 	
-	public void DrawStructureContour3D(List<Point3D> coords, Color structureColor, MyCanvas canvas)
-	{
-		int thick = 2;
-		int[] Xcoords = new int[coords.size()];
-		int[] Ycoords = new int[coords.size()];
-		List<Point> drawingCoords = new ArrayList<>() ;
+	// public void DrawStructureContour3D(List<Point3D> coords, Color structureColor, MyCanvas canvas)
+	// {
+	// 	int thick = 2;
+	// 	int[] Xcoords = new int[coords.size()];
+	// 	int[] Ycoords = new int[coords.size()];
+	// 	List<Point> drawingCoords = new ArrayList<>() ;
 
-		for (Point3D coord : coords)
-		{
-			Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(coord.x, coord.y)) ;
-			drawingCoords.add(drawingCoord) ;
-		}
+	// 	for (Point3D coord : coords)
+	// 	{
+	// 		Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(coord.x, coord.y)) ;
+	// 		drawingCoords.add(drawingCoord) ;
+	// 	}
 
-		for (int c = 0; c <= Xcoords.length - 1; c += 1)
-		{
-			// int[] Coord = Util.ConvertToDrawingCoords2Point3D(coords.get(c).asArray(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(),
-			// 													canvas.getCenter(), canvas.getDrawingPos());
-			Point Coord = canvas.inDrawingCoords(new Point2D.Double(coords.get(c).x, coords.get(c).y)) ;
-			Xcoords[c] = Coord.x ;
-			Ycoords[c] = Coord.y ;
-			// Xcoords[c] = Coord[0];
-			// Ycoords[c] = Coord[1];
-		}
-		DrawPolygon(Xcoords, Ycoords, thick, true, true, structureColor, structureColor);
-	}
+	// 	for (int c = 0; c <= Xcoords.length - 1; c += 1)
+	// 	{
+	// 		// int[] Coord = Util.ConvertToDrawingCoords2Point3D(coords.get(c).asArray(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(),
+	// 		// 													canvas.getCenter(), canvas.getDrawingPos());
+	// 		Point Coord = canvas.inDrawingCoords(new Point2D.Double(coords.get(c).x, coords.get(c).y)) ;
+	// 		Xcoords[c] = Coord.x ;
+	// 		Ycoords[c] = Coord.y ;
+	// 		// Xcoords[c] = Coord[0];
+	// 		// Ycoords[c] = Coord[1];
+	// 	}
+	// 	DrawPolygon(Xcoords, Ycoords, thick, true, true, structureColor, structureColor);
+	// }
 	
 	public void DrawNodes3D(List<Node> Node, List<Node> selectedNodes, Color NodeColor, boolean deformed, int[] DOFsPerNode, double Defscale, MyCanvas canvas)
 	{
