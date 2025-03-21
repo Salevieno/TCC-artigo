@@ -599,38 +599,8 @@ public class Mesh
 
 	public void displayNodes(List<Node> selectedNodes, Color NodeColor, boolean deformed, double Defscale, MyCanvas canvas, DrawingOnAPanel DP)
 	{
-		int[] DOFsPerNode = elems.get(0).getDOFs() ;
-		int size = 6;
-		int thick = 1;
-		// double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		Point2D.Double Center = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
-		List<Point> drawingCoords = new ArrayList<>() ;
-		for (int node = 0; node <= nodes.size() - 1; node += 1)
-		{
-			// int[][] DrawingCoords = new int[nodes.size()][3];
-			if (deformed)
-			{
-				double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(node).getOriginalCoords().asArray(), nodes.get(node).getDisp(), DOFsPerNode, Defscale);
-				double[] rotatedCoord = Util.RotateCoord(DeformedCoords, new double[] {Center.x, Center.y}, canvas.getAngles()) ;
-				drawingCoords.add(canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1]))) ;
-			}
-			else
-			{
-				double[] rotatedCoord = Util.RotateCoord(Util.GetNodePos(nodes.get(node), deformed), new double[] {Center.x, Center.y}, canvas.getAngles()) ;
-				drawingCoords.add(canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1]))) ;
-			}
-			DP.DrawCircle(drawingCoords.get(node), size, thick, false, true, Color.black, NodeColor);
-			if (selectedNodes != null)
-			{
-				for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
-				{
-					if (node == selectedNodes.get(i).getID())
-					{
-						DP.DrawCircle(drawingCoords.get(node), 2*size, thick, false, true, Color.black, Color.red);
-					}
-				}
-			}
-		}
+		int[] dofs = elems.get(0).getDOFs() ;
+		nodes.forEach(node -> node.display(canvas, dofs, deformed, Defscale, deformed, DP)) ;
 	}
 
 	private void printNodes()

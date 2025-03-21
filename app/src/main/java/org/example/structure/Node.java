@@ -1,12 +1,16 @@
 package org.example.structure;
 
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.ConcLoads;
 import org.example.loading.NodalDisps;
+import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
+import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 
@@ -18,12 +22,14 @@ public class Node
 	private int[] Sup;			// Support in the node
 	private ConcLoads[] ConcLoad;	// Concentrated loads in the node
 	private NodalDisps[] NodalDisp;// Nodal displacements in the node
-	
-	public static Color color = Menus.palette[10];
-	
+		
 	public int[] dofs;
 	private int[] DOFType;			// DOFs on node
 	public double[][][] LoadDisp;		// Load displacement curve of the node [dof][x values][y values]
+	
+	public static int size = 6;
+	public static int stroke = 1;
+	public static Color color = Menus.palette[10];
 
 	public Node(int ID, Point3D coords)
 	{
@@ -42,6 +48,39 @@ public class Node
 		return new double[] {coords.x + Disp[0], coords.y + Disp[1], coords.z + Disp[2]} ;
 	}
 
+	public Point deformedDrawingPos(MyCanvas canvas, double defScale)
+	{
+		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
+		double[] deformedCoords = Util.ScaledDefCoords(coords.asArray(), Disp, dofs, defScale);
+		double[] rotatedCoord = Util.RotateCoord(deformedCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
+		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
+	}
+	
+	public Point undeformedDrawingPos(MyCanvas canvas)
+	{
+		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
+		double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
+		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
+	}
+
+
+
+	public void display(MyCanvas canvas, int[] dofs, boolean deformed, double defScale, boolean selected, DrawingOnAPanel DP)
+	{
+		Point drawingCoords = deformed ? deformedDrawingPos(canvas, defScale) : undeformedDrawingPos(canvas) ;
+		DP.DrawCircle(drawingCoords, size, stroke, false, true, Color.black, color);
+		// if (selectedNodes != null)
+		// {
+		// 	for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
+		// 	{
+		// 		if (node == selectedNodes.get(i).getID())
+		// 		{
+		// 			DP.DrawCircle(drawingCoords.get(node), 2*size, stroke, false, true, Color.black, Color.red);
+		// 		}
+		// 	}
+		// }
+	}
+	
 	public int getID() {return ID;}
 	public Point3D getOriginalCoords() {return coords;}
 	public double[] getDisp() {return Disp;}
