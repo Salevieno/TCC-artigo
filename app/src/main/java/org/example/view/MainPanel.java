@@ -746,7 +746,7 @@ public class MainPanel extends JPanel
 
 	private void handleMouseWheel(MouseWheelEvent evt)
 	{
-		boolean[] assignmentIsOn = Menus.getInstance().getNorthPanel().getUpperToolbar().getAqueleBooleanGrande() ;
+		Assignable assignable = Menus.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
 		double qtdRotation = evt.getWheelRotation() ;
 
 		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1]);
@@ -755,37 +755,49 @@ public class MainPanel extends JPanel
 			canvas.getDimension()[0] += Util.Round(0.2*Math.log10(canvas.getDimension()[0])*qtdRotation, 1);
 			canvas.getDimension()[1] += Util.Round(0.2*Math.log10(canvas.getDimension()[1])*qtdRotation, 1);
 		}
-		if (assignmentIsOn[0] && !MouseIsInMainCanvas)
+		if (!MouseIsInMainCanvas)
 		{
-			selectedMatID += qtdRotation;
-			selectedMatID = Util.clamp(selectedMatID, 0, matTypes.size() - 1) ;
-		}
-		if (assignmentIsOn[1] && !MouseIsInMainCanvas)
-		{
-			selectedSecID += qtdRotation;
-			selectedSecID = Util.clamp(selectedSecID, 0, secTypes.size() - 1) ;
-		}
-		if (assignmentIsOn[2] && !MouseIsInMainCanvas)
-		{
-			selectedSupID += qtdRotation;
-			selectedSupID = Util.clamp(selectedSupID, 0, MenuFunctions.SupType.length - 1) ;
-		}
-		if (assignmentIsOn[3] && !MouseIsInMainCanvas)
-		{
-			selectedConcLoadID += qtdRotation;
-			selectedConcLoadID = Util.clamp(selectedConcLoadID, 0, MenuFunctions.ConcLoadType.length - 1) ;
-		}
-		if (assignmentIsOn[4] && !MouseIsInMainCanvas)
-		{
-			selectedDistLoadID += qtdRotation;
-			selectedDistLoadID = Util.clamp(selectedDistLoadID, 0, MenuFunctions.DistLoadType.length - 1) ;
-		}
-		if (assignmentIsOn[5] && !MouseIsInMainCanvas)
-		{
-			selectedNodalDispID += qtdRotation;
-			selectedNodalDispID = Util.clamp(selectedNodalDispID, 0, MenuFunctions.NodalDispType.length - 1) ;
-		}
-	
+			switch (assignable)
+			{
+				case materials:
+					selectedMatID += qtdRotation;
+					selectedMatID = Util.clamp(selectedMatID, 0, matTypes.size() - 1) ;
+					
+					break;
+
+				case sections:
+					selectedSecID += qtdRotation;
+					selectedSecID = Util.clamp(selectedSecID, 0, secTypes.size() - 1) ;
+					
+					break;
+
+				case supports:
+					selectedSupID += qtdRotation;
+					selectedSupID = Util.clamp(selectedSupID, 0, MenuFunctions.SupType.length - 1) ;
+					
+					break;
+
+				case concLoads:
+					selectedConcLoadID += qtdRotation;
+					selectedConcLoadID = Util.clamp(selectedConcLoadID, 0, MenuFunctions.ConcLoadType.length - 1) ;
+					
+					break;
+
+				case distLoads:
+					selectedDistLoadID += qtdRotation;
+					selectedDistLoadID = Util.clamp(selectedDistLoadID, 0, MenuFunctions.DistLoadType.length - 1) ;
+					
+					break;
+
+				case nodalDisps:
+					selectedNodalDispID += qtdRotation;
+					selectedNodalDispID = Util.clamp(selectedNodalDispID, 0, MenuFunctions.NodalDispType.length - 1) ;
+					
+					break;
+			
+				default: System.out.println("Warn: No assignable selected when moving mouse wheel") ; break ;
+			}
+		}	
 
 		MenuFunctions.updateDiagramScale(canvas, evt.getWheelRotation());
 	}

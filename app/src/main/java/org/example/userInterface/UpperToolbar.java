@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
+import org.example.view.Assignable;
 import org.example.view.MainPanel;
 import org.example.view.NorthPanel;
 
@@ -35,7 +36,8 @@ public class UpperToolbar extends JPanel
 	private static final Font stdButtonFont = new Font(Font.SANS_SERIF, Font.BOLD, 11) ;
 
     private List<JButton> buttons = new ArrayList<>();
-    private boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
+    // private boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
+	private Assignable assignable ;
 
     public UpperToolbar()
     {
@@ -95,15 +97,15 @@ public class UpperToolbar extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if (MatAssignmentIsOn)
+				if (Assignable.materials.equals(assignable))
 				{
 					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MainPanel.matTypes.get(MainPanel.selectedMatID));
 				}
-				if (SecAssignmentIsOn)
+				if (Assignable.sections.equals(assignable))
 				{
 					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MainPanel.secTypes.get(MainPanel.selectedSecID));
 				}
-				if (DistLoadsAssignmentIsOn)
+				if (Assignable.distLoads.equals(assignable))
 				{
 					MainPanel.AddDistLoads(MainPanel.structure, MainPanel.loading, MainPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
 				}
@@ -114,15 +116,15 @@ public class UpperToolbar extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if (SupAssignmentIsOn)
+				if (Assignable.supports.equals(assignable))
 				{
 					MainPanel.AddSupports();					
 				}
-				if (ConcLoadsAssignmentIsOn)
+				if (Assignable.concLoads.equals(assignable))
 				{
 					MainPanel.AddConcLoads(MainPanel.loading, MenuFunctions.selectedNodes, MenuFunctions.ConcLoadType);
 				}
-				if (NodalDispsAssignmentIsOn)
+				if (Assignable.nodalDisps.equals(assignable))
 				{
 					MainPanel.AddNodalDisps();
 				}
@@ -157,7 +159,7 @@ public class UpperToolbar extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.Clean(MainPanel.structure, new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn});
+				MenuFunctions.Clean(MainPanel.structure, assignable);
 			}
 		});
 		
@@ -184,7 +186,7 @@ public class UpperToolbar extends JPanel
         buttons.get(2).setEnabled(false);
         buttons.get(2).setVisible(false);
         
-        if (MatAssignmentIsOn)
+        if (Assignable.materials.equals(assignable))
         {
             Element.createMatColors(MainPanel.matTypes);
             // for (Element elem : MainPanel.structure.getMesh().getElements())
@@ -196,7 +198,7 @@ public class UpperToolbar extends JPanel
                 // }
             // }
         }
-        if (SecAssignmentIsOn)
+        if (Assignable.sections.equals(assignable))
         {
             // Element.setSecColors(MenuFunctions.secTypes);
             // for (Element elem : MainPanel.structure.getMesh().getElements())
@@ -206,7 +208,7 @@ public class UpperToolbar extends JPanel
             // }
         }
     
-        if (SupAssignmentIsOn | ConcLoadsAssignmentIsOn | NodalDispsAssignmentIsOn)
+        if (Assignable.supports.equals(assignable) | Assignable.concLoads.equals(assignable) | Assignable.nodalDisps.equals(assignable))
         {
             buttons.get(3).setEnabled(false);
             buttons.get(3).setVisible(false);
@@ -219,12 +221,7 @@ public class UpperToolbar extends JPanel
         buttons.get(7).setVisible(false);
         MenuFunctions.selectedNodes = null;
         MenuFunctions.SelectedElems = null;
-        MatAssignmentIsOn = false;
-        SecAssignmentIsOn = false;
-        SupAssignmentIsOn = false;
-        ConcLoadsAssignmentIsOn = false;
-        DistLoadsAssignmentIsOn = false;
-        NodalDispsAssignmentIsOn = false;
+		assignable = null ;
         MainPanel.nodeSelectionIsActive = false;
         MainPanel.elemSelectionIsActive = false;
         Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
@@ -236,12 +233,12 @@ public class UpperToolbar extends JPanel
         }
     }
 
-    public void enableMaterialAssignment() { MatAssignmentIsOn = true ;}
-    public void enableSectionAssignment() { SecAssignmentIsOn = true ;}
-    public void enableSupportAssignment() { SupAssignmentIsOn = true ;}
-    public void enableConcLoadAssignment() { ConcLoadsAssignmentIsOn = true ;}
-    public void enableDistLoadAssignment() { DistLoadsAssignmentIsOn = true ;}
-    public void enableNodalDispAssignment() { NodalDispsAssignmentIsOn = true ;}
+    public void enableMaterialAssignment() { assignable = Assignable.materials ;}
+    public void enableSectionAssignment() { assignable = Assignable.sections ;}
+    public void enableSupportAssignment() { assignable = Assignable.supports ;}
+    public void enableConcLoadAssignment() { assignable = Assignable.concLoads ;}
+    public void enableDistLoadAssignment() { assignable = Assignable.distLoads ;}
+    public void enableNodalDispAssignment() { assignable = Assignable.nodalDisps ;}
 
 	public void showButtonSnipToGridOn() { buttons.get(0).setVisible(true) ;}
 	
@@ -290,6 +287,7 @@ public class UpperToolbar extends JPanel
     }
 
     
-	public boolean[] getAqueleBooleanGrande() { return new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn} ;}
+	// public boolean[] getAqueleBooleanGrande() { return new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn} ;}
 
+	public Assignable getAssignable() { return assignable ;}
 }

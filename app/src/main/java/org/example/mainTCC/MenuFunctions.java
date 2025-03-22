@@ -25,6 +25,7 @@ import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
+import org.example.view.Assignable;
 import org.example.view.MainPanel;
 
 public abstract class MenuFunctions
@@ -132,20 +133,20 @@ public abstract class MenuFunctions
 	
 	
 	/* Upper toolbar button functions */
-	public static void Clean(Structure struct, boolean[] AssignmentIsOn)
+	public static void Clean(Structure struct, Assignable assignable)
 	{
 		for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
 		{
-			if (AssignmentIsOn[0])
+			if (Assignable.materials.equals(assignable))
 			{
 				struct.getMesh().getElements().get(elem).setMat(null);
 			}
-			if (AssignmentIsOn[1])
+			if (Assignable.sections.equals(assignable))
 			{
 				struct.getMesh().getElements().get(elem).setSec(null);
 			}
 		}
-		if (AssignmentIsOn[2])
+		if (Assignable.supports.equals(assignable))
 		{
 			for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
 			{
@@ -153,15 +154,15 @@ public abstract class MenuFunctions
 			}
 			struct.removeSupports() ;
 		}
-		if (AssignmentIsOn[3])
+		if (Assignable.concLoads.equals(assignable))
 		{
 			MainPanel.loading.setConcLoads(null) ;
 		}
-		if (AssignmentIsOn[4])
+		if (Assignable.distLoads.equals(assignable))
 		{
 			MainPanel.loading.setDistLoads(null) ;
 		}
-		if (AssignmentIsOn[5])
+		if (Assignable.nodalDisps.equals(assignable))
 		{
 			MainPanel.loading.setNodalDisps(null) ;
 		}

@@ -28,84 +28,118 @@ public class ListPanel extends JPanel
 		// setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
     }
 
+	private void displayMaterialOptions(Dimension panelSize, int selectedItemID)
+	{
+		String[] MatNames = new String[] {
+				"Nome",
+				"E (GPa)",
+				"v",
+				"fu (MPa)"
+			};
+		List<Material> matType = MainPanel.matTypes;
+//			TODO DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", matType);
+	}
+
+	private void displaySectionOptions(Dimension panelSize, int selectedItemID)
+	{
+		String[] SecNames = new String[] {"Nome", "Espessura (mm)"};
+		List<Section> SecType = MainPanel.secTypes;
+//			DP.DrawLists(jpListSize, SelectedSec, SecNames, "Sections list", "Sec", SecType);
+	}
+
+	private void displaySupportOptions(Dimension panelSize, int selectedItemID)
+	{
+		String[] SupNames = new String[] {
+				"Nome",
+				"Rx",
+				"Ry",
+				"Rz",
+				"Tetax",
+				"Tetay",
+				"Tetaz"
+			};
+		int[][] SupType = MenuFunctions.SupType;
+		DP.DrawLists(panelSize, selectedItemID, SupNames, "Supports list", "Sup", SupType);
+	}
+
+	private void displayConcLoadOptions(Dimension panelSize, int selectedItemID)
+	{
+		String[] ConcLoadNames = new String[] {
+				"Nome",
+				"Fx (kN)",
+				"Fy (kN)",
+				"Fz (kN)",
+				"Mx (kN)",
+				"My (kN)",
+				"Mz (kN)"
+			};
+		double[][] ConcLoadType = MenuFunctions.ConcLoadType;
+		DP.DrawLists(panelSize, selectedItemID, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType);
+	}
+
+	private void displayDistLoadOptions(Dimension panelSize, int selectedItemID)
+	{
+		String[] DistLoadNames = new String[] {
+				"Nome",
+				"Tipo",
+				"Pini (kN/m)",
+				"Pfin (kN/m)",
+				"Distini (m)",
+				"Distfin (m)"
+			};
+		double[][] DistLoadType = MenuFunctions.DistLoadType;
+		DP.DrawLists(panelSize, selectedItemID, DistLoadNames, "Dist loads list", "Dist load", DistLoadType);
+	}
+
+	private void displayNodalDispOptions(Dimension panelSize, int selectedItemID)
+	{
+		String[] NodalDispNames = new String[] {
+				"Nome",
+				"desl x (m)",
+				"desl y (m)",
+				"desl z (m)",
+				"rot x",
+				"rot y",
+				"rot z"
+			};
+		double[][] NodalDispType = MenuFunctions.NodalDispType;
+		DP.DrawLists(panelSize, selectedItemID, NodalDispNames, "Nodal disps list", "Nodal disp", NodalDispType);
+	}
     
-	public void display(boolean[] AssignmentIsOn, int SelectedSup, int SelectedConcLoad, int SelectedDistLoad, int SelectedNodalDisp, DrawingOnAPanel DP)
+	public void display(Assignable assignable, int selectedSup, int selectedConcLoad, int selectedDistLoad, int selectedNodalDisp, DrawingOnAPanel DP)
 	{
 
-		Dimension panelSize = getSize() ;
-		
-		List<Material> matType = MainPanel.matTypes;
-		List<Section> SecType = MainPanel.secTypes;
-		int[][] SupType = MenuFunctions.SupType;
-		double[][] ConcLoadType = MenuFunctions.ConcLoadType;
-		double[][] DistLoadType = MenuFunctions.DistLoadType;
-		double[][] NodalDispType = MenuFunctions.NodalDispType;
+		if (assignable == null) { return ;}
 
-		if (AssignmentIsOn[0] && matType != null)
+		Dimension panelSize = getSize() ;
+
+		switch (assignable)
 		{
-			String[] MatNames = new String[] {
-				    "Nome",
-				    "E (GPa)",
-				    "v",
-				    "fu (MPa)"
-				};
-//			TODO DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", matType);
-		}
-		if (AssignmentIsOn[1] && SecType != null)
-		{
-			String[] SecNames = new String[] {"Nome", "Espessura (mm)"};
-//			DP.DrawLists(jpListSize, SelectedSec, SecNames, "Sections list", "Sec", SecType);
-		}
-		if (AssignmentIsOn[2] && SupType != null)
-		{
-			String[] SupNames = new String[] {
-				    "Nome",
-				    "Rx",
-				    "Ry",
-				    "Rz",
-				    "Tetax",
-				    "Tetay",
-				    "Tetaz"
-				};
-			DP.DrawLists(panelSize, SelectedSup, SupNames, "Supports list", "Sup", SupType);
-		}
-		if (AssignmentIsOn[3] && ConcLoadType != null)
-		{
-			String[] ConcLoadNames = new String[] {
-				    "Nome",
-				    "Fx (kN)",
-				    "Fy (kN)",
-				    "Fz (kN)",
-				    "Mx (kN)",
-				    "My (kN)",
-				    "Mz (kN)"
-				};
-			DP.DrawLists(panelSize, SelectedConcLoad, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType);
-		}
-		if (AssignmentIsOn[4] && DistLoadType != null)
-		{
-			String[] DistLoadNames = new String[] {
-				    "Nome",
-				    "Tipo",
-				    "Pini (kN/m)",
-				    "Pfin (kN/m)",
-				    "Distini (m)",
-				    "Distfin (m)"
-				};
-			DP.DrawLists(panelSize, SelectedDistLoad, DistLoadNames, "Dist loads list", "Dist load", DistLoadType);
-		}
-		if (AssignmentIsOn[5] && NodalDispType != null)
-		{
-			String[] NodalDispNames = new String[] {
-				    "Nome",
-				    "desl x (m)",
-				    "desl y (m)",
-				    "desl z (m)",
-				    "rot x",
-				    "rot y",
-				    "rot z"
-				};
-			DP.DrawLists(panelSize, SelectedNodalDisp, NodalDispNames, "Nodal disps list", "Nodal disp", NodalDispType);
+			// case materials:
+			// 	displayMaterialOptions(panelSize, selectedMat) ;
+			// 	return;
+
+			// case sections:
+			// 	displaySectionOptions(panelSize, selectedSec) ;
+			// 	return;
+
+			case supports:
+				displaySupportOptions(panelSize, selectedSup) ;
+				return;
+
+			case concLoads:
+				displayConcLoadOptions(panelSize, selectedConcLoad) ;
+				return;
+
+			case distLoads:
+				displayDistLoadOptions(panelSize, selectedDistLoad) ;
+				return;
+
+			case nodalDisps:
+				displayNodalDispOptions(panelSize, selectedNodalDisp) ;
+				return;
+		
+			default: return;
 		}
 	}
 	
@@ -118,7 +152,7 @@ public class ListPanel extends JPanel
         DP.setRealStructCenter(MainPanel.structure.getCenter());
         if (Menus.getInstance() != null)
         {
-            display(Menus.getInstance().getNorthPanel().getUpperToolbar().getAqueleBooleanGrande(), MainPanel.selectedSupID, MainPanel.selectedConcLoadID, MainPanel.selectedDistLoadID, MainPanel.selectedNodalDispID, DP);
+            display(Menus.getInstance().getNorthPanel().getUpperToolbar().getAssignable(), MainPanel.selectedSupID, MainPanel.selectedConcLoadID, MainPanel.selectedDistLoadID, MainPanel.selectedNodalDispID, DP);
         }
         repaint();
     }
