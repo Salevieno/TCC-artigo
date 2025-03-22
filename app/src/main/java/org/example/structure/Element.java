@@ -12,6 +12,7 @@ import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
+import org.example.view.MainPanel;
 
 public class Element
 {
@@ -321,7 +322,7 @@ public class Element
 	
 	public void display(MyCanvas canvas, List<Node> nodes, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double defScale, DrawingOnAPanel DP)
 	{
-		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		// int[][] DrawingCoord = new int[Nodes.length][2]; 
 		List<Point> DrawingCoord = new ArrayList<>() ;
 		int[] xCoords = new int[externalNodes.length + 1], yCoords = new int[externalNodes.length + 1];

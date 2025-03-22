@@ -109,7 +109,6 @@ public class LegendPanel extends JPanel
     {
         super.paintComponent(g);
         DP.setG(g);
-        DP.setRealStructCenter(MainPanel.structure.getCenter());
         display(structure, selectedVar, showDisplacementContour, showStressContour, showStrainContour, showInternalForces);
         repaint();
     }

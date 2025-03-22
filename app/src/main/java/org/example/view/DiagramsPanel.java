@@ -156,7 +156,6 @@ public class DiagramsPanel extends JPanel
     {
         super.paintComponent(g);
         DP.setG(g);
-        DP.setRealStructCenter(MainPanel.structure.getCenter());
         display(MainPanel.structure, MenuFunctions.selectedNodes, MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
         repaint();
     }
