@@ -25,6 +25,8 @@ dependencies {
 
     // This dependency is used by the application.
     implementation(libs.guava)
+
+    implementation(files("libs/libGraphics.jar"))
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

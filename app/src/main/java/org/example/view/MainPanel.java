@@ -42,6 +42,7 @@ import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
+// import graphics.DrawPrimitives ;
 
 public class MainPanel extends JPanel
 {
@@ -49,6 +50,7 @@ public class MainPanel extends JPanel
 	private static final Dimension initialSize = new Dimension(582, 610) ;
 	private static final Color bgColor = Menus.palette[2] ;
 	private static final DrawingOnAPanel DP = new DrawingOnAPanel() ;
+	// private static final DrawPrimitives DPP = new DrawPrimitives() ;
 	
 	private final MyCanvas canvas ;
 	private final int[] panelPos ;
