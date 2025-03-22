@@ -3,7 +3,7 @@ package org.example.output;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.ConcLoads;
+import org.example.loading.ConcLoad;
 import org.example.mainTCC.Analysis;
 import org.example.structure.Mesh;
 import org.example.structure.Node;
@@ -70,7 +70,7 @@ public class Results
 	    {
 			if (Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U) != null)
 			{
-				ConcLoads newConcLoad = new ConcLoads(-1, node, Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U)) ;
+				ConcLoad newConcLoad = new ConcLoad(-1, node, Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U)) ;
 		    	Node.get(node).addConcLoad(newConcLoad);
 			}
 	    }

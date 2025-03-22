@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.DistLoads;
+import org.example.loading.DistLoad;
 import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
@@ -28,7 +28,7 @@ public class Element
 	private int[] internalNodes;	// Nodes inside the element
 	private Material mat ;
 	private Section sec;
-	private DistLoads[] DistLoads;	// Distributed loads in the node
+	private DistLoad[] DistLoads;	// Distributed loads in the node
 	
 	
 	private int[] StrainTypes;		// All strain types present in the element
@@ -87,7 +87,7 @@ public class Element
 	public int[] getInternalNodes() {return internalNodes;}
 	public Material getMat() {return mat;}
 	public Section getSec() {return sec;}
-	public DistLoads[] getDistLoads() {return DistLoads;}
+	public DistLoad[] getDistLoads() {return DistLoads;}
 	public double[] getDisp() {return Disp;}
 	public double[] getStress() {return Stress;}
 	public double[] getStrain() {return Strain;}
@@ -106,7 +106,7 @@ public class Element
 	public void setInternalNodes(int[] N) {internalNodes = N;}
 	public void setMat(Material M) {mat = M;}
 	public void setSec(Section S) {sec = S;}
-	public void setDistLoads(DistLoads[] D) {DistLoads = D;}
+	public void setDistLoads(DistLoad[] D) {DistLoads = D;}
 	public void setDisp(double[] D) {Disp = D;}
 	public void setStress(double[] S) {Stress = S;}
 	public void setStrain(double[] S) {Strain = S;}
@@ -274,7 +274,7 @@ public class Element
 	
 	public double[] getCenterCoords(){ return CenterCoords ;}	
 	
-	public void addDistLoad(DistLoads distLoad)
+	public void addDistLoad(DistLoad distLoad)
 	{
 		DistLoads = Util.AddElem(DistLoads, distLoad) ;
 	}

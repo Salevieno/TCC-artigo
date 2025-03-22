@@ -21,10 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
-import org.example.loading.ConcLoads;
-import org.example.loading.DistLoads;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Loading;
-import org.example.loading.NodalDisps;
+import org.example.loading.NodalDisp;
 import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.mainTCC.SelectionWindow;
@@ -373,13 +373,13 @@ public class MainPanel extends JPanel
 		}
 		if (MenuFunctions.ShowDistLoads && loading != null && loading.getDistLoads() != null)
 		{
-			DP.DrawDistLoads3D(structure.getMesh(), loading.getDistLoads(), MenuFunctions.ShowLoadsValues, DistLoads.color,
+			DP.DrawDistLoads3D(structure.getMesh(), loading.getDistLoads(), MenuFunctions.ShowLoadsValues, DistLoad.color,
 			showDeformedStructure, structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas);
 		}
 		if (MenuFunctions.ShowNodalDisps && loading != null && loading.getNodalDisps() != null)
 		{
 			DP.DrawNodalDisps3D(structure.getMesh().getNodes(), loading.getNodalDisps(), structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
-			NodalDisps.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
+			NodalDisp.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
 		if (MenuFunctions.ShowDOFNumber && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
@@ -604,7 +604,7 @@ public class MainPanel extends JPanel
 				int loadid = loading.getConcLoads().size() - selectedNodes.size() + i;
 				if (-1 < selectedNodes.get(i).getID())
 				{
-					ConcLoads newConcLoad = new ConcLoads(loadid, selectedNodes.get(i), ConcLoadType[selectedConcLoadID]);
+					ConcLoad newConcLoad = new ConcLoad(loadid, selectedNodes.get(i), ConcLoadType[selectedConcLoadID]);
 					loading.getConcLoads().add(newConcLoad);
 					selectedNodes.get(i).addConcLoad(newConcLoad);
 				}
@@ -624,7 +624,7 @@ public class MainPanel extends JPanel
 				Element elem = selectedElems.get(i);
 				int LoadType = (int) DistLoadType[selectedDistLoadID][0];
 				double Intensity = DistLoadType[selectedDistLoadID][1];
-				DistLoads newDistLoad = new DistLoads(loadid, selectedElems.get(i).getID(), LoadType, Intensity) ;
+				DistLoad newDistLoad = new DistLoad(loadid, selectedElems.get(i).getID(), LoadType, Intensity) ;
 				loading.getDistLoads().add(newDistLoad);
 				elem.setDistLoads(Util.AddElem(elem.getDistLoads(), newDistLoad));
 				
@@ -643,7 +643,7 @@ public class MainPanel extends JPanel
 				int dispid = loading.getNodalDisps().size() - MenuFunctions.selectedNodes.size() + i;
 				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
 				{
-					NodalDisps newNodalDisp = new NodalDisps(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[selectedNodalDispID]) ;
+					NodalDisp newNodalDisp = new NodalDisp(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[selectedNodalDispID]) ;
 					loading.getNodalDisps().add(newNodalDisp);
 					MenuFunctions.selectedNodes.get(i).addNodalDisp(newNodalDisp);
 				}

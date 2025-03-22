@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import org.example.userInterface.Menus;
 
-public class DistLoads
+public class DistLoad
 {
 	private int ID;
 	private int Elem;			// Elem
@@ -12,7 +12,7 @@ public class DistLoads
 	private double Intensity;
 
 	public static Color color = Menus.palette[7];
-	public DistLoads(int ID, int Elem, int Type, double Intensity)
+	public DistLoad(int ID, int Elem, int Type, double Intensity)
 	{
 		this.ID = ID;
 		this.Elem = Elem;

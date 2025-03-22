@@ -12,7 +12,7 @@ import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 
-public class ConcLoads
+public class ConcLoad
 {
 	private int ID;
 	private int NodeID;		// Node
@@ -22,12 +22,12 @@ public class ConcLoads
 	private static int stroke = 2;
 	public static Color color = Menus.palette[7];
 
-	public ConcLoads(int ID, Node Node, double[] Loads)
+	public ConcLoad(int ID, Node Node, double[] Loads)
 	{
 		this(ID, Node.getID(), Loads);
 	}
 
-	public ConcLoads(int ID, int NodeID, double[] Loads)
+	public ConcLoad(int ID, int NodeID, double[] Loads)
 	{
 		this.ID = ID;
 		this.NodeID = NodeID;

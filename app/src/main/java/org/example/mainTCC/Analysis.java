@@ -2,10 +2,10 @@ package org.example.mainTCC;
 
 import java.util.List;
 
-import org.example.loading.ConcLoads;
-import org.example.loading.DistLoads;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Loading;
-import org.example.loading.NodalDisps;
+import org.example.loading.NodalDisp;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;

@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.ConcLoads;
-import org.example.loading.DistLoads;
-import org.example.loading.NodalDisps;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
+import org.example.loading.NodalDisp;
 import org.example.mainTCC.Analysis;
 import org.example.structure.ElemShape;
 import org.example.structure.Element;
@@ -1085,7 +1085,7 @@ public class DrawingOnAPanel
 		}
 	}
 	
-	public void DrawDistLoads3D (Mesh mesh, List<DistLoads> distLoads, boolean ShowValues, Color DistLoadsColor, boolean condition,
+	public void DrawDistLoads3D (Mesh mesh, List<DistLoad> distLoads, boolean ShowValues, Color DistLoadsColor, boolean condition,
 	int[] DOFsPerNode, double Defscale, MyCanvas canvas)
 	{
 		int[] NArrows = new int[] {4, 4};
@@ -1123,7 +1123,7 @@ public class DrawingOnAPanel
 		}
 	}
 
-	public void DrawNodalDisps3D (List<Node> Node, List<NodalDisps> NodalDisps, int[] DOFsPerNode, boolean ShowValues, Color ConcLoadsColor, boolean condition, double Defscale)
+	public void DrawNodalDisps3D (List<Node> Node, List<NodalDisp> NodalDisps, int[] DOFsPerNode, boolean ShowValues, Color ConcLoadsColor, boolean condition, double Defscale)
 	{/*
 		int MaxArrowSize = 40;
 		//int thickness = 2;

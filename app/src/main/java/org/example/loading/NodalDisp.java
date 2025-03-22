@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.example.structure.Node;
 import org.example.userInterface.Menus;
 
-public class NodalDisps
+public class NodalDisp
 {
 	private int ID;
 	private int Node;		// Node
@@ -14,12 +14,12 @@ public class NodalDisps
 
 	public static Color color = Menus.palette[7];
 	
-	public NodalDisps(int ID, Node Node, double[] Disps)
+	public NodalDisp(int ID, Node Node, double[] Disps)
 	{
 		this(ID, Node.getID(), Disps);
 	}
 	
-	public NodalDisps(int ID, int Node, double[] Disps)
+	public NodalDisp(int ID, int Node, double[] Disps)
 	{
 		this.ID = ID;
 		this.Node = Node;

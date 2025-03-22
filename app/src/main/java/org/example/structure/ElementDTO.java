@@ -1,6 +1,6 @@
 package org.example.structure;
 
-import org.example.loading.DistLoads;
+import org.example.loading.DistLoad;
 
 public class ElementDTO
 {
@@ -11,7 +11,7 @@ public class ElementDTO
     private int[] ExternalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
 	private Material mat ;
 	private Section sec;
-	private DistLoads[] DistLoads;	// Distributed loads in the node
+	private DistLoad[] DistLoads;	// Distributed loads in the node
 
     public ElementDTO()
     {

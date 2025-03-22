@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.ConcLoads;
-import org.example.loading.DistLoads;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Loading;
-import org.example.loading.NodalDisps;
+import org.example.loading.NodalDisp;
 import org.example.output.SaveOutput;
 import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
@@ -244,8 +244,8 @@ public abstract class MenuFunctions
 				for (int concload = 0; concload <= Input[7].length - 4; concload += 1)
 				{
 					String[] Line = Input[7][concload + 2].split("	");
-					ConcLoads NewConcLoad;
-					NewConcLoad = new ConcLoads(-1, -1, null);
+					ConcLoad NewConcLoad;
+					NewConcLoad = new ConcLoad(-1, -1, null);
 					NewConcLoad.setID(Integer.parseInt(Line[0]));
 					NewConcLoad.setNodeID(Integer.parseInt(Line[1]));
 					NewConcLoad.setLoads(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
@@ -255,8 +255,8 @@ public abstract class MenuFunctions
 				for (int distload = 0; distload <= Input[8].length - 4; distload += 1)
 				{
 					String[] Line = Input[8][distload + 2].split("	");
-					DistLoads NewDistLoad;
-					NewDistLoad = new DistLoads(-1, -1, -1, -1);
+					DistLoad NewDistLoad;
+					NewDistLoad = new DistLoad(-1, -1, -1, -1);
 					NewDistLoad.setID(Integer.parseInt(Line[0]));
 					NewDistLoad.setElem(Integer.parseInt(Line[1]));
 					NewDistLoad.setType(Integer.parseInt(Line[2]));
@@ -267,8 +267,8 @@ public abstract class MenuFunctions
 				for (int nodaldisp = 0; nodaldisp <= Input[9].length - 4; nodaldisp += 1)
 				{
 					String[] Line = Input[9][nodaldisp + 2].split("	");
-					NodalDisps NewNodalDisp;
-					NewNodalDisp = new NodalDisps(-1, -1, null);
+					NodalDisp NewNodalDisp;
+					NewNodalDisp = new NodalDisp(-1, -1, null);
 					NewNodalDisp.setID(Integer.parseInt(Line[0]));
 					NewNodalDisp.setNode(Integer.parseInt(Line[1]));
 					NewNodalDisp.setDisps(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
@@ -416,7 +416,7 @@ public abstract class MenuFunctions
 				int nodeid = (int) ConcLoadType[loadid][1];
 				if (-1 < nodeid)
 				{
-					loading.getConcLoads().set(loadid, new ConcLoads(loadid, nodeid, ConcLoadType[loadid])) ;
+					loading.getConcLoads().set(loadid, new ConcLoad(loadid, nodeid, ConcLoadType[loadid])) ;
 					struct.getMesh().getNodes().get(nodeid).addConcLoad(loading.getConcLoads().get(loadid));
 				}
 			}
@@ -430,7 +430,7 @@ public abstract class MenuFunctions
 				double Intensity = DistLoadType[loadid][2];
 				if (-1 < elemid)
 				{
-					loading.getDistLoads().set(loadid, new DistLoads(loadid, elemid, LoadType, Intensity)) ;
+					loading.getDistLoads().set(loadid, new DistLoad(loadid, elemid, LoadType, Intensity)) ;
 					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
 				}
 			}

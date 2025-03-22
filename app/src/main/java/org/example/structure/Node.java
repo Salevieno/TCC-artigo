@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.ConcLoads;
-import org.example.loading.NodalDisps;
+import org.example.loading.ConcLoad;
+import org.example.loading.NodalDisp;
 import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
@@ -21,8 +21,8 @@ public class Node
 	private Point3D coords;		// undeformed coordinates
 	private Point3D disp;		// Displacements [ux, uy, uz]
 	private int[] Sup;			// Support in the node
-	private List<ConcLoads> concLoads;	// Concentrated loads in the node
-	private List<NodalDisps> nodalDisps;// Nodal displacements in the node
+	private List<ConcLoad> concLoads;	// Concentrated loads in the node
+	private List<NodalDisp> nodalDisps;// Nodal displacements in the node
 		
 	public int[] dofs;
 	private int[] DOFType;			// DOFs on node
@@ -86,16 +86,16 @@ public class Node
 	public Point3D getOriginalCoords() {return coords;}
 	public Point3D getDisp() {return disp;}
 	public int[] getSup() {return Sup;}
-	public List<ConcLoads> getConcLoads() {return concLoads;}
-	public List<NodalDisps> getNodalDisps() {return nodalDisps;}
+	public List<ConcLoad> getConcLoads() {return concLoads;}
+	public List<NodalDisp> getNodalDisps() {return nodalDisps;}
 	public int[] getDOFs() { return dofs ;}
 	public int[] getDOFType() {return DOFType;}
 	public void setID(int I) {ID = I;}
 	public void setOriginalCoords(Point3D C) {coords = C;}
 	public void setDisp(Point3D C) {disp = C;}
 	public void setSup(int[] S) {Sup = S;}
-	public void setConcLoads(List<ConcLoads> C) {concLoads = C;}
-	public void setNodalDisps(List<NodalDisps> D) {nodalDisps = D;}
+	public void setConcLoads(List<ConcLoad> C) {concLoads = C;}
+	public void setNodalDisps(List<NodalDisp> D) {nodalDisps = D;}
 	public void setDOFType(int[] D) {DOFType = D;}
 	
 	public void calcdofs(List<Supports> Sup, int cont)
@@ -141,7 +141,7 @@ public class Node
     	    }
 	    }
 	}
-	public void addConcLoad(ConcLoads newConcLoad)
+	public void addConcLoad(ConcLoad newConcLoad)
 	{
 		if (concLoads == null)
 		{
@@ -149,7 +149,7 @@ public class Node
 		}
 		concLoads.add(newConcLoad);
 	}
-	public void addNodalDisp(NodalDisps newNodalDisp)
+	public void addNodalDisp(NodalDisp newNodalDisp)
 	{
 		if (nodalDisps == null)
 		{

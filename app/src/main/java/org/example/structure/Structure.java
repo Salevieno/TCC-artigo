@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.ConcLoads;
-import org.example.loading.DistLoads;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Loading;
 import org.example.mainTCC.MenuFunctions;
 import org.example.output.Results;
@@ -324,7 +324,7 @@ public class Structure
 		for (Node node : mesh.getNodes())
 		{
 			if (node.getConcLoads() == null) { continue ;}
-			for (ConcLoads concLoad : node.getConcLoads())
+			for (ConcLoad concLoad : node.getConcLoads())
 			{
 				int[] dofs = mesh.getElements().get(0).getDOFs() ;
 				concLoad.display(dofs, MenuFunctions.ShowLoadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
@@ -383,7 +383,7 @@ public class Structure
 				nodesToReceiveLoads.forEach(node ->
 				{
 					// int loadid = loading.getConcLoads().size() - MenuFunctions.selectedNodes.size() + i;
-					ConcLoads concLoad = new ConcLoads(1, node, MenuFunctions.ConcLoadType[concLoadsID]) ;
+					ConcLoad concLoad = new ConcLoad(1, node, MenuFunctions.ConcLoadType[concLoadsID]) ;
 					if (concLoad != null)
 					{
 						node.addConcLoad(concLoad) ;
@@ -399,7 +399,7 @@ public class Structure
 				
 				int distLoadType = (int) MenuFunctions.DistLoadType[distLoadID][0] ;
 				double distLoadIntensity = MenuFunctions.DistLoadType[distLoadID][1] ;
-				DistLoads distLoad = new DistLoads(1, elem.getID(), distLoadType, distLoadIntensity) ;
+				DistLoad distLoad = new DistLoad(1, elem.getID(), distLoadType, distLoadIntensity) ;
 				if (distLoad != null)
 				{
 					elem.addDistLoad(distLoad) ;

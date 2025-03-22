@@ -6,69 +6,69 @@ import java.util.List;
 public class Loading
 {
 
-	private List<ConcLoads> concLoads;
-	private List<DistLoads> distLoads;
-	private List<NodalDisps> nodalDisps;
+	private List<ConcLoad> concLoads;
+	private List<DistLoad> distLoads;
+	private List<NodalDisp> nodalDisps;
 
     public Loading()
     {
-        concLoads = new ArrayList<ConcLoads>();
-        distLoads = new ArrayList<DistLoads>();
-        nodalDisps = new ArrayList<NodalDisps>();
+        concLoads = new ArrayList<ConcLoad>();
+        distLoads = new ArrayList<DistLoad>();
+        nodalDisps = new ArrayList<NodalDisp>();
     }
 
-    public Loading(List<ConcLoads> concLoads, List<DistLoads> distLoads, List<NodalDisps> nodalDisps)
+    public Loading(List<ConcLoad> concLoads, List<DistLoad> distLoads, List<NodalDisp> nodalDisps)
     {
         this.concLoads = concLoads;
         this.distLoads = distLoads;
         this.nodalDisps = nodalDisps;
     }
 
-    public void addConcLoad(ConcLoads concLoad)
+    public void addConcLoad(ConcLoad concLoad)
     {
         if (concLoads == null)
         {
-            concLoads = new ArrayList<ConcLoads>();
+            concLoads = new ArrayList<ConcLoad>();
         }
         concLoads.add(concLoad);
     }
 
-    public void addDistLoad(DistLoads distLoad)
+    public void addDistLoad(DistLoad distLoad)
     {
         if (distLoads == null)
         {
-            distLoads = new ArrayList<DistLoads>();
+            distLoads = new ArrayList<DistLoad>();
         }
         distLoads.add(distLoad);
     }
 
-    public void addNodalDisp(NodalDisps nodalDisp)
+    public void addNodalDisp(NodalDisp nodalDisp)
     {
         if (nodalDisps == null)
         {
-            nodalDisps = new ArrayList<NodalDisps>();
+            nodalDisps = new ArrayList<NodalDisp>();
         }
         nodalDisps.add(nodalDisp);
     }
 
     public void clearLoads()
     {
-        concLoads = new ArrayList<ConcLoads>();
-        distLoads = new ArrayList<DistLoads>();
-        nodalDisps = new ArrayList<NodalDisps>();
+        concLoads = new ArrayList<ConcLoad>();
+        distLoads = new ArrayList<DistLoad>();
+        nodalDisps = new ArrayList<NodalDisp>();
     }
 
-    public List<ConcLoads> getConcLoads() { return concLoads ;}
+    public List<ConcLoad> getConcLoads() { return concLoads ;}
 
-    public void setConcLoads(List<ConcLoads> concLoads) { this.concLoads = concLoads ;}
+    public void setConcLoads(List<ConcLoad> concLoads) { this.concLoads = concLoads ;}
 
-    public List<DistLoads> getDistLoads() { return distLoads ;}
+    public List<DistLoad> getDistLoads() { return distLoads ;}
 
-    public void setDistLoads(List<DistLoads> distLoads) { this.distLoads = distLoads ;}
+    public void setDistLoads(List<DistLoad> distLoads) { this.distLoads = distLoads ;}
 
-    public List<NodalDisps> getNodalDisps() { return nodalDisps ;}
+    public List<NodalDisp> getNodalDisps() { return nodalDisps ;}
 
-    public void setNodalDisps(List<NodalDisps> nodalDisps) { this.nodalDisps = nodalDisps ;}
+    public void setNodalDisps(List<NodalDisp> nodalDisps) { this.nodalDisps = nodalDisps ;}
 
     @Override
     public String toString() {

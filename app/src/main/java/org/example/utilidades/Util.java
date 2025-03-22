@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.ConcLoads;
-import org.example.loading.DistLoads;
-import org.example.loading.NodalDisps;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
+import org.example.loading.NodalDisp;
 import org.example.mainTCC.InputDTO;
 import org.example.mainTCC.ReadInput;
 import org.example.structure.ElemShape;
@@ -241,15 +241,15 @@ public abstract class Util
 		}
 	}
  	
- 	public static ConcLoads[] AddElem(ConcLoads[] OriginalArray, ConcLoads NewElem)
+ 	public static ConcLoad[] AddElem(ConcLoad[] OriginalArray, ConcLoad NewElem)
  	{
  		if (OriginalArray == null)
 		{
-			return new ConcLoads[] {NewElem};
+			return new ConcLoad[] {NewElem};
 		}
 		else
 		{
-			ConcLoads[] NewArray = new ConcLoads[OriginalArray.length + 1];
+			ConcLoad[] NewArray = new ConcLoad[OriginalArray.length + 1];
 			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
 			{
 				NewArray[i] = OriginalArray[i];
@@ -259,15 +259,15 @@ public abstract class Util
 		}
  	}
  	
- 	public static DistLoads[] AddElem(DistLoads[] OriginalArray, DistLoads NewElem)
+ 	public static DistLoad[] AddElem(DistLoad[] OriginalArray, DistLoad NewElem)
  	{
  		if (OriginalArray == null)
 		{
-			return new DistLoads[] {NewElem};
+			return new DistLoad[] {NewElem};
 		}
 		else
 		{
-			DistLoads[] NewArray = new DistLoads[OriginalArray.length + 1];
+			DistLoad[] NewArray = new DistLoad[OriginalArray.length + 1];
 			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
 			{
 				NewArray[i] = OriginalArray[i];
@@ -349,41 +349,41 @@ public abstract class Util
 		}
 	}
 
-	public static ConcLoads[] IncreaseArraySize(ConcLoads[] OriginalArray, int size)
+	public static ConcLoad[] IncreaseArraySize(ConcLoad[] OriginalArray, int size)
 	{
 		if (OriginalArray == null)
 		{
-			ConcLoads[] NewArray = new ConcLoads[size];
+			ConcLoad[] NewArray = new ConcLoad[size];
 			for (int i = 0; i <= NewArray.length - 1; i += 1)
 			{
-				NewArray[i] = new ConcLoads(-1, -1, null);
+				NewArray[i] = new ConcLoad(-1, -1, null);
 			}
 			return NewArray;
 		}
 		else
 		{
-			ConcLoads[] NewArray = new ConcLoads[OriginalArray.length + size];
+			ConcLoad[] NewArray = new ConcLoad[OriginalArray.length + size];
 			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
 			{
 				NewArray[i] = OriginalArray[i];
 			}
 			for (int i = OriginalArray.length; i <= OriginalArray.length + size - 1; i += 1)
 			{
-				NewArray[i] = new ConcLoads(-1, -1, null);
+				NewArray[i] = new ConcLoad(-1, -1, null);
 			}
 			return NewArray;
 		}
 	}
 
-	public static NodalDisps[] IncreaseArraySize(NodalDisps[] OriginalArray, int size)
+	public static NodalDisp[] IncreaseArraySize(NodalDisp[] OriginalArray, int size)
 	{
 		if (OriginalArray == null)
 		{
-			return new NodalDisps[size];
+			return new NodalDisp[size];
 		}
 		else
 		{
-			NodalDisps[] NewArray = new NodalDisps[OriginalArray.length + size];
+			NodalDisp[] NewArray = new NodalDisp[OriginalArray.length + size];
 			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
 			{
 				NewArray[i] = OriginalArray[i];
@@ -1433,7 +1433,7 @@ public abstract class Util
 	}
 	
 
-	public static double FindMaxConcLoad(List<ConcLoads> concLoads)
+	public static double FindMaxConcLoad(List<ConcLoad> concLoads)
 	{
 		if (concLoads != null && !concLoads.isEmpty())
 		{
@@ -1456,7 +1456,7 @@ public abstract class Util
 		}
 	}
 
-	public static double FindMaxDistLoad(List<DistLoads> DistLoads)
+	public static double FindMaxDistLoad(List<DistLoad> DistLoads)
 	{
 		if (DistLoads != null && !DistLoads.isEmpty())
 		{
