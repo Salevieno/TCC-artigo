@@ -3,17 +3,14 @@ package org.example.userInterface;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
-import org.example.userInterface.InputDialogs.InputDialogWithButtons;
+import org.example.userInterface.InputDialogs.DefineAnalysisDialog;
 import org.example.view.MainPanel;
 
 public class MenuAnalysis extends JMenu
@@ -21,30 +18,18 @@ public class MenuAnalysis extends JMenu
     
 	private JMenuItem runAnalysis;
     private boolean isReadyForAnalysis;
+	private int analysisTypeID = -1 ;
 	private static boolean geometryIsNonLinear ;
 	private static boolean matIsNonLinear ;
 	private static int qtdIterations = 1 ;
 	private static int qtdLoadSteps = 1;
 	private static double maxLoadFactor = 1;
-	private static String analysisType ;
-	private static Runnable updateInstructionsPanel = () -> runAnalysis() ;
 	
-	private static final String[] buttonNames ;
-	// private static final InputDialogWithButtons analysisTypeInputPanel ;
+	private static final DefineAnalysisDialog analysisTypeInputPanel ;
 
 	static
 	{
-		buttonNames = new String[] {"Linear elástica", "Geometria não-linear", "Material não-linear", "Ambos não-lineares"} ;
-
-		List<JButton> buttons = new ArrayList<>();
-		for (int b = 0; b <= buttons.size() - 1; b += 1)
-		{
-			buttons.add(new JButton (buttonNames[b])) ;
-		}
-
-		ActionWithString defineAnalysisType = (String inputAnalysisType) -> analysisType  = inputAnalysisType ;
-
-		// analysisTypeInputPanel = new InputDialogWithButtons("Analysis types", buttons, defineAnalysisType, updateInstructionsPanel) ;
+		analysisTypeInputPanel = new DefineAnalysisDialog() ;
 	}
     public MenuAnalysis()
     {
@@ -60,7 +45,7 @@ public class MenuAnalysis extends JMenu
 			{
 				if (isReadyForAnalysis)
 				{					
-					// analysisTypeInputPanel.activate() ;					
+					analysisTypeInputPanel.activate() ;
 				}
 				else
 				{
@@ -71,12 +56,19 @@ public class MenuAnalysis extends JMenu
 		runAnalysis.setEnabled(false);
 		runAnalysis.setForeground(Menus.palette[5]);
 		this.add(runAnalysis);
-    }    
-	
-	private static void runAnalysis()
+    }
+
+	public void updateIsReadyForAnalysis()
 	{
-		geometryIsNonLinear = buttonNames[1].equals(analysisType) || buttonNames[3].equals(analysisType) ;
-		matIsNonLinear = buttonNames[2].equals(analysisType) || buttonNames[3].equals(analysisType) ;
+        isReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
+	}
+
+	public void setAnalysisTypeID(int analysisTypeID) { this.analysisTypeID = analysisTypeID ;}
+	
+	public static void runAnalysis(int analysisTypeID)
+	{
+		geometryIsNonLinear = analysisTypeID == 1 || analysisTypeID == 3 ;
+		matIsNonLinear = analysisTypeID == 2 || analysisTypeID == 3 ;
 
 		MenuFunctions.CalcAnalysisParameters(MainPanel.structure, MainPanel.loading);
 		Analysis.run(MainPanel.structure, MainPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, qtdIterations, qtdLoadSteps, maxLoadFactor);

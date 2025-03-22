@@ -76,7 +76,8 @@ public class InstructionsPanel extends JPanel
             label.setIcon(updatedIcon);
         }
         
-        // boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
+        boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
+        Menus.getInstance().getMenuAnalysis().updateIsReadyForAnalysis() ;
     }
     
 	public List<Boolean> updateSteps(Structure structure, Loading loading)
@@ -139,7 +140,7 @@ public class InstructionsPanel extends JPanel
         super.paintComponent(g);
         DP.setG(g);
         DP.setRealStructCenter(MainPanel.structure.getCenter());
-        DiagramsPanel.display(MainPanel.structure, MenuFunctions.selectedNodes, MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP);
-        repaint();
+        // DiagramsPanel.display(MainPanel.structure, MenuFunctions.selectedNodes, MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP);
+        // repaint();
     }
 }
