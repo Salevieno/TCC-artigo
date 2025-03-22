@@ -293,7 +293,7 @@ public class Element
 		DeformedCoords = new double[externalNodes.length][];
 		for (int node = 0; node <= externalNodes.length - 1; node += 1)
 		{
-			DeformedCoords[node] = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords().asArray(), nodes.get(externalNodes[node]).getDisp(), nodes.get(node).getDOFType(), 1);
+			DeformedCoords[node] = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords(), nodes.get(externalNodes[node]).getDisp(), nodes.get(node).getDOFType(), 1);
     	}
 	}
 	
@@ -346,7 +346,7 @@ public class Element
 		{
 			if (showdeformed)
 			{
-				double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords().asArray(), nodes.get(externalNodes[node]).getDisp(), DOFs, defScale);
+				double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords(), nodes.get(externalNodes[node]).getDisp(), DOFs, defScale);
 				double[] rotatedCoords = Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()) ;
 				Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
 				DrawingCoord.add(drawingCoord) ;
@@ -806,9 +806,9 @@ public class Element
 	    			Coords[node] = new double[3];
 	    			if (NonlinearGeo)
 					{
-						Coords[node][0] = nodes.get(Nodes[node]).getOriginalCoords().x + nodes.get(Nodes[node]).getDisp()[0];
-						Coords[node][1] = nodes.get(Nodes[node]).getOriginalCoords().y + nodes.get(Nodes[node]).getDisp()[1];
-						Coords[node][2] = nodes.get(Nodes[node]).getOriginalCoords().z + nodes.get(Nodes[node]).getDisp()[2];
+						Coords[node][0] = nodes.get(Nodes[node]).getOriginalCoords().x + nodes.get(Nodes[node]).getDisp().x;
+						Coords[node][1] = nodes.get(Nodes[node]).getOriginalCoords().y + nodes.get(Nodes[node]).getDisp().y;
+						Coords[node][2] = nodes.get(Nodes[node]).getOriginalCoords().z + nodes.get(Nodes[node]).getDisp().z;
 					}
 					else
 					{

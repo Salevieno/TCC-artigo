@@ -92,6 +92,11 @@ public abstract class Util
 		}
 		return DeformedCoords;
 	}
+
+	public static double[] ScaledDefCoords(Point3D OriginalCoords, Point3D Disp, int[] DOFsOnNode, double scale)
+	{
+		return ScaledDefCoords(OriginalCoords.asArray(), Disp.asArray(), DOFsOnNode, scale) ;
+	}
 		
 
 	public static double TriArea(double[][] Coords)
@@ -1056,7 +1061,7 @@ public abstract class Util
 		for (int node = 0; node <= Node.size() - 1; node += 1)
 		{
 			//double[] RealNodePos = GetNodePos(Node.get(node), condition);
-			double[] RealNodePos = Util.ScaledDefCoords(Node.get(node).getOriginalCoords().asArray(), Node.get(node).getDisp(), DOFsOnNode, Defscale);
+			double[] RealNodePos = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsOnNode, Defscale);
 			//int[] DrawingCoords = ConvertToDrawingCoords(RealNodePos, CanvasPos, CanvasSize, CanvasDim, DrawingPos);
 			Point DrawingCoords = canvas.inDrawingCoords(new Point2D.Double(RealNodePos[0], RealNodePos[1])); ;
 			// Util.ConvertToDrawingCoords2(RealNodePos, RealStructCenter, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
@@ -1512,9 +1517,9 @@ public abstract class Util
 		for (int node = 0; node <= ElemNodes.length - 1; node += 1)
 		{
 			DefCoords[node] = new double[3];
-			DefCoords[node][0] = nodes.get(ElemNodes[node]).getOriginalCoords().x + nodes.get(ElemNodes[node]).getDisp()[0];
-			DefCoords[node][1] = nodes.get(ElemNodes[node]).getOriginalCoords().y + nodes.get(ElemNodes[node]).getDisp()[1];
-			DefCoords[node][2] = nodes.get(ElemNodes[node]).getOriginalCoords().z + nodes.get(ElemNodes[node]).getDisp()[2];
+			DefCoords[node][0] = nodes.get(ElemNodes[node]).getOriginalCoords().x + nodes.get(ElemNodes[node]).getDisp().x;
+			DefCoords[node][1] = nodes.get(ElemNodes[node]).getOriginalCoords().y + nodes.get(ElemNodes[node]).getDisp().y;
+			DefCoords[node][2] = nodes.get(ElemNodes[node]).getOriginalCoords().z + nodes.get(ElemNodes[node]).getDisp().z;
 		}
 		return DefCoords;
 	}

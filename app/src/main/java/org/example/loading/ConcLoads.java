@@ -37,7 +37,7 @@ public class ConcLoads
 	public void display(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawingOnAPanel DP)
 	{
 		Node node = MainPanel.structure.getMesh().getNodes().get(NodeID) ;
-		double[] point = deformed ? Util.ScaledDefCoords(node.getOriginalCoords().asArray(), node.getDisp(), ElemDOFs, defScale) : node.getOriginalCoords().asArray();
+		double[] point = deformed ? Util.ScaledDefCoords(node.getOriginalCoords(), node.getDisp(), ElemDOFs, defScale) : node.getOriginalCoords().asArray();
 
 		for (int dof = 0; dof <= ElemDOFs.length - 1; dof += 1)
 		{

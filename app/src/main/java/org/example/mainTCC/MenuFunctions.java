@@ -211,7 +211,6 @@ public abstract class MenuFunctions
 					NewNode = new Node(-1, null);
 					NewNode.setID(Integer.parseInt(Line[0]));
 					NewNode.setOriginalCoords(new Point3D(Double.parseDouble(Line[1]), Double.parseDouble(Line[2]), Double.parseDouble(Line[3])));
-					NewNode.setDisp(new double[3]);
 					structure.getMesh().getNodes().add(NewNode) ;
 				}
 				for (int elem = 0; elem <= Input[3].length - 4; elem += 1)
@@ -418,7 +417,7 @@ public abstract class MenuFunctions
 				if (-1 < nodeid)
 				{
 					loading.getConcLoads().set(loadid, new ConcLoads(loadid, nodeid, ConcLoadType[loadid])) ;
-					struct.getMesh().getNodes().get(nodeid).setConcLoads(Util.AddElem(struct.getMesh().getNodes().get(nodeid).getConcLoads(), loading.getConcLoads().get(loadid)));
+					struct.getMesh().getNodes().get(nodeid).addConcLoad(loading.getConcLoads().get(loadid));
 				}
 			}
 		}

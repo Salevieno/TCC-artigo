@@ -80,7 +80,7 @@ public class DiagramsPanel extends JPanel
 							for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 							{
 								int nodeID = selectedNodes.get(i).getID();
-								Yaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getDisp()[dof];
+								Yaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getDisp().asArray()[dof];
 							}
 						}
 						else if (SelectedDiagram == 1)

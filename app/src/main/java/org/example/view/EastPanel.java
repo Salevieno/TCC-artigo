@@ -108,17 +108,17 @@ public class EastPanel extends JPanel
 		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().x, 2)) + "," ;
 		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().y, 2)) + "," ;
 		OriginalCoords += String.valueOf(Util.Round(Node.getOriginalCoords().z, 2)) ;
-		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[0], 2)) + "," ;
-		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[1], 2)) + "," ;
-		DeformedCoords += String.valueOf(Util.Round(Node.getDisp()[2], 2)) + "," ;
+		DeformedCoords += String.valueOf(Util.Round(Node.getDisp().x, 2)) + "," ;
+		DeformedCoords += String.valueOf(Util.Round(Node.getDisp().y, 2)) + "," ;
+		DeformedCoords += String.valueOf(Util.Round(Node.getDisp().z, 2)) + "," ;
 		if (Node.getConcLoads() != null)
 		{
 			ConcLoads = "";
-			for (int load = 0; load <= Node.getConcLoads().length - 1; load += 1)
+			for (int load = 0; load <= Node.getConcLoads().size() - 1; load += 1)
 			{
 				for (int dof = 0; dof <= 6 - 1; dof += 1)
 				{
-					ConcLoads += String.valueOf(Util.Round(Node.getConcLoads()[load].getLoads()[dof], 2) + ", ");
+					ConcLoads += String.valueOf(Util.Round(Node.getConcLoads().get(load).getLoads()[dof], 2) + ", ");
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package org.example.structure;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,10 +19,10 @@ public class Node
 {
 	private int ID;				// ID
 	private Point3D coords;		// undeformed coordinates
-	private double[] Disp;		// Displacements [ux, uy, uz]
+	private Point3D disp;		// Displacements [ux, uy, uz]
 	private int[] Sup;			// Support in the node
-	private ConcLoads[] ConcLoad;	// Concentrated loads in the node
-	private NodalDisps[] NodalDisp;// Nodal displacements in the node
+	private List<ConcLoads> concLoads;	// Concentrated loads in the node
+	private List<NodalDisps> nodalDisps;// Nodal displacements in the node
 		
 	public int[] dofs;
 	private int[] DOFType;			// DOFs on node
@@ -35,23 +36,23 @@ public class Node
 	{
 		this.ID = ID;
 		this.coords = coords;
-		Disp = coords != null ? coords.asArray() : null;
+		this.disp = new Point3D(0, 0, 0) ;
 		Sup = null;
-		ConcLoad = null;
-		NodalDisp = null;
+		concLoads = null;
+		nodalDisps = null;
 		DOFType = null;
 	}
 
 	
 	public double[] deformedPos()
 	{
-		return new double[] {coords.x + Disp[0], coords.y + Disp[1], coords.z + Disp[2]} ;
+		return new double[] {coords.x + disp.x, coords.y + disp.y, coords.z + disp.z} ;
 	}
 
 	public Point deformedDrawingPos(MyCanvas canvas, int[] dofs, double defScale)
 	{
 		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
-		double[] deformedCoords = Util.ScaledDefCoords(coords.asArray(), Disp, dofs, defScale);
+		double[] deformedCoords = Util.ScaledDefCoords(coords, disp, dofs, defScale);
 		double[] rotatedCoord = Util.RotateCoord(deformedCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
 		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
 	}
@@ -80,21 +81,21 @@ public class Node
 		// 	}
 		// }
 	}
-	
+
 	public int getID() {return ID;}
 	public Point3D getOriginalCoords() {return coords;}
-	public double[] getDisp() {return Disp;}
+	public Point3D getDisp() {return disp;}
 	public int[] getSup() {return Sup;}
-	public ConcLoads[] getConcLoads() {return ConcLoad;}
-	public NodalDisps[] getNodalDisps() {return NodalDisp;}
+	public List<ConcLoads> getConcLoads() {return concLoads;}
+	public List<NodalDisps> getNodalDisps() {return nodalDisps;}
 	public int[] getDOFs() { return dofs ;}
 	public int[] getDOFType() {return DOFType;}
 	public void setID(int I) {ID = I;}
 	public void setOriginalCoords(Point3D C) {coords = C;}
-	public void setDisp(double[] C) {Disp = C;}
+	public void setDisp(Point3D C) {disp = C;}
 	public void setSup(int[] S) {Sup = S;}
-	public void setConcLoads(ConcLoads[] C) {ConcLoad = C;}
-	public void setNodalDisps(NodalDisps[] D) {NodalDisp = D;}
+	public void setConcLoads(List<ConcLoads> C) {concLoads = C;}
+	public void setNodalDisps(List<NodalDisps> D) {nodalDisps = D;}
 	public void setDOFType(int[] D) {DOFType = D;}
 	
 	public void calcdofs(List<Supports> Sup, int cont)
@@ -140,32 +141,21 @@ public class Node
     	    }
 	    }
 	}
-	
-	public void AddConcLoads(double[] concLoads)
-	{
-		if (ConcLoad == null)
-		{
-			ConcLoad = Util.IncreaseArraySize(ConcLoad, 1);
-		}
-		ConcLoad[ConcLoad.length - 1].setLoads(concLoads);
-	}
-	public void AddNodalDisps(double[] nodalDisp)
-	{
-		if (NodalDisp == null)
-		{
-			NodalDisp = Util.IncreaseArraySize(NodalDisp, 1);
-		}
-		NodalDisp[NodalDisp.length - 1].setDisps(nodalDisp);
-	}
 	public void addConcLoad(ConcLoads newConcLoad)
 	{
-		ConcLoad = Util.IncreaseArraySize(ConcLoad, 1);
-		ConcLoad[ConcLoad.length - 1] = newConcLoad;
+		if (concLoads == null)
+		{
+			concLoads = new ArrayList<>() ;
+		}
+		concLoads.add(newConcLoad);
 	}
 	public void addNodalDisp(NodalDisps newNodalDisp)
 	{
-		NodalDisp = Util.IncreaseArraySize(NodalDisp, 1);
-		NodalDisp[NodalDisp.length - 1] = newNodalDisp;
+		if (nodalDisps == null)
+		{
+			nodalDisps = new ArrayList<>() ;
+		}
+		nodalDisps.add(newNodalDisp);
 	}
 	public void setLoadDispCurve()
 	{
@@ -191,7 +181,7 @@ public class Node
 	@Override
 	public String toString()
 	{
-		return ID + "	(" + coords.toString() + ")	" + Arrays.toString(Sup) + "	" + Arrays.toString(ConcLoad) + "	" + Arrays.toString(NodalDisp) + "	" + Arrays.toString(DOFType) ;
+		return ID + "	(" + coords.toString() + ")	" + Arrays.toString(Sup) + "	" + concLoads + "	" + nodalDisps + "	" + Arrays.toString(DOFType) ;
 	}
 
 	// @Override

@@ -857,8 +857,8 @@ public class ElementStiffnessMatrix
 			for (int i = 0; i <= 4 - 1; i += 1)
 			{
 				int NodeID = ExternalNodes[i];
-				DefCoords[i][0] = nodes.get(NodeID).getOriginalCoords().x + nodes.get(NodeID).getDisp()[0];
-				DefCoords[i][1] = nodes.get(NodeID).getOriginalCoords().y + nodes.get(NodeID).getDisp()[1];
+				DefCoords[i][0] = nodes.get(NodeID).getOriginalCoords().x + nodes.get(NodeID).getDisp().x;
+				DefCoords[i][1] = nodes.get(NodeID).getOriginalCoords().y + nodes.get(NodeID).getDisp().y;
 			}
 			x1 = DefCoords[0][0]; x2 = DefCoords[1][0]; x3 = DefCoords[2][0]; x4 = DefCoords[3][0];
 			y1 = DefCoords[0][1]; y2 = DefCoords[1][1]; y3 = DefCoords[2][1]; y4 = DefCoords[3][1];

@@ -15,6 +15,7 @@ import org.example.structure.Reactions;
 import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.structure.Supports;
+import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 
 public abstract class Analysis
@@ -313,7 +314,8 @@ public abstract class Analysis
 		    	structure.setU(SolveLinearSystem(structure.getK(), structure.getP()));
 			    for (int node = 0; node <= structure.getMesh().getNodes().size() - 1; node += 1)
 			    {
-			    	structure.getMesh().getNodes().get(node).setDisp(GetNodeDisplacements(structure.getMesh().getNodes(), structure.getU())[node]);
+					double[] nodeDisp = GetNodeDisplacements(structure.getMesh().getNodes(), structure.getU())[node] ;
+			    	structure.getMesh().getNodes().get(node).setDisp(new Point3D(nodeDisp[0], nodeDisp[1], nodeDisp[2]));
 			    }
 			    if (NonlinearMat)
 			    {

@@ -104,7 +104,7 @@ public class MainPanel extends JPanel
 		
 		selectionWindow = new SelectionWindow() ;
 		showElems = true ;
-		showDeformedStructure = true ;
+		showDeformedStructure = false ;
 		showMatColor = true ;
 		showSecColor = true ;
 		showElemContour = true ;
