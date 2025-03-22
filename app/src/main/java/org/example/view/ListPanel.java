@@ -29,8 +29,10 @@ public class ListPanel extends JPanel
     }
 
     
-	public static void display(boolean[] AssignmentIsOn, int SelectedSup, int SelectedConcLoad, int SelectedDistLoad, int SelectedNodalDisp, DrawingOnAPanel DP)
+	public void display(boolean[] AssignmentIsOn, int SelectedSup, int SelectedConcLoad, int SelectedDistLoad, int SelectedNodalDisp, DrawingOnAPanel DP)
 	{
+
+		Dimension panelSize = getSize() ;
 		
 		List<Material> matType = MainPanel.matTypes;
 		List<Section> SecType = MainPanel.secTypes;
@@ -65,7 +67,7 @@ public class ListPanel extends JPanel
 				    "Tetay",
 				    "Tetaz"
 				};
-			DP.DrawLists(initialSize, SelectedSup, SupNames, "Supports list", "Sup", SupType);
+			DP.DrawLists(panelSize, SelectedSup, SupNames, "Supports list", "Sup", SupType);
 		}
 		if (AssignmentIsOn[3] && ConcLoadType != null)
 		{
@@ -78,7 +80,7 @@ public class ListPanel extends JPanel
 				    "My (kN)",
 				    "Mz (kN)"
 				};
-			DP.DrawLists(initialSize, SelectedConcLoad, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType);
+			DP.DrawLists(panelSize, SelectedConcLoad, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType);
 		}
 		if (AssignmentIsOn[4] && DistLoadType != null)
 		{
@@ -90,7 +92,7 @@ public class ListPanel extends JPanel
 				    "Distini (m)",
 				    "Distfin (m)"
 				};
-			DP.DrawLists(initialSize, SelectedDistLoad, DistLoadNames, "Dist loads list", "Dist load", DistLoadType);
+			DP.DrawLists(panelSize, SelectedDistLoad, DistLoadNames, "Dist loads list", "Dist load", DistLoadType);
 		}
 		if (AssignmentIsOn[5] && NodalDispType != null)
 		{
@@ -103,7 +105,7 @@ public class ListPanel extends JPanel
 				    "rot y",
 				    "rot z"
 				};
-			DP.DrawLists(initialSize, SelectedNodalDisp, NodalDispNames, "Nodal disps list", "Nodal disp", NodalDispType);
+			DP.DrawLists(panelSize, SelectedNodalDisp, NodalDispNames, "Nodal disps list", "Nodal disp", NodalDispType);
 		}
 	}
 	
