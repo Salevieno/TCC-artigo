@@ -318,6 +318,20 @@ public class Structure
 		supports.forEach(sup -> sup.dispaly(canvas, DP)) ;
 	}
 
+	public void displayConcLoads(MyCanvas canvas, boolean deformed, DrawingOnAPanel DP)
+	{
+		double maxLoad = Util.FindMaxConcLoad(MainPanel.loading.getConcLoads());
+		for (Node node : mesh.getNodes())
+		{
+			if (node.getConcLoads() == null) { continue ;}
+			for (ConcLoads concLoad : node.getConcLoads())
+			{
+				int[] dofs = mesh.getElements().get(0).getDOFs() ;
+				concLoad.display(dofs, MenuFunctions.ShowLoadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			}
+		}
+	}
+
 	public void display()
 	{
 

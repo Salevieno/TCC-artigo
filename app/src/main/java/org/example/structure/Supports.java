@@ -74,7 +74,7 @@ public class Supports
 		int size = 6;
 		int thick = 2;
 		int suptype = typeFromDOFs();
-		// int[] rotatedCoords = Util.RotateCoord(Nodes.get(Node).getOriginalCoords().asArray(), Center, canvas.getAngles()) ;
+		// int[] rotatedCoords = Util.RotateCoord(MainPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords(), Center, canvas.getAngles()) ;
 		Point Coords = canvas.inDrawingCoords(MainPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords().asDoublePoint()) ;
 		if (suptype == 0)
 		{
