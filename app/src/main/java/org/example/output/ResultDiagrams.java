@@ -35,13 +35,15 @@ public class ResultDiagrams
 
     public ResultDiagrams(Diagram diagram, int selectedVar)
     {
-        this(1.0, diagram, selectedVar, ColorSystem.redToGreen) ;
+        this(1000.0, diagram, selectedVar, ColorSystem.redToGreen) ;
     }
 
     public ResultDiagrams()
     {
-        this(1.0, null, -1, ColorSystem.redToGreen) ;
+        this(1000.0, null, -1, ColorSystem.redToGreen) ;
     }
+
+    public void incScale(double amount) { scale = Util.clamp(scale + amount, 0.0, 100000) ;}
 
 
 	public void display(MyCanvas canvas, Mesh mesh, Results results, DrawPrimitives DP)
@@ -51,7 +53,7 @@ public class ResultDiagrams
 
     private static String diagramTitle(Diagram diagram, double scale)
     {
-        double roundedScale = Util.Round(scale, 3) ;
+        String roundedScale = String.valueOf(Util.Round(scale, 3)) ;
         switch (diagram)
         {
             case displacements:
@@ -223,5 +225,22 @@ public class ResultDiagrams
 		
 	}
 
+    public double getScale() { return scale ;}
 
+    public Diagram getDiagram() { return diagram ;}
+
+    public int getSelectedVar() { return selectedVar ;}
+
+    public ColorSystem getColorSystem() { return colorSystem ;}
+
+    public void setScale(double scale) { this.scale = scale ;}
+
+    public void setDiagram(Diagram diagram) { this.diagram = diagram ;}
+
+    public void setSelectedVar(int selectedVar) { this.selectedVar = selectedVar ;}
+
+    public void setColorSystem(ColorSystem colorSystem) { this.colorSystem = colorSystem ;}
+
+
+    
 }

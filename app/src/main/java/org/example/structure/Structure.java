@@ -41,7 +41,7 @@ public class Structure
 	
 	public int NFreeDOFs;
 	private Results results ;
-	private ResultDiagrams diagrams ;
+	private ResultDiagrams resultDiagrams ;
 	
 	private static final int NCirclePoints = 20;
 	public static final Color color = Menus.palette[5];
@@ -63,6 +63,7 @@ public class Structure
 			maxCoords = calcMaxCoords(coords);
 		}
 		results = new Results() ;
+		resultDiagrams = new ResultDiagrams() ;
 	}
 	
 	private static Point3D calcCenter(List<Point3D> coords)
@@ -339,8 +340,9 @@ public class Structure
 
 	public void displayDiagrams(MyCanvas canvas, Diagram diagram, int selectedVar, DrawPrimitives DP)
 	{
-		diagrams = new ResultDiagrams(diagram, selectedVar) ;
-		diagrams.display(canvas, mesh, results, DP) ;
+		resultDiagrams.setDiagram(diagram) ;
+		resultDiagrams.setSelectedVar(selectedVar) ;
+		resultDiagrams.display(canvas, mesh, results, DP) ;
 	}
 
 	public void display()
@@ -361,6 +363,7 @@ public class Structure
 	public double[] getP() {return P;}
 	public double[] getU() {return U;}
 	public Results getResults() {return results;}
+	public ResultDiagrams getResultDiagrams() { return resultDiagrams ;}
 	public Reactions[] getReactions() {return Reaction;}
 	public void setName(String N) {name = N;}
 	public void setShape(StructureShape S) {shape = S;}
