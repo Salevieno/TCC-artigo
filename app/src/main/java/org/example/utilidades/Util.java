@@ -15,6 +15,7 @@ import org.example.loading.DistLoad;
 import org.example.loading.NodalDisp;
 import org.example.mainTCC.InputDTO;
 import org.example.mainTCC.ReadInput;
+import org.example.output.ColorSystem;
 import org.example.structure.ElemShape;
 import org.example.structure.Element;
 import org.example.structure.Mesh;
@@ -1034,25 +1035,26 @@ public abstract class Util
 		}
 	}
 	
-	public static Color FindColor(double value, double min, double max, String Style)
+	public static Color FindColor(double value, double min, double max, ColorSystem colorSystem)
 	{
 		int red = -1, green = -1, blue = -1;
-		double MaxAbs = Math.max(Math.abs(min), max);
-		if (Style.equals("Red to green"))
+		double maxAbs = Math.max(Math.abs(min), max);
+
+		switch (colorSystem)
 		{
-			red = (int) Math.max(255*(-value/MaxAbs), 0);
-			green = (int) Math.max(255*(value/MaxAbs), 0);
-			blue = (int) Math.max(255*(1 - Math.abs(value)/MaxAbs), 0);
+			case redToGreen:
+				red = (int) Math.max(255*(-value/maxAbs), 0);
+				green = (int) Math.max(255*(value/maxAbs), 0);
+				blue = (int) Math.max(255*(1 - Math.abs(value)/maxAbs), 0);
+
+				return new Color(red, green, blue) ;
+
+			case purpleToGreen:
+
+				return new Color(red, green, blue) ;
+
+			default: System.out.println("Color system not found at Util -> FindColor") ; return new Color(red, green, blue) ;
 		}
-		else if (Style.equals("Purple to green"))
-		{
-			
-		}
-		else
-		{
-			System.out.println("Color system not found at Util -> FindColor");
-		}
-		return new Color(red, green, blue);
 	}
 
 	public static int[] NodesInsideWindow(List<Node> Node, double[] RealStructCenter, int[] WindowTopLeft, Point WindowBotRight, MyCanvas canvas, int[] DOFsOnNode, double Defscale, boolean condition)

@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.example.loading.ConcLoad;
 import org.example.mainTCC.Analysis;
+import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;
-import org.example.structure.Element;
 import org.example.structure.Reactions;
 import org.example.structure.Supports;
 import org.example.utilidades.Util;
@@ -25,6 +25,7 @@ public class Results
 	private Reactions[] Reactions;
 	private double[] SumReactions;
 	private double[][][][] LoadDisp;
+
 	
 	public void register(Mesh mesh, List<Supports> Sup, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
@@ -154,6 +155,45 @@ public class Results
 		return Maxvalue;
 	}
 	
+	public double getMin(Diagram diagram, int selectedvar)
+	{		
+        switch (diagram)
+        {
+            case displacements:
+				return DispMin[selectedvar];
+        
+            case strains:
+                return StrainMin[selectedvar];
+            
+            case stresses: 
+                return StressMin[selectedvar];
+        
+            case internalForces:
+                return InternalForcesMin[selectedvar];
+
+            default: System.out.println("Warn: No diagram selected at results.getMin()") ; return 0.0 ;
+        }
+	}
+	public double getMax(Diagram diagram, int selectedvar)
+	{		
+        switch (diagram)
+        {
+            case displacements:
+				return DispMax[selectedvar];
+        
+            case strains:
+                return StrainMax[selectedvar];
+            
+            case stresses: 
+                return StressMax[selectedvar];
+        
+            case internalForces:
+                return InternalForcesMax[selectedvar];
+
+            default: System.out.println("Warn: No diagram selected at results.getMax()") ; return 0.0 ;
+        }
+	}
+
 	public double[] getDispMin()
 	{
 		return DispMin;

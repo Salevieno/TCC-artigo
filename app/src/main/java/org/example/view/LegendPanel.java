@@ -10,8 +10,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import org.example.output.ColorSystem;
 import org.example.structure.Structure;
-import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.Util;
 
@@ -53,7 +53,7 @@ public class LegendPanel extends JPanel
 	}
 
 
-	public void DrawLegend(int[] Pos, String ColorSystem, String title, double MinValue, double MaxValue, double unitfactor, DrawPrimitives DP)
+	public void DrawLegend(int[] Pos, ColorSystem colorSystem, String title, double MinValue, double MaxValue, double unitfactor, DrawPrimitives DP)
 	{
 
 		Dimension panelSize = getSize() ;
@@ -73,7 +73,7 @@ public class LegendPanel extends JPanel
 		for (int i = 0; i <= NumCat - 1; i += 1)
 		{
 			double value = (MaxValue - MinValue)*i/(NumCat - 1) + MinValue;
-			Color color = Util.FindColor(value, MinValue, MaxValue, ColorSystem);
+			Color color = Util.FindColor(value, MinValue, MaxValue, colorSystem);
 			Point InitPos = new Point((int) (Pos[0] + 2*(i % NumColumns)*sx + sx/2), (int) (Pos[1] + (i / NumColumns) * sy + sy / 4)) ;
 			DP.drawLine(InitPos, new Point(InitPos.x + BarLength, InitPos.y), 2, color);
 			// DP.DrawText(new int[] {}, , "Center", 0, "Plain", fontSize, color);
@@ -89,22 +89,22 @@ public class LegendPanel extends JPanel
 			int[] LegendPos = new int[] {(int) (0.1 * initialSize.getWidth()), (int) (0.3 * initialSize.getHeight())};
 			if (showDisplacementContour)
 			{
-				DrawLegend(LegendPos, "Red to green", "Campo de deslocamentos (m)",
+				DrawLegend(LegendPos, ColorSystem.redToGreen, "Campo de deslocamentos (m)",
 				structure.getResults().getDispMin()[selectedVar], structure.getResults().getDispMax()[selectedVar], 1, DP);
 			}
 			if (showStressContour && structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null)
 			{
-				DrawLegend(LegendPos, "Red to green", "Campo de tensoes (MPa)",
+				DrawLegend(LegendPos, ColorSystem.redToGreen, "Campo de tensoes (MPa)",
 				structure.getResults().getStressMin()[selectedVar], structure.getResults().getStressMax()[selectedVar], 1000, DP);
 			}
 			if (showStrainContour && structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null)
 			{
-				DrawLegend(LegendPos, "Red to green", "Campo de deformacoes",
+				DrawLegend(LegendPos, ColorSystem.redToGreen, "Campo de deformacoes",
 				structure.getResults().getStrainMin()[selectedVar], structure.getResults().getStrainMax()[selectedVar], 1, DP);
 			}
 			if (showInternalForces && structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null)
 			{
-				DrawLegend(LegendPos, "Red to green", "Forcas internas (kN ou kNm)",
+				DrawLegend(LegendPos, ColorSystem.redToGreen, "Forcas internas (kN ou kNm)",
 				structure.getResults().getInternalForcesMin()[selectedVar], structure.getResults().getInternalForcesMax()[selectedVar], 1, DP);
 			}
 		}

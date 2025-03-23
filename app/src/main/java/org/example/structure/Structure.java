@@ -11,6 +11,8 @@ import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Loading;
 import org.example.mainTCC.MenuFunctions;
+import org.example.output.Diagram;
+import org.example.output.ResultDiagrams;
 import org.example.output.Results;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
@@ -39,6 +41,7 @@ public class Structure
 	
 	public int NFreeDOFs;
 	private Results results ;
+	private ResultDiagrams diagrams ;
 	
 	private static final int NCirclePoints = 20;
 	public static final Color color = Menus.palette[5];
@@ -332,6 +335,12 @@ public class Structure
 				concLoad.display(dofs, MenuFunctions.ShowLoadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
 			}
 		}
+	}
+
+	public void displayDiagrams(MyCanvas canvas, Diagram diagram, int selectedVar, DrawPrimitives DP)
+	{
+		diagrams = new ResultDiagrams(diagram, selectedVar) ;
+		diagrams.display(canvas, mesh, results, DP) ;
 	}
 
 	public void display()

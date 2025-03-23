@@ -30,6 +30,9 @@ import org.example.loading.NodalDisp;
 import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.mainTCC.SelectionWindow;
+import org.example.output.ColorSystem;
+import org.example.output.Diagram;
+import org.example.output.Results;
 import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
@@ -70,7 +73,7 @@ public class MainPanel extends JPanel
 	private boolean showCanvas, showGrid, showMousePos;
 	private boolean showElems, showDeformedStructure ;
 	private boolean showMatColor, showSecColor, showElemContour ;
-	private static boolean ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces;
+	private Diagram diagram ;
 	
 	public static boolean nodeSelectionIsActive ;
 	public static boolean elemSelectionIsActive;
@@ -353,10 +356,16 @@ public class MainPanel extends JPanel
 		}
 		if (MenuFunctions.AnalysisIsComplete)
 		{
-			DrawResults(canvas, structure, MenuFunctions.SelectedElems, SelectedVar,
-			MenuFunctions.ShowElemContour, showDeformedStructure,
-			MenuFunctions.DiagramScales, ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces,
-			MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo);
+			// DrawResults(canvas, structure, MenuFunctions.SelectedElems, SelectedVar,
+			// MenuFunctions.ShowElemContour, showDeformedStructure,
+			// MenuFunctions.DiagramScales, ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces,
+			// MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo);
+
+			// Results.displayContours(canvas, structure, MenuFunctions.SelectedElems, SelectedVar,
+			// 						MenuFunctions.ShowElemContour, showDeformedStructure,
+			// 						MenuFunctions.DiagramScales, ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces,
+			// 						MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
+			structure.displayDiagrams(canvas, diagram, SelectedVar, DP) ;
 			
 			if (MenuFunctions.ShowReactionArrows && structure.getReactions() != null)
 			{
@@ -430,64 +439,61 @@ public class MainPanel extends JPanel
 		}
 	}
 
-	public void switchDisplay(int selectedDiagram, int selectedVar)
+	public void switchDisplay(int diagramID, int selectedVar)
 	{
-		if (selectedVar <= -1) { return ;}
+		if (diagramID <= -1 || selectedVar <= -1) { return ;}
 		
 		SelectedVar = selectedVar ;
-		ShowDisplacementContour = selectedDiagram == 0;
-		ShowStressContour = selectedDiagram == 1;
-		ShowStrainContour = selectedDiagram == 2;
-		ShowInternalForces = selectedDiagram == 3;
+		diagram = Diagram.values()[diagramID] ;
 	}
 
 
 	// Results
 
-	public static void DrawResults(MyCanvas canvas, Structure structure, int[] SelectedElems, int selectedvar,
-			boolean ShowElemContour, boolean ShowDeformedStructure,
-			double[] DiagramsScales, boolean ShowDisplacementContour, boolean ShowStressContour,
-			boolean ShowStrainContour, boolean ShowInternalForces,
-			boolean NonlinearMat, boolean NonlinearGeo)
-	{
-		List<Node> nodes = structure.getMesh().getNodes();
-		List<Element> elems = structure.getMesh().getElements();
-		if (-1 < selectedvar && nodes != null && elems != null)
-		{
-			if (ShowDisplacementContour)
-			{
-				canvas.setTitle("Deslocamentos (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
-				structure.getResults().getDispMin()[selectedvar], structure.getResults().getDispMax()[selectedvar], "Displacement", selectedvar,
-				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
-			}
-			else if (ShowStressContour)
-			{
-				canvas.setTitle("Tensâes (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
-				structure.getResults().getStressMin()[selectedvar], structure.getResults().getStressMax()[selectedvar], "Stress", selectedvar, 
-				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
-			}
-			else if (ShowStrainContour)
-			{
-				canvas.setTitle("Deformaçõs (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
-				structure.getResults().getStrainMin()[selectedvar], structure.getResults().getStrainMax()[selectedvar], "Strain", selectedvar,
-				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
-			}
-			else if (ShowInternalForces)
-			{
-				canvas.setTitle("Forâas internas (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
-				structure.getResults().getInternalForcesMin()[selectedvar], structure.getResults().getInternalForcesMax()[selectedvar], "Force", selectedvar,
-				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
-			}
-		}
-	}
+	// public static void DrawResults(MyCanvas canvas, Structure structure, int[] SelectedElems, int selectedvar,
+	// 		boolean ShowElemContour, boolean ShowDeformedStructure,
+	// 		double[] DiagramsScales, boolean ShowDisplacementContour, boolean ShowStressContour,
+	// 		boolean ShowStrainContour, boolean ShowInternalForces,
+	// 		boolean NonlinearMat, boolean NonlinearGeo)
+	// {
+	// 	List<Node> nodes = structure.getMesh().getNodes();
+	// 	List<Element> elems = structure.getMesh().getElements();
+	// 	if (-1 < selectedvar && nodes != null && elems != null)
+	// 	{
+	// 		if (ShowDisplacementContour)
+	// 		{
+	// 			canvas.setTitle("Deslocamentos (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
+	// 			DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+	// 			structure.getResults().getDispMin()[selectedvar], structure.getResults().getDispMax()[selectedvar], "Displacement", selectedvar,
+	// 			NonlinearMat, NonlinearGeo, ColorSystem.redToGreen, canvas, DP);
+	// 		}
+	// 		else if (ShowStressContour)
+	// 		{
+	// 			canvas.setTitle("Tensâes (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
+	// 			DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+	// 			structure.getResults().getStressMin()[selectedvar], structure.getResults().getStressMax()[selectedvar], "Stress", selectedvar, 
+	// 			NonlinearMat, NonlinearGeo, ColorSystem.redToGreen, canvas, DP);
+	// 		}
+	// 		else if (ShowStrainContour)
+	// 		{
+	// 			canvas.setTitle("Deformaçõs (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
+	// 			DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+	// 			structure.getResults().getStrainMin()[selectedvar], structure.getResults().getStrainMax()[selectedvar], "Strain", selectedvar,
+	// 			NonlinearMat, NonlinearGeo, ColorSystem.redToGreen, canvas, DP);
+	// 		}
+	// 		else if (ShowInternalForces)
+	// 		{
+	// 			canvas.setTitle("Forâas internas (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
+	// 			DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+	// 			structure.getResults().getInternalForcesMin()[selectedvar], structure.getResults().getInternalForcesMax()[selectedvar], "Force", selectedvar,
+	// 			NonlinearMat, NonlinearGeo, ColorSystem.redToGreen, canvas, DP);
+	// 		}
+	// 	}
+	// }
 
 
 	public static void DrawContours3D(List<Element> Elem, List<Node> nodes, int[] SelectedElems, boolean showelemcontour, boolean condition,
-			double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem,
+			double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, ColorSystem colorSystem,
 			MyCanvas canvas, DrawPrimitives DP)
 	{
 		int Ninterpoints = 0;
@@ -589,7 +595,7 @@ public class MainPanel extends JPanel
 				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				xCoords[point] = DrawingCoords[point][0];
 				yCoords[point] = DrawingCoords[point][1];
-				colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, ColorSystem);
+				colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, colorSystem);
 			}
 			
 			// DP.DrawGradPolygon(xCoords, yCoords, thick, false, true, Color.black, colors);
@@ -843,10 +849,7 @@ public class MainPanel extends JPanel
 	public void resetDisplay()
 	{
 		showElemSelectionWindow = false;
-		ShowDisplacementContour = false;
-		ShowStressContour = false;
-		ShowStrainContour = false;
-		ShowInternalForces = false;
+		diagram = null ;
 	}
 
 
