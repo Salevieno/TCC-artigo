@@ -3,6 +3,7 @@ package org.example.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -12,6 +13,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -25,8 +27,10 @@ import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
+import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.mainTCC.SelectionWindow;
+import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -37,20 +41,21 @@ import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.structure.StructureShape;
 import org.example.structure.Supports;
-import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-// import graphics.DrawPrimitives ;
+
+import graphics.Align;
+import graphics.DrawPrimitives ;
 
 public class MainPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;	
 	private static final Dimension initialSize = new Dimension(582, 610) ;
 	private static final Color bgColor = Menus.palette[2] ;
-	private static final DrawingOnAPanel DP = new DrawingOnAPanel() ;
-	// private static final DrawPrimitives DPP = new DrawPrimitives() ;
+	private static final DrawPrimitives DP = new DrawPrimitives() ;
 	
 	private final MyCanvas canvas ;
 	private final int[] panelPos ;
@@ -168,6 +173,8 @@ public class MainPanel extends JPanel
 		
 	}
 
+	public DrawPrimitives getDP() { return DP ;}
+
 	private void bindKey(int keyCode, Runnable action)
 	{
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyCode, 0), String.valueOf(keyCode));
@@ -242,7 +249,7 @@ public class MainPanel extends JPanel
 	}
 
 
-	public void displayCanvasElements(MyCanvas canvas, boolean ShowCanvas, boolean ShowGrid, boolean ShowMousePos)
+	public void displayCanvasElements(MyCanvas canvas, boolean ShowCanvas, boolean ShowGrid, boolean ShowMousePos, DrawPrimitives DP)
 	{
 		canvas.setPos(new Point((int) (0.1 * initialSize.width), (int) (0.1 * initialSize.height)));
 		canvas.setSize(new int[] {(int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height)});
@@ -253,8 +260,12 @@ public class MainPanel extends JPanel
 		DrawAxis(LittleAxisPos, canvas.getSize()[0] / 15, canvas.getSize()[1] / 15, 10, canvas.getAngles(), DP);
 		DrawAxis(BigAxisPos, canvas.getSize()[0] + 20, canvas.getSize()[1] + 20, 20, new double[] {0, 0, 0}, DP);
 		
-		DP.DrawText(new int[] {canvas.getPos().x + canvas.getSize()[0], canvas.getPos().y + canvas.getSize()[1] + 15, 0}, String.valueOf(Util.Round(canvas.getDimension()[0], 3)) + " m", "Center", 0, "Bold", 13, Menus.palette[7]);
-		DP.DrawText(new int[] {canvas.getPos().x + 30, canvas.getPos().y - 10, 0}, String.valueOf(Util.Round(canvas.getDimension()[1], 3)) + " m", "Center", 0, "Bold", 13, Menus.palette[10]);
+		Point posCanvasDimX = new Point(canvas.getPos().x + canvas.getSize()[0], canvas.getPos().y + canvas.getSize()[1] + 15) ;
+		Point posCanvasDimY = new Point(canvas.getPos().x + 30, canvas.getPos().y - 10) ;
+		String canvasDimX = String.valueOf(Util.Round(canvas.getDimension()[0], 3)) + " m" ;
+		String canvasDimY = String.valueOf(Util.Round(canvas.getDimension()[1], 3)) + " m" ;
+		DP.drawText(posCanvasDimX, Align.center, canvasDimX, Menus.palette[7]) ;
+		DP.drawText(posCanvasDimY, Align.center, canvasDimY, Menus.palette[10]) ;
 		if (ShowCanvas)
 		{
 			canvas.draw( new double[] {Util.Round(canvas.getGridSpacing()[0], 1), Util.Round(canvas.getGridSpacing()[1], 1)}, DP);
@@ -264,68 +275,59 @@ public class MainPanel extends JPanel
 			canvas.drawGrid(2, DP) ;
 		}
 		Point2D.Double RealMousePos = canvas.inRealCoords(MenuFunctions.mousePos) ; // Util.ConvertToRealCoords(MenuFunctions.mousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension());
-		DrawMousePos(new int[] {BigAxisPos[0] + canvas.getSize()[0] / 2 - 60, BigAxisPos[1] + 40}, RealMousePos, Menus.palette[3], Menus.palette[0], DP);
+		drawMousePosWindow(new Point(BigAxisPos[0] + canvas.getSize()[0] / 2 - 60, BigAxisPos[1] + 20), RealMousePos, Menus.palette[3], Menus.palette[0]);
 	}
 	
-	public void DrawAxis(int[] Pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawingOnAPanel DP)
+	public void DrawAxis(int[] Pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawPrimitives DP)
 	{
     	int thickness = 2;
-		DP.DrawAxisArrow3D(new int[] {Pos[0] + sizex, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1], CanvasAngles[2]}, true, sizex, sizex / 40.0, Color.red);
-		DP.DrawAxisArrow3D(new int[] {Pos[0] + sizey, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1], CanvasAngles[2] - Math.PI/2.0}, true, sizey, sizey / 40.0, Color.green);
-		DP.DrawAxisArrow3D(new int[] {Pos[0] + sizez, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1] - Math.PI/2.0, CanvasAngles[2]}, true, sizez, sizez / 40.0, Color.blue);	// z points outward
+		Draw.DrawAxisArrow3D(new int[] {Pos[0] + sizex, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1], CanvasAngles[2]}, true, sizex, sizex / 40.0, Color.red, DP);
+		Draw.DrawAxisArrow3D(new int[] {Pos[0] + sizey, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1], CanvasAngles[2] - Math.PI/2.0}, true, sizey, sizey / 40.0, Color.green, DP);
+		Draw.DrawAxisArrow3D(new int[] {Pos[0] + sizez, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1] - Math.PI/2.0, CanvasAngles[2]}, true, sizez, sizez / 40.0, Color.blue, DP);	// z points outward
 	}
 	
-	private static void DrawMousePos(int[] Pos, Point2D.Double RealMousePos, Color bgcolor, Color contourcolor, DrawingOnAPanel DP)
+	private static void drawMousePosWindow(Point pos, Point2D.Double RealMousePos, Color bgcolor, Color contourcolor)
 	{
-		int[] RectSize = new int[] {40, 18};
-		int RectThick = 1;
-		int FontSize = 13;
-		DP.DrawRoundRect(new int[] {Pos[0] - 20, Pos[1] - RectSize[1] / 2 - 8}, "Left", 200, 24, 1, 5, 5, new Color[] {bgcolor}, contourcolor, true);
-		DP.DrawText(new int[] {Pos[0], Pos[1]}, "Mouse Pos:", "Left", 0, "Bold", FontSize, Color.black);
-		DP.DrawRect(new int[] {Pos[0] + 80, Pos[1] - RectSize[1] + FontSize / 3}, RectSize[0], RectSize[1], RectThick, "Left", 0, false, Color.black, null);
-		DP.DrawText(new int[] {Pos[0] + 85, Pos[1]}, String.valueOf(Util.Round(RealMousePos.x, 2)), "Left", 0, "Bold", FontSize, Color.black);
-		DP.DrawRect(new int[] {Pos[0] + 125, Pos[1] - RectSize[1] + FontSize / 3}, RectSize[0], RectSize[1], RectThick, "Left", 0, false, Color.black, null);
-		DP.DrawText(new int[] {Pos[0] + 130, Pos[1]}, String.valueOf(Util.Round(RealMousePos.y, 2)), "Left", 0, "Bold", FontSize, Color.black);
+		Dimension windowSize = new Dimension(200, 24) ;
+		DP.drawRoundRect(pos, Align.topLeft, windowSize, bgcolor, true);
+		DP.drawText(new Point(pos.x + 5, pos.y + windowSize.height / 2), Align.centerLeft, "Mouse at:", Menus.palette[0]) ;
+		DP.drawText(new Point(pos.x + 85, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.x, 2)) + " m", Menus.palette[0]) ;
+		DP.drawText(new Point(pos.x + 130, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.y, 2)) + " m", Menus.palette[0]) ;
 	}
 	
 	
-	private void drawStructureCreationWindow(List<Point3D> initalCoords, Point MousePos, int MemberThickness, StructureShape structshape, Color color, DrawingOnAPanel DP)
+	private void drawStructureCreationWindow(List<Point3D> initalCoords, Point MousePos, int MemberThickness, StructureShape structshape, Color color)
 	{
-		Point InitPoint = canvas.inDrawingCoords(initalCoords.get(0));
-		// Util.ConvertToDrawingCoords(new double[] {InitCoords.get(0).x, InitCoords.get(0).y}, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos());
-		int[] mousePos = new int[] {(int) MousePos.x, (int) MousePos.y};
-		if (structshape.equals(StructureShape.rectangular))
+		Point topLeftCorner = canvas.inDrawingCoords(initalCoords.get(0));
+		switch (structshape)
 		{
-			DP.DrawLine(InitPoint, new Point(MousePos.x, InitPoint.y), MemberThickness, color);
-			DP.DrawLine(InitPoint, new Point(InitPoint.x, MousePos.y), MemberThickness, color);
-			DP.DrawLine(new int[] {MousePos.x, InitPoint.y}, mousePos, MemberThickness, color);
-			DP.DrawLine(new int[] {InitPoint.x, MousePos.y}, mousePos, MemberThickness, color);
-		}
-		else if (structshape.equals(StructureShape.circular))
-		{
-			DP.DrawCircle(InitPoint, (int)(2*Util.dist(MousePos, InitPoint)), MemberThickness, true, true, Color.black, color);
-		}
-		else if (structshape.equals(StructureShape.polygonal))
-		{
-			int[] FinalPoint = new int[] {(int) initalCoords.get(initalCoords.size() - 1).x, (int) initalCoords.get(initalCoords.size() - 1).y};
-			int[] xCoords = new int[initalCoords.size()], yCoords = new int[initalCoords.size()];
-			for (int i = 0; i <= initalCoords.size() - 1; i += 1)
-			{
-				xCoords[i] = (int) initalCoords.get(i).x;
-				yCoords[i] = (int) initalCoords.get(i).y;
-			}
-			DP.DrawPolyLine(xCoords, yCoords, MemberThickness, color);
-			DP.DrawLine(FinalPoint, new int[] {MousePos.x, MousePos.y}, MemberThickness, color);
-		}
-		else
-		{
-			System.out.println("Structure shape not identified at Visuals -> DrawElemAddition");
+			case rectangular:
+				DP.drawRect(topLeftCorner, Align.topLeft, new Dimension(MousePos.x - topLeftCorner.x, MousePos.y - topLeftCorner.y), color, color) ;
+				return ;
+
+			case circular:
+				DP.drawCircle(topLeftCorner, (int)(2*Util.dist(MousePos, topLeftCorner)), color);
+				return ;
+
+			case polygonal:				
+				Point FinalPoint = canvas.inDrawingCoords(initalCoords.get(initalCoords.size() - 1)) ;
+				List<Point> drawingPoints = new ArrayList<>() ;
+				for (int i = 0; i <= initalCoords.size() - 1; i += 1)
+				{
+					drawingPoints.add(canvas.inDrawingCoords(initalCoords.get(i))) ;
+				}
+				DP.drawPolyLine(drawingPoints, MemberThickness, color) ;
+				DP.drawLine(FinalPoint, MousePos, color) ;
+
+				return ;
+		
+			default: System.out.println("Structure shape not identified at Visuals -> DrawElemAddition"); return;
 		}
 	}
 
-	public void displayContent(Structure structure, int[] MainPanelPos, DrawingOnAPanel DP)
+	public void displayContent(Structure structure, int[] MainPanelPos, DrawPrimitives DP)
 	{
-		displayCanvasElements(canvas, showCanvas, showGrid, showMousePos);
+		displayCanvasElements(canvas, showCanvas, showGrid, showMousePos, DP);
 		if (structure.getCoords() != null && structure.getCenter() != null)
 		{
 			structure.displayShape(canvas, DP) ;
@@ -334,7 +336,7 @@ public class MainPanel extends JPanel
 		canvas.drawCenter(DP) ;
 		if (StructureCreationIsOn && structure.getCoords() != null)
 		{
-			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.mousePos, 2, structure.getShape(), Menus.palette[6], DP);
+			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.mousePos, 2, structure.getShape(), Menus.palette[6]);
 		}
 		if (showElems && structure.getMesh() != null && structure.getMesh().getElements() != null)
 		{
@@ -354,13 +356,17 @@ public class MainPanel extends JPanel
 			DrawResults(canvas, structure, MenuFunctions.SelectedElems, SelectedVar,
 			MenuFunctions.ShowElemContour, showDeformedStructure,
 			MenuFunctions.DiagramScales, ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces,
-			MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
+			MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo);
 			
 			if (MenuFunctions.ShowReactionArrows && structure.getReactions() != null)
 			{
-				DP.DrawReactions3D(structure.getMesh().getNodes(), structure.getReactions(),
-				structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues,
-				Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas);
+				// DP.DrawReactions3D(structure.getMesh().getNodes(), structure.getReactions(),
+				// 	structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues,
+				// 	Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas, DPP);
+
+				Reactions.display3D(structure.getMesh().getNodes(), structure.getReactions(),
+						structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues,
+						Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas, DP);
 			}
 		}
 		if (MenuFunctions.ShowSup && structure.getSupports() != null)
@@ -373,25 +379,27 @@ public class MainPanel extends JPanel
 		}
 		if (MenuFunctions.ShowDistLoads && loading != null && loading.getDistLoads() != null)
 		{
-			DP.DrawDistLoads3D(structure.getMesh(), loading.getDistLoads(), MenuFunctions.ShowLoadsValues, DistLoad.color,
-			showDeformedStructure, structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas);
+			Draw.DrawDistLoads3D(structure.getMesh(), loading.getDistLoads(), MenuFunctions.ShowLoadsValues, DistLoad.color,
+				showDeformedStructure, structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas, DP);
 		}
 		if (MenuFunctions.ShowNodalDisps && loading != null && loading.getNodalDisps() != null)
 		{
-			DP.DrawNodalDisps3D(structure.getMesh().getNodes(), loading.getNodalDisps(), structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
+			Draw.DrawNodalDisps3D(structure.getMesh().getNodes(), loading.getNodalDisps(), structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
 			NodalDisp.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
 		if (MenuFunctions.ShowDOFNumber && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
-			DP.DrawDOFNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas);
+			Draw.DrawDOFNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas, DP);
 		}
 		if (MenuFunctions.ShowNodeNumber && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
-			DP.DrawNodeNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas);
+			// DP.DrawNodeNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas);
+			structure.getMesh().displayNodeNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas, DP) ;
 		}
 		if (MenuFunctions.ShowElemNumber && structure.getMesh() != null &&  structure.getMesh().getElements() != null)
 		{
-			DP.DrawElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas);
+			// DP.DrawElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas);
+			structure.getMesh().displayElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas, DP) ;
 		}
 		// if (showNodeSelectionWindow)
 		// {
@@ -399,7 +407,7 @@ public class MainPanel extends JPanel
 		// }
 		if (showElemSelectionWindow)
 		{
-			DP.DrawSelectionWindow(MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.mousePos);
+			DrawSelectionWindow(MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.mousePos, DP);
 		}
 		if (MenuFunctions.ShowElemDetails && MenuFunctions.SelectedElemType != null)
 		{
@@ -413,6 +421,15 @@ public class MainPanel extends JPanel
 
 	}
 
+	public void DrawSelectionWindow(Point InitPos, Point FinalPos, DrawPrimitives DP)
+	{
+		Dimension size = new Dimension(FinalPos.x - InitPos.x, FinalPos.y - InitPos.y) ;
+		if (InitPos.x <= FinalPos.x && InitPos.y <= FinalPos.y)
+		{
+			DP.drawRect(InitPos, Align.topLeft, size, Menus.palette[0], null) ;
+		}
+	}
+
 	public void switchDisplay(int selectedDiagram, int selectedVar)
 	{
 		if (selectedVar <= -1) { return ;}
@@ -424,11 +441,14 @@ public class MainPanel extends JPanel
 		ShowInternalForces = selectedDiagram == 3;
 	}
 
+
+	// Results
+
 	public static void DrawResults(MyCanvas canvas, Structure structure, int[] SelectedElems, int selectedvar,
 			boolean ShowElemContour, boolean ShowDeformedStructure,
 			double[] DiagramsScales, boolean ShowDisplacementContour, boolean ShowStressContour,
 			boolean ShowStrainContour, boolean ShowInternalForces,
-			boolean NonlinearMat, boolean NonlinearGeo, DrawingOnAPanel DP)
+			boolean NonlinearMat, boolean NonlinearGeo)
 	{
 		List<Node> nodes = structure.getMesh().getNodes();
 		List<Element> elems = structure.getMesh().getElements();
@@ -437,33 +457,165 @@ public class MainPanel extends JPanel
 			if (ShowDisplacementContour)
 			{
 				canvas.setTitle("Deslocamentos (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
 				structure.getResults().getDispMin()[selectedvar], structure.getResults().getDispMax()[selectedvar], "Displacement", selectedvar,
-				NonlinearMat, NonlinearGeo, "Red to green", canvas);
+				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
 			}
 			else if (ShowStressContour)
 			{
 				canvas.setTitle("Tensâes (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
 				structure.getResults().getStressMin()[selectedvar], structure.getResults().getStressMax()[selectedvar], "Stress", selectedvar, 
-				NonlinearMat, NonlinearGeo, "Red to green", canvas);
+				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
 			}
 			else if (ShowStrainContour)
 			{
 				canvas.setTitle("Deformaçõs (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
 				structure.getResults().getStrainMin()[selectedvar], structure.getResults().getStrainMax()[selectedvar], "Strain", selectedvar,
-				NonlinearMat, NonlinearGeo, "Red to green", canvas);
+				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
 			}
 			else if (ShowInternalForces)
 			{
 				canvas.setTitle("Forâas internas (x " + String.valueOf(Util.Round(DiagramsScales[1], 3)) + ")");
-				DP.DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
+				DrawContours3D(elems, nodes, SelectedElems, ShowElemContour, ShowDeformedStructure, DiagramsScales[1],
 				structure.getResults().getInternalForcesMin()[selectedvar], structure.getResults().getInternalForcesMax()[selectedvar], "Force", selectedvar,
-				NonlinearMat, NonlinearGeo, "Red to green", canvas);
+				NonlinearMat, NonlinearGeo, "Red to green", canvas, DP);
 			}
 		}
 	}
+
+
+	public static void DrawContours3D(List<Element> Elem, List<Node> nodes, int[] SelectedElems, boolean showelemcontour, boolean condition,
+			double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, String ColorSystem,
+			MyCanvas canvas, DrawPrimitives DP)
+	{
+		int Ninterpoints = 0;
+		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
+		{
+			/* Get edge nodes and coordinates*/
+			int[] EdgeNodes = Elem.get(elem).getExternalNodes();
+			double[][] EdgeCoords = new double[EdgeNodes.length][3];
+			for (int node = 0; node <= EdgeNodes.length - 1; node += 1)
+			{
+				if (condition)
+				{
+					EdgeCoords[node] = Util.ScaledDefCoords(nodes.get(EdgeNodes[node]).getOriginalCoords(), nodes.get(EdgeNodes[node]).getDisp(), nodes.get(node).getDOFType(), Defscale);
+				}
+				else
+				{
+					EdgeCoords[node] = Util.GetNodePos(nodes.get(EdgeNodes[node]), condition);
+				}
+			}
+			
+			/* Get contour coordinates */
+			double[][] ContourCoords = new double[EdgeNodes.length * (1 + Ninterpoints)][3];
+			for (int node = 0; node <= EdgeNodes.length - 2; node += 1)
+			{
+				double[] Line = new double[] {EdgeCoords[node][0], EdgeCoords[node][1], EdgeCoords[node][2], EdgeCoords[node + 1][0], EdgeCoords[node + 1][1], EdgeCoords[node + 1][2]};
+				for (int i = 0; i <= Ninterpoints; i += 1)
+				{
+					double offset = i / (double)(Ninterpoints + 1);
+					double[] NewCoord = Util.CreatePointInLine(Line, offset);
+					ContourCoords[node * (Ninterpoints + 1) + i] = NewCoord;
+				}
+			}			
+			double[] Line = new double[] {EdgeCoords[EdgeNodes.length - 1][0], EdgeCoords[EdgeNodes.length - 1][1], EdgeCoords[EdgeNodes.length - 1][2], EdgeCoords[0][0], EdgeCoords[0][1], EdgeCoords[0][2]};
+			for (int i = 0; i <= Ninterpoints; i += 1)
+			{
+				double offset = i / (double)(Ninterpoints + 1);
+				double[] NewCoord = Util.CreatePointInLine(Line, offset);
+				ContourCoords[(EdgeNodes.length - 1) * (Ninterpoints + 1) + i] = NewCoord;
+			}
+
+			/* Get displacements on contour */
+			double[] ContourValue = new double[ContourCoords.length];
+			if (Elem.get(elem).getShape().equals(ElemShape.rectangular) | Elem.get(elem).getShape().equals(ElemShape.r8))
+			{
+				double L = 2 * Elem.get(elem).calcHalfSize(nodes)[0];
+				double H = 2 * Elem.get(elem).calcHalfSize(nodes)[1];
+				double[] CenterCoords = Elem.get(elem).getCenterCoords();
+				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
+				{
+					double[] natCoords = Util.InNaturalCoordsRect(CenterCoords, L, H, ContourCoords[point]);
+					double e = natCoords[0];
+					double n = natCoords[1];
+					
+					if (-1 < selecteddof)
+					{
+						if (ResultType.equals("Displacement"))
+						{
+							double[] disp = Elem.get(elem).getDisp();
+							ContourValue[point] = Analysis.DispOnPoint(nodes, Elem.get(elem), e, n, selecteddof, disp);
+						}
+						else if (ResultType.equals("Strain"))
+						{
+							double[] strain = Elem.get(elem).getStrain();
+							ContourValue[point] = Analysis.StrainOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, strain);
+						}
+						else if (ResultType.equals("Stress"))
+						{
+							double[] stress = Elem.get(elem).getStress();
+							ContourValue[point] = Analysis.StressOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, stress);
+						}
+						else if (ResultType.equals("Force"))
+						{
+							double[] force = Elem.get(elem).getIntForces();
+							ContourValue[point] = Analysis.ForceOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, force);
+						}
+					}
+					ContourCoords[point][2] = ContourValue[point] * Defscale;
+				}
+			}
+			else if (Elem.get(elem).getShape().equals(ElemShape.triangular))
+			{			
+				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
+				{
+					double[] natCoords = Util.InNaturalCoordsTriangle(EdgeCoords, ContourCoords[point]);
+					double[] u = Elem.get(elem).getDisp();
+					ContourValue[point] = Analysis.DispOnPoint(nodes, Elem.get(elem), natCoords[0], natCoords[1], selecteddof, u);
+				}
+			}
+
+			/* Draw the contour */
+			int[][] DrawingCoords = new int[ContourCoords.length][3];
+			int[] xCoords = new int[ContourCoords.length], yCoords = new int[ContourCoords.length];
+			double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+			Color[] colors = new Color[ContourCoords.length];
+			Arrays.fill(colors, new Color(0, 100, 55));
+			
+			for (int point = 0; point <= ContourCoords.length - 1; point += 1)
+			{
+				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				xCoords[point] = DrawingCoords[point][0];
+				yCoords[point] = DrawingCoords[point][1];
+				colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, ColorSystem);
+			}
+			
+			// DP.DrawGradPolygon(xCoords, yCoords, thick, false, true, Color.black, colors);
+			double equivalentDiameter = (Util.FindMax(xCoords) - Util.FindMin(xCoords) + Util.FindMax(yCoords) - Util.FindMin(yCoords)) / 2.0 ;
+			Color avrColor = Util.AverageColor(colors) ;
+			DP.drawGradPolygon(xCoords, yCoords, equivalentDiameter, avrColor, colors) ;
+			if (showelemcontour)
+			{
+				// DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, null);
+				DP.drawPolygon(xCoords, yCoords, Menus.palette[0]) ;
+			}
+			if (SelectedElems != null)
+			{
+				for (int i = 0; i <= SelectedElems.length - 1; i += 1)
+				{
+					if (elem == SelectedElems[i])
+					{
+						// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
+						DP.drawPolygon(xCoords, yCoords, Menus.palette[4]) ;
+					}
+				}
+			}		
+		}
+		
+	}
+
 	
 
 	public void NodeAddition(int[] MainPanelPos)
@@ -805,11 +957,11 @@ public class MainPanel extends JPanel
 	}
 
 	@Override
-    public void paintComponent(Graphics g) 
+    public void paintComponent(Graphics graphs) 
     {
-        super.paintComponent(g);
+        super.paintComponent(graphs);
         MenuFunctions.updateMousePosRelToPanelPos(panelPos) ;
-        DP.setG(g);
+		DP.setGraphics((Graphics2D) graphs) ;
 		this.displayContent(MainPanel.structure, panelPos, DP);
 		repaint();
     }

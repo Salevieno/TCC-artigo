@@ -8,12 +8,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.mainTCC.MenuFunctions;
-import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
+
+import graphics.Align;
+import graphics.DrawPrimitives;
 
 public class Mesh
 {
@@ -27,7 +30,7 @@ public class Mesh
     }
 
     
-	public static void DrawElemDetails(ElemType elemType, MyCanvas canvas, DrawingOnAPanel DP)
+	public static void DrawElemDetails(ElemType elemType, MyCanvas canvas, DrawPrimitives DP)
 	{
 		Point3D RealStructCenter = new Point3D(5, 5, 0);
 		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
@@ -86,14 +89,116 @@ public class Mesh
 				nodes.get(node).dofs[dof] = Elem.getCumDOFs()[node] + dof;
 			}
 		}
-		DP.DrawNodes3D(nodes, null, Node.color, false, nodes.get(0).getDOFType(), 1, canvas);
-		DP.DrawElements3D(new Mesh(nodes, List.of(Elem)), null, false, false, true, false, 1, canvas);
-		DP.DrawDOFNumbers(nodes, Node.color, false, canvas);
-		DP.DrawDOFSymbols(nodes, Node.color, false, canvas);
-		DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)}, elemType.toString(), "Center", 0, "Bold", textSize, textColor);
-		DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1]}, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), "Center", 0, "Bold", textSize, textColor);
-		DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deformaçõs: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
+		DrawNodes3D(nodes, null, Node.color, false, nodes.get(0).getDOFType(), 1, canvas, DP);
+		Element.draw3D(new Mesh(nodes, List.of(Elem)), null, false, false, true, false, 1, canvas, DP);
+		Draw.DrawDOFNumbers(nodes, Node.color, false, canvas, DP);
+		DrawDOFSymbols(nodes, Node.color, false, canvas, DP);
+		// DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)}, elemType.toString(), "Center", 0, "Bold", textSize, textColor);
+		// DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1]}, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), "Center", 0, "Bold", textSize, textColor);
+		// DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deformaçõs: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
+	
+		Point p1 = new Point(DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)) ;
+		Point p2 = new Point(DrawingStructCenter[0], DrawingStructCenter[1]) ;
+		Point p3 = new Point(DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)) ;
+
+		DP.drawText(p1, Align.center, elemType.toString(), textColor) ;
+		DP.drawText(p2, Align.center, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), textColor) ;
+		DP.drawText(p3, Align.center, "Deformaçõs: " + Arrays.toString(Elem.getStrainTypes()), textColor) ;
 	}
+
+	
+	private static void DrawNodes3D(List<Node> Node, List<Node> selectedNodes, Color NodeColor, boolean deformed,
+									int[] DOFsPerNode, double Defscale, MyCanvas canvas, DrawPrimitives DP)
+	{
+		int size = 6;
+		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		for (int node = 0; node <= Node.size() - 1; node += 1)
+		{
+			int[][] DrawingCoords = new int[Node.size()][3];
+			if (deformed)
+			{
+				double[] DeformedCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsPerNode, Defscale);
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+			}
+			else
+			{
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+			}
+			Point drawingCoords = new Point(DrawingCoords[node][0], DrawingCoords[node][1]) ;
+			DP.drawCircle(drawingCoords, size, NodeColor);
+			if (selectedNodes != null)
+			{
+				for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
+				{
+					if (node == selectedNodes.get(i).getID())
+					{
+						DP.drawCircle(drawingCoords, 2*size, Menus.palette[4]);
+					}
+				}
+			}
+		}
+	}
+
+	
+	private static void DrawDOFSymbols(List<Node> Node, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
+	{
+		Color ForceDOFColor = Menus.palette[8];
+		Color MomentDOFColor = Menus.palette[9];
+		Color CrossDerivativeDOFColor = Menus.palette[11];
+		Color ShearRotationDOFColor = Menus.palette[11];
+		int thickness = 2;
+		double arrowsize = 0.5;
+		for (int node = 0; node <= Node.size() - 1; node += 1)
+		{
+			double[] NodeRealPos = Util.GetNodePos(Node.get(node), deformed);
+			for (int dof = 0; dof <= Node.get(node).dofs.length - 1; dof += 1)
+			{
+				if (Node.get(node).getDOFType()[dof] == 0)
+				{
+					Draw.DrawArrow3Dto(NodeRealPos, thickness, new double[] {0, 0, 0}, arrowsize, 0.3 * arrowsize, ForceDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 1)
+				{
+					Draw.DrawArrow3Dto(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, arrowsize, 0.3 * arrowsize, ForceDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 2)
+				{
+					Draw.DrawArrow3Dto(NodeRealPos, thickness, new double[] {0, Math.PI / 2, 0}, arrowsize, 0.3 * arrowsize, ForceDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 3)
+				{
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 1.5 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 1.8 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 4)
+				{
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 1.5 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 1.8 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 5)
+				{
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, Math.PI / 2, 0}, 1.5 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, Math.PI / 2, 0}, 1.8 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 6)
+				{
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 4}, 1.5 * arrowsize, 0.3 * arrowsize, CrossDerivativeDOFColor, canvas, DP);
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 4}, 1.8 * arrowsize, 0.3 * arrowsize, CrossDerivativeDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 7)
+				{
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 0.7 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 1.0 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
+				}
+				if (Node.get(node).getDOFType()[dof] == 8)
+				{
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 0.7 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
+					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 1.0 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
+				}
+			}	
+		}	
+	}
+
 
     public void reset()
     {
@@ -528,18 +633,57 @@ public class Mesh
 	}
 
 
-	public void displayElements(MyCanvas canvas, double defScale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
+	public void displayElements(MyCanvas canvas, double defScale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawPrimitives DP)
 	{		
 		elems.forEach(elem -> elem.display(canvas, nodes, showmatcolor, showseccolor, showcontour, showdeformed, defScale, DP)) ;
 	}
 
-	public void displayNodes(List<Node> selectedNodes, boolean deformed, double Defscale, MyCanvas canvas, DrawingOnAPanel DP)
+	public void displayElemNumbers(Mesh mesh, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
+	{
+		List<Node> Node = mesh.getNodes();
+		List<Element> Elem = mesh.getElements();
+		// int FontSize = 13;
+		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
+		{
+			int[] DrawingCoords = new int[2];
+			for (int elemnode = 0; elemnode <= Elem.get(elem).getExternalNodes().length - 1; elemnode += 1)
+			{
+				int nodeID = Elem.get(elem).getExternalNodes()[elemnode];
+				Node node = Node.get(nodeID) ;
+				Point3D nodeDeformedPos = new Point3D(Util.GetNodePos(node, deformed)[0], Util.GetNodePos(node, deformed)[1], Util.GetNodePos(node, deformed)[2]) ;
+				// Point3D nodeDeformedPos = new Point3D(node.deformedPos()[0], deformed)[0], Util.GetNodePos(Node.get(nodeID), deformed)[1], Util.GetNodePos(Node.get(nodeID), deformed)[2]) ;
+				Point nodeDeformedPosInDrawingCoords = canvas.inDrawingCoords(nodeDeformedPos) ;
+				DrawingCoords[0] += nodeDeformedPosInDrawingCoords.x;
+				DrawingCoords[1] += nodeDeformedPosInDrawingCoords.y;
+				// DrawingCoords[0] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[0];
+				// DrawingCoords[1] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[1];
+			}
+			DrawingCoords[0] = DrawingCoords[0] / Elem.get(elem).getExternalNodes().length;
+			DrawingCoords[1] = DrawingCoords[1] / Elem.get(elem).getExternalNodes().length;
+			// DrawText(DrawingCoords, Integer.toString(elem), "Center", 0, "Bold", FontSize, NodeColor);		
+			DP.drawText(new Point(DrawingCoords[0], DrawingCoords[1]), Align.center, String.valueOf(elem), NodeColor) ;
+		}	
+	}
+
+	public void displayNodes(List<Node> selectedNodes, boolean deformed, double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		int[] dofs = elems.get(0).getDOFs() ;
 		nodes.forEach(node -> node.display(canvas, dofs, deformed, Defscale, deformed, DP)) ;
 	}
 
-	public void display(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
+	public void displayNodeNumbers(List<Node> Node, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
+	{
+		int offset = 6;
+		for (int node = 0; node <= Node.size() - 1; node += 1)
+		{
+			// int[][] DrawingCoords = new int[Node.size()][];
+			int[] DrawingCoords = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node.get(node), deformed), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+			Point pos = new Point((int)(DrawingCoords[0] + offset), (int)(DrawingCoords[1] + 14)) ;
+			DP.drawText(pos, Align.topLeft, String.valueOf(node), NodeColor) ;		
+		}	
+	}
+
+	public void display(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawPrimitives DP)
 	{
 		if (elems != null && ! elems.isEmpty())
 		{

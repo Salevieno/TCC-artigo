@@ -12,12 +12,13 @@ import org.example.loading.DistLoad;
 import org.example.loading.Loading;
 import org.example.mainTCC.MenuFunctions;
 import org.example.output.Results;
-import org.example.userInterface.DrawingOnAPanel;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
+
+import graphics.DrawPrimitives;
 
 public class Structure
 {
@@ -294,7 +295,7 @@ public class Structure
 	
 	public void removeSupports() { supports = null ;}
 
-	public void displayShape(MyCanvas canvas, DrawingOnAPanel DP)
+	public void displayShape(MyCanvas canvas, DrawPrimitives DP)
 	{		
 		int countourStroke = 2;
 		List<Point> drawingCoords = new ArrayList<>() ;
@@ -305,20 +306,21 @@ public class Structure
 			drawingCoords.add(drawingCoord) ;
 		}
 
-		DP.DrawPolygon(drawingCoords, countourStroke, true, true, color, color);
+		DP.drawPolygon(drawingCoords, countourStroke, color);
+		DP.drawPolyLine(drawingCoords, countourStroke, color);
 	}
 
-	public void displayMesh(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawingOnAPanel DP)
+	public void displayMesh(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawPrimitives DP)
 	{
 		mesh.display(canvas, Defscale, showmatcolor, showseccolor, showcontour, showdeformed, DP) ;
 	}
 
-	public void displaySupports(MyCanvas canvas, DrawingOnAPanel DP)
+	public void displaySupports(MyCanvas canvas, DrawPrimitives DP)
 	{
 		supports.forEach(sup -> sup.dispaly(canvas, DP)) ;
 	}
 
-	public void displayConcLoads(MyCanvas canvas, boolean deformed, DrawingOnAPanel DP)
+	public void displayConcLoads(MyCanvas canvas, boolean deformed, DrawPrimitives DP)
 	{
 		double maxLoad = Util.FindMaxConcLoad(MainPanel.loading.getConcLoads());
 		for (Node node : mesh.getNodes())

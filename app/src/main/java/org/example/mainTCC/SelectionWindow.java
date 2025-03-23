@@ -1,13 +1,17 @@
 package org.example.mainTCC;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.example.structure.Node;
-import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
+
+import graphics.Align;
+import graphics.DrawPrimitives;
 
 public class SelectionWindow
 {
@@ -26,15 +30,14 @@ public class SelectionWindow
     }
 
     
-	public void display(Point mousePos, DrawingOnAPanel DP)
+	public void display(Point mousePos, DrawPrimitives DP)
 	{
         if (topLeftPos == null || mousePos == null) { return ; }
 
-		int[] RectPos = new int[] {topLeftPos.x, topLeftPos.y};
-		int l = mousePos.x - topLeftPos.x, h = mousePos.y - topLeftPos.y;
+		Dimension size = new Dimension(mousePos.x - topLeftPos.x, mousePos.y - topLeftPos.y) ;
 		if (topLeftPos.x <= mousePos.x && topLeftPos.y <= mousePos.y)
 		{
-			DP.DrawRect(RectPos, l, h, 1, "Left", 0, false, Menus.palette[0], null);
+            DP.drawRect(topLeftPos, Align.topLeft, size, null, Menus.palette[0]) ;
 		}
 	}
 

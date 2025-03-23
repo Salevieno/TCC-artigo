@@ -9,11 +9,13 @@ import java.util.List;
 
 import org.example.loading.ConcLoad;
 import org.example.loading.NodalDisp;
-import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
+
+import graphics.DrawPrimitives;
 
 public class Node
 {
@@ -66,10 +68,10 @@ public class Node
 
 
 
-	public void display(MyCanvas canvas, int[] dofs, boolean deformed, double defScale, boolean selected, DrawingOnAPanel DP)
+	public void display(MyCanvas canvas, int[] dofs, boolean deformed, double defScale, boolean selected, DrawPrimitives DP)
 	{
 		Point drawingCoords = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
-		DP.DrawCircle(drawingCoords, size, stroke, false, true, Color.black, color);
+		DP.drawCircle(drawingCoords, size, stroke, Menus.palette[0], color);
 		// if (selectedNodes != null)
 		// {
 		// 	for (int i = 0; i <= selectedNodes.size() - 1; i += 1)

@@ -6,11 +6,13 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 
 import org.example.structure.Node;
-import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
+
+import graphics.DrawPrimitives;
 
 public class ConcLoad
 {
@@ -34,7 +36,26 @@ public class ConcLoad
 		this.Loads = Loads;
 	}
 
-	public void display(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawingOnAPanel DP)
+	public static void DrawPL3D(double[] RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas, DrawPrimitives DP)
+    {
+    	if (dof == 0)		// Fx
+    	{
+			double[] angle = new double[] {0, 0, 0};
+			Draw.DrawArrow3Dto(RealPos, thickness, angle, size, size / 4.0, color, canvas, DP);
+    	}
+    	else if (dof == 1)	// Fy
+    	{
+			double[] angle = new double[] {0, 0, 0 - Math.PI/2.0};
+			Draw.DrawArrow3Dto(RealPos, thickness, angle, size, size / 4.0, color, canvas, DP);	
+    	}
+    	else if (dof == 2)	// Fz
+    	{
+			double[] angle = new double[] {0, 0 + Math.PI/2.0, 0};
+			Draw.DrawArrow3Dto(RealPos, thickness, angle, size, size / 4.0, color, canvas, DP);
+    	}
+    }
+
+	public void display(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		Node node = MainPanel.structure.getMesh().getNodes().get(NodeID) ;
 		double[] point = deformed ? Util.ScaledDefCoords(node.getOriginalCoords(), node.getDisp(), ElemDOFs, defScale) : node.getOriginalCoords().asArray();
@@ -49,7 +70,7 @@ public class ConcLoad
 				int displaySize = (int)(maxDisplaySize * LoadIntensity / maxLoad);
 				if (ElemDOFs[dof] <= 2)
 				{
-					DP.DrawPL3D(point, displaySize, stroke, canvas.getAngles(), ElemDOFs[dof], color, canvas);
+					DrawPL3D(point, displaySize, stroke, canvas.getAngles(), ElemDOFs[dof], color, canvas, DP);
 				}
 				else
 				{
@@ -60,7 +81,7 @@ public class ConcLoad
 			{
 				// int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(point, DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				Point drawingDefCoords = canvas.inDrawingCoords(new Point2D.Double(point[0], point[1])) ;
-				DP.DrawLoadValues(new int[] {drawingDefCoords.x, drawingDefCoords.y, 0}, ElemDOFs, dof, LoadIntensity, color);
+				Draw.DrawLoadValues(new int[] {drawingDefCoords.x, drawingDefCoords.y, 0}, ElemDOFs, dof, LoadIntensity, color, DP);
 			}
 		}
 		

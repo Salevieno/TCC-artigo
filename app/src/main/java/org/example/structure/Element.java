@@ -8,11 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.DistLoad;
-import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
+
+import graphics.DrawPrimitives;
 
 public class Element
 {
@@ -78,45 +80,6 @@ public class Element
 		this(ID, ExternalNodes, null, type);
 	}
 
-
-	public int getID() {return ID;}
-	public ElemShape getShape() {return Shape;}
-	public int[] getDOFs() {return DOFs;}
-	public int[][] getDOFsPerNode() {return DOFsPerNode;}
-	public int[] getStrainTypes() {return StrainTypes;}
-	public int[] getExternalNodes() {return externalNodes;}
-	public int[] getInternalNodes() {return internalNodes;}
-	public Material getMat() {return mat;}
-	public Section getSec() {return sec;}
-	public DistLoad[] getDistLoads() {return DistLoads;}
-	public double[] getDisp() {return Disp;}
-	public double[] getStress() {return Stress;}
-	public double[] getStrain() {return Strain;}
-	public double[] getIntForces() {return IntForces;}
-	public ElemType getType() {return type;}
-	public int[][] getNodeDOF() {return NodeDOF;}
-	public int[] getCumDOFs() {return CumDOFs;}
-	// public Color getMatColor () {return MatColor;}
-	// public Color getSecColor () {return SecColor;}
-	public void setID(int I) {ID = I;}
-	public void setShape(ElemShape S) {Shape = S;}
-	public void setDOFs(int[] D) {DOFs = D;}
-	public void setDOFsPerNode(int[][] D) {DOFsPerNode = D;}
-	public void setStrainTypes(int[] ST) {StrainTypes = ST;}
-	public void setExternalNodes(int[] N) {externalNodes = N;}
-	public void setInternalNodes(int[] N) {internalNodes = N;}
-	public void setMat(Material M) {mat = M;}
-	public void setSec(Section S) {sec = S;}
-	public void setDistLoads(DistLoad[] D) {DistLoads = D;}
-	public void setDisp(double[] D) {Disp = D;}
-	public void setStress(double[] S) {Stress = S;}
-	public void setStrain(double[] S) {Strain = S;}
-	public void setIntForces(double[] I) {IntForces = I;}
-	public void setType(ElemType T) {type = T;}
-	public void setCumDOFs(int[] C) {CumDOFs = C;}
-	public void setNodeDOF(int[][] N) {NodeDOF = N;}
-	// public void setMatColor (Color color) {MatColor = color;}
-	// public void setSecColor (Color color) {SecColor = color;}
 
 	public void DefineProperties(ElemType type)
 	{
@@ -269,12 +232,6 @@ public class Element
 		}
 	}
 	
-	public double[][] getUndeformedCoords(){ return UndeformedCoords ;}
-	
-	public double[][] getDeformedCoords(){ return DeformedCoords ;}
-	
-	public double[] getCenterCoords(){ return CenterCoords ;}	
-	
 	public void addDistLoad(DistLoad distLoad)
 	{
 		DistLoads = Util.AddElem(DistLoads, distLoad) ;
@@ -320,7 +277,7 @@ public class Element
 		SecColors = Util.RandomColors(SectionTypes.size());
 	}	
 	
-	public void display(MyCanvas canvas, List<Node> nodes, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double defScale, DrawingOnAPanel DP)
+	public void display(MyCanvas canvas, List<Node> nodes, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double defScale, DrawPrimitives DP)
 	{
 		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		// int[][] DrawingCoord = new int[Nodes.length][2]; 
@@ -366,10 +323,10 @@ public class Element
 		}
 		xCoords[externalNodes.length] = DrawingCoord.get(0).x;
 		yCoords[externalNodes.length] = DrawingCoord.get(0).y;
-		DP.DrawPolygon(xCoords, yCoords, stroke, false, true, Color.black, color);
+		DP.drawPolygon(xCoords, yCoords, stroke, color);
 		if (showcontour)
 		{
-			DP.DrawPolygon(xCoords, yCoords, stroke, true, false, Color.black, color);
+			DP.drawPolyLine(xCoords, yCoords, stroke, Menus.palette[0]);
 		}
 		// if (SelectedElems != null)
 		// {
@@ -1369,6 +1326,117 @@ public class Element
 		setIntForces(InternalForcesVec(Node, U, NonlinearMat, NonlinearGeo));
     
 	}
+
+	public static void draw3D(Mesh mesh, int[] SelectedElems,
+						boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed,
+						double Defscale, MyCanvas canvas, DrawPrimitives DP)
+	{
+		List<Node> Node = mesh.getNodes();
+		List<Element> Elem = mesh.getElements();
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
+		{
+			int[] Nodes = Elem.get(elem).getExternalNodes();
+			int[] ElemDOFs = Elem.get(elem).getDOFs();
+			int[][] DrawingCoord = new int[Nodes.length][2]; 
+			int[] xCoords = new int[Nodes.length + 1], yCoords = new int[Nodes.length + 1];
+			Color color = new Color(0, 100, 55);
+			if (Elem.get(elem).getMat() != null)
+			{
+				color = Util.AddColor(color, new double[] {0, -50, 100});
+			}
+			if (Elem.get(elem).getSec() != null)
+			{
+				color = Util.AddColor(color, new double[] {0, -50, 100});
+			}
+			if (showmatcolor && Elem.get(elem).getMat() != null)
+			{
+				color = Elem.get(elem).getMat().getColor() ;
+			}
+			if (showseccolor && Elem.get(elem).getSec() != null)
+			{
+				color = Elem.get(elem).getSec().getColor() ;
+			}
+			for (int node = 0; node <= Nodes.length - 1; node += 1)
+			{
+				if (showdeformed)
+				{
+					double[] DeformedCoords = Util.ScaledDefCoords(Node.get(Nodes[node]).getOriginalCoords(), Node.get(Nodes[node]).getDisp(), ElemDOFs, Defscale);
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				}
+				else
+				{
+					double[] OriginalCoords = Util.GetNodePos(Node.get(Nodes[node]), showdeformed);
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				}
+				xCoords[node] = DrawingCoord[node][0];
+				yCoords[node] = DrawingCoord[node][1];
+			}
+			xCoords[Nodes.length] = DrawingCoord[0][0];
+			yCoords[Nodes.length] = DrawingCoord[0][1];
+			// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, color);
+			DP.drawPolygon(xCoords, yCoords, color) ;
+			if (showcontour)
+			{
+				// DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, color);
+				DP.drawPolyLine(xCoords, yCoords, color) ;
+			}
+			if (SelectedElems != null)
+			{
+				for (int i = 0; i <= SelectedElems.length - 1; i += 1)
+				{
+					if (elem == SelectedElems[i])
+					{
+						// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
+						DP.drawPolygon(xCoords, yCoords, Menus.palette[4]) ;
+					}
+				}
+			}
+		}
+	}
+
+	public int getID() {return ID;}
+	public ElemShape getShape() {return Shape;}
+	public int[] getDOFs() {return DOFs;}
+	public int[][] getDOFsPerNode() {return DOFsPerNode;}
+	public int[] getStrainTypes() {return StrainTypes;}
+	public int[] getExternalNodes() {return externalNodes;}
+	public int[] getInternalNodes() {return internalNodes;}
+	public Material getMat() {return mat;}
+	public Section getSec() {return sec;}
+	public DistLoad[] getDistLoads() {return DistLoads;}
+	public double[] getDisp() {return Disp;}
+	public double[] getStress() {return Stress;}
+	public double[] getStrain() {return Strain;}
+	public double[] getIntForces() {return IntForces;}
+	public ElemType getType() {return type;}
+	public int[][] getNodeDOF() {return NodeDOF;}
+	public int[] getCumDOFs() {return CumDOFs;}	
+	public double[][] getUndeformedCoords(){ return UndeformedCoords ;}
+	public double[][] getDeformedCoords(){ return DeformedCoords ;}
+	public double[] getCenterCoords(){ return CenterCoords ;}
+	// public Color getMatColor () {return MatColor;}
+	// public Color getSecColor () {return SecColor;}
+	public void setID(int I) {ID = I;}
+	public void setShape(ElemShape S) {Shape = S;}
+	public void setDOFs(int[] D) {DOFs = D;}
+	public void setDOFsPerNode(int[][] D) {DOFsPerNode = D;}
+	public void setStrainTypes(int[] ST) {StrainTypes = ST;}
+	public void setExternalNodes(int[] N) {externalNodes = N;}
+	public void setInternalNodes(int[] N) {internalNodes = N;}
+	public void setMat(Material M) {mat = M;}
+	public void setSec(Section S) {sec = S;}
+	public void setDistLoads(DistLoad[] D) {DistLoads = D;}
+	public void setDisp(double[] D) {Disp = D;}
+	public void setStress(double[] S) {Stress = S;}
+	public void setStrain(double[] S) {Strain = S;}
+	public void setIntForces(double[] I) {IntForces = I;}
+	public void setType(ElemType T) {type = T;}
+	public void setCumDOFs(int[] C) {CumDOFs = C;}
+	public void setNodeDOF(int[][] N) {NodeDOF = N;}
+	// public void setMatColor (Color color) {MatColor = color;}
+	// public void setSecColor (Color color) {SecColor = color;}
+
 
 	@Override
 	public String toString()

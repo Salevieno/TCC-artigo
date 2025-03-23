@@ -1,12 +1,16 @@
 package org.example.utilidades;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
-import org.example.userInterface.DrawingOnAPanel;
+import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
+
+import graphics.Align;
+import graphics.DrawPrimitives;
 
 public class MyCanvas
 {
@@ -35,27 +39,24 @@ public class MyCanvas
 		angles = new double[] {0.0, 0.0, 0.0};
 	}
 
-	public void draw(String Title, double[] PointDist, DrawingOnAPanel DP)
+	public void draw(String Title, double[] PointDist, DrawPrimitives DP)
 	{
 		int[] NPoints = new int[] {(int) (size[0]/PointDist[0]), (int) (size[1]/PointDist[1])};
-		int CanvasThick = 1;
 		PointDist[0] = dimension[0]/NPoints[0];
 		PointDist[1] = dimension[1]/NPoints[1];
 		if (Title != null)
 		{
-			int FontSize = 18;
-			Color TextColor = Color.blue;
-			DP.DrawText(new int[] {pos.x + size[0] / 2, pos.y - FontSize, 0}, Title, "Center", 0, "Bold", FontSize, TextColor);
+			DP.drawText(new Point(pos.x + size[0] / 2, pos.y), Align.center, Title, Menus.palette[6]) ;
 		}
-		DP.DrawRect(pos, size[0], size[1], CanvasThick, "Left", 0, false, Color.black, Color.blue);
+		// DP.drawRect(pos, Align.topLeft, new Dimension(size[0], size[1]), null, Menus.palette[0]) ;
 	}
 
-	public void draw(double[] PointDist, DrawingOnAPanel DP)
+	public void draw(double[] PointDist, DrawPrimitives DP)
 	{
 		draw(title, PointDist, DP) ;
 	}
 	
-	public void drawGrid(int pointSize, DrawingOnAPanel DP)
+	public void drawGrid(int pointSize, DrawPrimitives DP)
 	{
 		int[] NPoints = CalculateNumberOfGridPoints(dimension);
 		double[] PointsDist = new double[2];
@@ -65,15 +66,15 @@ public class MyCanvas
 		{	
 			for (int j = 0; j <= NPoints[1]; j += 1)
 			{	
-				int[] Pos = new int[] {(int) (pos.x + i*PointsDist[0]), (int) (pos.y + j*PointsDist[1])};
-				DP.DrawCircle(Pos, pointSize, 1, true, true, Color.black, Color.black);
+				Point Pos = new Point((int) (pos.x + i*PointsDist[0]), (int) (pos.y + j*PointsDist[1])) ;
+				DP.drawCircle(Pos, pointSize, 1, Color.black, Color.black);
 			}
 		}
 	}	
 	
-	public void drawCenter(DrawingOnAPanel DP)
+	public void drawCenter(DrawPrimitives DP)
 	{
-		DP.DrawCircle(Center, 10, 1, false, true, Menus.palette[0], Menus.palette[7]);
+		DP.drawCircle(new Point(Center[0], Center[1]), 10, 1, Menus.palette[7], null);
 	}
 
 	public static int[] CalculateNumberOfGridPoints(double[] CanvasDim)
