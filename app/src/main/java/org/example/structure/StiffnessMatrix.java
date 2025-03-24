@@ -2,7 +2,7 @@ package org.example.structure;
 
 import java.util.List;
 
-public class ElementStiffnessMatrix
+public class StiffnessMatrix
 {	
 	public static double[][] KR1StiffnessMatrix(double[] ElemSize, double[][] Db, Section sec)
     {
