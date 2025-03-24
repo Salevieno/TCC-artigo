@@ -212,9 +212,9 @@ public abstract class Analysis
 				{
 					if (-1 < Node.get(node).dofs[dof])
 					{
-						if (Node.get(node).getDOFType()[dof] <= loading.getConcLoads().get(load).getLoads().length - 1)
+						if (Node.get(node).getDOFType()[dof] <= loading.getConcLoads().get(load).getForce().array().length - 1)
 						{
-							P[Node.get(node).dofs[dof]] += loading.getConcLoads().get(load).getLoads()[Node.get(node).getDOFType()[dof]] * loadfactor;
+							P[Node.get(node).dofs[dof]] += loading.getConcLoads().get(load).getForce().array()[Node.get(node).getDOFType()[dof]] * loadfactor;
 						}
 					}
 				}

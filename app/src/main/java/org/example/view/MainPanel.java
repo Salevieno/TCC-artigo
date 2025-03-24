@@ -13,7 +13,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -25,14 +24,12 @@ import javax.swing.border.BevelBorder;
 
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
+import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
-import org.example.mainTCC.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.mainTCC.SelectionWindow;
-import org.example.output.ColorSystem;
 import org.example.output.Diagram;
-import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -475,135 +472,135 @@ public class MainPanel extends JPanel
 	// }
 
 
-	public static void DrawContours3D(List<Element> Elem, List<Node> nodes, int[] SelectedElems, boolean showelemcontour, boolean condition,
-			double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, ColorSystem colorSystem,
-			MyCanvas canvas, DrawPrimitives DP)
-	{
-		int Ninterpoints = 0;
-		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-		{
-			/* Get edge nodes and coordinates*/
-			int[] EdgeNodes = Elem.get(elem).getExternalNodes();
-			double[][] EdgeCoords = new double[EdgeNodes.length][3];
-			for (int node = 0; node <= EdgeNodes.length - 1; node += 1)
-			{
-				if (condition)
-				{
-					EdgeCoords[node] = Util.ScaledDefCoords(nodes.get(EdgeNodes[node]).getOriginalCoords(), nodes.get(EdgeNodes[node]).getDisp(), nodes.get(node).getDOFType(), Defscale);
-				}
-				else
-				{
-					EdgeCoords[node] = Util.GetNodePos(nodes.get(EdgeNodes[node]), condition);
-				}
-			}
+	// public static void DrawContours3D(List<Element> Elem, List<Node> nodes, int[] SelectedElems, boolean showelemcontour, boolean condition,
+	// 		double Defscale, double minvalue, double maxvalue, String ResultType, int selecteddof, boolean NonlinearMat, boolean NonlinearGeo, ColorSystem colorSystem,
+	// 		MyCanvas canvas, DrawPrimitives DP)
+	// {
+	// 	int Ninterpoints = 0;
+	// 	for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
+	// 	{
+	// 		/* Get edge nodes and coordinates*/
+	// 		int[] EdgeNodes = Elem.get(elem).getExternalNodes();
+	// 		double[][] EdgeCoords = new double[EdgeNodes.length][3];
+	// 		for (int node = 0; node <= EdgeNodes.length - 1; node += 1)
+	// 		{
+	// 			if (condition)
+	// 			{
+	// 				EdgeCoords[node] = Util.ScaledDefCoords(nodes.get(EdgeNodes[node]).getOriginalCoords(), nodes.get(EdgeNodes[node]).getDisp(), nodes.get(node).getDOFType(), Defscale);
+	// 			}
+	// 			else
+	// 			{
+	// 				EdgeCoords[node] = Util.GetNodePos(nodes.get(EdgeNodes[node]), condition);
+	// 			}
+	// 		}
 			
-			/* Get contour coordinates */
-			double[][] ContourCoords = new double[EdgeNodes.length * (1 + Ninterpoints)][3];
-			for (int node = 0; node <= EdgeNodes.length - 2; node += 1)
-			{
-				double[] Line = new double[] {EdgeCoords[node][0], EdgeCoords[node][1], EdgeCoords[node][2], EdgeCoords[node + 1][0], EdgeCoords[node + 1][1], EdgeCoords[node + 1][2]};
-				for (int i = 0; i <= Ninterpoints; i += 1)
-				{
-					double offset = i / (double)(Ninterpoints + 1);
-					double[] NewCoord = Util.CreatePointInLine(Line, offset);
-					ContourCoords[node * (Ninterpoints + 1) + i] = NewCoord;
-				}
-			}			
-			double[] Line = new double[] {EdgeCoords[EdgeNodes.length - 1][0], EdgeCoords[EdgeNodes.length - 1][1], EdgeCoords[EdgeNodes.length - 1][2], EdgeCoords[0][0], EdgeCoords[0][1], EdgeCoords[0][2]};
-			for (int i = 0; i <= Ninterpoints; i += 1)
-			{
-				double offset = i / (double)(Ninterpoints + 1);
-				double[] NewCoord = Util.CreatePointInLine(Line, offset);
-				ContourCoords[(EdgeNodes.length - 1) * (Ninterpoints + 1) + i] = NewCoord;
-			}
+	// 		/* Get contour coordinates */
+	// 		double[][] ContourCoords = new double[EdgeNodes.length * (1 + Ninterpoints)][3];
+	// 		for (int node = 0; node <= EdgeNodes.length - 2; node += 1)
+	// 		{
+	// 			double[] Line = new double[] {EdgeCoords[node][0], EdgeCoords[node][1], EdgeCoords[node][2], EdgeCoords[node + 1][0], EdgeCoords[node + 1][1], EdgeCoords[node + 1][2]};
+	// 			for (int i = 0; i <= Ninterpoints; i += 1)
+	// 			{
+	// 				double offset = i / (double)(Ninterpoints + 1);
+	// 				double[] NewCoord = Util.CreatePointInLine(Line, offset);
+	// 				ContourCoords[node * (Ninterpoints + 1) + i] = NewCoord;
+	// 			}
+	// 		}			
+	// 		double[] Line = new double[] {EdgeCoords[EdgeNodes.length - 1][0], EdgeCoords[EdgeNodes.length - 1][1], EdgeCoords[EdgeNodes.length - 1][2], EdgeCoords[0][0], EdgeCoords[0][1], EdgeCoords[0][2]};
+	// 		for (int i = 0; i <= Ninterpoints; i += 1)
+	// 		{
+	// 			double offset = i / (double)(Ninterpoints + 1);
+	// 			double[] NewCoord = Util.CreatePointInLine(Line, offset);
+	// 			ContourCoords[(EdgeNodes.length - 1) * (Ninterpoints + 1) + i] = NewCoord;
+	// 		}
 
-			/* Get displacements on contour */
-			double[] ContourValue = new double[ContourCoords.length];
-			if (Elem.get(elem).getShape().equals(ElemShape.rectangular) | Elem.get(elem).getShape().equals(ElemShape.r8))
-			{
-				double L = 2 * Elem.get(elem).calcHalfSize(nodes)[0];
-				double H = 2 * Elem.get(elem).calcHalfSize(nodes)[1];
-				double[] CenterCoords = Elem.get(elem).getCenterCoords();
-				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
-				{
-					double[] natCoords = Util.InNaturalCoordsRect(CenterCoords, L, H, ContourCoords[point]);
-					double e = natCoords[0];
-					double n = natCoords[1];
+	// 		/* Get displacements on contour */
+	// 		double[] ContourValue = new double[ContourCoords.length];
+	// 		if (Elem.get(elem).getShape().equals(ElemShape.rectangular) | Elem.get(elem).getShape().equals(ElemShape.r8))
+	// 		{
+	// 			double L = 2 * Elem.get(elem).calcHalfSize(nodes)[0];
+	// 			double H = 2 * Elem.get(elem).calcHalfSize(nodes)[1];
+	// 			double[] CenterCoords = Elem.get(elem).getCenterCoords();
+	// 			for (int point = 0; point <= ContourCoords.length - 1; point += 1)
+	// 			{
+	// 				double[] natCoords = Util.InNaturalCoordsRect(CenterCoords, L, H, ContourCoords[point]);
+	// 				double e = natCoords[0];
+	// 				double n = natCoords[1];
 					
-					if (-1 < selecteddof)
-					{
-						if (ResultType.equals("Displacement"))
-						{
-							double[] disp = Elem.get(elem).getDisp();
-							ContourValue[point] = Analysis.DispOnPoint(nodes, Elem.get(elem), e, n, selecteddof, disp);
-						}
-						else if (ResultType.equals("Strain"))
-						{
-							double[] strain = Elem.get(elem).getStrain();
-							ContourValue[point] = Analysis.StrainOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, strain);
-						}
-						else if (ResultType.equals("Stress"))
-						{
-							double[] stress = Elem.get(elem).getStress();
-							ContourValue[point] = Analysis.StressOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, stress);
-						}
-						else if (ResultType.equals("Force"))
-						{
-							double[] force = Elem.get(elem).getIntForces();
-							ContourValue[point] = Analysis.ForceOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, force);
-						}
-					}
-					ContourCoords[point][2] = ContourValue[point] * Defscale;
-				}
-			}
-			else if (Elem.get(elem).getShape().equals(ElemShape.triangular))
-			{			
-				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
-				{
-					double[] natCoords = Util.InNaturalCoordsTriangle(EdgeCoords, ContourCoords[point]);
-					double[] u = Elem.get(elem).getDisp();
-					ContourValue[point] = Analysis.DispOnPoint(nodes, Elem.get(elem), natCoords[0], natCoords[1], selecteddof, u);
-				}
-			}
+	// 				if (-1 < selecteddof)
+	// 				{
+	// 					if (ResultType.equals("Displacement"))
+	// 					{
+	// 						double[] disp = Elem.get(elem).getDisp();
+	// 						ContourValue[point] = Analysis.DispOnPoint(nodes, Elem.get(elem), e, n, selecteddof, disp);
+	// 					}
+	// 					else if (ResultType.equals("Strain"))
+	// 					{
+	// 						double[] strain = Elem.get(elem).getStrain();
+	// 						ContourValue[point] = Analysis.StrainOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, strain);
+	// 					}
+	// 					else if (ResultType.equals("Stress"))
+	// 					{
+	// 						double[] stress = Elem.get(elem).getStress();
+	// 						ContourValue[point] = Analysis.StressOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, stress);
+	// 					}
+	// 					else if (ResultType.equals("Force"))
+	// 					{
+	// 						double[] force = Elem.get(elem).getIntForces();
+	// 						ContourValue[point] = Analysis.ForceOnElemContour(nodes, Elem.get(elem), e, n, selecteddof, force);
+	// 					}
+	// 				}
+	// 				ContourCoords[point][2] = ContourValue[point] * Defscale;
+	// 			}
+	// 		}
+	// 		else if (Elem.get(elem).getShape().equals(ElemShape.triangular))
+	// 		{			
+	// 			for (int point = 0; point <= ContourCoords.length - 1; point += 1)
+	// 			{
+	// 				double[] natCoords = Util.InNaturalCoordsTriangle(EdgeCoords, ContourCoords[point]);
+	// 				double[] u = Elem.get(elem).getDisp();
+	// 				ContourValue[point] = Analysis.DispOnPoint(nodes, Elem.get(elem), natCoords[0], natCoords[1], selecteddof, u);
+	// 			}
+	// 		}
 
-			/* Draw the contour */
-			int[][] DrawingCoords = new int[ContourCoords.length][3];
-			int[] xCoords = new int[ContourCoords.length], yCoords = new int[ContourCoords.length];
-			double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			Color[] colors = new Color[ContourCoords.length];
-			Arrays.fill(colors, new Color(0, 100, 55));
+	// 		/* Draw the contour */
+	// 		int[][] DrawingCoords = new int[ContourCoords.length][3];
+	// 		int[] xCoords = new int[ContourCoords.length], yCoords = new int[ContourCoords.length];
+	// 		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+	// 		Color[] colors = new Color[ContourCoords.length];
+	// 		Arrays.fill(colors, new Color(0, 100, 55));
 			
-			for (int point = 0; point <= ContourCoords.length - 1; point += 1)
-			{
-				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-				xCoords[point] = DrawingCoords[point][0];
-				yCoords[point] = DrawingCoords[point][1];
-				colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, colorSystem);
-			}
+	// 		for (int point = 0; point <= ContourCoords.length - 1; point += 1)
+	// 		{
+	// 			DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+	// 			xCoords[point] = DrawingCoords[point][0];
+	// 			yCoords[point] = DrawingCoords[point][1];
+	// 			colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, colorSystem);
+	// 		}
 			
-			// DP.DrawGradPolygon(xCoords, yCoords, thick, false, true, Color.black, colors);
-			double equivalentDiameter = (Util.FindMax(xCoords) - Util.FindMin(xCoords) + Util.FindMax(yCoords) - Util.FindMin(yCoords)) / 2.0 ;
-			Color avrColor = Util.AverageColor(colors) ;
-			DP.drawGradPolygon(xCoords, yCoords, equivalentDiameter, avrColor, colors) ;
-			if (showelemcontour)
-			{
-				// DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, null);
-				DP.drawPolygon(xCoords, yCoords, Menus.palette[0]) ;
-			}
-			if (SelectedElems != null)
-			{
-				for (int i = 0; i <= SelectedElems.length - 1; i += 1)
-				{
-					if (elem == SelectedElems[i])
-					{
-						// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
-						DP.drawPolygon(xCoords, yCoords, Menus.palette[4]) ;
-					}
-				}
-			}		
-		}
+	// 		// DP.DrawGradPolygon(xCoords, yCoords, thick, false, true, Color.black, colors);
+	// 		double equivalentDiameter = (Util.FindMax(xCoords) - Util.FindMin(xCoords) + Util.FindMax(yCoords) - Util.FindMin(yCoords)) / 2.0 ;
+	// 		Color avrColor = Util.AverageColor(colors) ;
+	// 		DP.drawGradPolygon(xCoords, yCoords, equivalentDiameter, avrColor, colors) ;
+	// 		if (showelemcontour)
+	// 		{
+	// 			// DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, null);
+	// 			DP.drawPolygon(xCoords, yCoords, Menus.palette[0]) ;
+	// 		}
+	// 		if (SelectedElems != null)
+	// 		{
+	// 			for (int i = 0; i <= SelectedElems.length - 1; i += 1)
+	// 			{
+	// 				if (elem == SelectedElems[i])
+	// 				{
+	// 					// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
+	// 					DP.drawPolygon(xCoords, yCoords, Menus.palette[4]) ;
+	// 				}
+	// 			}
+	// 		}		
+	// 	}
 		
-	}
+	// }
 
 	
 
@@ -758,16 +755,16 @@ public class MainPanel extends JPanel
 		structure.getMesh().unselectAllNodes() ;
 	}
 	
-	public static void AddConcLoads(Loading loading, List<Node> selectedNodes, double[][] ConcLoadType)
+	public static void AddConcLoads(Loading loading, List<Node> selectedNodes, List<Force> ConcLoadType)
 	{
-		if (-1 < selectedConcLoadID && selectedNodes != null && ConcLoadType != null && 1 <= ConcLoadType.length)
+		if (-1 < selectedConcLoadID && selectedNodes != null && ConcLoadType != null && 1 <= ConcLoadType.size())
 		{
 			for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 			{
 				int loadid = loading.getConcLoads().size() - selectedNodes.size() + i;
 				if (-1 < selectedNodes.get(i).getID())
 				{
-					ConcLoad newConcLoad = new ConcLoad(loadid, selectedNodes.get(i), ConcLoadType[selectedConcLoadID]);
+					ConcLoad newConcLoad = new ConcLoad(loadid, selectedNodes.get(i), ConcLoadType.get(selectedConcLoadID));
 					loading.getConcLoads().add(newConcLoad);
 					selectedNodes.get(i).addConcLoad(newConcLoad);
 				}
@@ -832,9 +829,9 @@ public class MainPanel extends JPanel
 		secTypes.add(newSection);
 	}
 
-	public static void DefineConcLoadTypes(double[][] ConcLoads)
+	public static void setConcLoadTypes(List<Force> ConcLoads)
 	{
-		MenuFunctions.ConcLoadType = ConcLoads;
+		MenuFunctions.concLoadTypes = ConcLoads;
 	}
 
 	public static void DefineDistLoadTypes(double[][] DistLoads)
@@ -932,7 +929,7 @@ public class MainPanel extends JPanel
 
 				case concLoads:
 					selectedConcLoadID += qtdRotation;
-					selectedConcLoadID = Util.clamp(selectedConcLoadID, 0, MenuFunctions.ConcLoadType.length - 1) ;
+					selectedConcLoadID = Util.clamp(selectedConcLoadID, 0, MenuFunctions.concLoadTypes.size() - 1) ;
 					
 					break;
 

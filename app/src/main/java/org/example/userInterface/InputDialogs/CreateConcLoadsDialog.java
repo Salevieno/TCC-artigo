@@ -1,7 +1,11 @@
 package org.example.userInterface.InputDialogs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JLabel;
 
+import org.example.loading.Force;
 import org.example.userInterface.MenuStructure;
 import org.example.view.MainPanel;
 
@@ -18,7 +22,12 @@ public class CreateConcLoadsDialog extends InputDialogWithGrid
     @Override
     public void onOkClick(double[][] input)
     {
-        MainPanel.DefineConcLoadTypes(input);
+        List<Force> forces = new ArrayList<>() ;
+        for (double[] inp : input)
+        {
+            forces.add(new Force(inp)) ;
+        }
+        MainPanel.setConcLoadTypes(forces);
 		MenuStructure.updateEnabledSubMenus();
     }		
 }

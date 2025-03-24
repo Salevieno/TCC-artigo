@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
+import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
 import org.example.output.SaveOutput;
@@ -42,7 +43,8 @@ public abstract class MenuFunctions
 	public static double[] DiagramScales;
 	
 	public static String SelectedElemType;
-	public static double[][] ConcLoadType, DistLoadType, NodalDispType;
+	public static List<Force> concLoadTypes ;
+	public static double[][] DistLoadType, NodalDispType;
 	public static int[][] SupType;
 	public static boolean NonlinearMat;
 	public static boolean NonlinearGeo;
@@ -238,11 +240,12 @@ public abstract class MenuFunctions
 				{
 					String[] Line = Input[7][concload + 2].split("	");
 					ConcLoad NewConcLoad;
-					NewConcLoad = new ConcLoad(-1, -1, null);
+					NewConcLoad = new ConcLoad(-1, -1, new Force());
 					NewConcLoad.setID(Integer.parseInt(Line[0]));
 					NewConcLoad.setNodeID(Integer.parseInt(Line[1]));
-					NewConcLoad.setLoads(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
-					ConcLoadType = Util.AddElem(ConcLoadType, new double[] {NewConcLoad.getNodeID(), NewConcLoad.getLoads()[0], NewConcLoad.getLoads()[1], NewConcLoad.getLoads()[2], NewConcLoad.getLoads()[3], NewConcLoad.getLoads()[4], NewConcLoad.getLoads()[5]});
+					NewConcLoad.setForce(new Force(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])}));
+					concLoadTypes.add(NewConcLoad.getForce()) ;
+					//  = Util.AddElem(concLoadTypes, new double[] {NewConcLoad.getNodeID(), NewConcLoad.getForce()[0], NewConcLoad.getForce()[1], NewConcLoad.getForce()[2], NewConcLoad.getForce()[3], NewConcLoad.getForce()[4], NewConcLoad.getForce()[5]});
 					MainPanel.loading.addConcLoad(NewConcLoad);
 				}
 				for (int distload = 0; distload <= Input[8].length - 4; distload += 1)
@@ -402,14 +405,14 @@ public abstract class MenuFunctions
 	    	}
 			struct.getMesh().getElements().get(elem).setNodeDOF(ElemNodeDOF);
 		}
-		if (ConcLoadType != null)
+		if (concLoadTypes != null)
 		{
-			for (int loadid = 0; loadid <= ConcLoadType.length - 1; loadid += 1)
+			for (int loadid = 0; loadid <= concLoadTypes.size() - 1; loadid += 1)
 			{
-				int nodeid = (int) ConcLoadType[loadid][1];
+				int nodeid = (int) concLoadTypes.get(loadid).y;
 				if (-1 < nodeid)
 				{
-					loading.getConcLoads().set(loadid, new ConcLoad(loadid, nodeid, ConcLoadType[loadid])) ;
+					loading.getConcLoads().set(loadid, new ConcLoad(loadid, nodeid, concLoadTypes.get(loadid))) ;
 					struct.getMesh().getNodes().get(nodeid).addConcLoad(loading.getConcLoads().get(loadid));
 				}
 			}
@@ -594,7 +597,7 @@ public abstract class MenuFunctions
 	/* Especial menu functions */
 	
 	public static Loading createLoading(Structure structure, int ConcLoadConfig, int[] MeshSizes, int SelConcLoad, int SelDistLoad,
-										List<Node> selectedNodes, double[][] ConcLoadType, List<Element> SelectedElems, double[][] DistLoadType)
+										List<Node> selectedNodes, List<Force> ConcLoadType, List<Element> SelectedElems, double[][] DistLoadType)
 	{
 		Loading loading = new Loading() ;
 
@@ -647,7 +650,11 @@ public abstract class MenuFunctions
 			sections.add(new Section(inputDTO.getInputSecTypes()[i][0])) ;
 		}
 
-		ConcLoadType = inputDTO.getConcLoadType() ;
+		concLoadTypes = new ArrayList<>() ;
+		for (double[] forceType : inputDTO.getConcLoadType())
+		{
+			concLoadTypes.add(new Force(forceType)) ;
+		}
 		DistLoadType = inputDTO.getDistLoadType() ;
 		int[] SupConfig = inputDTO.getSupConfig() ;
 
@@ -655,9 +662,9 @@ public abstract class MenuFunctions
 		int ConcLoadConfig = 1;
 		int DistLoadConfig = 1;
 		
-		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, materials.size(), sections.size(), SupConfig.length, ConcLoadType.length, DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
+		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, materials.size(), sections.size(), SupConfig.length, concLoadTypes.size(), DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
 		int[] Par = new int[NumPar.length];
-		if (ConcLoadType.length == 0)
+		if (concLoadTypes.size() == 0)
 		{
 			Par[5] = -1;
 		}
@@ -685,7 +692,7 @@ public abstract class MenuFunctions
 			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
 				materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
 			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-				structure2.getMesh().getSelectedNodes(), MenuFunctions.ConcLoadType, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
+				structure2.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
 			MenuFunctions.CalcAnalysisParameters(structure2, loading);
 			MainPanel.structure = structure2 ;
 
@@ -858,7 +865,7 @@ public abstract class MenuFunctions
 
 	public static void resetDisplay()
 	{
-		ConcLoadType = null ;
+		concLoadTypes = null ;
 		DistLoadType = null ;
 		NodalDispType = null ;
 		ShowNodes = false;

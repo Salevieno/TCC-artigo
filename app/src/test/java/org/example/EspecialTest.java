@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.mainTCC.Analysis;
 import org.example.mainTCC.InputDTO;
@@ -64,8 +65,15 @@ public class EspecialTest
         assertEquals(121, structure.getMesh().getNodes().size()) ;
         assertEquals(100, structure.getMesh().getElements().size()) ;
 
+        List<Force> forces = new ArrayList<>() ;
+
+        for (double[] force : inputDTO.getConcLoadType())
+        {
+            forces.add(new Force(force)) ;
+        }
+
         Loading loading = MenuFunctions.createLoading(structure, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-                                        structure.getMesh().getNodes(), inputDTO.getConcLoadType(), structure.getMesh().getElements(), inputDTO.getDistLoadType()) ;
+                                        structure.getMesh().getNodes(), forces, structure.getMesh().getElements(), inputDTO.getDistLoadType()) ;
 
         assertNotNull(loading) ;
         assertTrue(!loading.getDistLoads().isEmpty());

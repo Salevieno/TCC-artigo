@@ -17,8 +17,8 @@ import graphics.DrawPrimitives;
 public class ConcLoad
 {
 	private int ID;
-	private int NodeID;		// Node
-	private double[] Loads;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
+	private int NodeID;
+	private Force force ;
 
 	private static int maxDisplaySize = 1;
 	private static int stroke = 2;
@@ -29,11 +29,23 @@ public class ConcLoad
 		this(ID, Node.getID(), Loads);
 	}
 
-	public ConcLoad(int ID, int NodeID, double[] Loads)
+	public ConcLoad(int ID, Node Node, Force force)
+	{
+		this(ID, Node.getID(), force);
+	}
+
+	public ConcLoad(int ID, int NodeID, double[] loads)
 	{
 		this.ID = ID;
 		this.NodeID = NodeID;
-		this.Loads = Loads;
+		this.force = new Force(loads);
+	}
+
+	public ConcLoad(int ID, int NodeID, Force force)
+	{
+		this.ID = ID;
+		this.NodeID = NodeID;
+		this.force = force;
 	}
 
 	public static void DrawPL3D(double[] RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas, DrawPrimitives DP)
@@ -62,9 +74,9 @@ public class ConcLoad
 
 		for (int dof = 0; dof <= ElemDOFs.length - 1; dof += 1)
 		{
-			if (Loads.length <= ElemDOFs[dof]) { continue ;}
+			if (Force.qtdDOFs <= ElemDOFs[dof]) { continue ;}
 
-			double LoadIntensity = Loads[ElemDOFs[dof]];
+			double LoadIntensity = force.array()[ElemDOFs[dof]];
 			if (0 < Math.abs(LoadIntensity))
 			{
 				int displaySize = (int)(maxDisplaySize * LoadIntensity / maxLoad);
@@ -89,14 +101,14 @@ public class ConcLoad
 
 	public int getID() {return ID;}
 	public int getNodeID() {return NodeID;}
-	public double[] getLoads() {return Loads;}
+	public Force getForce() {return force;}
 	public void setID(int I) {ID = I;}
 	public void setNodeID(int N) {NodeID = N;}
-	public void setLoads(double[] L) {Loads = L;}
+	public void setForce(Force force) {this.force = force;}
 
 	@Override
 	public String toString() {
-		return ID + "	" + NodeID + "	" + Arrays.toString(Loads) ;
+		return ID + "	" + NodeID + "	" + force ;
 	}
 
 }

@@ -397,7 +397,7 @@ public class Structure
 				nodesToReceiveLoads.forEach(node ->
 				{
 					// int loadid = loading.getConcLoads().size() - MenuFunctions.selectedNodes.size() + i;
-					ConcLoad concLoad = new ConcLoad(1, node, MenuFunctions.ConcLoadType[concLoadsID]) ;
+					ConcLoad concLoad = new ConcLoad(1, node, MenuFunctions.concLoadTypes.get(concLoadsID)) ;
 					if (concLoad != null)
 					{
 						node.addConcLoad(concLoad) ;

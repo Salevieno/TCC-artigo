@@ -122,7 +122,7 @@ public class UpperToolbar extends JPanel
 				}
 				if (Assignable.concLoads.equals(assignable))
 				{
-					MainPanel.AddConcLoads(MainPanel.loading, MainPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.ConcLoadType);
+					MainPanel.AddConcLoads(MainPanel.loading, MainPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
 				}
 				if (Assignable.nodalDisps.equals(assignable))
 				{

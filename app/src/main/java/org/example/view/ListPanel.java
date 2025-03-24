@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import org.example.loading.Force;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Material;
 import org.example.structure.Section;
@@ -81,7 +82,7 @@ public class ListPanel extends JPanel
 				"My (kN)",
 				"Mz (kN)"
 			};
-		double[][] ConcLoadType = MenuFunctions.ConcLoadType;
+		List<Force> ConcLoadType = MenuFunctions.concLoadTypes;
 		DrawLists(panelSize, selectedItemID, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType, DP);
 	}
 
@@ -150,6 +151,13 @@ public class ListPanel extends JPanel
 		
 			default: return;
 		}
+	}
+	
+	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, List<Force> ItemTypes, DrawPrimitives DP)
+	{
+		int[] ListPos = new int[] {(int) (0.025 * PanelSize.getWidth()), (int) (0.15 * PanelSize.getHeight())};
+		int[] ListSize = new int[] {(int) (0.95 * PanelSize.getWidth()), (int) (0.9 * PanelSize.getHeight())};
+		DrawList(ListPos, ListSize, SelectedItem, ItemNames, Title, Label, ItemTypes.toArray(new double[0][]), DP);
 	}
 	
 	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, double[][] ItemTypes, DrawPrimitives DP)

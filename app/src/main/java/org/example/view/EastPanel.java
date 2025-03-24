@@ -112,7 +112,7 @@ public class EastPanel extends JPanel
 			{
 				for (int dof = 0; dof <= 6 - 1; dof += 1)
 				{
-					ConcLoads += String.valueOf(Util.Round(Node.getConcLoads().get(load).getLoads()[dof], 2) + ", ");
+					ConcLoads += String.valueOf(Util.Round(Node.getConcLoads().get(load).getForce().array()[dof], 2) + ", ");
 				}
 			}
 		}

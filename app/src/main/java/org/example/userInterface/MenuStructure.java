@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.example.loading.Force;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -302,7 +303,7 @@ public class MenuStructure extends JMenu
 		String SelectedElemType = MenuFunctions.SelectedElemType;
 		List<Material> MatTypes = MainPanel.matTypes;
 		List<Section> SecTypes = MainPanel.secTypes;
-		double[][] ConcLoadTypes = MenuFunctions.ConcLoadType;
+		List<Force> ConcLoadTypes = MenuFunctions.concLoadTypes;
 		double[][] DistLoadTypes = MenuFunctions.DistLoadType;
 		double[][] NodalDispTypes = MenuFunctions.NodalDispType;
 		if ( nodes != null )

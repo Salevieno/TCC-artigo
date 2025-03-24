@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
+import org.example.loading.Force;
 import org.example.loading.NodalDisp;
 import org.example.mainTCC.InputDTO;
 import org.example.mainTCC.ReadInput;
@@ -357,7 +358,7 @@ public abstract class Util
 			ConcLoad[] NewArray = new ConcLoad[size];
 			for (int i = 0; i <= NewArray.length - 1; i += 1)
 			{
-				NewArray[i] = new ConcLoad(-1, -1, null);
+				NewArray[i] = new ConcLoad(-1, -1, new Force());
 			}
 			return NewArray;
 		}
@@ -370,7 +371,7 @@ public abstract class Util
 			}
 			for (int i = OriginalArray.length; i <= OriginalArray.length + size - 1; i += 1)
 			{
-				NewArray[i] = new ConcLoad(-1, -1, null);
+				NewArray[i] = new ConcLoad(-1, -1, new Force());
 			}
 			return NewArray;
 		}
@@ -1439,14 +1440,14 @@ public abstract class Util
 	{
 		if (concLoads != null && !concLoads.isEmpty())
 		{
-			double MaxLoad = concLoads.get(0).getLoads()[0];
+			double MaxLoad = concLoads.get(0).getForce().array()[0];
 			for (int l = 0; l <= concLoads.size() - 1; l += 1)
 			{
-				for (int i = 0; i <= concLoads.get(l).getLoads().length - 1; i += 1)
+				for (int i = 0; i <= Force.qtdDOFs - 1; i += 1)
 				{
-					if (MaxLoad < Math.abs(concLoads.get(l).getLoads()[i]))
+					if (MaxLoad < Math.abs(concLoads.get(l).getForce().array()[i]))
 					{
-						MaxLoad = Math.abs(concLoads.get(l).getLoads()[i]);
+						MaxLoad = Math.abs(concLoads.get(l).getForce().array()[i]);
 					}
 				}
 			}
