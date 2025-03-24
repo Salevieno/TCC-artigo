@@ -51,7 +51,7 @@ public class SelectionWindow
     public void selectNodesInside(Mesh mesh, MyCanvas canvas, Point mousePos)
     {
         bottomRightPos = new Point(mousePos) ;
-        mesh.unselectAllElements() ;
+        mesh.unselectAllNodes() ;
         for (Node node : mesh.getNodes())
 		{
             Point drawingCoords = canvas.inDrawingCoords(node.getOriginalCoords()) ;
