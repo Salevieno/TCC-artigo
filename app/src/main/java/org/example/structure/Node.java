@@ -9,12 +9,12 @@ import java.util.List;
 
 import org.example.loading.ConcLoad;
 import org.example.loading.NodalDisp;
-import org.example.mainTCC.SelectionWindow;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
+import org.example.view.SelectionWindow;
 
 import graphics.DrawPrimitives;
 

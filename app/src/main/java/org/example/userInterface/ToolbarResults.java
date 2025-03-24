@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import org.example.mainTCC.Analysis;
+import org.example.analysis.Analysis;
 import org.example.output.Results;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;

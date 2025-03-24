@@ -3,8 +3,8 @@ package org.example.output;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.analysis.Analysis;
 import org.example.loading.ConcLoad;
-import org.example.mainTCC.Analysis;
 import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;

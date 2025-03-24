@@ -18,7 +18,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import org.example.mainTCC.Analysis;
+import org.example.analysis.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.Structure;

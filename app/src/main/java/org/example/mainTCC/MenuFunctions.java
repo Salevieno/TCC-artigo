@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.analysis.Analysis;
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Force;

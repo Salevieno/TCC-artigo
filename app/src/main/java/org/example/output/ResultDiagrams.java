@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.mainTCC.Analysis;
+import org.example.analysis.Analysis;
 import org.example.structure.ElemShape;
 import org.example.structure.Element;
 import org.example.structure.Mesh;

@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.DistLoad;
-import org.example.mainTCC.SelectionWindow;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
+import org.example.view.SelectionWindow;
 
 import graphics.DrawPrimitives;
 

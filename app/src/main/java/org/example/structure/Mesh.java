@@ -10,13 +10,13 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.example.mainTCC.MenuFunctions;
-import org.example.mainTCC.SelectionWindow;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
+import org.example.view.SelectionWindow;
 
 import graphics.Align;
 import graphics.DrawPrimitives;

@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.example.mainTCC.Analysis;
+import org.example.analysis.Analysis;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.userInterface.InputDialogs.DefineAnalysisDialog;

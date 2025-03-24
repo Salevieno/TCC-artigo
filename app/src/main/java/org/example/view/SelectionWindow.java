@@ -1,4 +1,4 @@
-package org.example.mainTCC;
+package org.example.view;
 
 import java.awt.Dimension;
 import java.awt.Point;

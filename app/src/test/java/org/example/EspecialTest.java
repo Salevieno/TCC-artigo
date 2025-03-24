@@ -8,9 +8,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.analysis.Analysis;
 import org.example.loading.Force;
 import org.example.loading.Loading;
-import org.example.mainTCC.Analysis;
 import org.example.mainTCC.InputDTO;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.ElemType;

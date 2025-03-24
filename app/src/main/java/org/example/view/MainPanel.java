@@ -28,7 +28,6 @@ import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
 import org.example.mainTCC.MenuFunctions;
-import org.example.mainTCC.SelectionWindow;
 import org.example.output.Diagram;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
