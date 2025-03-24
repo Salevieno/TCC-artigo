@@ -39,8 +39,6 @@ public abstract class MenuFunctions
 	public static boolean AnalysisIsComplete;
 	public static boolean ShowDeformedStructure ;
 	
-	public static List<Node> selectedNodes ;
-	
 	public static double[] DiagramScales;
 	
 	public static String SelectedElemType;
@@ -65,10 +63,7 @@ public abstract class MenuFunctions
 		
 		AnalysisIsComplete = false;
 
-		DiagramScales = new double[2];
-		
-		selectedNodes = null;
-		
+		DiagramScales = new double[2];		
 
 	    ElemSelectionWindowInitialPos = new Point();
 	}
@@ -578,7 +573,7 @@ public abstract class MenuFunctions
 	{
 		if (-1 < MainPanel.SelectedVar)
 		{
-			int nodeid = selectedNodes.get(0).getID();
+			int nodeid = structure.getMesh().getSelectedNodes().get(0).getID();
 			double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).LoadDisp;
 			String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
 			String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).dofs.length][loaddisp[0][0].length];
@@ -690,7 +685,7 @@ public abstract class MenuFunctions
 			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
 				materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
 			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-			MenuFunctions.selectedNodes, MenuFunctions.ConcLoadType, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
+				structure2.getMesh().getSelectedNodes(), MenuFunctions.ConcLoadType, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
 			MenuFunctions.CalcAnalysisParameters(structure2, loading);
 			MainPanel.structure = structure2 ;
 

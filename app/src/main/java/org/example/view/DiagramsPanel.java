@@ -286,7 +286,7 @@ public class DiagramsPanel extends JPanel
 		{
 			DrawPrimitives DP = Menus.getInstance().getMainPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-			display(MainPanel.structure, MenuFunctions.selectedNodes, MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
+			display(MainPanel.structure, MainPanel.structure.getMesh().getSelectedNodes(), MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
 			repaint();
 		}
     }

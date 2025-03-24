@@ -54,13 +54,10 @@ public class EastPanel extends JPanel
 	public void reset()
 	{
 
-		if (MenuFunctions.selectedNodes != null)
+		if (MainPanel.structure.getMesh().hasNodesSelected())
 		{
-			int nodeID = MenuFunctions.selectedNodes.get(0).getID() ;
-			if (-1 < nodeID)
-			{
-				bp1 = createNodeInfoPanel(MainPanel.structure.getMesh().getNodes().get(nodeID)) ;
-			}
+			Node node = MainPanel.structure.getMesh().getSelectedNodes().get(0) ;
+			bp1 = createNodeInfoPanel(node) ;
 		}
 		if (MainPanel.structure.getMesh().hasElementsSelected())
 		{

@@ -48,25 +48,19 @@ public class SelectionWindow
         bottomRightPos = null;
     }
 
-    public List<Node> selectNodes(List<Node> allNodes, MyCanvas canvas, Point mousePos)
+    public void selectNodesInside(Mesh mesh, MyCanvas canvas, Point mousePos)
     {
-
-        if (topLeftPos == null || mousePos == null) { return null ; }
-
-        List<Node> selectedNodes = new ArrayList<>();
         bottomRightPos = new Point(mousePos) ;
-        for (Node node : allNodes)
-        {
-            Point nodeDrawingCoords = canvas.inDrawingCoords(node.getOriginalCoords()) ;
-            if (contains(nodeDrawingCoords))
-            {
-                selectedNodes.add(node);
-            }
-        }
-
+        mesh.unselectAllElements() ;
+        for (Node node : mesh.getNodes())
+		{
+            Point drawingCoords = canvas.inDrawingCoords(node.getOriginalCoords()) ;
+			if (contains(drawingCoords))
+			{
+				node.select() ;
+			}
+		}
         close() ;
-
-        return selectedNodes;
     }
 
     public void selectElementsInside(Mesh mesh, MyCanvas canvas, Point mousePos)

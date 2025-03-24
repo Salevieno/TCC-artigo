@@ -122,7 +122,7 @@ public class UpperToolbar extends JPanel
 				}
 				if (Assignable.concLoads.equals(assignable))
 				{
-					MainPanel.AddConcLoads(MainPanel.loading, MenuFunctions.selectedNodes, MenuFunctions.ConcLoadType);
+					MainPanel.AddConcLoads(MainPanel.loading, MainPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.ConcLoadType);
 				}
 				if (Assignable.nodalDisps.equals(assignable))
 				{
@@ -219,7 +219,7 @@ public class UpperToolbar extends JPanel
         buttons.get(6).setVisible(false);
         buttons.get(7).setEnabled(false);
         buttons.get(7).setVisible(false);
-        MenuFunctions.selectedNodes = null;
+        MainPanel.structure.getMesh().unselectAllNodes() ;
         MainPanel.structure.getMesh().unselectAllElements() ;
 		assignable = null ;
         MainPanel.nodeSelectionIsActive = false;

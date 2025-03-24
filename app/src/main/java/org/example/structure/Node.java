@@ -30,6 +30,7 @@ public class Node
 	public int[] dofs;
 	private int[] DOFType;			// DOFs on node
 	public double[][][] LoadDisp;		// Load displacement curve of the node [dof][x values][y values]
+	private boolean isSelected ;
 	
 	public static int size = 6;
 	public static int stroke = 1;
@@ -44,6 +45,7 @@ public class Node
 		concLoads = null;
 		nodalDisps = null;
 		DOFType = null;
+		isSelected = false ;
 	}
 
 	
@@ -71,18 +73,18 @@ public class Node
 	public void display(MyCanvas canvas, int[] dofs, boolean deformed, double defScale, boolean selected, DrawPrimitives DP)
 	{
 		Point drawingCoords = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
-		DP.drawCircle(drawingCoords, size, stroke, Menus.palette[0], color);
-		// if (selectedNodes != null)
-		// {
-		// 	for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
-		// 	{
-		// 		if (node == selectedNodes.get(i).getID())
-		// 		{
-		// 			DP.DrawCircle(drawingCoords.get(node), 2*size, stroke, false, true, Color.black, Color.red);
-		// 		}
-		// 	}
-		// }
+		int displaySize = isSelected ? 2 * size : size ;
+		Color displayColor = isSelected ? Menus.palette[4] : color ;
+		DP.drawCircle(drawingCoords, displaySize, stroke, Menus.palette[0], displayColor);
 	}
+
+
+	public void select() { isSelected = true ;}
+
+	public void unselect() { isSelected = false ;}
+	
+	public boolean isSelected() { return isSelected ;}
+
 
 	public int getID() {return ID;}
 	public Point3D getOriginalCoords() {return coords;}

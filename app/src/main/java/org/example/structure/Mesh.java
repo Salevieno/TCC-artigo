@@ -214,11 +214,16 @@ public class Mesh
 
 	private boolean hasNodes() { return nodes != null && !nodes.isEmpty() ;}
 
+	public boolean hasNodesSelected()
+	{
+		return nodes.stream().filter(node -> node.isSelected()).findAny().isPresent() ;
+	}
 	public boolean hasElementsSelected()
 	{
 		return elems.stream().filter(elem -> elem.isSelected()).findAny().isPresent() ;
 	}
 
+	public List<Node> getSelectedNodes() { return nodes.stream().filter(node -> node.isSelected()).collect(Collectors.toList()) ;}
 	public List<Element> getSelectedElements() { return elems.stream().filter(elem -> elem.isSelected()).collect(Collectors.toList()) ;}
 
 	private boolean hasElements() { return elems != null && !elems.isEmpty() ;}
@@ -643,6 +648,10 @@ public class Mesh
 	}
 
 	
+	public void unselectAllNodes()
+	{
+		nodes.forEach(Node::unselect) ;
+	}
 	public void unselectAllElements()
 	{
 		elems.forEach(Element::unselect) ;
@@ -706,7 +715,7 @@ public class Mesh
 		}
 		if (nodes != null && !nodes.isEmpty())
 		{
-			displayNodes(MenuFunctions.selectedNodes, showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			displayNodes(getSelectedNodes(), showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
 		}
 	}
 

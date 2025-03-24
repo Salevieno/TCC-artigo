@@ -164,8 +164,8 @@ public class MainPanel extends JPanel
 		bindKey(KeyEvent.VK_DOWN,  () -> canvas.incDrawingPos(0, + translationSpeed)) ;
 
 		bindKey(KeyEvent.VK_ESCAPE,  () -> {
-			MenuFunctions.selectedNodes = null ;
-			structure.getMesh().unselectAllElements(); ;
+			structure.getMesh().unselectAllNodes() ;
+			structure.getMesh().unselectAllElements() ;
 		}) ;
 
 	    this.setSize(initialSize);
@@ -607,7 +607,7 @@ public class MainPanel extends JPanel
 
 	
 
-	public void NodeAddition(int[] MainPanelPos)
+	public void NodeAddition(int[] MainPanelPos, MyCanvas MainCanvas)
 	{
 		if (MainPanel.structure.getMesh().getNodes() == null) { return ;}
 		
@@ -617,7 +617,8 @@ public class MainPanel extends JPanel
 			return ;
 		}
 
-		MenuFunctions.selectedNodes = selectionWindow.selectNodes(MainPanel.structure.getMesh().getNodes(), canvas, MenuFunctions.mousePos) ;
+		// MenuFunctions.selectedNodes = selectionWindow.selectNodes(MainPanel.structure.getMesh().getNodes(), canvas, MenuFunctions.mousePos) ;
+		selectionWindow.selectNodesInside(structure.getMesh(), MainCanvas, MenuFunctions.mousePos) ;
 		// int NodeMouseIsOn = Mesh.NodeMouseIsOn(MenuFunctions.struct.getMesh().getNodes(), MenuFunctions.mousePos, canvas, 4, MenuFunctions.ShowDeformedStructure);
 		showNodeSelectionWindow = !showNodeSelectionWindow;
 
@@ -743,21 +744,18 @@ public class MainPanel extends JPanel
 	
 	public static void AddSupports()
 	{
-		if (-1 < selectedSupID && MenuFunctions.selectedNodes != null && MenuFunctions.SupType != null )
+		if (selectedSupID <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.SupType == null ) { return ;}
+
+		for (Node node : structure.getMesh().getSelectedNodes())
 		{
-			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
-			{
-				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
-				{
-					// int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
-					Supports newSupport = new Supports(1, MenuFunctions.selectedNodes.get(i), MenuFunctions.SupType[selectedSupID]);
-					MainPanel.structure.addSupport(newSupport) ;
-					MenuFunctions.selectedNodes.get(i).setSup(MenuFunctions.SupType[selectedSupID]);
-				}
-			}
-			MenuFunctions.ShowSup = true;
-			MenuFunctions.selectedNodes = null;
+			// int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
+			Supports newSupport = new Supports(1, node, MenuFunctions.SupType[selectedSupID]);
+			MainPanel.structure.addSupport(newSupport) ;
+			node.setSup(MenuFunctions.SupType[selectedSupID]);
 		}
+
+		MenuFunctions.ShowSup = true;
+		structure.getMesh().unselectAllNodes() ;
 	}
 	
 	public static void AddConcLoads(Loading loading, List<Node> selectedNodes, double[][] ConcLoadType)
@@ -801,21 +799,17 @@ public class MainPanel extends JPanel
 	
 	public static void AddNodalDisps()
 	{
-		if (-1 < selectedNodalDispID && MenuFunctions.selectedNodes != null && MenuFunctions.NodalDispType != null)
+		if (selectedNodalDispID <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.NodalDispType == null ) { return ;}
+		
+		for (Node node : structure.getMesh().getSelectedNodes())
 		{
-			for (int i = 0; i <= MenuFunctions.selectedNodes.size() - 1; i += 1)
-			{
-				int dispid = loading.getNodalDisps().size() - MenuFunctions.selectedNodes.size() + i;
-				if (-1 < MenuFunctions.selectedNodes.get(i).getID())
-				{
-					NodalDisp newNodalDisp = new NodalDisp(dispid, MenuFunctions.selectedNodes.get(i), MenuFunctions.NodalDispType[selectedNodalDispID]) ;
-					loading.getNodalDisps().add(newNodalDisp);
-					MenuFunctions.selectedNodes.get(i).addNodalDisp(newNodalDisp);
-				}
-			}
-			MenuFunctions.ShowNodalDisps = true;
-			MenuFunctions.selectedNodes = null;
+			// int dispid = loading.getNodalDisps().size() - MenuFunctions.selectedNodes.size() + i;			
+			NodalDisp newNodalDisp = new NodalDisp(1, node, MenuFunctions.NodalDispType[selectedNodalDispID]) ;
+			loading.getNodalDisps().add(newNodalDisp);
+			node.addNodalDisp(newNodalDisp);
 		}
+		MenuFunctions.ShowNodalDisps = true;
+		structure.getMesh().unselectAllNodes() ;
 	}
 	
 	public static void addMaterials(List<Material> newMaterials)
@@ -877,14 +871,11 @@ public class MainPanel extends JPanel
 			}
 			if (nodeSelectionIsActive)
 			{
-				NodeAddition(panelPos);
-				if (MenuFunctions.selectedNodes != null)
-				{
-					if (!MenuFunctions.selectedNodes.isEmpty() && -1 < MenuFunctions.selectedNodes.get(0).getID())
-					{
-						Menus.getInstance().getEastPanel().reset() ;
-						//AddNodeInfoPanel(MenuFunctions.Node[MenuFunctions.SelectedNodes[0]]);
-					}
+				NodeAddition(panelPos, canvas);
+				if (structure.getMesh().hasNodesSelected())
+				{					
+					Menus.getInstance().getEastPanel().reset() ;
+					//AddNodeInfoPanel(MenuFunctions.Node[MenuFunctions.SelectedNodes[0]]);
 				}
 			}
 			if (elemSelectionIsActive && selectionWindow != null)
