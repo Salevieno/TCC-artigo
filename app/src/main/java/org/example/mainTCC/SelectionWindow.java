@@ -5,8 +5,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.structure.Element;
+import org.example.structure.Mesh;
 import org.example.structure.Node;
-import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 
@@ -57,7 +58,7 @@ public class SelectionWindow
         for (Node node : allNodes)
         {
             Point nodeDrawingCoords = canvas.inDrawingCoords(node.getOriginalCoords()) ;
-            if (isInside(nodeDrawingCoords))
+            if (contains(nodeDrawingCoords))
             {
                 selectedNodes.add(node);
             }
@@ -68,8 +69,24 @@ public class SelectionWindow
         return selectedNodes;
     }
 
-    private boolean isInside(Point point)
+    public void selectElementsInside(Mesh mesh, MyCanvas canvas, Point mousePos)
     {
+        bottomRightPos = new Point(mousePos) ;
+        mesh.unselectAllElements() ;
+        for (Element elem : mesh.getElements())
+		{
+			if (elem.isInside(this, canvas, mesh.getNodes()))
+			{
+				elem.select() ;
+			}
+		}
+        close() ;
+    }
+
+    public boolean contains(Point point)
+    {
+        if (topLeftPos == null || bottomRightPos == null) { System.out.println("Warn: selection window does not have all edges while trying to check if it contains something") ; return false ;}
+
         return topLeftPos.x <= point.x && point.x <= bottomRightPos.x && point.y <= bottomRightPos.y && topLeftPos.y <= point.y;
     }
 

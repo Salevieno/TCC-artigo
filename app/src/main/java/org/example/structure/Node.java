@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.example.loading.ConcLoad;
 import org.example.loading.NodalDisp;
+import org.example.mainTCC.SelectionWindow;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
@@ -65,7 +66,6 @@ public class Node
 		double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
 		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
 	}
-
 
 
 	public void display(MyCanvas canvas, int[] dofs, boolean deformed, double defScale, boolean selected, DrawPrimitives DP)

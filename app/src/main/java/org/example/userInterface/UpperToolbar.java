@@ -99,11 +99,11 @@ public class UpperToolbar extends JPanel
 			{
 				if (Assignable.materials.equals(assignable))
 				{
-					MainPanel.AddMaterialToElements(MenuFunctions.SelectedElems, MainPanel.matTypes.get(MainPanel.selectedMatID));
+					MainPanel.AddMaterialToElements(MainPanel.structure.getMesh().getSelectedElements(), MainPanel.matTypes.get(MainPanel.selectedMatID));
 				}
 				if (Assignable.sections.equals(assignable))
 				{
-					MainPanel.AddSectionsToElements(MenuFunctions.SelectedElems, MainPanel.secTypes.get(MainPanel.selectedSecID));
+					MainPanel.AddSectionsToElements(MainPanel.structure.getMesh().getSelectedElements(), MainPanel.secTypes.get(MainPanel.selectedSecID));
 				}
 				if (Assignable.distLoads.equals(assignable))
 				{
@@ -220,7 +220,7 @@ public class UpperToolbar extends JPanel
         buttons.get(7).setEnabled(false);
         buttons.get(7).setVisible(false);
         MenuFunctions.selectedNodes = null;
-        MenuFunctions.SelectedElems = null;
+        MainPanel.structure.getMesh().unselectAllElements() ;
 		assignable = null ;
         MainPanel.nodeSelectionIsActive = false;
         MainPanel.elemSelectionIsActive = false;

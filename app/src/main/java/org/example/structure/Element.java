@@ -8,9 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.DistLoad;
-import org.example.userInterface.Draw;
+import org.example.mainTCC.SelectionWindow;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
+import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 
@@ -50,6 +51,8 @@ public class Element
 	private double[] CenterCoords;
 	private int[][] NodeDOF = null;
 	private int[] CumDOFs = null;
+
+	private boolean isSelected ;
 	// private Color MatColor;
 	// private Color SecColor;
 
@@ -67,6 +70,7 @@ public class Element
 		Strain = null;
 		IntForces = null;
 		this.type = type;
+		this.isSelected = false ;
 		DefineProperties(type);
 	}
 
@@ -300,6 +304,10 @@ public class Element
 		{
 			color = sec.getColor() ;
 		}
+		if (isSelected)
+		{
+			color = Menus.palette[4] ;
+		}
 		for (int node = 0; node <= externalNodes.length - 1; node += 1)
 		{
 			if (showdeformed)
@@ -328,16 +336,6 @@ public class Element
 		{
 			DP.drawPolyLine(xCoords, yCoords, stroke, Menus.palette[0]);
 		}
-		// if (SelectedElems != null)
-		// {
-			// for (int i = 0; i <= SelectedElems.length - 1; i += 1)
-			// {
-			// 	if (elem == SelectedElems[i])
-			// 	{
-			// 		DP.DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
-			// 	}
-			// }
-		// }
 	}
 
 	public double[][] NaturalCoordsShapeFunctions(double e, double n, List<Node> Node)
@@ -1395,6 +1393,25 @@ public class Element
 		}
 	}
 
+	public boolean isInside(SelectionWindow selectionWindow, MyCanvas canvas, List<Node> meshNodes)
+	{
+		for (int nodeID : externalNodes)
+		{
+			Point nodeDrawingCoords = canvas.inDrawingCoords(meshNodes.get(nodeID).getOriginalCoords()) ;
+			if (!selectionWindow.contains(nodeDrawingCoords))
+			{
+				return false ;
+			}
+		}
+
+		return true ;
+	}
+
+	public void select() { isSelected = true ;}
+
+	public void unselect() { isSelected = false ;}
+
+
 	public int getID() {return ID;}
 	public ElemShape getShape() {return Shape;}
 	public int[] getDOFs() {return DOFs;}
@@ -1415,6 +1432,7 @@ public class Element
 	public double[][] getUndeformedCoords(){ return UndeformedCoords ;}
 	public double[][] getDeformedCoords(){ return DeformedCoords ;}
 	public double[] getCenterCoords(){ return CenterCoords ;}
+	public boolean isSelected() { return isSelected ;}
 	// public Color getMatColor () {return MatColor;}
 	// public Color getSecColor () {return SecColor;}
 	public void setID(int I) {ID = I;}

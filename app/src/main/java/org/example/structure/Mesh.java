@@ -6,8 +6,11 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.example.mainTCC.MenuFunctions;
+import org.example.mainTCC.SelectionWindow;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
@@ -210,6 +213,13 @@ public class Mesh
     public List<Element> getElements() { return elems ;}
 
 	private boolean hasNodes() { return nodes != null && !nodes.isEmpty() ;}
+
+	public boolean hasElementsSelected()
+	{
+		return elems.stream().filter(elem -> elem.isSelected()).findAny().isPresent() ;
+	}
+
+	public List<Element> getSelectedElements() { return elems.stream().filter(elem -> elem.isSelected()).collect(Collectors.toList()) ;}
 
 	private boolean hasElements() { return elems != null && !elems.isEmpty() ;}
 
@@ -580,42 +590,42 @@ public class Mesh
 		}
 		return -1;
 	}
-	
-	public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Mesh mesh, Point MousePos, int[] DPPos, int[] SelectedElems, Point SelWindowInitPos,
-	double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
-	{
-		int ElemMouseIsOn = ElemMouseIsOn(mesh, MousePos, StructCenter, canvas, ShowDeformedStructure);
-		if (ShowSelWindow)
-		{
-			int[] ElemsInSelWindow = Util.ElemsInsideWindow(mesh, StructCenter, new int[] {SelWindowInitPos.x, SelWindowInitPos.y}, MousePos, DPPos,
-			canvas, DiagramScales[1], ShowDeformedStructure);
-			if (ElemsInSelWindow != null)
-			{
-				for (int i = 0; i <= ElemsInSelWindow.length - 1; i += 1)
-				{
-					SelectedElems = Util.AddElem(SelectedElems, ElemsInSelWindow[i]);
-				}
-			}
-			/*else if (ElemMouseIsOn == -1)
-			{
-				SelectedElems = null;
-			}*/
-		}
-		else if (-1 < ElemMouseIsOn)
-		{
-			SelectedElems = Util.AddElem(SelectedElems, ElemMouseIsOn);
-			/*for (int elem = 0; elem <= Elem.length - 1; elem += 1)
-			{
-				double[] RealMousePos = ConvertToRealCoords2(MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-				if (Util.MouseIsOnElem(Node, Elem[elem], RealMousePos, canvas.getPos(), canvas.getSize(), canvas.getDrawingPos(), ShowDeformedStructure))
-			    {
-					SelectedElems = Util.AddElem(SelectedElems, elem);
-			    }
-			}*/
-		}
+
+	// public static int[] ElemsSelection(MyCanvas canvas, double[] StructCenter, Mesh mesh, Point MousePos, int[] DPPos, Point SelWindowInitPos,
+	// 	double[] DiagramScales, boolean ShowSelWindow, boolean ShowDeformedStructure)
+	// {
+	// 	int ElemMouseIsOn = ElemMouseIsOn(mesh, MousePos, StructCenter, canvas, ShowDeformedStructure);
+	// 	int[] SelectedElems = new int[] ;
+	// 	if (ShowSelWindow)
+	// 	{
+	// 		int[] ElemsInSelWindow = Util.ElemsInsideWindow(mesh, StructCenter, new int[] {SelWindowInitPos.x, SelWindowInitPos.y}, MousePos, DPPos, canvas, DiagramScales[1], ShowDeformedStructure);
+	// 		if (ElemsInSelWindow != null)
+	// 		{
+	// 			for (int i = 0; i <= ElemsInSelWindow.length - 1; i += 1)
+	// 			{
+	// 				SelectedElems = Util.AddElem(SelectedElems, ElemsInSelWindow[i]);
+	// 			}
+	// 		}
+	// 		/*else if (ElemMouseIsOn == -1)
+	// 		{
+	// 			SelectedElems = null;
+	// 		}*/
+	// 	}
+	// 	else if (-1 < ElemMouseIsOn)
+	// 	{
+	// 		SelectedElems = Util.AddElem(SelectedElems, ElemMouseIsOn);
+	// 		/*for (int elem = 0; elem <= Elem.length - 1; elem += 1)
+	// 		{
+	// 			double[] RealMousePos = ConvertToRealCoords2(MousePos, StructCenter, canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+	// 			if (Util.MouseIsOnElem(Node, Elem[elem], RealMousePos, canvas.getPos(), canvas.getSize(), canvas.getDrawingPos(), ShowDeformedStructure))
+	// 		    {
+	// 				SelectedElems = Util.AddElem(SelectedElems, elem);
+	// 		    }
+	// 		}*/
+	// 	}
 		
-		return SelectedElems;
-	}
+	// 	return SelectedElems;
+	// }
 
 	public static int ElemMouseIsOn(Mesh mesh, Point MousePos, double[] StructCenter, MyCanvas canvas, boolean condition)
 	{
@@ -632,6 +642,11 @@ public class Mesh
 		return -1;
 	}
 
+	
+	public void unselectAllElements()
+	{
+		elems.forEach(Element::unselect) ;
+	}
 
 	public void displayElements(MyCanvas canvas, double defScale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawPrimitives DP)
 	{		

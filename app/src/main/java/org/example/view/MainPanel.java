@@ -32,7 +32,6 @@ import org.example.mainTCC.MenuFunctions;
 import org.example.mainTCC.SelectionWindow;
 import org.example.output.ColorSystem;
 import org.example.output.Diagram;
-import org.example.output.Results;
 import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
@@ -166,7 +165,7 @@ public class MainPanel extends JPanel
 
 		bindKey(KeyEvent.VK_ESCAPE,  () -> {
 			MenuFunctions.selectedNodes = null ;
-			MenuFunctions.SelectedElems = null ;
+			structure.getMesh().unselectAllElements(); ;
 		}) ;
 
 	    this.setSize(initialSize);
@@ -193,22 +192,6 @@ public class MainPanel extends JPanel
 
         getActionMap().put(String.valueOf(keyCode), abstractAction);
     }
-
-	public void ElemAddition(Structure structure, MyCanvas MainCanvas, int[] MainPanelPos)
-	{
-		if (structure.getMesh().getElements() != null)
-		{
-			MenuFunctions.SelectedElems = null;
-			MenuFunctions.SelectedElems = Mesh.ElemsSelection(MainCanvas, structure.getCenter().asArray(), structure.getMesh(),
-			MenuFunctions.mousePos, MainPanelPos, MenuFunctions.SelectedElems, MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.DiagramScales, showElemSelectionWindow, showDeformedStructure);
-			int ElemMouseIsOn = Mesh.ElemMouseIsOn(structure.getMesh(), MenuFunctions.mousePos, structure.getCenter().asArray(), MainCanvas, showDeformedStructure);
-			if (ElemMouseIsOn == -1 | (showElemSelectionWindow && -1 < ElemMouseIsOn))
-			{
-				showElemSelectionWindow = !showElemSelectionWindow;
-				MenuFunctions.ElemSelectionWindowInitialPos = MenuFunctions.mousePos;
-			}
-		}
-	}
 
 	public static void StructureCreation(int[] MainPanelPos, MyCanvas canvas, Point mousePos, boolean SnipToGridIsOn)
 	{		   
@@ -637,8 +620,32 @@ public class MainPanel extends JPanel
 		MenuFunctions.selectedNodes = selectionWindow.selectNodes(MainPanel.structure.getMesh().getNodes(), canvas, MenuFunctions.mousePos) ;
 		// int NodeMouseIsOn = Mesh.NodeMouseIsOn(MenuFunctions.struct.getMesh().getNodes(), MenuFunctions.mousePos, canvas, 4, MenuFunctions.ShowDeformedStructure);
 		showNodeSelectionWindow = !showNodeSelectionWindow;
+
+	}
+
+	public void ElemAddition(Structure structure, MyCanvas MainCanvas, int[] MainPanelPos)
+	{
 		
+		if (!selectionWindow.isActive())
+		{
+			selectionWindow.setTopLeft(MenuFunctions.mousePos);
+			return ;
+		}
 		
+		if (structure.getMesh().getElements() != null)
+		{
+			selectionWindow.selectElementsInside(structure.getMesh(), MainCanvas, MenuFunctions.mousePos) ;
+
+			// MenuFunctions.SelectedElems = Mesh.ElemsSelection(MainCanvas, structure.getCenter().asArray(), structure.getMesh(),
+			// 	MenuFunctions.mousePos, MainPanelPos, MenuFunctions.SelectedElems, MenuFunctions.ElemSelectionWindowInitialPos, MenuFunctions.DiagramScales, showElemSelectionWindow, showDeformedStructure);
+			
+			int ElemMouseIsOn = Mesh.ElemMouseIsOn(structure.getMesh(), MenuFunctions.mousePos, structure.getCenter().asArray(), MainCanvas, showDeformedStructure);
+			if (ElemMouseIsOn == -1 | (showElemSelectionWindow && -1 < ElemMouseIsOn))
+			{
+				showElemSelectionWindow = !showElemSelectionWindow;
+				MenuFunctions.ElemSelectionWindowInitialPos = MenuFunctions.mousePos;
+			}
+		}
 	}
 
 	public static void CreateStructureOnClick(StructureShape structureShape)
@@ -704,34 +711,34 @@ public class MainPanel extends JPanel
 
 
 	
- 	public static void AddMaterialToElements(int[] Elems, Material mat)
+ 	public static void AddMaterialToElements(List<Element> elems, Material mat)
 	{
-		if (MainPanel.structure.getMesh().getElements() != null && Elems != null && mat != null)
+		if (mat == null || elems == null || elems.isEmpty()) { return ;}
+
+		for (Element elem : elems)
 		{
-			for (int i = 0; i <= Elems.length - 1; i += 1)
+			if (elem.isSelected())
 			{
-				if (-1 < Elems[i])
-				{
-					MainPanel.structure.getMesh().getElements().get(Elems[i]).setMat(mat);
-				}
+				elem.setMat(mat) ;
 			}
-			MenuFunctions.SelectedElems = null;
 		}
+
+		structure.getMesh().unselectAllElements() ;
 	}
 
-	public static void AddSectionsToElements(int[] Elems, Section sec)
+	public static void AddSectionsToElements(List<Element> elems, Section sec)
 	{
-		if (MainPanel.structure.getMesh().getElements() != null && sec != null && Elems != null)
+		if (sec == null || elems == null || elems.isEmpty()) { return ;}
+
+		for (Element elem : elems)
 		{
-			for (int i = 0; i <= Elems.length - 1; i += 1)
+			if (elem.isSelected())
 			{
-				if (-1 < Elems[i])
-				{
-					MainPanel.structure.getMesh().getElements().get(Elems[i]).setSec(sec);
-				}
+				elem.setSec(sec) ;
 			}
-			MenuFunctions.SelectedElems = null;
 		}
+		
+		structure.getMesh().unselectAllElements() ;
 	}
 	
 	public static void AddSupports()
@@ -880,16 +887,13 @@ public class MainPanel extends JPanel
 					}
 				}
 			}
-			if (elemSelectionIsActive)
+			if (elemSelectionIsActive && selectionWindow != null)
 			{
 				ElemAddition(MainPanel.structure, canvas, panelPos);
-				if (MenuFunctions.SelectedElems != null)
+				if (structure.getMesh().hasElementsSelected())
 				{
-					if (-1 < MenuFunctions.SelectedElems[0])
-					{
-						Menus.getInstance().getEastPanel().reset() ;
-						//AddElemInfoPanel(MenuFunctions.Elem[MenuFunctions.SelectedElems[0]]);
-					}
+					Menus.getInstance().getEastPanel().reset() ;
+					//AddElemInfoPanel(MenuFunctions.Elem[MenuFunctions.SelectedElems[0]]);
 				}
 			}
 		}

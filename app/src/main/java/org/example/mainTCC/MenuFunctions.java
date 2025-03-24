@@ -39,8 +39,6 @@ public abstract class MenuFunctions
 	public static boolean AnalysisIsComplete;
 	public static boolean ShowDeformedStructure ;
 	
-	
-	public static int[] SelectedElems;
 	public static List<Node> selectedNodes ;
 	
 	public static double[] DiagramScales;
@@ -70,7 +68,6 @@ public abstract class MenuFunctions
 		DiagramScales = new double[2];
 		
 		selectedNodes = null;
-		SelectedElems = null;
 		
 
 	    ElemSelectionWindowInitialPos = new Point();

@@ -62,13 +62,10 @@ public class EastPanel extends JPanel
 				bp1 = createNodeInfoPanel(MainPanel.structure.getMesh().getNodes().get(nodeID)) ;
 			}
 		}
-		if (MenuFunctions.SelectedElems != null)
+		if (MainPanel.structure.getMesh().hasElementsSelected())
 		{
-			int elemID = MenuFunctions.SelectedElems[0] ;
-			if (-1 < elemID)
-			{
-				bp2 = createElemInfoPanel(MainPanel.structure.getMesh().getElements().get(elemID)) ;
-			}
+			Element elem = MainPanel.structure.getMesh().getSelectedElements().get(0) ;
+			bp2 = createElemInfoPanel(elem) ;
 		}
 		this.removeAll();
 		this.add(bp1);
