@@ -668,47 +668,13 @@ public class Mesh
 
 	public void displayElemNumbers(Mesh mesh, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
 	{
-		List<Node> Node = mesh.getNodes();
-		List<Element> Elem = mesh.getElements();
-		// int FontSize = 13;
-		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-		{
-			int[] DrawingCoords = new int[2];
-			for (int elemnode = 0; elemnode <= Elem.get(elem).getExternalNodes().length - 1; elemnode += 1)
-			{
-				int nodeID = Elem.get(elem).getExternalNodes()[elemnode];
-				Node node = Node.get(nodeID) ;
-				Point3D nodeDeformedPos = new Point3D(Util.GetNodePos(node, deformed)[0], Util.GetNodePos(node, deformed)[1], Util.GetNodePos(node, deformed)[2]) ;
-				// Point3D nodeDeformedPos = new Point3D(node.deformedPos()[0], deformed)[0], Util.GetNodePos(Node.get(nodeID), deformed)[1], Util.GetNodePos(Node.get(nodeID), deformed)[2]) ;
-				Point nodeDeformedPosInDrawingCoords = canvas.inDrawingCoords(nodeDeformedPos) ;
-				DrawingCoords[0] += nodeDeformedPosInDrawingCoords.x;
-				DrawingCoords[1] += nodeDeformedPosInDrawingCoords.y;
-				// DrawingCoords[0] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[0];
-				// DrawingCoords[1] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[1];
-			}
-			DrawingCoords[0] = DrawingCoords[0] / Elem.get(elem).getExternalNodes().length;
-			DrawingCoords[1] = DrawingCoords[1] / Elem.get(elem).getExternalNodes().length;
-			// DrawText(DrawingCoords, Integer.toString(elem), "Center", 0, "Bold", FontSize, NodeColor);		
-			DP.drawText(new Point(DrawingCoords[0], DrawingCoords[1]), Align.center, String.valueOf(elem), NodeColor) ;
-		}	
+		elems.forEach(elem -> elem.displayNumber(canvas, nodes, deformed, DP)) ;
 	}
 
 	public void displayNodes(boolean deformed, double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		int[] dofs = elems.get(0).getDOFs() ;
 		nodes.forEach(node -> node.display(canvas, dofs, deformed, Defscale, deformed, DP)) ;
-	}
-
-	public void displayNodeNumbers(List<Node> Node, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
-	{
-		int offset = 6;
-		for (int node = 0; node <= Node.size() - 1; node += 1)
-		{
-			// int[][] DrawingCoords = new int[Node.size()][];
-			int[] DrawingCoords = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node.get(node), deformed), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			Point pos = new Point((int)(DrawingCoords[0] + offset), (int)(DrawingCoords[1] + 14)) ;
-			DP.drawText(pos, Align.topLeft, String.valueOf(node), NodeColor) ;		
-		}	
 	}
 
 	public void display(MyCanvas canvas, double Defscale, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawPrimitives DP)

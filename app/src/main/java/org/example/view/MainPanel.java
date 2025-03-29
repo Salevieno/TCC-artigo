@@ -391,8 +391,7 @@ public class MainPanel extends JPanel
 		}
 		if (MenuFunctions.ShowNodeNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
-			// DP.DrawNodeNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas);
-			structure.getMesh().displayNodeNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas, DP) ;
+			structure.getMesh().getNodes().forEach(node -> node.displayNumber(canvas, showDeformedStructure, DP)) ;
 		}
 		if (MenuFunctions.ShowElemNumber && structure != null && structure.getMesh() != null &&  structure.getMesh().getElements() != null)
 		{

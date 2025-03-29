@@ -121,6 +121,7 @@ public class MyCanvas
 		angles[0] = 0;
 		angles[1] = 0;
 		angles[2] = 0;
+		MainPanel.structure.updateDrawings(this) ;
 	}
 
 	public void frontView()
@@ -128,6 +129,7 @@ public class MyCanvas
 		angles[0] = 0;
 		angles[1] = -Math.PI/2;
 		angles[2] = 0;
+		MainPanel.structure.updateDrawings(this) ;
 	}
 
 	public void sideView()
@@ -135,12 +137,14 @@ public class MyCanvas
 		angles[0] = -Math.PI/2;
 		angles[1] = 0;
 		angles[2] = 0;
+		MainPanel.structure.updateDrawings(this) ;
 	}
 
 	public void incDrawingPos(int dX, int dY)
 	{
 		DrawingPos[0] += dX;
 		DrawingPos[1] += dY;
+		MainPanel.structure.updateDrawings(this) ;
 	}
 
 	public int[] getTitlePos() {return TitlePos;}

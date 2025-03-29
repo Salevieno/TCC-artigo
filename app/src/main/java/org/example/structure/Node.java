@@ -15,7 +15,9 @@ import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
+import org.example.view.MainPanel;
 
+import graphics.Align;
 import graphics.DrawPrimitives;
 
 public class Node
@@ -74,6 +76,14 @@ public class Node
 	public void updateDrawingPos(MyCanvas canvas, boolean deformed, double defScale)
 	{
 		drawingPos = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
+	}
+
+	public void displayNumber(MyCanvas canvas, boolean deformed, DrawPrimitives DP)
+	{
+		int offset = 6;
+		Point numberPos = new Point(drawingPos) ;
+		numberPos.translate(offset, offset) ;
+		DP.drawText(numberPos, Align.topLeft, String.valueOf(ID), Node.color) ;	
 	}
 
 	public void displayConcLoads(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)

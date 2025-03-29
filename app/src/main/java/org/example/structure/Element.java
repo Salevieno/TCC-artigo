@@ -15,15 +15,15 @@ import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 import org.example.view.SelectionWindow;
 
+import graphics.Align;
 import graphics.DrawPrimitives;
 
 public class Element
 {
 	private int ID;
-	private ElemType type;			// Type of element
+	private ElemType type;
 	private ElemShape Shape;
-	
-	
+		
 	private int[] DOFs;				// All DOFs present in the element
 	private int[][] DOFsPerNode;	// DOFs in each node of the element
 	
@@ -280,7 +280,28 @@ public class Element
 	{
 		SecColors = Util.RandomColors(SectionTypes.size());
 	}	
-	
+
+	public void displayNumber(MyCanvas canvas, List<Node> nodes, boolean deformed, DrawPrimitives DP)
+	{
+		int[] DrawingCoords = new int[2];
+		for (int elemnode = 0; elemnode <= externalNodes.length - 1; elemnode += 1)
+		{
+			int nodeID = externalNodes[elemnode];
+			Node node = nodes.get(nodeID) ;
+			Point3D nodeDeformedPos = new Point3D(Util.GetNodePos(node, deformed)[0], Util.GetNodePos(node, deformed)[1], Util.GetNodePos(node, deformed)[2]) ;
+			// Point3D nodeDeformedPos = new Point3D(node.deformedPos()[0], deformed)[0], Util.GetNodePos(Node.get(nodeID), deformed)[1], Util.GetNodePos(Node.get(nodeID), deformed)[2]) ;
+			Point nodeDeformedPosInDrawingCoords = canvas.inDrawingCoords(nodeDeformedPos) ;
+			DrawingCoords[0] += nodeDeformedPosInDrawingCoords.x;
+			DrawingCoords[1] += nodeDeformedPosInDrawingCoords.y;
+			// DrawingCoords[0] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[0];
+			// DrawingCoords[1] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[1];
+		}
+		DrawingCoords[0] = DrawingCoords[0] / externalNodes.length;
+		DrawingCoords[1] = DrawingCoords[1] / externalNodes.length;
+		// DrawText(DrawingCoords, Integer.toString(elem), "Center", 0, "Bold", FontSize, NodeColor);		
+		DP.drawText(new Point(DrawingCoords[0], DrawingCoords[1]), Align.center, String.valueOf(ID), Element.color) ;
+	}
+
 	public void display(MyCanvas canvas, List<Node> nodes, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double defScale, DrawPrimitives DP)
 	{
 		// double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
