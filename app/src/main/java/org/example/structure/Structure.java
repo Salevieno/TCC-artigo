@@ -308,6 +308,11 @@ public class Structure
 	
 	public void removeSupports() { supports = null ;}
 
+	public void updateDrawings(MyCanvas canvas)
+	{
+		mesh.getNodes().forEach(node -> node.updateDrawingPos(canvas, false, 1.0)) ;
+	}
+
 	public void displayShape(MyCanvas canvas, DrawPrimitives DP)
 	{		
 		int countourStroke = 2;

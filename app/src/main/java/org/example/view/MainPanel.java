@@ -13,6 +13,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -236,7 +237,7 @@ public class MainPanel extends JPanel
 		canvas.setPos(new Point((int) (0.1 * initialSize.width), (int) (0.1 * initialSize.height)));
 		canvas.setSize(new int[] {(int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height)});
 		canvas.setCenter(new int[] {canvas.getPos().x + canvas.getSize()[0] / 2, canvas.getPos().y + canvas.getSize()[1] / 2});
-		
+
 		int[] LittleAxisPos = new int[] {canvas.getPos().x + canvas.getSize()[0] + 10, canvas.getPos().y - 10, 0};
 		int[] BigAxisPos = new int[] {canvas.getPos().x, canvas.getPos().y + canvas.getSize()[1], 0};		
 		DrawAxis(LittleAxisPos, canvas.getSize()[0] / 15, canvas.getSize()[1] / 15, 10, canvas.getAngles(), DP);
@@ -277,7 +278,11 @@ public class MainPanel extends JPanel
 		DP.drawText(new Point(pos.x + 130, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.y, 2)) + " m", Menus.palette[0]) ;
 	}
 	
-	
+	public void updateDrawings()
+	{
+		structure.updateDrawings(canvas) ;
+	}
+
 	private void drawStructureCreationWindow(List<Point3D> initalCoords, Point MousePos, int MemberThickness, StructureShape structshape, Color color)
 	{
 		Point topLeftCorner = canvas.inDrawingCoords(initalCoords.get(0));
@@ -307,7 +312,7 @@ public class MainPanel extends JPanel
 		}
 	}
 
-	public void displayContent(Structure structure, int[] MainPanelPos, DrawPrimitives DP)
+	public void display(Structure structure, int[] MainPanelPos, DrawPrimitives DP)
 	{
 		displayCanvasElements(canvas, showCanvas, showGrid, showMousePos, DP);
 		// if (structure != null && structure.getCoords() != null && structure.getCenter() != null)
@@ -962,7 +967,7 @@ public class MainPanel extends JPanel
         super.paintComponent(graphs);
         MenuFunctions.updateMousePosRelToPanelPos(panelPos) ;
 		DP.setGraphics((Graphics2D) graphs) ;
-		this.displayContent(structure, panelPos, DP);
+		this.display(structure, panelPos, DP);
 		repaint();
     }
 

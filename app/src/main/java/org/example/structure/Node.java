@@ -22,6 +22,7 @@ public class Node
 {
 	private int ID;				// ID
 	private Point3D coords;		// undeformed coordinates
+	private Point drawingPos;
 	private Point3D disp;		// Displacements [ux, uy, uz]
 	private int[] Sup;			// Support in the node
 	private List<ConcLoad> concLoads;	// Concentrated loads in the node
@@ -40,6 +41,7 @@ public class Node
 	{
 		this.ID = ID;
 		this.coords = coords;
+		this.drawingPos = null ;
 		this.disp = new Point3D(0, 0, 0) ;
 		Sup = null;
 		concLoads = null;
@@ -69,6 +71,11 @@ public class Node
 		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
 	}
 
+	public void updateDrawingPos(MyCanvas canvas, boolean deformed, double defScale)
+	{
+		drawingPos = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
+	}
+
 	public void displayConcLoads(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
@@ -79,10 +86,10 @@ public class Node
 
 	public void display(MyCanvas canvas, int[] dofs, boolean deformed, double defScale, boolean selected, DrawPrimitives DP)
 	{
-		Point drawingCoords = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
+		// Point drawingCoords = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
 		int displaySize = isSelected ? 2 * size : size ;
 		Color displayColor = isSelected ? Menus.palette[4] : color ;
-		DP.drawCircle(drawingCoords, displaySize, stroke, Menus.palette[0], displayColor);
+		DP.drawCircle(drawingPos, displaySize, stroke, Menus.palette[0], displayColor);
 	}
 
 

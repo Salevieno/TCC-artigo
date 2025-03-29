@@ -1,13 +1,12 @@
 package org.example.utilidades;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
-import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
+import org.example.view.MainPanel;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -114,6 +113,7 @@ public class MyCanvas
 		angles[0] += dX;
 		angles[1] += dY;
 		angles[2] += dZ;
+		MainPanel.structure.updateDrawings(this) ;
 	}
 
 	public void topView()
