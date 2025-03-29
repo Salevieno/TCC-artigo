@@ -69,7 +69,6 @@ public class MenuAnalysis extends JMenu
 	{
 		geometryIsNonLinear = analysisTypeID == 1 || analysisTypeID == 3 ;
 		matIsNonLinear = analysisTypeID == 2 || analysisTypeID == 3 ;
-
 		MenuFunctions.CalcAnalysisParameters(MainPanel.structure, MainPanel.loading);
 		Analysis.run(MainPanel.structure, MainPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, qtdIterations, qtdLoadSteps, maxLoadFactor);
 		MenuFunctions.PostAnalysis(MainPanel.structure);

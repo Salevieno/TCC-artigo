@@ -1,5 +1,6 @@
 package org.example.analysis;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.ConcLoad;
@@ -20,36 +21,6 @@ import org.example.utilidades.Util;
 
 public abstract class Analysis
 {
-
-	public static int CalcNFreeDoFs(List<Node> Node, Element[] Elem, Supports[] Sup)
-	{
-		int NFreeDoFs = 0;
-        
-        for (int node = 0; node <= Node.size() - 1; node += 1)
-        {
-			NFreeDoFs += Node.get(node).getDOFType().length;
-        }
-        
-        for (int sup = 0; sup <= Sup.length - 1; sup += 1)
-    	{
-        	int SupNode = Sup[sup].getNode();
-    	    for (int dof = 0; dof <= Node.get(SupNode).getDOFType().length - 1; dof += 1)
-        	{
-    	    	if (Node.get(SupNode).getDOFType()[dof] <= Sup[sup].getDoFs().length - 1)
-    	    	{
-    	    		if (Sup[sup].getDoFs()[Node.get(SupNode).getDOFType()[dof]] == 1)
-        	        {
-        	           NFreeDoFs += -1; 
-        	        }
-    	    	}
-    	    	else
-    	    	{
-    	    		NFreeDoFs += -1; 
-    	    	}
-        	}
-    	}
-    	return NFreeDoFs;
-	}
 	
 	public static int[] DefineFreeDoFTypes(List<Node> nodes)
 	{
@@ -307,7 +278,8 @@ public abstract class Analysis
 		for (int loadstep = 0; loadstep <= NLoadSteps - 1; loadstep += 1)
 		{
 			double loadfactor = 0 + (loadstep + 1)*loadinc;
-			structure.setP(LoadVector(structure.getMesh(), structure.NFreeDOFs, loading, NonlinearMat, NonlinearGeo, loadfactor));
+			double[] loadVector = LoadVector(structure.getMesh(), structure.NFreeDOFs, loading, NonlinearMat, NonlinearGeo, loadfactor) ;
+			structure.setP(loadVector);
 		    for (int iter = 0; iter <= NIter - 1; iter += 1)
 			{
 		    	structure.setK(Structure.StructureStiffnessMatrix(structure.NFreeDOFs, structure.getMesh().getNodes(), structure.getMesh().getElements(), NonlinearMat, NonlinearGeo));

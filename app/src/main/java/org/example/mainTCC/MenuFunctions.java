@@ -418,20 +418,30 @@ public abstract class MenuFunctions
 				}
 			}
 		}
-		if (DistLoadType != null)
+
+		for (DistLoad distLoad : loading.getDistLoads())
 		{
-			for (int loadid = 0; loadid <= DistLoadType.length - 1; loadid += 1)
+			int elemid = distLoad.getElem() ;
+			if (-1 < elemid)
 			{
-				int elemid = (int) DistLoadType[loadid][0];
-				int LoadType = (int) DistLoadType[loadid][1];
-				double Intensity = DistLoadType[loadid][2];
-				if (-1 < elemid)
-				{
-					loading.getDistLoads().set(loadid, new DistLoad(loadid, elemid, LoadType, Intensity)) ;
-					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
-				}
+				struct.getMesh().getElements().get(elemid).addDistLoad(distLoad) ;
 			}
 		}
+
+		// if (DistLoadType != null)
+		// {
+		// 	for (int loadid = 0; loadid <= DistLoadType.length - 1; loadid += 1)
+		// 	{
+		// 		int elemid = (int) DistLoadType[loadid][0];
+		// 		int LoadType = (int) DistLoadType[loadid][1];
+		// 		double Intensity = DistLoadType[loadid][2];
+		// 		if (-1 < elemid)
+		// 		{
+		// 			loading.getDistLoads().set(loadid, new DistLoad(loadid, elemid, LoadType, Intensity)) ;
+		// 			struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
+		// 		}
+		// 	}
+		// }
 	}
 	
 
