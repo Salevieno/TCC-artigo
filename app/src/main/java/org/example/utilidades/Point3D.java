@@ -36,28 +36,29 @@ public class Point3D
 	{
 
 		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referância (RefPoint)
+		Point3D rotatedPoint = new Point3D(point.x, point.y, point.z) ;
 		Point3D originalPoint = new Point3D(point.x, point.y, point.z) ;
 		// Rotation around z
-		point.x = (originalPoint.x - refPoint.x) * Math.cos(angle.z) - (originalPoint.y - refPoint.y) * Math.sin(angle.z);
-		point.y = (originalPoint.x - refPoint.x) * Math.sin(angle.z) + (originalPoint.y - refPoint.y) * Math.cos(angle.z);
-		originalPoint.x = point.x + refPoint.x;
-		originalPoint.y = point.y + refPoint.y;
+		rotatedPoint.x = (originalPoint.x - refPoint.x) * Math.cos(angle.z) - (originalPoint.y - refPoint.y) * Math.sin(angle.z);
+		rotatedPoint.y = (originalPoint.x - refPoint.x) * Math.sin(angle.z) + (originalPoint.y - refPoint.y) * Math.cos(angle.z);
+		originalPoint.x = rotatedPoint.x + refPoint.x;
+		originalPoint.y = rotatedPoint.y + refPoint.y;
 		// Rotation around y
-		point.x = (originalPoint.x - refPoint.x) * Math.cos(angle.y) - (originalPoint.z - refPoint.z) * Math.sin(angle.y);
-		point.z = (originalPoint.x - refPoint.x) * Math.sin(angle.y) + (originalPoint.z - refPoint.z) * Math.cos(angle.y);
-		originalPoint.x = point.x + refPoint.x;
-		originalPoint.z = point.z + refPoint.z;
+		rotatedPoint.x = (originalPoint.x - refPoint.x) * Math.cos(angle.y) - (originalPoint.z - refPoint.z) * Math.sin(angle.y);
+		rotatedPoint.z = (originalPoint.x - refPoint.x) * Math.sin(angle.y) + (originalPoint.z - refPoint.z) * Math.cos(angle.y);
+		originalPoint.x = rotatedPoint.x + refPoint.x;
+		originalPoint.z = rotatedPoint.z + refPoint.z;
 		// Rotation around x
-		point.y = (originalPoint.y - refPoint.y) * Math.cos(angle.x) - (originalPoint.z - refPoint.z) * Math.sin(angle.x);
-		point.z = (originalPoint.y - refPoint.y) * Math.sin(angle.x) + (originalPoint.z - refPoint.z) * Math.cos(angle.x);
-		originalPoint.y = point.y + refPoint.y;
-		originalPoint.z = point.z + refPoint.z;
+		rotatedPoint.y = (originalPoint.y - refPoint.y) * Math.cos(angle.x) - (originalPoint.z - refPoint.z) * Math.sin(angle.x);
+		rotatedPoint.z = (originalPoint.y - refPoint.y) * Math.sin(angle.x) + (originalPoint.z - refPoint.z) * Math.cos(angle.x);
+		originalPoint.y = rotatedPoint.y + refPoint.y;
+		originalPoint.z = rotatedPoint.z + refPoint.z;
 		
-		point.x = originalPoint.x;
-		point.y = originalPoint.y;
-		point.z = originalPoint.z;
+		rotatedPoint.x = originalPoint.x;
+		rotatedPoint.y = originalPoint.y;
+		rotatedPoint.z = originalPoint.z;
 
-		return point ;
+		return rotatedPoint ;
 	}
 
 	public void rotate(Point3D refPoint, Point3D angle)

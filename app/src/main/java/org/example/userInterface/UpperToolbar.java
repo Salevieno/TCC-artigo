@@ -188,7 +188,7 @@ public class UpperToolbar extends JPanel
         
         if (Assignable.materials.equals(assignable))
         {
-            Element.createMatColors(MainPanel.matTypes);
+            Element.createRandomMatColors(MainPanel.matTypes);
             // for (Element elem : MainPanel.structure.getMesh().getElements())
             // {
                 // int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;

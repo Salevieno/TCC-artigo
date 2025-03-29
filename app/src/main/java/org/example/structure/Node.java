@@ -8,13 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.ConcLoad;
+import org.example.loading.Force;
 import org.example.loading.NodalDisp;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.SelectionWindow;
 
 import graphics.DrawPrimitives;
 
@@ -67,6 +67,13 @@ public class Node
 		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
 		double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
 		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
+	}
+
+	public void displayConcLoads(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
+	{
+		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
+		double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
+		concLoads.forEach(load -> load.display(rotatedCoord, ElemDOFs, ShowValues, maxLoad, deformed, defScale, canvas, DP)) ;
 	}
 
 

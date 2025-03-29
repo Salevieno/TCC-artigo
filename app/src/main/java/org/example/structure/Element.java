@@ -271,20 +271,21 @@ public class Element
 		}
 	}
 	
-	public static void createMatColors(List<Material> MaterialTypes)
+	public static void createRandomMatColors(List<Material> MaterialTypes)
 	{
 		matColors = Util.RandomColors(MaterialTypes.size());
 	}
 
-	public static void setSecColors(List<Section> SectionTypes)
+	public static void createRandomSecColors(List<Section> SectionTypes)
 	{
 		SecColors = Util.RandomColors(SectionTypes.size());
 	}	
 	
 	public void display(MyCanvas canvas, List<Node> nodes, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double defScale, DrawPrimitives DP)
 	{
-		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		// double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		// int[][] DrawingCoord = new int[Nodes.length][2]; 
+		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
 		List<Point> DrawingCoord = new ArrayList<>() ;
 		int[] xCoords = new int[externalNodes.length + 1], yCoords = new int[externalNodes.length + 1];
 		Color color = new Color(0, 100, 55);
@@ -313,7 +314,7 @@ public class Element
 			if (showdeformed)
 			{
 				double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords(), nodes.get(externalNodes[node]).getDisp(), DOFs, defScale);
-				double[] rotatedCoords = Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()) ;
+				double[] rotatedCoords = Util.RotateCoord(DeformedCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
 				Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
 				DrawingCoord.add(drawingCoord) ;
 				// DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), RealCanvasCenter, canvas.getDrawingPos());
@@ -321,7 +322,7 @@ public class Element
 			else
 			{
 				double[] OriginalCoords = Util.GetNodePos(nodes.get(externalNodes[node]), showdeformed);
-				double[] rotatedCoords = Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()) ;
+				double[] rotatedCoords = Util.RotateCoord(OriginalCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
 				Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
 				DrawingCoord.add(drawingCoord) ;
 				// DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());

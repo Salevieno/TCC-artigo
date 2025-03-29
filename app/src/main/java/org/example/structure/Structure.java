@@ -116,7 +116,7 @@ public class Structure
 		
 		/* 3. Atribuir materiais */
 		structure.getMesh().getElements().forEach(elem -> elem.setMat(currentMatType)) ;
-		Element.createMatColors(matTypes);
+		Element.createRandomMatColors(matTypes);
 		for (Element elem : structure.getMesh().getElements())
 		{
 			int matColorID = matTypes.indexOf(elem.getMat()) ;
@@ -125,7 +125,7 @@ public class Structure
 
 		/* 4. Atribuir seções */		
 		structure.getMesh().getElements().forEach(elem -> elem.setSec(currentSecType)) ;
-		Element.setSecColors(secTypes);
+		Element.createRandomSecColors(secTypes);
 		for (Element elem : structure.getMesh().getElements())
 		{
 			int secID = secTypes.indexOf(elem.getSec()) ;
@@ -336,14 +336,16 @@ public class Structure
 	public void displayConcLoads(MyCanvas canvas, boolean deformed, DrawPrimitives DP)
 	{
 		double maxLoad = Util.FindMaxConcLoad(MainPanel.loading.getConcLoads());
+		int[] dofs = mesh.getElements().get(0).getDOFs() ;
 		for (Node node : mesh.getNodes())
 		{
 			if (node.getConcLoads() == null) { continue ;}
-			for (ConcLoad concLoad : node.getConcLoads())
-			{
-				int[] dofs = mesh.getElements().get(0).getDOFs() ;
-				concLoad.display(dofs, MenuFunctions.ShowLoadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
-			}
+			node.displayConcLoads(dofs, MenuFunctions.ShowLoadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			// for (ConcLoad concLoad : node.getConcLoads())
+			// {
+			// 	int[] dofs = mesh.getElements().get(0).getDOFs() ;
+			// 	concLoad.display(dofs, MenuFunctions.ShowLoadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			// }
 		}
 	}
 
@@ -354,9 +356,16 @@ public class Structure
 		resultDiagrams.display(canvas, mesh, results, DP) ;
 	}
 
-	public void display()
+	public void display(MyCanvas canvas, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawPrimitives DP)
 	{
-
+		if (mesh == null && coords != null && !coords.isEmpty())
+		{
+			displayShape(canvas, DP) ;
+		}
+		if (mesh != null)
+		{
+			mesh.display(canvas, NCirclePoints, showmatcolor, showseccolor, showcontour, showdeformed, DP) ;
+		}
 	}
 
 

@@ -9,6 +9,7 @@ import org.example.structure.Node;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
+import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 
@@ -67,11 +68,8 @@ public class ConcLoad
     	}
     }
 
-	public void display(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
+	public void display(double[] rotatedPoint, int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
 	{
-		Node node = MainPanel.structure.getMesh().getNodes().get(NodeID) ;
-		double[] point = deformed ? Util.ScaledDefCoords(node.getOriginalCoords(), node.getDisp(), ElemDOFs, defScale) : node.getOriginalCoords().asArray();
-
 		for (int dof = 0; dof <= ElemDOFs.length - 1; dof += 1)
 		{
 			if (Force.qtdDOFs <= ElemDOFs[dof]) { continue ;}
@@ -82,7 +80,7 @@ public class ConcLoad
 				int displaySize = (int)(maxDisplaySize * LoadIntensity / maxLoad);
 				if (ElemDOFs[dof] <= 2)
 				{
-					DrawPL3D(point, displaySize, stroke, canvas.getAngles(), ElemDOFs[dof], color, canvas, DP);
+					DrawPL3D(rotatedPoint, displaySize, stroke, canvas.getAngles(), ElemDOFs[dof], color, canvas, DP);
 				}
 				else
 				{
@@ -92,7 +90,7 @@ public class ConcLoad
 			if (ShowValues)
 			{
 				// int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(point, DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-				Point drawingDefCoords = canvas.inDrawingCoords(new Point2D.Double(point[0], point[1])) ;
+				Point drawingDefCoords = canvas.inDrawingCoords(new Point2D.Double(rotatedPoint[0], rotatedPoint[1])) ;
 				Draw.DrawLoadValues(new int[] {drawingDefCoords.x, drawingDefCoords.y, 0}, ElemDOFs, dof, LoadIntensity, color, DP);
 			}
 		}

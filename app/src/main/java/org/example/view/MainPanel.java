@@ -310,9 +310,14 @@ public class MainPanel extends JPanel
 	public void displayContent(Structure structure, int[] MainPanelPos, DrawPrimitives DP)
 	{
 		displayCanvasElements(canvas, showCanvas, showGrid, showMousePos, DP);
-		if (structure != null && structure.getCoords() != null && structure.getCenter() != null)
+		// if (structure != null && structure.getCoords() != null && structure.getCenter() != null)
+		// {
+		// 	structure.displayShape(canvas, DP) ;
+		// }
+
+		if (structure != null)
 		{
-			structure.displayShape(canvas, DP) ;
+			structure.display(canvas, showMatColor, showSecColor, showElemContour, showDeformedStructure, DP) ;
 		}
 
 		canvas.drawCenter(DP) ;
@@ -326,7 +331,7 @@ public class MainPanel extends JPanel
 			{
 				canvas.setTitle("Estrutura deformada (x " + String.valueOf(Util.Round(MenuFunctions.DiagramScales[1], 3)) + ")");
 			}
-			structure.displayMesh(canvas, MenuFunctions.DiagramScales[1], showMatColor, showSecColor, showElemContour, showDeformedStructure, DP) ;
+			// structure.displayMesh(canvas, MenuFunctions.DiagramScales[1], showMatColor, showSecColor, showElemContour, showDeformedStructure, DP) ;
 		}
 		if (MenuFunctions.ShowNodes && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{

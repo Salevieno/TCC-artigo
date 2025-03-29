@@ -693,7 +693,7 @@ public class Mesh
 		}	
 	}
 
-	public void displayNodes(List<Node> selectedNodes, boolean deformed, double Defscale, MyCanvas canvas, DrawPrimitives DP)
+	public void displayNodes(boolean deformed, double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		int[] dofs = elems.get(0).getDOFs() ;
 		nodes.forEach(node -> node.display(canvas, dofs, deformed, Defscale, deformed, DP)) ;
@@ -719,7 +719,7 @@ public class Mesh
 		}
 		if (nodes != null && !nodes.isEmpty())
 		{
-			displayNodes(getSelectedNodes(), showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			displayNodes(showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
 		}
 	}
 
