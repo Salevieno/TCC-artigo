@@ -671,6 +671,10 @@ public class Element
     public double[][] StiffnessMatrix(List<Node> nodes, boolean NonlinearMat, boolean NonlinearGeo)
     {
     	// Calcula a matriz de rigidez do elemento
+
+		if (mat == null) { System.out.println("Error: Elem without material while trying to calculate the stiffness matrix.") ; return null ;}
+		if (sec == null) { System.out.println("Error: Elem without section while trying to calculate the stiffness matrix.") ; return null ;}
+
     	double[][] k = null;
 		double[] ElemSize = calcHalfSize(nodes);
 		double[][] Db = BendingConstitutiveMatrix(mat, NonlinearMat, Strain);

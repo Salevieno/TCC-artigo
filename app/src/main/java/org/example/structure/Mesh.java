@@ -276,7 +276,7 @@ public class Mesh
 		return true;
 	}
 
-	public static Mesh CreateMesh(List<Point3D> structureCoords, Point3D structureCenter, MeshType meshType, int[][] meshInfo, List<Node> nodes, List<Element> elems, ElemType elemType)
+	public static Mesh CreateMesh(List<Point3D> structureCoords, Point3D structureCenter, MeshType meshType, int noffsets, int qtdIntermediatePoints, List<Node> nodes, List<Element> elems, ElemType elemType)
 	{		
 		if (elemType == null)
 		{
@@ -284,9 +284,8 @@ public class Mesh
 			return null ;
 		}
 
-		int noffsets = meshInfo[0][0];
 	    int[] nintermediatepoints = new int[noffsets];
-		Arrays.fill(nintermediatepoints, meshInfo[0][1]);
+		Arrays.fill(nintermediatepoints, qtdIntermediatePoints);
 		switch (meshType)
 		{
 			case cartesian:
@@ -310,6 +309,11 @@ public class Mesh
 		}
 
 		return new Mesh(nodes, elems) ;
+	}
+	
+	public static Mesh CreateMesh(List<Point3D> structureCoords, Point3D structureCenter, MeshType meshType, int[][] meshInfo, List<Node> nodes, List<Element> elems, ElemType elemType)
+	{
+		return CreateMesh(structureCoords, structureCenter, meshType, meshInfo[0][0], meshInfo[0][1], nodes, elems, elemType) ;
 	}
 
 	public static List<Node> CreateCartesianNodes(List<Point3D> structureCoords, int[] NumberElem, ElemType elemType)

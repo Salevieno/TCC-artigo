@@ -193,7 +193,10 @@ public class Structure
         for (int elem = 0; elem <= elems.size() - 1; elem += 1)
         {
 	        double[][] k = elems.get(elem).StiffnessMatrix(nodes, nonlinearMat, nonlinearGeo);
-	        int LocalDOFi = 0, LocalDOFj = 0;
+
+			if (k == null) { System.out.println("Error: Elem stiffness matrix null while calculating structure stiffness matrix") ; return null ;}
+	        
+			int LocalDOFi = 0, LocalDOFj = 0;
 	        for (int elemnodei = 0; elemnodei <= elems.get(elem).getExternalNodes().length - 1; elemnodei += 1)
             {
                 int nodei = elems.get(elem).getExternalNodes()[elemnodei];
@@ -229,6 +232,12 @@ public class Structure
 	{
 		resetMesh() ;
 		mesh = Mesh.CreateMesh(coords, center, meshType, meshInfo, mesh.getNodes(), mesh.getElements(), elemType);
+	}
+
+	public void createMesh(MeshType meshType, int nOffsets, int qtdIntermediatePoints, ElemType elemType)
+	{
+		resetMesh() ;
+		mesh = Mesh.CreateMesh(coords, center, meshType, nOffsets, qtdIntermediatePoints, mesh.getNodes(), mesh.getElements(), elemType);
 	}
 
 	public void resetMesh()
