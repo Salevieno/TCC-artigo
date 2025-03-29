@@ -27,6 +27,47 @@ public class Point3D
 		z += dz ;
 	}
 
+	public void add(Point3D delta)
+	{
+		translate(delta.x, delta.y, delta.z);
+	}
+
+	public static Point3D rotate(Point3D point, Point3D refPoint, Point3D angle)
+	{
+
+		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referância (RefPoint)
+		Point3D originalPoint = new Point3D(point.x, point.y, point.z) ;
+		// Rotation around z
+		point.x = (originalPoint.x - refPoint.x) * Math.cos(angle.z) - (originalPoint.y - refPoint.y) * Math.sin(angle.z);
+		point.y = (originalPoint.x - refPoint.x) * Math.sin(angle.z) + (originalPoint.y - refPoint.y) * Math.cos(angle.z);
+		originalPoint.x = point.x + refPoint.x;
+		originalPoint.y = point.y + refPoint.y;
+		// Rotation around y
+		point.x = (originalPoint.x - refPoint.x) * Math.cos(angle.y) - (originalPoint.z - refPoint.z) * Math.sin(angle.y);
+		point.z = (originalPoint.x - refPoint.x) * Math.sin(angle.y) + (originalPoint.z - refPoint.z) * Math.cos(angle.y);
+		originalPoint.x = point.x + refPoint.x;
+		originalPoint.z = point.z + refPoint.z;
+		// Rotation around x
+		point.y = (originalPoint.y - refPoint.y) * Math.cos(angle.x) - (originalPoint.z - refPoint.z) * Math.sin(angle.x);
+		point.z = (originalPoint.y - refPoint.y) * Math.sin(angle.x) + (originalPoint.z - refPoint.z) * Math.cos(angle.x);
+		originalPoint.y = point.y + refPoint.y;
+		originalPoint.z = point.z + refPoint.z;
+		
+		point.x = originalPoint.x;
+		point.y = originalPoint.y;
+		point.z = originalPoint.z;
+
+		return point ;
+	}
+
+	public void rotate(Point3D refPoint, Point3D angle)
+	{
+		Point3D rotatedPoint = rotate(this, refPoint, angle) ;
+		x = rotatedPoint.x ;
+		y = rotatedPoint.y ;
+		z = rotatedPoint.z ;
+	}
+
 	public static double dist2D(Point3D p1, Point3D p2) { return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)) ;}
 	public static double dist3D(Point3D p1, Point3D p2) { return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2) + Math.pow(p1.z - p2.z, 2));}
 
