@@ -153,11 +153,16 @@ public class ListPanel extends JPanel
 		}
 	}
 	
-	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, List<Force> ItemTypes, DrawPrimitives DP)
+	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, List<Force> Forces, DrawPrimitives DP)
 	{
 		int[] ListPos = new int[] {(int) (0.025 * PanelSize.getWidth()), (int) (0.15 * PanelSize.getHeight())};
 		int[] ListSize = new int[] {(int) (0.95 * PanelSize.getWidth()), (int) (0.9 * PanelSize.getHeight())};
-		DrawList(ListPos, ListSize, SelectedItem, ItemNames, Title, Label, ItemTypes.toArray(new double[0][]), DP);
+		double[][] loadTypes = new double[Forces.size()][6] ;
+		for (int i = 0 ; i <= Forces.size() - 1 ; i += 1)
+		{
+			loadTypes[i] = new double[] {Forces.get(i).x, Forces.get(i).y, Forces.get(i).z, Forces.get(i).tx, Forces.get(i).ty, Forces.get(i).tz} ;
+		}
+		DrawList(ListPos, ListSize, SelectedItem, ItemNames, Title, Label, loadTypes, DP);
 	}
 	
 	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, double[][] ItemTypes, DrawPrimitives DP)
