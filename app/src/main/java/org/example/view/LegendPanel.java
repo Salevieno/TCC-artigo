@@ -81,8 +81,7 @@ public class LegendPanel extends JPanel
 		}
 	}
 
-	public void display(Structure structure, int selectedVar,
-							boolean showDisplacementContour, boolean showStressContour, boolean showStrainContour, boolean showInternalForces, DrawPrimitives DP)
+	public void display(Structure structure, int selectedVar, boolean showDisplacementContour, boolean showStressContour, boolean showStrainContour, boolean showInternalForces, DrawPrimitives DP)
 	{
 		if (-1 < selectedVar)
 		{

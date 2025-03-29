@@ -76,7 +76,7 @@ public class MenuAnalysis extends JMenu
 		// {
 		// 	elem.RecordResults(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getU(), matIsNonLinear, geometryIsNonLinear);
 		// }
-		// Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
+		Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
 	}
 
 	public void setRunAnalysis(boolean state) { runAnalysis.setEnabled(state) ;}

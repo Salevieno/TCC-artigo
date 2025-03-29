@@ -191,13 +191,13 @@ public class Menus extends JFrame
 
 	public void ActivatePostAnalysisView(Structure structure)
 	{
-		if (!((Double)structure.getU()[0]).isNaN())
-		{
-			eastPanel.activatePostAnalysisView() ;
-			westPanel.getToolbarResults().setVisible(true);
-			EnableButtons();
-			repaint();
-		}
+		if (((Double)structure.getU()[0]).isNaN()) { System.out.println("Error: Trying to activate post analysis view with displacement NaN") ; return ;}
+		
+		eastPanel.getLegendPanel().setStructure(structure) ;
+		eastPanel.activatePostAnalysisView() ;
+		westPanel.getToolbarResults().setVisible(true);
+		EnableButtons();
+		repaint();
 	}
 
 }
