@@ -310,17 +310,17 @@ public class MainPanel extends JPanel
 	public void displayContent(Structure structure, int[] MainPanelPos, DrawPrimitives DP)
 	{
 		displayCanvasElements(canvas, showCanvas, showGrid, showMousePos, DP);
-		if (structure.getCoords() != null && structure.getCenter() != null)
+		if (structure != null && structure.getCoords() != null && structure.getCenter() != null)
 		{
 			structure.displayShape(canvas, DP) ;
 		}
 
 		canvas.drawCenter(DP) ;
-		if (StructureCreationIsOn && structure.getCoords() != null)
+		if (StructureCreationIsOn && structure != null && structure.getCoords() != null)
 		{
 			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.mousePos, 2, structure.getShape(), Menus.palette[6]);
 		}
-		if (showElems && structure.getMesh() != null && structure.getMesh().getElements() != null)
+		if (showElems && structure != null && structure.getMesh() != null && structure.getMesh().getElements() != null)
 		{
 			if (showDeformedStructure)
 			{
@@ -328,7 +328,7 @@ public class MainPanel extends JPanel
 			}
 			structure.displayMesh(canvas, MenuFunctions.DiagramScales[1], showMatColor, showSecColor, showElemContour, showDeformedStructure, DP) ;
 		}
-		if (MenuFunctions.ShowNodes && structure.getMesh() != null && structure.getMesh().getNodes() != null)
+		if (MenuFunctions.ShowNodes && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
 			// DP.DrawNodes3D(structure.getMesh().getNodes(), MenuFunctions.selectedNodes, Node.color, showDeformedStructure,
 			// structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas);
@@ -346,7 +346,7 @@ public class MainPanel extends JPanel
 			// 						MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
 			structure.displayDiagrams(canvas, diagram, SelectedVar, DP) ;
 			
-			if (MenuFunctions.ShowReactionArrows && structure.getReactions() != null)
+			if (MenuFunctions.ShowReactionArrows && structure != null && structure.getReactions() != null)
 			{
 				// DP.DrawReactions3D(structure.getMesh().getNodes(), structure.getReactions(),
 				// 	structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues,
@@ -357,7 +357,7 @@ public class MainPanel extends JPanel
 						Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas, DP);
 			}
 		}
-		if (MenuFunctions.ShowSup && structure.getSupports() != null)
+		if (MenuFunctions.ShowSup && structure != null && structure.getSupports() != null)
 		{
 			structure.displaySupports(canvas, DP) ;
 		}
@@ -375,16 +375,16 @@ public class MainPanel extends JPanel
 			Draw.DrawNodalDisps3D(structure.getMesh().getNodes(), loading.getNodalDisps(), structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
 			NodalDisp.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
-		if (MenuFunctions.ShowDOFNumber && structure.getMesh() != null && structure.getMesh().getNodes() != null)
+		if (MenuFunctions.ShowDOFNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
 			Draw.DrawDOFNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas, DP);
 		}
-		if (MenuFunctions.ShowNodeNumber && structure.getMesh() != null && structure.getMesh().getNodes() != null)
+		if (MenuFunctions.ShowNodeNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
 			// DP.DrawNodeNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas);
 			structure.getMesh().displayNodeNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas, DP) ;
 		}
-		if (MenuFunctions.ShowElemNumber && structure.getMesh() != null &&  structure.getMesh().getElements() != null)
+		if (MenuFunctions.ShowElemNumber && structure != null && structure.getMesh() != null &&  structure.getMesh().getElements() != null)
 		{
 			// DP.DrawElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas);
 			structure.getMesh().displayElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas, DP) ;
@@ -957,7 +957,7 @@ public class MainPanel extends JPanel
         super.paintComponent(graphs);
         MenuFunctions.updateMousePosRelToPanelPos(panelPos) ;
 		DP.setGraphics((Graphics2D) graphs) ;
-		this.displayContent(MainPanel.structure, panelPos, DP);
+		this.displayContent(structure, panelPos, DP);
 		repaint();
     }
 

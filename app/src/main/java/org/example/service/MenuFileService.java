@@ -18,13 +18,17 @@ public class MenuFileService
 	public static void loadStructure()
 	{
 		
-		MainPanel.structure = new Structure(null, null, null);
+		// MainPanel.structure = new Structure(null, null, null);
 		MainPanel.loading.clearLoads() ;		
 		Menus.getInstance().getMainPanel().resetDisplay() ;
 		MenuFunctions.resetDisplay();
 		
 		String filename = Menus.getInstance().getSaveLoadFile().run().getText();
 		MainPanel.structure = MenuFunctions.LoadFile("", filename);
+
+
+		if (MainPanel.structure == null) { System.out.println("Error: Structure is null after loading") ; return ;}
+
 		MainPanel.structure.updateMaxCoords() ;
 		Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 1});
 		Menus.getInstance().getMenuAnalysis().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading));
