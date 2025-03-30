@@ -170,14 +170,13 @@ public abstract class Draw
 		int MaxArrowSize = 1;
 		int thickness = 2;
 		double MaxLoad = Util.FindMaxDistLoad(distLoads);
-		List<Node> Node = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
 		for (int l = 0; l <= distLoads.size() - 1; l += 1)
 		{
 			int elem = distLoads.get(l).getElem();
-			int[] nodes = Elem.get(elem).getExternalNodes();
-			double[] RealLeftBotDefCoords = Util.ScaledDefCoords(Node.get(nodes[3]).getOriginalCoords().asArray(), Util.GetNodePos(Node.get(nodes[3]), condition), DOFsPerNode, Defscale);
-			double[] RealRightTopDefCoords = Util.ScaledDefCoords(Node.get(nodes[1]).getOriginalCoords().asArray(), Util.GetNodePos(Node.get(nodes[1]), condition), DOFsPerNode, Defscale);
+			List<Node> nodes = Elem.get(elem).getExternalNodes();
+			double[] RealLeftBotDefCoords = Util.ScaledDefCoords(nodes.get(3).getOriginalCoords().asArray(), Util.GetNodePos(nodes.get(3), condition), DOFsPerNode, Defscale);
+			double[] RealRightTopDefCoords = Util.ScaledDefCoords(nodes.get(1).getOriginalCoords().asArray(), Util.GetNodePos(nodes.get(1), condition), DOFsPerNode, Defscale);
 			//int[] DrawingLeftBotCoords = Util.ConvertToDrawingCoords2Point3D(RealLeftBotDefCoords, MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			//int[] DrawingRightTopCoords = Util.ConvertToDrawingCoords2Point3D(RealRightTopDefCoords, MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
 			if (distLoads.get(l).getType() == 0)

@@ -845,27 +845,27 @@ public class StiffnessMatrix
 	}
 	
 	
-	public static double[][] Q4StiffnessMatrix(List<Node> nodes, int[] ExternalNodes, double[] ElemSize, double[][] Db, Section sec, boolean NonlinearGeo)
+	public static double[][] Q4StiffnessMatrix(List<Node> nodes, List<Node> externalNodes, double[] ElemSize, double[][] Db, Section sec, boolean NonlinearGeo)
 	{
 		double[][] k = new double[8][8];
-		double x1 = nodes.get(ExternalNodes[0]).getOriginalCoords().x, x2 = nodes.get(ExternalNodes[1]).getOriginalCoords().x, x3 = nodes.get(ExternalNodes[2]).getOriginalCoords().x, x4 = nodes.get(ExternalNodes[3]).getOriginalCoords().x;
-		double y1 = nodes.get(ExternalNodes[0]).getOriginalCoords().y, y2 = nodes.get(ExternalNodes[1]).getOriginalCoords().y, y3 = nodes.get(ExternalNodes[2]).getOriginalCoords().y, y4 = nodes.get(ExternalNodes[3]).getOriginalCoords().y;		
+		double x1 = externalNodes.get(0).getOriginalCoords().x, x2 = externalNodes.get(1).getOriginalCoords().x, x3 = externalNodes.get(2).getOriginalCoords().x, x4 = externalNodes.get(3).getOriginalCoords().x;
+		double y1 = externalNodes.get(0).getOriginalCoords().y, y2 = externalNodes.get(1).getOriginalCoords().y, y3 = externalNodes.get(2).getOriginalCoords().y, y4 = externalNodes.get(3).getOriginalCoords().y;		
 
 		if (NonlinearGeo)
 		{
 			double[][] DefCoords = new double[4][2];
 			for (int i = 0; i <= 4 - 1; i += 1)
 			{
-				int NodeID = ExternalNodes[i];
-				DefCoords[i][0] = nodes.get(NodeID).getOriginalCoords().x + nodes.get(NodeID).getDisp().x;
-				DefCoords[i][1] = nodes.get(NodeID).getOriginalCoords().y + nodes.get(NodeID).getDisp().y;
+				Node node = externalNodes.get(i);
+				DefCoords[i][0] = node.getOriginalCoords().x + node.getDisp().x;
+				DefCoords[i][1] = node.getOriginalCoords().y + node.getDisp().y;
 			}
 			x1 = DefCoords[0][0]; x2 = DefCoords[1][0]; x3 = DefCoords[2][0]; x4 = DefCoords[3][0];
 			y1 = DefCoords[0][1]; y2 = DefCoords[1][1]; y3 = DefCoords[2][1]; y4 = DefCoords[3][1];
 		}
 		
-		double a = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords().x - nodes.get(ExternalNodes[0]).getOriginalCoords().x) / 2;
-		double b = Math.abs(nodes.get(ExternalNodes[2]).getOriginalCoords().y - nodes.get(ExternalNodes[0]).getOriginalCoords().y) / 2;
+		double a = Math.abs(externalNodes.get(2).getOriginalCoords().x - externalNodes.get(0).getOriginalCoords().x) / 2;
+		double b = Math.abs(externalNodes.get(2).getOriginalCoords().y - externalNodes.get(0).getOriginalCoords().y) / 2;
 		double t = sec.getT() / 1000.0;
 			
 		k[0] = new double[] {(((2*Db[2][2]+Db[2][0]+Db[0][2]+Db[0][0])*x3+(Db[2][2]+Db[2][0]+Db[0][2]+Db[0][0])*x2+(-3*Db[2][2]-2*Db[2][0]-2*Db[0][2]-2*Db[0][0])*x1)*y4+((-2*Db[2][2]-Db[2][0]-Db[0][2]-Db[0][0])*x4+(Db[2][2]+Db[2][0]+Db[0][2]+2*Db[0][0])*x2+(Db[2][2]-Db[0][0])*x1)*y3+((-Db[2][2]-Db[2][0]-Db[0][2]-Db[0][0])*x4+(-Db[2][2]-Db[2][0]-Db[0][2]-2*Db[0][0])*x3+(2*Db[2][2]+2*Db[2][0]+2*Db[0][2]+3*Db[0][0])*x1)*y2+((3*Db[2][2]+2*Db[2][0]+2*Db[0][2]+2*Db[0][0])*x4+(Db[0][0]-Db[2][2])*x3+(-2*Db[2][2]-2*Db[2][0]-2*Db[0][2]-3*Db[0][0])*x2)*y1)/48,	(((Db[2][2]+2*Db[2][1]+Db[0][2]+Db[0][1])*x3+(Db[2][2]+Db[2][1]+Db[0][2]+Db[0][1])*x2+(-2*Db[2][2]-3*Db[2][1]-2*Db[0][2]-2*Db[0][1])*x1)*y4+((-Db[2][2]-2*Db[2][1]-Db[0][2]-Db[0][1])*x4+(Db[2][2]+Db[2][1]+2*Db[0][2]+Db[0][1])*x2+(Db[2][1]-Db[0][2])*x1)*y3+((-Db[2][2]-Db[2][1]-Db[0][2]-Db[0][1])*x4+(-Db[2][2]-Db[2][1]-2*Db[0][2]-Db[0][1])*x3+(2*Db[2][2]+2*Db[2][1]+3*Db[0][2]+2*Db[0][1])*x1)*y2+((2*Db[2][2]+3*Db[2][1]+2*Db[0][2]+2*Db[0][1])*x4+(Db[0][2]-Db[2][1])*x3+(-2*Db[2][2]-2*Db[2][1]-3*Db[0][2]-2*Db[0][1])*x2)*y1)/48,	(((Db[2][2]-Db[2][0]+Db[0][2]-Db[0][0])*x3+(-Db[2][0]-Db[0][0])*x2+(-Db[2][2]+2*Db[2][0]-Db[0][2]+2*Db[0][0])*x1)*y4+((-Db[2][2]+Db[2][0]-Db[0][2]+Db[0][0])*x4+(Db[2][2]-Db[2][0]+2*Db[0][2]-2*Db[0][0])*x2+(Db[0][0]-Db[0][2])*x1)*y3+((Db[2][0]+Db[0][0])*x4+(-Db[2][2]+Db[2][0]-2*Db[0][2]+2*Db[0][0])*x3+(Db[2][2]-2*Db[2][0]+2*Db[0][2]-3*Db[0][0])*x1)*y2+((Db[2][2]-2*Db[2][0]+Db[0][2]-2*Db[0][0])*x4+(Db[0][2]-Db[0][0])*x3+(-Db[2][2]+2*Db[2][0]-2*Db[0][2]+3*Db[0][0])*x2)*y1)/48,	-(((Db[2][2]-Db[2][1]+Db[0][2]-Db[0][1])*x3+(Db[2][2]+Db[0][2])*x2+(-2*Db[2][2]+Db[2][1]-2*Db[0][2]+Db[0][1])*x1)*y4+((-Db[2][2]+Db[2][1]-Db[0][2]+Db[0][1])*x4+(Db[2][2]-Db[2][1]+2*Db[0][2]-2*Db[0][1])*x2+(Db[0][1]-Db[0][2])*x1)*y3+((-Db[2][2]-Db[0][2])*x4+(-Db[2][2]+Db[2][1]-2*Db[0][2]+2*Db[0][1])*x3+(2*Db[2][2]-Db[2][1]+3*Db[0][2]-2*Db[0][1])*x1)*y2+((2*Db[2][2]-Db[2][1]+2*Db[0][2]-Db[0][1])*x4+(Db[0][2]-Db[0][1])*x3+(-2*Db[2][2]+Db[2][1]-3*Db[0][2]+2*Db[0][1])*x2)*y1)/48,	-(((Db[2][2]+2*Db[2][0]+Db[0][2]+Db[0][0])*x3+(-Db[2][2]-2*Db[2][0]-Db[0][2]-Db[0][0])*x1)*y4+((-Db[2][2]-2*Db[2][0]-Db[0][2]-Db[0][0])*x4+(Db[2][2]+Db[2][0]+2*Db[0][2]+Db[0][0])*x2+(Db[2][0]-Db[0][2])*x1)*y3+((-Db[2][2]-Db[2][0]-2*Db[0][2]-Db[0][0])*x3+(Db[2][2]+Db[2][0]+2*Db[0][2]+Db[0][0])*x1)*y2+((Db[2][2]+2*Db[2][0]+Db[0][2]+Db[0][0])*x4+(Db[0][2]-Db[2][0])*x3+(-Db[2][2]-Db[2][0]-2*Db[0][2]-Db[0][0])*x2)*y1)/48,	-(((2*Db[2][2]+Db[2][1]+Db[0][2]+Db[0][1])*x3+(-2*Db[2][2]-Db[2][1]-Db[0][2]-Db[0][1])*x1)*y4+((-2*Db[2][2]-Db[2][1]-Db[0][2]-Db[0][1])*x4+(Db[2][2]+Db[2][1]+Db[0][2]+2*Db[0][1])*x2+(Db[2][2]-Db[0][1])*x1)*y3+((-Db[2][2]-Db[2][1]-Db[0][2]-2*Db[0][1])*x3+(Db[2][2]+Db[2][1]+Db[0][2]+2*Db[0][1])*x1)*y2+((2*Db[2][2]+Db[2][1]+Db[0][2]+Db[0][1])*x4+(Db[0][1]-Db[2][2])*x3+(-Db[2][2]-Db[2][1]-Db[0][2]-2*Db[0][1])*x2)*y1)/48,	-(((2*Db[2][2]-2*Db[2][0]+Db[0][2]-Db[0][0])*x3+(Db[2][2]+Db[0][2])*x2+(-3*Db[2][2]+2*Db[2][0]-2*Db[0][2]+Db[0][0])*x1)*y4+((-2*Db[2][2]+2*Db[2][0]-Db[0][2]+Db[0][0])*x4+(Db[2][2]-Db[2][0]+Db[0][2]-Db[0][0])*x2+(Db[2][2]-Db[2][0])*x1)*y3+((-Db[2][2]-Db[0][2])*x4+(-Db[2][2]+Db[2][0]-Db[0][2]+Db[0][0])*x3+(2*Db[2][2]-Db[2][0]+2*Db[0][2]-Db[0][0])*x1)*y2+((3*Db[2][2]-2*Db[2][0]+2*Db[0][2]-Db[0][0])*x4+(Db[2][0]-Db[2][2])*x3+(-2*Db[2][2]+Db[2][0]-2*Db[0][2]+Db[0][0])*x2)*y1)/48,	(((2*Db[2][2]-2*Db[2][1]+Db[0][2]-Db[0][1])*x3+(-Db[2][1]-Db[0][1])*x2+(-2*Db[2][2]+3*Db[2][1]-Db[0][2]+2*Db[0][1])*x1)*y4+((-2*Db[2][2]+2*Db[2][1]-Db[0][2]+Db[0][1])*x4+(Db[2][2]-Db[2][1]+Db[0][2]-Db[0][1])*x2+(Db[2][2]-Db[2][1])*x1)*y3+((Db[2][1]+Db[0][1])*x4+(-Db[2][2]+Db[2][1]-Db[0][2]+Db[0][1])*x3+(Db[2][2]-2*Db[2][1]+Db[0][2]-2*Db[0][1])*x1)*y2+((2*Db[2][2]-3*Db[2][1]+Db[0][2]-2*Db[0][1])*x4+(Db[2][1]-Db[2][2])*x3+(-Db[2][2]+2*Db[2][1]-Db[0][2]+2*Db[0][1])*x2)*y1)/48} ;

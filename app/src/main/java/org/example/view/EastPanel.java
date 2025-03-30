@@ -144,9 +144,9 @@ public class EastPanel extends JPanel
 		ElemInfoPanel.setSize(Menus.defaultPanelSize);		
 
 		String NodesText = "";
-		for (int node = 0; node <= elem.getExternalNodes().length - 1; node += 1)
+		for (int i = 0; i <= elem.getExternalNodes().size() - 1; i += 1)
 		{
-			NodesText += String.valueOf(elem.getExternalNodes()[node] + " ");
+			NodesText += String.valueOf(elem.getExternalNodes().get(i) + " ");
 		}
 		String MatText = null;
 		if (elem.getMat() != null)

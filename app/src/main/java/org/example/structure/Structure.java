@@ -197,12 +197,12 @@ public class Structure
 			if (k == null) { System.out.println("Error: Elem stiffness matrix null while calculating structure stiffness matrix") ; return null ;}
 	        
 			int LocalDOFi = 0, LocalDOFj = 0;
-	        for (int elemnodei = 0; elemnodei <= elems.get(elem).getExternalNodes().length - 1; elemnodei += 1)
+	        for (int elemnodei = 0; elemnodei <= elems.get(elem).getExternalNodes().size() - 1; elemnodei += 1)
             {
-                int nodei = elems.get(elem).getExternalNodes()[elemnodei];
-                for (int elemnodej = 0; elemnodej <= elems.get(elem).getExternalNodes().length - 1; elemnodej += 1)
+                int nodei = elems.get(elem).getExternalNodes().get(elemnodei).getID();
+                for (int elemnodej = 0; elemnodej <= elems.get(elem).getExternalNodes().size() - 1; elemnodej += 1)
                 {
-                    int nodej = elems.get(elem).getExternalNodes()[elemnodej];
+                    int nodej = elems.get(elem).getExternalNodes().get(elemnodej).getID();
                     for (int dofi = 0; dofi <= nodes.get(nodei).getDOFType().length - 1; dofi += 1)
         	        {
         	            for (int dofj = 0; dofj <= nodes.get(nodej).getDOFType().length - 1; dofj += 1)

@@ -1,5 +1,7 @@
 package org.example.structure;
 
+import java.util.List;
+
 import org.example.loading.DistLoad;
 
 public class ElementDTO
@@ -8,7 +10,7 @@ public class ElementDTO
 	private ElemType type;			// Type of element
 	private ElemShape Shape;
     
-    private int[] ExternalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
+    private List<Node> ExternalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
 	private Material mat ;
 	private Section sec;
 	private DistLoad[] DistLoads;	// Distributed loads in the node

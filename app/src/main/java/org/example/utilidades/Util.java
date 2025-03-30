@@ -893,10 +893,10 @@ public abstract class Util
 		ElemShape elemShape = elems.getShape();
 		if (elemShape.equals(ElemShape.rectangular))
 		{
-			double x0 = GetNodePos(nodes.get(elems.getExternalNodes()[0]), condition)[0];
-			double y0 = GetNodePos(nodes.get(elems.getExternalNodes()[0]), condition)[1];
-			double x1 = GetNodePos(nodes.get(elems.getExternalNodes()[2]), condition)[0];
-			double y1 = GetNodePos(nodes.get(elems.getExternalNodes()[2]), condition)[1];
+			double x0 = GetNodePos(elems.getExternalNodes().get(0), condition)[0];
+			double y0 = GetNodePos(elems.getExternalNodes().get(0), condition)[1];
+			double x1 = GetNodePos(elems.getExternalNodes().get(2), condition)[0];
+			double y1 = GetNodePos(elems.getExternalNodes().get(2), condition)[1];
 			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
 			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
 			if (InitPoint[0] <= MousePosRealCoords[0] && MousePosRealCoords[0] <= FinalPoint[0] && FinalPoint[1] <= MousePosRealCoords[1] && MousePosRealCoords[1] <= InitPoint[1])
@@ -910,9 +910,9 @@ public abstract class Util
 		}
 		else if (elemShape.equals(ElemShape.triangular))
 		{
-		    double[] v1 = GetNodePos(nodes.get(elems.getExternalNodes()[0]), condition);
-		    double[] v2 = GetNodePos(nodes.get(elems.getExternalNodes()[1]), condition);
-		    double[] v3 = GetNodePos(nodes.get(elems.getExternalNodes()[2]), condition);
+		    double[] v1 = GetNodePos(elems.getExternalNodes().get(0), condition);
+		    double[] v2 = GetNodePos(elems.getExternalNodes().get(1), condition);
+		    double[] v3 = GetNodePos(elems.getExternalNodes().get(2), condition);
 		    float d1 = (float) ((MousePosRealCoords[0] - v2[0]) * (v1[1] - v2[1]) - (v1[0] - v2[0]) * (MousePosRealCoords[1] - v2[1]));
 		    float d2 = (float) ((MousePosRealCoords[0] - v3[0]) * (v2[1] - v3[1]) - (v2[0] - v3[0]) * (MousePosRealCoords[1] - v3[1]));
 		    float d3 = (float) ((MousePosRealCoords[0] - v1[0]) * (v3[1] - v1[1]) - (v3[0] - v1[0]) * (MousePosRealCoords[1] - v1[1]));
@@ -930,10 +930,10 @@ public abstract class Util
 		}
 		else if (elemShape.equals(ElemShape.r8))
 		{
-			double x0 = GetNodePos(nodes.get(elems.getExternalNodes()[0]), condition)[0];
-			double y0 = GetNodePos(nodes.get(elems.getExternalNodes()[0]), condition)[1];
-			double x1 = GetNodePos(nodes.get(elems.getExternalNodes()[4]), condition)[0];
-			double y1 = GetNodePos(nodes.get(elems.getExternalNodes()[4]), condition)[1];
+			double x0 = GetNodePos(elems.getExternalNodes().get(0), condition)[0];
+			double y0 = GetNodePos(elems.getExternalNodes().get(0), condition)[1];
+			double x1 = GetNodePos(elems.getExternalNodes().get(4), condition)[0];
+			double y1 = GetNodePos(elems.getExternalNodes().get(4), condition)[1];
 			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
 			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
 			if (InitPoint[0] <= MousePosRealCoords[0] && MousePosRealCoords[0] <= FinalPoint[0] && FinalPoint[1] <= MousePosRealCoords[1] && MousePosRealCoords[1] <= InitPoint[1])
@@ -1051,11 +1051,11 @@ public abstract class Util
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
 			ElemIsInWindow = true;
-			for (int node = 0; node <= Elem.get(elem).getExternalNodes().length - 1; node += 1)
+			for (Node node : Elem.get(elem).getExternalNodes())
 			{
 				if (NodesInWindow != null)
 				{
-					if (!ArrayContains(NodesInWindow, Elem.get(elem).getExternalNodes()[node]))
+					if (!ArrayContains(NodesInWindow, node.getID()))
 					{
 						ElemIsInWindow = false;
 					}
@@ -1086,7 +1086,7 @@ public abstract class Util
 		int[][] DOFsPerNode = (int[][]) Elem.get(0).getDOFsPerNode() ;
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
         {
-        	for (int elemnode = 0; elemnode <= Elem.get(elem).getExternalNodes().length - 1; elemnode += 1)
+        	for (int elemnode = 0; elemnode <= Elem.get(elem).getExternalNodes().size() - 1; elemnode += 1)
         	{
         		DOFsOnNode = DOFsPerNode[elemnode];
         	}
@@ -1459,18 +1459,6 @@ public abstract class Util
 		}
 	}
 	
-	public static double[][] GetElemNodesDefPos(List<Node> nodes, int[] ElemNodes)
-	{
-		double[][] DefCoords = new double[ElemNodes.length][];
-		for (int node = 0; node <= ElemNodes.length - 1; node += 1)
-		{
-			DefCoords[node] = new double[3];
-			DefCoords[node][0] = nodes.get(ElemNodes[node]).getOriginalCoords().x + nodes.get(ElemNodes[node]).getDisp().x;
-			DefCoords[node][1] = nodes.get(ElemNodes[node]).getOriginalCoords().y + nodes.get(ElemNodes[node]).getDisp().y;
-			DefCoords[node][2] = nodes.get(ElemNodes[node]).getOriginalCoords().z + nodes.get(ElemNodes[node]).getDisp().z;
-		}
-		return DefCoords;
-	}
 
 	public static Color AddColor(Color OriginalColor, double[] ColorAddition)
 	{

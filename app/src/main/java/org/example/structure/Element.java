@@ -28,8 +28,8 @@ public class Element
 	private int[][] DOFsPerNode;	// DOFs in each node of the element
 	
 	
-	private int[] externalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
-	private int[] internalNodes;	// Nodes inside the element
+	private List<Node> externalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
+	private List<Node> internalNodes;	// Nodes inside the element
 	private Material mat ;
 	private Section sec;
 	private DistLoad[] DistLoads;	// Distributed loads in the node
@@ -56,7 +56,7 @@ public class Element
 	// private Color MatColor;
 	// private Color SecColor;
 
-	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, Material mat, Section sec, ElemType type)
+	public Element(int ID, List<Node> ExternalNodes, List<Node> InternalNodes, Material mat, Section sec, ElemType type)
 	{
 		this.ID = ID;
 		this.externalNodes = ExternalNodes;
@@ -74,12 +74,12 @@ public class Element
 		DefineProperties(type);
 	}
 
-	public Element(int ID, int[] ExternalNodes, int[] InternalNodes, ElemType type)
+	public Element(int ID, List<Node> ExternalNodes, List<Node> InternalNodes, ElemType type)
 	{
 		this(ID, ExternalNodes, InternalNodes, null, null, type);
 	}
 
-	public Element(int ID, int[] ExternalNodes, ElemType type)
+	public Element(int ID, List<Node> ExternalNodes, ElemType type)
 	{
 		this(ID, ExternalNodes, null, type);
 	}
@@ -201,13 +201,17 @@ public class Element
 		double[] size = new double[2];
 		if (Shape.equals(ElemShape.rectangular))
 		{
-			size[0] = Math.abs(nodes.get(externalNodes[2]).getOriginalCoords().x - nodes.get(externalNodes[0]).getOriginalCoords().x) / 2;
-			size[1] = Math.abs(nodes.get(externalNodes[2]).getOriginalCoords().y - nodes.get(externalNodes[0]).getOriginalCoords().y) / 2;
+			size[0] = Math.abs(externalNodes.get(2).getOriginalCoords().x - externalNodes.get(0).getOriginalCoords().x) / 2.0 ;
+			size[1] = Math.abs(externalNodes.get(2).getOriginalCoords().y - externalNodes.get(0).getOriginalCoords().y) / 2.0 ;
+			// size[0] = Math.abs(nodes.get(externalNodes[2]).getOriginalCoords().x - nodes.get(externalNodes[0]).getOriginalCoords().x) / 2;
+			// size[1] = Math.abs(nodes.get(externalNodes[2]).getOriginalCoords().y - nodes.get(externalNodes[0]).getOriginalCoords().y) / 2;
 		}
 		else if (Shape.equals(ElemShape.r8) | Shape.equals(ElemShape.r9))
 		{
-			size[0] = Math.abs(nodes.get(externalNodes[4]).getOriginalCoords().x - nodes.get(externalNodes[0]).getOriginalCoords().x) / 2;
-			size[1] = Math.abs(nodes.get(externalNodes[4]).getOriginalCoords().y - nodes.get(externalNodes[0]).getOriginalCoords().y) / 2;
+			size[0] = Math.abs(externalNodes.get(4).getOriginalCoords().x - externalNodes.get(0).getOriginalCoords().x) / 2.0 ;
+			size[1] = Math.abs(externalNodes.get(4).getOriginalCoords().y - externalNodes.get(0).getOriginalCoords().y) / 2.0 ;
+			// size[0] = Math.abs(nodes.get(externalNodes[4]).getOriginalCoords().x - nodes.get(externalNodes[0]).getOriginalCoords().x) / 2;
+			// size[1] = Math.abs(nodes.get(externalNodes[4]).getOriginalCoords().y - nodes.get(externalNodes[0]).getOriginalCoords().y) / 2;
 		}
 		return size;
 	}
@@ -243,30 +247,39 @@ public class Element
 
 	public void setUndeformedCoords(List<Node> nodes)
 	{
-		UndeformedCoords = new double[externalNodes.length][];
-		for (int i = 0; i <= externalNodes.length - 1; i += 1)
+		UndeformedCoords = new double[externalNodes.size()][];
+		for (int i = 0 ; i <= externalNodes.size() - 1 ; i += 1)
 		{
-			UndeformedCoords[i] = nodes.get(externalNodes[i]).getOriginalCoords().asArray();
-    	}
+			UndeformedCoords[i] = externalNodes.get(i).getOriginalCoords().asArray();
+		}
+		// for (int i = 0; i <= externalNodes.length - 1; i += 1)
+		// {
+		// 	UndeformedCoords[i] = nodes.get(externalNodes[i]).getOriginalCoords().asArray();
+    	// }
 	}
 
 	public void setDeformedCoords(List<Node> nodes)
 	{
-		DeformedCoords = new double[externalNodes.length][];
-		for (int node = 0; node <= externalNodes.length - 1; node += 1)
+		DeformedCoords = new double[externalNodes.size()][];
+		for (int i = 0 ; i <= externalNodes.size() - 1 ; i += 1)
 		{
-			DeformedCoords[node] = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords(), nodes.get(externalNodes[node]).getDisp(), nodes.get(node).getDOFType(), 1);
-    	}
+			DeformedCoords[i] = Util.ScaledDefCoords(externalNodes.get(i).getOriginalCoords(), externalNodes.get(i).getDisp(), nodes.get(i).getDOFType(), 1) ;
+			 externalNodes.get(i).getOriginalCoords().asArray();
+		}
+		// for (int node = 0; node <= externalNodes.length - 1; node += 1)
+		// {
+		// 	DeformedCoords[node] = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords(), nodes.get(externalNodes[node]).getDisp(), nodes.get(node).getDOFType(), 1);
+    	// }
 	}
 	
-	public void setCenterCoords()
+	public void updateCenterCoords()
 	{
 		CenterCoords = new double[3];		
 		for (int coord = 0; coord <= CenterCoords.length - 1; coord += 1)
 		{
-			for (int node = 0; node <= externalNodes.length - 1; node += 1)
+			for (int node = 0; node <= externalNodes.size() - 1; node += 1)
 			{					
-				CenterCoords[coord] += UndeformedCoords[node][coord] / (double) externalNodes.length;
+				CenterCoords[coord] += UndeformedCoords[node][coord] / (double) externalNodes.size();
 			}
 		}
 	}
@@ -283,23 +296,20 @@ public class Element
 
 	public void displayNumber(MyCanvas canvas, List<Node> nodes, boolean deformed, DrawPrimitives DP)
 	{
-		int[] DrawingCoords = new int[2];
-		for (int elemnode = 0; elemnode <= externalNodes.length - 1; elemnode += 1)
-		{
-			int nodeID = externalNodes[elemnode];
-			Node node = nodes.get(nodeID) ;
-			Point3D nodeDeformedPos = new Point3D(Util.GetNodePos(node, deformed)[0], Util.GetNodePos(node, deformed)[1], Util.GetNodePos(node, deformed)[2]) ;
-			// Point3D nodeDeformedPos = new Point3D(node.deformedPos()[0], deformed)[0], Util.GetNodePos(Node.get(nodeID), deformed)[1], Util.GetNodePos(Node.get(nodeID), deformed)[2]) ;
-			Point nodeDeformedPosInDrawingCoords = canvas.inDrawingCoords(nodeDeformedPos) ;
-			DrawingCoords[0] += nodeDeformedPosInDrawingCoords.x;
-			DrawingCoords[1] += nodeDeformedPosInDrawingCoords.y;
-			// DrawingCoords[0] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[0];
-			// DrawingCoords[1] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[1];
-		}
-		DrawingCoords[0] = DrawingCoords[0] / externalNodes.length;
-		DrawingCoords[1] = DrawingCoords[1] / externalNodes.length;
+		// Point3D nodePos = new Point3D(Util.GetNodePos(node, deformed)[0], Util.GetNodePos(node, deformed)[1], Util.GetNodePos(node, deformed)[2]) ;
+		// Point nodeDrawingPos = canvas.inDrawingCoords(node.getOriginalCoords()) ;
+		Point centerDrawingPos = canvas.inDrawingCoords(new Point2D.Double(CenterCoords[0], CenterCoords[1])) ;
+		DP.drawText(centerDrawingPos, Align.center, String.valueOf(ID), Element.color) ;
+		// for (int elemnode = 0; elemnode <= externalNodes.length - 1; elemnode += 1)
+		// {
+		// 	int nodeID = externalNodes[elemnode];
+		// 	// DrawingCoords[0] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[0];
+		// 	// DrawingCoords[1] += Util.ConvertToDrawingCoords(Util.GetNodePos(Node.get(node), deformed), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getDrawingPos())[1];
+		// }
+		// DrawingCoords[0] = DrawingCoords[0] / externalNodes.size();
+		// DrawingCoords[1] = DrawingCoords[1] / externalNodes.size();
 		// DrawText(DrawingCoords, Integer.toString(elem), "Center", 0, "Bold", FontSize, NodeColor);		
-		DP.drawText(new Point(DrawingCoords[0], DrawingCoords[1]), Align.center, String.valueOf(ID), Element.color) ;
+		// DP.drawText(new Point(DrawingCoords[0], DrawingCoords[1]), Align.center, String.valueOf(ID), Element.color) ;
 	}
 
 	public void display(MyCanvas canvas, List<Node> nodes, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, double defScale, DrawPrimitives DP)
@@ -308,7 +318,7 @@ public class Element
 		// int[][] DrawingCoord = new int[Nodes.length][2]; 
 		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
 		List<Point> DrawingCoord = new ArrayList<>() ;
-		int[] xCoords = new int[externalNodes.length + 1], yCoords = new int[externalNodes.length + 1];
+		int[] xCoords = new int[externalNodes.size() + 1], yCoords = new int[externalNodes.size() + 1];
 		Color color = new Color(0, 100, 55);
 		if (mat != null)
 		{
@@ -330,11 +340,12 @@ public class Element
 		{
 			color = Menus.palette[4] ;
 		}
-		for (int node = 0; node <= externalNodes.length - 1; node += 1)
+		for (int i = 0; i <= externalNodes.size() - 1; i += 1)
 		{
+			Node node = externalNodes.get(i) ;
 			if (showdeformed)
 			{
-				double[] DeformedCoords = Util.ScaledDefCoords(nodes.get(externalNodes[node]).getOriginalCoords(), nodes.get(externalNodes[node]).getDisp(), DOFs, defScale);
+				double[] DeformedCoords = Util.ScaledDefCoords(node.getOriginalCoords(), node.getDisp(), DOFs, defScale);
 				double[] rotatedCoords = Util.RotateCoord(DeformedCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
 				Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
 				DrawingCoord.add(drawingCoord) ;
@@ -342,17 +353,17 @@ public class Element
 			}
 			else
 			{
-				double[] OriginalCoords = Util.GetNodePos(nodes.get(externalNodes[node]), showdeformed);
+				double[] OriginalCoords = Util.GetNodePos(node, showdeformed);
 				double[] rotatedCoords = Util.RotateCoord(OriginalCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
 				Point drawingCoord = canvas.inDrawingCoords(new Point2D.Double(rotatedCoords[0], rotatedCoords[1])) ;
 				DrawingCoord.add(drawingCoord) ;
 				// DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
-			xCoords[node] = DrawingCoord.get(node).x;
-			yCoords[node] = DrawingCoord.get(node).y;
+			xCoords[i] = DrawingCoord.get(i).x;
+			yCoords[i] = DrawingCoord.get(i).y;
 		}
-		xCoords[externalNodes.length] = DrawingCoord.get(0).x;
-		yCoords[externalNodes.length] = DrawingCoord.get(0).y;
+		xCoords[externalNodes.size()] = DrawingCoord.get(0).x;
+		yCoords[externalNodes.size()] = DrawingCoord.get(0).y;
 		DP.drawPolygon(xCoords, yCoords, stroke, color);
 		if (showcontour)
 		{
@@ -420,22 +431,23 @@ public class Element
 	    		
 			case T3G:
 		    	
-	    		int[] Nodes = externalNodes;
-	    		double[][] Coords = new double[Nodes.length][];
-	    		for (int node = 0; node <= Nodes.length - 1; node += 1)
+	    		// int[] Nodes = externalNodes;
+	    		double[][] Coords = new double[externalNodes.size()][];
+	    		for (int i = 0; i <= externalNodes.size() - 1; i += 1)
 	    		{
-	    			Coords[node] = new double[3];
+					Node node = externalNodes.get(i) ;
+	    			Coords[i] = new double[3];
 	    			if (NonlinearGeo)
 					{
-						Coords[node][0] = nodes.get(Nodes[node]).getOriginalCoords().x + nodes.get(Nodes[node]).getDisp().x;
-						Coords[node][1] = nodes.get(Nodes[node]).getOriginalCoords().y + nodes.get(Nodes[node]).getDisp().y;
-						Coords[node][2] = nodes.get(Nodes[node]).getOriginalCoords().z + nodes.get(Nodes[node]).getDisp().z;
+						Coords[i][0] = node.getOriginalCoords().x + node.getDisp().x;
+						Coords[i][1] = node.getOriginalCoords().y + node.getDisp().y;
+						Coords[i][2] = node.getOriginalCoords().z + node.getDisp().z;
 					}
 					else
 					{
-						Coords[node][0] = nodes.get(Nodes[node]).getOriginalCoords().x;
-						Coords[node][1] = nodes.get(Nodes[node]).getOriginalCoords().y;
-						Coords[node][2] = nodes.get(Nodes[node]).getOriginalCoords().z;
+						Coords[i][0] = node.getOriginalCoords().x;
+						Coords[i][1] = node.getOriginalCoords().y;
+						Coords[i][2] = node.getOriginalCoords().z;
 					}
 	    		}
 	    		
@@ -690,6 +702,20 @@ public class Element
 		return C;
     }
        
+	public double[][] nodesDefPos()
+	{
+		double[][] DefCoords = new double[externalNodes.size()][];
+		for (int i = 0; i <= externalNodes.size() - 1; i += 1)
+		{
+			Node node = externalNodes.get(i) ;
+			DefCoords[i] = new double[3];
+			DefCoords[i][0] = node.getOriginalCoords().x + node.getDisp().x;
+			DefCoords[i][1] = node.getOriginalCoords().y + node.getDisp().y;
+			DefCoords[i][2] = node.getOriginalCoords().z + node.getDisp().z;
+		}
+		return DefCoords;
+	}
+
     public double[][] StiffnessMatrix(List<Node> nodes, boolean NonlinearMat, boolean NonlinearGeo)
     {
     	// Calcula a matriz de rigidez do elemento
@@ -717,19 +743,19 @@ public class Element
 				double Area;
 	    		if (!NonlinearGeo)
 	        	{
-	            	double[][] Coords = new double[externalNodes.length][];
-	    			for (int node = 0; node <= externalNodes.length - 1; node += 1)
+	            	double[][] Coords = new double[externalNodes.size()][];
+	    			for (int i = 0; i <= externalNodes.size() - 1; i += 1)
 	    			{
-		    			Coords[node] = new double[3];
-		    			Coords[node][0] = nodes.get(externalNodes[node]).getOriginalCoords().x ;
-						Coords[node][1] = nodes.get(externalNodes[node]).getOriginalCoords().y ;
-						Coords[node][2] = nodes.get(externalNodes[node]).getOriginalCoords().z ;
+		    			Coords[i] = new double[3];
+		    			Coords[i][0] = externalNodes.get(i).getOriginalCoords().x ;
+						Coords[i][1] = externalNodes.get(i).getOriginalCoords().y ;
+						Coords[i][2] = externalNodes.get(i).getOriginalCoords().z ;
 	    			}     	
 	    			Area = Util.TriArea(Coords);
 	        	}
 	    		else
 	        	{
-	        		double[][] DefCoords = Util.GetElemNodesDefPos(nodes, externalNodes);
+	        		double[][] DefCoords = nodesDefPos() ;
 	        		Area = Util.TriArea(DefCoords);
 	        	}
 	    	    double[][] B = SecondDerivativesb(0, 0, nodes, sec, NonlinearGeo);
@@ -817,25 +843,23 @@ public class Element
   	public double[] DispVec(List<Node> nodes, double[] U)
 	{
 		int ulength = 0;
-		for (int i = 0; i <= externalNodes.length - 1; i += 1)
+		for (Node node : externalNodes)
 		{
-			int node = externalNodes[i];
-			ulength += nodes.get(node).getDOFType().length;
+			ulength += node.getDOFType().length ;
 		}
-		
 		double[] u = new double[ulength];
-		for (int elemnode = 0; elemnode <= externalNodes.length - 1; elemnode += 1)
+		for (int i = 0; i <= externalNodes.size() - 1; i += 1)
     	{
-			int node = externalNodes[elemnode];
-			for (int dof = 0; dof <= nodes.get(node).getDOFType().length - 1; dof += 1)
+			Node node = externalNodes.get(i) ;
+			for (int dof = 0; dof <= node.getDOFType().length - 1; dof += 1)
 	    	{
-				if (-1 < NodeDOF[elemnode][dof])
+				if (-1 < NodeDOF[i][dof])
 				{
-					u[CumDOFs[elemnode] + dof] = U[NodeDOF[elemnode][dof]];
+					u[CumDOFs[i] + dof] = U[NodeDOF[i][dof]];
 				}
 				else
 				{
-					u[CumDOFs[elemnode] + dof] = 0;
+					u[CumDOFs[i] + dof] = 0;
 				}
 	    	}
     	}
@@ -844,7 +868,7 @@ public class Element
 	
 	public double[] ForceVec(List<Node> Node, boolean NonlinearMat, boolean NonlinearGeo, double[] U)
 	{
-		int Nnodes = externalNodes.length;
+		int Nnodes = externalNodes.size();
 		int[] ElemDOFs = DOFs;
 		double[] p = new double[Nnodes * ElemDOFs.length];
 		
@@ -858,17 +882,17 @@ public class Element
 	
 	public double[] StrainVec(List<Node> Node, double[] U, boolean NonlinearGeo)
 	{
-		int Nnodes = externalNodes.length;
+		int Nnodes = externalNodes.size();
 		float[] e = null, n = null;
 		double[][] strains = new double[Nnodes][];
 		double[] strainvec = new double[Nnodes * StrainTypes.length];
 		
-		if (externalNodes.length == 4)
+		if (externalNodes.size() == 4)
 		{
 			e = new float[] {-1, 1, 1, -1};
 			n = new float[] {-1, -1, 1, 1};
 		}
-		else if (externalNodes.length == 8)
+		else if (externalNodes.size() == 8)
 		{
 			e = new float[] {-1, 1, 1, -1, (float) 0.5, (float) 0.5, -1, 1};
 			n = new float[] {-1, -1, 1, 1, -1, 1, (float) 0.5, (float) 0.5};
@@ -890,16 +914,16 @@ public class Element
 		
 	public double[] StressesVec(List<Node> Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
-		int Nnodes = externalNodes.length;
+		int Nnodes = externalNodes.size();
 		float[] e = null, n = null;
 		double[] sigmavec = new double[Nnodes * StrainTypes.length];
 
-		if (externalNodes.length == 4)
+		if (externalNodes.size() == 4)
 		{
 			e = new float[] {-1, 1, 1, -1};
 			n = new float[] {-1, -1, 1, 1};
 		}
-		else if (externalNodes.length == 8)
+		else if (externalNodes.size() == 8)
 		{
 			e = new float[] {-1, 1, 1, -1, (float) 0.5, (float) 0.5, -1, 1};
 			n = new float[] {-1, -1, 1, 1, -1, 1, (float) 0.5, (float) 0.5};
@@ -954,18 +978,18 @@ public class Element
 	
 	public double[] InternalForcesVec(List<Node> Node, double[] U, boolean NonlinearMat, boolean NonlinearGeo)
 	{
-		int Nnodes = externalNodes.length;
+		int Nnodes = externalNodes.size();
 		float[] e = null, n = null;
 		int[] StrainsOnElem = StrainTypes;
 		double[] forcevec = new double[Nnodes * StrainTypes.length];
     	double[][] forces = new double[Nnodes][];
 
-		if (externalNodes.length == 4)
+		if (externalNodes.size() == 4)
 		{
 			e = new float[] {-1, 1, 1, -1};
 			n = new float[] {-1, -1, 1, 1};
 		}
-		else if (externalNodes.length == 8)
+		else if (externalNodes.size() == 8)
 		{
 			e = new float[] {-1, 1, 1, -1, (float) 0.5, (float) 0.5, -1, 1};
 			n = new float[] {-1, -1, 1, 1, -1, 1, (float) 0.5, (float) 0.5};
@@ -998,15 +1022,14 @@ public class Element
 						boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed,
 						double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
-		List<Node> Node = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
 		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
-			int[] Nodes = Elem.get(elem).getExternalNodes();
+			List<Node> Nodes = Elem.get(elem).getExternalNodes();
 			int[] ElemDOFs = Elem.get(elem).getDOFs();
-			int[][] DrawingCoord = new int[Nodes.length][2]; 
-			int[] xCoords = new int[Nodes.length + 1], yCoords = new int[Nodes.length + 1];
+			int[][] DrawingCoord = new int[Nodes.size()][2]; 
+			int[] xCoords = new int[Nodes.size() + 1], yCoords = new int[Nodes.size() + 1];
 			Color color = new Color(0, 100, 55);
 			if (Elem.get(elem).getMat() != null)
 			{
@@ -1024,23 +1047,23 @@ public class Element
 			{
 				color = Elem.get(elem).getSec().getColor() ;
 			}
-			for (int node = 0; node <= Nodes.length - 1; node += 1)
+			for (int node = 0; node <= Nodes.size() - 1; node += 1)
 			{
 				if (showdeformed)
 				{
-					double[] DeformedCoords = Util.ScaledDefCoords(Node.get(Nodes[node]).getOriginalCoords(), Node.get(Nodes[node]).getDisp(), ElemDOFs, Defscale);
+					double[] DeformedCoords = Util.ScaledDefCoords(Nodes.get(node).getOriginalCoords(), Nodes.get(node).getDisp(), ElemDOFs, Defscale);
 					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				else
 				{
-					double[] OriginalCoords = Util.GetNodePos(Node.get(Nodes[node]), showdeformed);
+					double[] OriginalCoords = Util.GetNodePos(Nodes.get(node), showdeformed);
 					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				xCoords[node] = DrawingCoord[node][0];
 				yCoords[node] = DrawingCoord[node][1];
 			}
-			xCoords[Nodes.length] = DrawingCoord[0][0];
-			yCoords[Nodes.length] = DrawingCoord[0][1];
+			xCoords[Nodes.size()] = DrawingCoord[0][0];
+			yCoords[Nodes.size()] = DrawingCoord[0][1];
 			// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, color);
 			DP.drawPolygon(xCoords, yCoords, color) ;
 			if (showcontour)
@@ -1064,14 +1087,22 @@ public class Element
 
 	public boolean isInside(SelectionWindow selectionWindow, MyCanvas canvas, List<Node> meshNodes)
 	{
-		for (int nodeID : externalNodes)
+		for (Node node : externalNodes)
 		{
-			Point nodeDrawingCoords = canvas.inDrawingCoords(meshNodes.get(nodeID).getOriginalCoords()) ;
+			Point nodeDrawingCoords = canvas.inDrawingCoords(node.getOriginalCoords()) ;
 			if (!selectionWindow.contains(nodeDrawingCoords))
 			{
 				return false ;
 			}
 		}
+		// for (int nodeID : externalNodes)
+		// {
+		// 	Point nodeDrawingCoords = canvas.inDrawingCoords(meshNodes.get(nodeID).getOriginalCoords()) ;
+		// 	if (!selectionWindow.contains(nodeDrawingCoords))
+		// 	{
+		// 		return false ;
+		// 	}
+		// }
 
 		return true ;
 	}
@@ -1086,8 +1117,8 @@ public class Element
 	public int[] getDOFs() {return DOFs;}
 	public int[][] getDOFsPerNode() {return DOFsPerNode;}
 	public int[] getStrainTypes() {return StrainTypes;}
-	public int[] getExternalNodes() {return externalNodes;}
-	public int[] getInternalNodes() {return internalNodes;}
+	public List<Node> getExternalNodes() {return externalNodes;}
+	public List<Node> getInternalNodes() {return internalNodes;}
 	public Material getMat() {return mat;}
 	public Section getSec() {return sec;}
 	public DistLoad[] getDistLoads() {return DistLoads;}
@@ -1109,8 +1140,8 @@ public class Element
 	public void setDOFs(int[] D) {DOFs = D;}
 	public void setDOFsPerNode(int[][] D) {DOFsPerNode = D;}
 	public void setStrainTypes(int[] ST) {StrainTypes = ST;}
-	public void setExternalNodes(int[] N) {externalNodes = N;}
-	public void setInternalNodes(int[] N) {internalNodes = N;}
+	public void setExternalNodes(List<Node> N) {externalNodes = N;}
+	public void setInternalNodes(List<Node> N) {internalNodes = N;}
 	public void setMat(Material M) {mat = M;}
 	public void setSec(Section S) {sec = S;}
 	public void setDistLoads(DistLoad[] D) {DistLoads = D;}

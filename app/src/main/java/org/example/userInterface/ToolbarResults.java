@@ -51,7 +51,7 @@ public class ToolbarResults extends JPanel
                     structure.getResults().setDispMin(Results.FindMinDisps(structure.getU(), structure.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(structure.getMesh().getNodes()))) ;
                     structure.getResults().setDispMax(Results.FindMaxDisps(structure.getU(), structure.getMesh().getElements().get(0).getDOFs(), Analysis.DefineFreeDoFTypes(structure.getMesh().getNodes()))) ;
                     
-                    for (int node = 0; node <= structure.getMesh().getElements().get(0).getExternalNodes().length - 1; node += 1)
+                    for (int node = 0; node <= structure.getMesh().getElements().get(0).getExternalNodes().size() - 1; node += 1)
                     {
                         selectedVar = Util.ElemPosInArray(structure.getMesh().getElements().get(0).getDOFsPerNode()[node], selectedVar);
                         if (-1 < selectedVar)

@@ -220,7 +220,7 @@ public abstract class MenuFunctions
 					{
 						ElemNodes = Util.AddElem(ElemNodes, Integer.parseInt(Line[elemnode + 2]));
 					}
-					NewElem.setExternalNodes(ElemNodes);
+					NewElem.setExternalNodes(structure.getMesh().getNodesByID(ElemNodes)) ;
 					NewElem.setMat(matTypes.get(Integer.parseInt(Line[NumberOfElemNodes + 2])));
 					NewElem.setSec(secTypes.get(Integer.parseInt(Line[NumberOfElemNodes + 3])));
 					structure.getMesh().getElements().add(NewElem) ;
@@ -392,17 +392,17 @@ public abstract class MenuFunctions
 		struct.NFreeDOFs += 1;
 		for (Element elem : struct.getMesh().getElements())
 		{
-			elem.setCumDOFs(Util.CumDOFsOnElem(struct.getMesh().getNodes(), elem.getExternalNodes().length));
+			elem.setCumDOFs(Util.CumDOFsOnElem(struct.getMesh().getNodes(), elem.getExternalNodes().size()));
         	elem.setUndeformedCoords(struct.getMesh().getNodes());
-        	elem.setCenterCoords();
+        	elem.updateCenterCoords();
 		}
 		for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
 		{
 			int[][] ElemNodeDOF = null;
-			for (int elemnode = 0; elemnode <= struct.getMesh().getElements().get(elem).getExternalNodes().length - 1; elemnode += 1)
+			for (int elemnode = 0; elemnode <= struct.getMesh().getElements().get(elem).getExternalNodes().size() - 1; elemnode += 1)
 	    	{
-				int node = struct.getMesh().getElements().get(elem).getExternalNodes()[elemnode];
-				ElemNodeDOF = Util.AddElem(ElemNodeDOF, struct.getMesh().getNodes().get(node).dofs);
+				int nodeID = struct.getMesh().getElements().get(elem).getExternalNodes().get(elemnode).getID() ;
+				ElemNodeDOF = Util.AddElem(ElemNodeDOF, struct.getMesh().getNodes().get(nodeID).dofs);
 	    	}
 			struct.getMesh().getElements().get(elem).setNodeDOF(ElemNodeDOF);
 		}
@@ -419,29 +419,29 @@ public abstract class MenuFunctions
 			}
 		}
 
-		for (DistLoad distLoad : loading.getDistLoads())
-		{
-			int elemid = distLoad.getElem() ;
-			if (-1 < elemid)
-			{
-				struct.getMesh().getElements().get(elemid).addDistLoad(distLoad) ;
-			}
-		}
-
-		// if (DistLoadType != null)
+		// for (DistLoad distLoad : loading.getDistLoads())
 		// {
-		// 	for (int loadid = 0; loadid <= DistLoadType.length - 1; loadid += 1)
+		// 	int elemid = distLoad.getElem() ;
+		// 	if (-1 < elemid)
 		// 	{
-		// 		int elemid = (int) DistLoadType[loadid][0];
-		// 		int LoadType = (int) DistLoadType[loadid][1];
-		// 		double Intensity = DistLoadType[loadid][2];
-		// 		if (-1 < elemid)
-		// 		{
-		// 			loading.getDistLoads().set(loadid, new DistLoad(loadid, elemid, LoadType, Intensity)) ;
-		// 			struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
-		// 		}
+		// 		struct.getMesh().getElements().get(elemid).addDistLoad(distLoad) ;
 		// 	}
 		// }
+
+		if (DistLoadType != null)
+		{
+			for (int loadid = 0; loadid <= DistLoadType.length - 1; loadid += 1)
+			{
+				int elemid = (int) DistLoadType[loadid][0];
+				int LoadType = (int) DistLoadType[loadid][1];
+				double Intensity = DistLoadType[loadid][2];
+				if (-1 < elemid)
+				{
+					loading.getDistLoads().set(loadid, new DistLoad(loadid, elemid, LoadType, Intensity)) ;
+					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
+				}
+			}
+		}
 	}
 	
 
@@ -545,9 +545,9 @@ public abstract class MenuFunctions
 					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
 					{
 						Element elem = structure.getMesh().getElements().get(i);
-						for (int elemnode = 0; elemnode <= elem.getExternalNodes().length - 1; elemnode += 1)
+						for (int elemnode = 0; elemnode <= elem.getExternalNodes().size() - 1; elemnode += 1)
 						{
-							if (node == elem.getExternalNodes()[elemnode])
+							if (node == elem.getExternalNodes().get(elemnode).getID())
 							{
 								for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
 								{
@@ -660,7 +660,6 @@ public abstract class MenuFunctions
 		{
 			sections.add(new Section(inputDTO.getInputSecTypes()[i][0])) ;
 		}
-
 		concLoadTypes = new ArrayList<>() ;
 		for (double[] forceType : inputDTO.getConcLoadType())
 		{
@@ -668,7 +667,7 @@ public abstract class MenuFunctions
 		}
 		DistLoadType = inputDTO.getDistLoadType() ;
 		int[] SupConfig = inputDTO.getSupConfig() ;
-
+		
 		/* Define structure parameters */
 		int ConcLoadConfig = 1;
 		int DistLoadConfig = 1;
@@ -684,7 +683,7 @@ public abstract class MenuFunctions
 			Par[6] = -1;
 		}
 		int NumberOfRuns = Util.ProdVec(NumPar);
-
+		
 		ElemType elemType = ElemType.valueOf(inputDTO.getEspecialElemTypes()[Par[0]].toUpperCase());
 		String[] Sections = new String[] {"Anâlise		Elem	Malha (nx x ny)	Mat		Sec		Apoio		Carga		Min deslocamento (m)		Max deslocamento (m)		Desl. sob a carga (m)		Tempo (seg)"};
 		String[][][] vars = new String[Sections.length][][];
@@ -699,13 +698,14 @@ public abstract class MenuFunctions
 			int supConfig = SupConfig[Par[4]];
 			int SelConcLoad = Par[5];
 			int SelDistLoad = Par[6];
-
+			
 			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
-				materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
+					materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
 			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-				structure2.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
+					structure2.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
 			MenuFunctions.CalcAnalysisParameters(structure2, loading);
 			MainPanel.structure = structure2 ;
+			Menus.getInstance().getMainPanel().updateDrawings() ;
 
 			// structure2.assignLoads(ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad) ;
 			Menus.getInstance().getEastPanel().getLegendPanel().setStructure(structure2) ;

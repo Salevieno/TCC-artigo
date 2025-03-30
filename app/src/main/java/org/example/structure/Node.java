@@ -117,7 +117,8 @@ public class Node
 	public List<ConcLoad> getConcLoads() {return concLoads;}
 	public List<NodalDisp> getNodalDisps() {return nodalDisps;}
 	public int[] getDOFs() { return dofs ;}
-	public int[] getDOFType() {return DOFType;}
+	public int[] getDOFType() {return DOFType;}	
+	public Point getDrawingPos() { return drawingPos ;}
 	public void setID(int I) {ID = I;}
 	public void setOriginalCoords(Point3D C) {coords = C;}
 	public void setDisp(Point3D C) {disp = C;}

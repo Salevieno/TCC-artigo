@@ -216,11 +216,10 @@ public class DiagramsPanel extends JPanel
 			{
 				for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
 				{
-					int nodeID = selectedNodes.get(node).getID();
 					int elemID = -1;
 					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
 					{
-						if (Util.ArrayContains(structure.getMesh().getElements().get(i).getExternalNodes(), nodeID))
+						if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
 						{
 							elemID = i;
 						}
@@ -232,11 +231,10 @@ public class DiagramsPanel extends JPanel
 			{
 				for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
 				{
-					int nodeID = selectedNodes.get(node).getID();
 					int elemID = -1;
 					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
 					{
-						if (Util.ArrayContains(structure.getMesh().getElements().get(i).getExternalNodes(), nodeID))
+						if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
 						{
 							elemID = i;
 						}
@@ -248,11 +246,10 @@ public class DiagramsPanel extends JPanel
 			{
 				for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
 				{
-					int nodeID = selectedNodes.get(node).getID();
 					int elemID = -1;
 					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
 					{
-						if (Util.ArrayContains(structure.getMesh().getElements().get(i).getExternalNodes(), nodeID))
+						if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
 						{
 							elemID = i;
 						}

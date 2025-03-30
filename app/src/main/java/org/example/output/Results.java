@@ -36,13 +36,13 @@ public class Results
 	    double[][][] ElemInternalForces = new double[Elem.size()][][];
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
-			int NNodesOnElem = Elem.get(elem).getExternalNodes().length;
+			int NNodesOnElem = Elem.get(elem).getExternalNodes().size();
 			ElemStrains[elem] = new double[NNodesOnElem][Elem.get(elem).getStrainTypes().length];
 			ElemStresses[elem] = new double[NNodesOnElem][Elem.get(elem).getStrainTypes().length];
 			ElemInternalForces[elem] = new double[NNodesOnElem][Elem.get(elem).getStrainTypes().length];
 			for (int elemnode = 0; elemnode <= NNodesOnElem - 1; elemnode += 1)
 			{
-				int NumberOfDOFsOnNode = Node.get(Elem.get(elem).getExternalNodes()[elemnode]).getDOFType().length;
+				int NumberOfDOFsOnNode = Node.get(Elem.get(elem).getExternalNodes().get(elemnode).getID()).getDOFType().length;
 				for (int dof = 0; dof <= Elem.get(elem).getStrainTypes().length - 1; dof += 1)
 				{
 					int ID = elemnode * NumberOfDOFsOnNode + dof;

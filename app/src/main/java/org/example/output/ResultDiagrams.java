@@ -94,23 +94,24 @@ public class ResultDiagrams
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
 			/* Get edge nodes and coordinates*/
-			int[] EdgeNodes = Elem.get(elem).getExternalNodes();
-			double[][] EdgeCoords = new double[EdgeNodes.length][3];
-			for (int node = 0; node <= EdgeNodes.length - 1; node += 1)
+			List<Node> EdgeNodes = Elem.get(elem).getExternalNodes();
+			double[][] EdgeCoords = new double[EdgeNodes.size()][3];
+			for (int i = 0; i <= EdgeNodes.size() - 1; i += 1)
 			{
+				Node node = EdgeNodes.get(i) ;
 				if (condition)
 				{
-					EdgeCoords[node] = Util.ScaledDefCoords(nodes.get(EdgeNodes[node]).getOriginalCoords(), nodes.get(EdgeNodes[node]).getDisp(), nodes.get(node).getDOFType(), Defscale);
+					EdgeCoords[i] = Util.ScaledDefCoords(node.getOriginalCoords(), node.getDisp(), nodes.get(i).getDOFType(), Defscale);
 				}
 				else
 				{
-					EdgeCoords[node] = Util.GetNodePos(nodes.get(EdgeNodes[node]), condition);
+					EdgeCoords[i] = Util.GetNodePos(node, condition);
 				}
 			}
 			
 			/* Get contour coordinates */
-			double[][] ContourCoords = new double[EdgeNodes.length * (1 + Ninterpoints)][3];
-			for (int node = 0; node <= EdgeNodes.length - 2; node += 1)
+			double[][] ContourCoords = new double[EdgeNodes.size() * (1 + Ninterpoints)][3];
+			for (int node = 0; node <= EdgeNodes.size() - 2; node += 1)
 			{
 				double[] Line = new double[] {EdgeCoords[node][0], EdgeCoords[node][1], EdgeCoords[node][2], EdgeCoords[node + 1][0], EdgeCoords[node + 1][1], EdgeCoords[node + 1][2]};
 				for (int i = 0; i <= Ninterpoints; i += 1)
@@ -120,12 +121,12 @@ public class ResultDiagrams
 					ContourCoords[node * (Ninterpoints + 1) + i] = NewCoord;
 				}
 			}			
-			double[] Line = new double[] {EdgeCoords[EdgeNodes.length - 1][0], EdgeCoords[EdgeNodes.length - 1][1], EdgeCoords[EdgeNodes.length - 1][2], EdgeCoords[0][0], EdgeCoords[0][1], EdgeCoords[0][2]};
+			double[] Line = new double[] {EdgeCoords[EdgeNodes.size() - 1][0], EdgeCoords[EdgeNodes.size() - 1][1], EdgeCoords[EdgeNodes.size() - 1][2], EdgeCoords[0][0], EdgeCoords[0][1], EdgeCoords[0][2]};
 			for (int i = 0; i <= Ninterpoints; i += 1)
 			{
 				double offset = i / (double)(Ninterpoints + 1);
 				double[] NewCoord = Util.CreatePointInLine(Line, offset);
-				ContourCoords[(EdgeNodes.length - 1) * (Ninterpoints + 1) + i] = NewCoord;
+				ContourCoords[(EdgeNodes.size() - 1) * (Ninterpoints + 1) + i] = NewCoord;
 			}
 
 			/* Get displacements on contour */

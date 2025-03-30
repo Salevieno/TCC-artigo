@@ -3,10 +3,7 @@ package org.example.analysis;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.loading.ConcLoad;
-import org.example.loading.DistLoad;
 import org.example.loading.Loading;
-import org.example.loading.NodalDisp;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -125,8 +122,8 @@ public abstract class Analysis
 
 		if (NPoints <= 3)
 		{
-			double a = Math.abs(Node.get(Elem.getExternalNodes()[2]).getOriginalCoords().x - Node.get(Elem.getExternalNodes()[0]).getOriginalCoords().x) / 2;
-			double b = Math.abs(Node.get(Elem.getExternalNodes()[2]).getOriginalCoords().y - Node.get(Elem.getExternalNodes()[0]).getOriginalCoords().y) / 2;
+			double a = Math.abs(Elem.getExternalNodes().get(2).getOriginalCoords().x - Elem.getExternalNodes().get(0).getOriginalCoords().x) / 2;
+			double b = Math.abs(Elem.getExternalNodes().get(2).getOriginalCoords().y - Elem.getExternalNodes().get(0).getOriginalCoords().y) / 2;
 			double[][] Db = Element.BendingConstitutiveMatrix(mat, NonlinearMat, strain);
 			double[][] Ds = Element.ShearConstitutiveMatrix2(mat, sec);
 			for (int pe = 0; pe <= NPoints - 1; pe += 1)
@@ -172,20 +169,20 @@ public abstract class Analysis
 	public static double[] LoadVector(Mesh mesh, int NFreeDOFs, Loading loading, boolean NonlinearMat, boolean NonlinearGeo, double loadfactor)
 	{
 		double[] P = new double[NFreeDOFs];
-		List<Node> Node = mesh.getNodes();
+		List<Node> meshNodes = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
 		if (loading.getConcLoads() != null && !loading.getConcLoads().isEmpty())
 		{
 			for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
 			{
 				int node = loading.getConcLoads().get(load).getNodeID();
-				for (int dof = 0; dof <= Node.get(node).getDOFType().length - 1; dof += 1)
+				for (int dof = 0; dof <= meshNodes.get(node).getDOFType().length - 1; dof += 1)
 				{
-					if (-1 < Node.get(node).dofs[dof])
+					if (-1 < meshNodes.get(node).dofs[dof])
 					{
-						if (Node.get(node).getDOFType()[dof] <= loading.getConcLoads().get(load).getForce().array().length - 1)
+						if (meshNodes.get(node).getDOFType()[dof] <= loading.getConcLoads().get(load).getForce().array().length - 1)
 						{
-							P[Node.get(node).dofs[dof]] += loading.getConcLoads().get(load).getForce().array()[Node.get(node).getDOFType()[dof]] * loadfactor;
+							P[meshNodes.get(node).dofs[dof]] += loading.getConcLoads().get(load).getForce().array()[meshNodes.get(node).getDOFType()[dof]] * loadfactor;
 						}
 					}
 				}
@@ -210,22 +207,23 @@ public abstract class Analysis
 				{
 					int LoadType = Elem.get(elem).getDistLoads()[load].getType();
 					double LoadIntensity = Elem.get(elem).getDistLoads()[load].getIntensity();
-					int[] nodes = Elem.get(elem).getExternalNodes();
-					double[][] Q = Elem.get(elem).LoadVector(Node);
+					List<Node> nodes = Elem.get(elem).getExternalNodes();
+					double[][] Q = Elem.get(elem).LoadVector(meshNodes);
 					double[] p = new double[Elem.get(elem).getDOFs().length];
 					if (LoadType == 4)
 					{
 						p[0] = LoadIntensity;
 						double[] q = Util.MultMatrixVector(Util.Transpose(Q), p);
-						for (int elemnode = 0; elemnode <= nodes.length - 1; elemnode += 1)
+						for (int elemNodeID = 0; elemNodeID <= nodes.size() - 1; elemNodeID += 1)
 						{
-							int node = nodes[elemnode];
+							int nodeID = nodes.get(elemNodeID).getID() ;
+							Node node = meshNodes.get(nodeID) ;
 
-							for (int dof = 0; dof <= Node.get(node).getDOFType().length - 1; dof += 1)
+							for (int dof = 0; dof <= node.getDOFType().length - 1; dof += 1)
 							{
-								if (-1 < Node.get(node).dofs[dof])
+								if (-1 < node.dofs[dof])
 								{									
-									P[Node.get(node).dofs[dof]] += q[Elem.get(elem).getCumDOFs()[elemnode] + dof] * loadfactor;
+									P[node.dofs[dof]] += q[Elem.get(elem).getCumDOFs()[elemNodeID] + dof] * loadfactor;
 								}
 							}
 						}
@@ -242,23 +240,23 @@ public abstract class Analysis
 				int node = loading.getNodalDisps().get(disp).getNode();
 				for (int dof = 0; dof <= Elem.get(0).getDOFsPerNode().length - 1; dof += 1)
 				{
-					if (-1 < Node.get(node).dofs[dof])
+					if (-1 < meshNodes.get(node).dofs[dof])
 					{
-						if (Node.get(node).getDOFType()[dof] <= loading.getNodalDisps().get(disp).getDisps().length - 1)
+						if (meshNodes.get(node).getDOFType()[dof] <= loading.getNodalDisps().get(disp).getDisps().length - 1)
 						{
-							Uapplied[Node.get(node).dofs[dof]] += loading.getNodalDisps().get(disp).getDisps()[Node.get(node).getDOFType()[dof]]*loadfactor;
+							Uapplied[meshNodes.get(node).dofs[dof]] += loading.getNodalDisps().get(disp).getDisps()[meshNodes.get(node).getDOFType()[dof]]*loadfactor;
 						}
 					}
 				}
 			}
-			for (int node = 0; node <= Node.size() - 1; node += 1)
+			for (int node = 0; node <= meshNodes.size() - 1; node += 1)
 			{
-				double[] Peq = NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, Uapplied);
+				double[] Peq = NodeForces(node, meshNodes, Elem, NonlinearMat, NonlinearGeo, Uapplied);
 				for (int dof = 0; dof <= Peq.length - 1; dof += 1)
 				{
-					if (-1 < Node.get(node).dofs[dof])
+					if (-1 < meshNodes.get(node).dofs[dof])
 					{
-						P[Node.get(node).dofs[dof]] += Peq[dof];
+						P[meshNodes.get(node).dofs[dof]] += Peq[dof];
 					}
 				}
 			}
@@ -283,7 +281,6 @@ public abstract class Analysis
 		    for (int iter = 0; iter <= NIter - 1; iter += 1)
 			{
 		    	structure.setK(Structure.StructureStiffnessMatrix(structure.NFreeDOFs, structure.getMesh().getNodes(), structure.getMesh().getElements(), NonlinearMat, NonlinearGeo));
-		    	
 				if (structure.getK() == null) { System.out.println("Error: Structure stiffness matrix null while calculating the displacements") ; return null ;}
 				if (structure.getP() == null) { System.out.println("Error: Structure loading vector null while calculating the displacements") ; return null ;}
 
@@ -408,9 +405,9 @@ public abstract class Analysis
 		double[] forces = new double[6];
 		for (int elem = 0; elem <= elems.size() - 1; elem += 1)
         {
-			for (int elemnode = 0; elemnode <= elems.get(elem).getExternalNodes().length - 1; elemnode += 1)
+			for (int elemnode = 0; elemnode <= elems.get(elem).getExternalNodes().size() - 1; elemnode += 1)
 	        {
-				int NodeID = elems.get(elem).getExternalNodes()[elemnode];
+				int NodeID = elems.get(elem).getExternalNodes().get(elemnode).getID() ;
 				if (node == NodeID)
 				{
 					double[] p = elems.get(elem).ForceVec(nodes, NonlinearMat, NonlinearGeo, U);
