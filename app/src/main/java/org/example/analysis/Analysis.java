@@ -1,8 +1,8 @@
 package org.example.analysis;
 
-import java.util.Arrays;
 import java.util.List;
 
+import org.example.loading.ConcLoad;
 import org.example.loading.Loading;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
@@ -171,23 +171,45 @@ public abstract class Analysis
 		double[] P = new double[NFreeDOFs];
 		List<Node> meshNodes = mesh.getNodes();
 		List<Element> Elem = mesh.getElements();
-		if (loading.getConcLoads() != null && !loading.getConcLoads().isEmpty())
+
+		for (Node node : mesh.getNodes())
 		{
-			for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
+			List<ConcLoad> concLoads = node.getConcLoads() ;
+
+			if (concLoads == null || concLoads.isEmpty()) { continue ;}
+
+			for (ConcLoad concLoad : concLoads)
 			{
-				int node = loading.getConcLoads().get(load).getNodeID();
-				for (int dof = 0; dof <= meshNodes.get(node).getDOFType().length - 1; dof += 1)
+				for (int dof = 0; dof <= node.getDOFType().length - 1; dof += 1)
 				{
-					if (-1 < meshNodes.get(node).dofs[dof])
-					{
-						if (meshNodes.get(node).getDOFType()[dof] <= loading.getConcLoads().get(load).getForce().array().length - 1)
-						{
-							P[meshNodes.get(node).dofs[dof]] += loading.getConcLoads().get(load).getForce().array()[meshNodes.get(node).getDOFType()[dof]] * loadfactor;
-						}
-					}
+					if (node.dofs[dof] <= -1) { continue ;}
+
+					int dofType = node.getDOFType()[dof] ;
+					
+					if (concLoad.getForce().array().length <= dofType) { continue ;}
+
+					P[node.dofs[dof]] += concLoad.getForce().array()[dofType] * loadfactor;
 				}
 			}
 		}
+
+		// if (loading.getConcLoads() != null && !loading.getConcLoads().isEmpty())
+		// {
+		// 	for (int load = 0; load <= loading.getConcLoads().size() - 1; load += 1)
+		// 	{
+		// 		int node = loading.getConcLoads().get(load).getNodeID();
+		// 		for (int dof = 0; dof <= meshNodes.get(node).getDOFType().length - 1; dof += 1)
+		// 		{
+		// 			if (-1 < meshNodes.get(node).dofs[dof])
+		// 			{
+		// 				if (meshNodes.get(node).getDOFType()[dof] <= loading.getConcLoads().get(load).getForce().array().length - 1)
+		// 				{
+		// 					P[meshNodes.get(node).dofs[dof]] += loading.getConcLoads().get(load).getForce().array()[meshNodes.get(node).getDOFType()[dof]] * loadfactor;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 		
 		int[] ElemsWithDistLoad = null;
 		for (int i = 0; i <= Elem.size() - 1; i += 1)

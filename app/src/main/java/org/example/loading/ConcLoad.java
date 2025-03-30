@@ -3,51 +3,33 @@ package org.example.loading;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.util.Arrays;
 
-import org.example.structure.Node;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
-import org.example.utilidades.Point3D;
-import org.example.utilidades.Util;
-import org.example.view.MainPanel;
 
 import graphics.DrawPrimitives;
 
 public class ConcLoad
 {
 	private int ID;
-	private int NodeID;
 	private Force force ;
 
 	private static int maxDisplaySize = 1;
 	private static int stroke = 2;
 	public static Color color = Menus.palette[7];
 
-	public ConcLoad(int ID, Node Node, double[] Loads)
-	{
-		this(ID, Node.getID(), Loads);
-	}
-
-	public ConcLoad(int ID, Node Node, Force force)
-	{
-		this(ID, Node.getID(), force);
-	}
-
-	public ConcLoad(int ID, int NodeID, double[] loads)
+	public ConcLoad(int ID, Force force)
 	{
 		this.ID = ID;
-		this.NodeID = NodeID;
-		this.force = new Force(loads);
-	}
-
-	public ConcLoad(int ID, int NodeID, Force force)
-	{
-		this.ID = ID;
-		this.NodeID = NodeID;
 		this.force = force;
 	}
+
+	public ConcLoad(int ID, double[] loads)
+	{
+		this(ID, new Force(loads)) ;
+	}
+
 
 	public static void DrawPL3D(double[] RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
@@ -98,15 +80,13 @@ public class ConcLoad
 	}
 
 	public int getID() {return ID;}
-	public int getNodeID() {return NodeID;}
 	public Force getForce() {return force;}
 	public void setID(int I) {ID = I;}
-	public void setNodeID(int N) {NodeID = N;}
 	public void setForce(Force force) {this.force = force;}
 
 	@Override
 	public String toString() {
-		return ID + "	" + NodeID + "	" + force ;
+		return ID + "	" + force ;
 	}
 
 }

@@ -291,12 +291,12 @@ public class Mesh
 		switch (meshType)
 		{
 			case cartesian:
-				nodes = CreateCartesianNodes(structureCoords, new int[] {noffsets, nintermediatepoints[0]}, elemType);
-				elems = CreateCartesianMesh(nodes, new int[] {noffsets, nintermediatepoints[0]}, elemType);
+				nodes = createCartesianNodes(structureCoords, new int[] {noffsets, qtdIntermediatePoints}, elemType);
+				elems = CreateCartesianMesh(nodes, new Point(noffsets, qtdIntermediatePoints), elemType);
 				break ;
 				
 			case radial:
-				nodes = CreateRadialNodes(structureCoords, structureCenter, noffsets, nintermediatepoints);
+				nodes = createRadialNodes(structureCoords, structureCenter, noffsets, nintermediatepoints);
 				elems = CreateRadialMesh(nodes, noffsets, elemType);
 				break ;
 				
@@ -318,14 +318,14 @@ public class Mesh
 		return CreateMesh(structureCoords, structureCenter, meshType, meshInfo[0][0], meshInfo[0][1], nodes, elems, elemType) ;
 	}
 
-	public static List<Node> CreateCartesianNodes(List<Point3D> structureCoords, int[] NumberElem, ElemType elemType)
+	public static List<Node> createCartesianNodes(List<Point3D> structureCoords, int[] NumberElem, ElemType elemType)
 	{
-		double MinXCoord = Structure.calcMinCoords(structureCoords).x ;
-		double MinYCoord = Structure.calcMinCoords(structureCoords).y ;
-		double MaxXCoord = Structure.calcMaxCoords(structureCoords).x ;
-		double MaxYCoord = Structure.calcMaxCoords(structureCoords).y ;
+		double xMin = Structure.calcMinCoords(structureCoords).x ;
+		double yMin = Structure.calcMinCoords(structureCoords).y ;
+		double xMax = Structure.calcMaxCoords(structureCoords).x ;
+		double yMax = Structure.calcMaxCoords(structureCoords).y ;
 
-		double L = MaxXCoord - MinXCoord, H = MaxYCoord - MinYCoord;
+		double L = xMax - xMin, H = yMax - yMin;
 		double dx = L / NumberElem[0], dy = H / NumberElem[1];
 		ElemShape elemShape = Element.typeToShape(elemType);
 
@@ -337,7 +337,7 @@ public class Mesh
 			{
 				for (int j = 0; j <= NumberElem[0]; j += 1)
 				{
-					Node[i*(NumberElem[0] + 1) + j] = new Node(i*(NumberElem[0] + 1) + j, new Point3D(MinXCoord + j*dx, MinYCoord + i*dy, 0));
+					Node[i*(NumberElem[0] + 1) + j] = new Node(i*(NumberElem[0] + 1) + j, new Point3D(xMin + j*dx, yMin + i*dy, 0));
 				}
 			}
 		}
@@ -353,7 +353,7 @@ public class Mesh
 				{
 					for (int j = 0; j <= 2 * NumberElem[0]; j += 1)
 					{
-						Node[nodeID] = new Node(nodeID, new Point3D(MinXCoord + j*dx, MinYCoord + i*dy, 0));
+						Node[nodeID] = new Node(nodeID, new Point3D(xMin + j*dx, yMin + i*dy, 0));
 						nodeID += 1;
 					}
 				}
@@ -361,7 +361,7 @@ public class Mesh
 				{
 					for (int j = 0; j <= 2 * NumberElem[0] / 2; j += 1)
 					{
-						Node[nodeID] = new Node(nodeID, new Point3D(MinXCoord + 2*j*dx, MinYCoord + i*dy, 0));
+						Node[nodeID] = new Node(nodeID, new Point3D(xMin + 2*j*dx, yMin + i*dy, 0));
 						nodeID += 1;
 					}
 				}
@@ -375,7 +375,7 @@ public class Mesh
 			{
 				for (int j = 0; j <= 2*NumberElem[0]; j += 1)
 				{
-					Node[i*(2*NumberElem[0] + 1) + j] = new Node(i*(2*NumberElem[0] + 1) + j, new Point3D(MinXCoord + j*dx, MinYCoord + i*dy, 0));
+					Node[i*(2*NumberElem[0] + 1) + j] = new Node(i*(2*NumberElem[0] + 1) + j, new Point3D(xMin + j*dx, yMin + i*dy, 0));
 				}
 			}
 		}
@@ -383,7 +383,7 @@ public class Mesh
 		return Arrays.asList(Node);
 	}
 	
-	public static List<Node> CreateRadialNodes(List<Point3D> structureCoords, Point3D structureCenter, int noffsets, int[] nintermediatepoints)
+	public static List<Node> createRadialNodes(List<Point3D> structureCoords, Point3D structureCenter, int noffsets, int[] nintermediatepoints)
 	{
 		// Calculate number of nodes in each column
 		Node[] nodes = null;
@@ -425,7 +425,7 @@ public class Mesh
 		return getNodesByID(nodes, nodeIDs) ;
 	}
 	
-	public static List<Element> CreateCartesianMesh(List<Node> Node, int[] NElems, ElemType elemType)
+	public static List<Element> CreateCartesianMesh(List<Node> nodes, Point numElems, ElemType elemType)
 	{
 		Element[] Elem = null;
 		ElemShape elemShape = Element.typeToShape(elemType);
@@ -436,15 +436,15 @@ public class Mesh
 		    //    |    | 
 		    //    |    |  
 		    //   1|____|2
-			int[] NNodes = new int[] {NElems[0] + 1, NElems[1] + 1};
-	        Elem = new Element[NElems[0]*NElems[1]];
-			for (int j = 0; j <= NElems[1] - 1; j += 1)
+			int[] NNodes = new int[] {numElems.x + 1, numElems.y + 1};
+	        Elem = new Element[numElems.x*numElems.y];
+			for (int j = 0; j <= numElems.y - 1; j += 1)
 			{
-				for (int i = 0; i <= NElems[0] - 1; i += 1)
+				for (int i = 0; i <= numElems.x - 1; i += 1)
 				{
-					int ElemID = i + j*NElems[0];
+					int ElemID = i + j*numElems.x;
 					int[] ElemNodes = new int[] {i + j*NNodes[0], i + j*NNodes[0] + 1, (j + 1)*NNodes[0] + i + 1, (j + 1)*NNodes[0] + i};
-		        	Elem[ElemID] = new Element(ElemID, getNodesByID(Node, ElemNodes), null, null, null, elemType);
+		        	Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, ElemNodes), null, null, null, elemType);
 				}
 			}
 		}
@@ -457,17 +457,17 @@ public class Mesh
 		    //    |        |  
 		    //   1|________|3
 			//		  2
-			int[] NNodes = new int[] {2 * NElems[0] + 1, 2 * NElems[1] + 1};
-	        Elem = new Element[NElems[0] * NElems[1]];
-			for (int j = 0; j <= NElems[1] - 1; j += 1)
+			int[] NNodes = new int[] {2 * numElems.x + 1, 2 * numElems.y + 1};
+	        Elem = new Element[numElems.x * numElems.y];
+			for (int j = 0; j <= numElems.y - 1; j += 1)
 			{
-				for (int i = 0; i <= NElems[0] - 1; i += 1)
+				for (int i = 0; i <= numElems.x - 1; i += 1)
 				{
-					int ElemID = i + j*NElems[0];
-					int[] ElemNodes = new int[] {2*i + 2*j*NNodes[0] - j*NElems[0], 					2*i + 2*j*NNodes[0] - j*NElems[0] + 1, 						2*i + 2*j*NNodes[0] - j*NElems[0] + 2,
-												 2*i + (2*j + 1)*NNodes[0] - j*NElems[0] - i + 1, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*NElems[0] + 2, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*NElems[0] + 1,
-												 2*i + (2*j + 2)*NNodes[0] - (j + 1)*NElems[0],		 	2*i + (2*j + 1)*NNodes[0] - j*NElems[0] - i};
-		        	Elem[ElemID] = new Element(ElemID, getNodesByID(Node, ElemNodes), null, null, null, elemType);
+					int ElemID = i + j*numElems.x;
+					int[] ElemNodes = new int[] {2*i + 2*j*NNodes[0] - j*numElems.x, 					2*i + 2*j*NNodes[0] - j*numElems.x + 1, 						2*i + 2*j*NNodes[0] - j*numElems.x + 2,
+												 2*i + (2*j + 1)*NNodes[0] - j*numElems.x - i + 1, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*numElems.x + 2, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*numElems.x + 1,
+												 2*i + (2*j + 2)*NNodes[0] - (j + 1)*numElems.x,		 	2*i + (2*j + 1)*NNodes[0] - j*numElems.x - i};
+		        	Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, ElemNodes), null, null, null, elemType);
 				}
 			}
 		}
@@ -480,17 +480,17 @@ public class Mesh
 		    //    |        |  
 		    //   1|________|3
 			//		  2
-			int[] NNodes = new int[] {2 * NElems[0] + 1, 2 * NElems[1] + 1};
-	        Elem = new Element[NElems[0]*NElems[1]];
-			for (int j = 0; j <= NElems[1] - 1; j += 1)
+			int[] NNodes = new int[] {2 * numElems.x + 1, 2 * numElems.y + 1};
+	        Elem = new Element[numElems.x*numElems.y];
+			for (int j = 0; j <= numElems.y - 1; j += 1)
 			{
-				for (int i = 0; i <= NElems[0] - 1; i += 1)
+				for (int i = 0; i <= numElems.x - 1; i += 1)
 				{
-					int ElemID = i + j*NElems[0];
+					int ElemID = i + j*numElems.x;
 					int[] ElemExtNodes = new int[] {2*i + 2*j*NNodes[0], 2*i + 2*j*NNodes[0] + 1, 2*i + 2*j*NNodes[0] + 2,
 													2*i + (2*j + 1)*NNodes[0] + 2, 2*i + (2*j + 2)*NNodes[0] + 2, 2*i + (2*j + 2)*NNodes[0] + 1, 2*i + (2*j + 2)*NNodes[0], 2*i + (2*j + 1)*NNodes[0]};
 					int[] ElemIntNodes = new int[] {2*i + (2*j + 1)*NNodes[0] + 1};
-					Elem[ElemID] = new Element(ElemID, getNodesByID(Node, ElemExtNodes), getNodesByID(Node, ElemIntNodes), null, null, elemType);
+					Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, ElemExtNodes), getNodesByID(nodes, ElemIntNodes), null, null, elemType);
 				}
 			}
 		}
@@ -501,18 +501,18 @@ public class Mesh
 		    //    |\  | 
 		    //    |2\1|  
 		    //  2.|__\|.4
-			Elem = new Element[2 * NElems[0] * NElems[1]];
-			int NumRows = NElems[0];
+			Elem = new Element[2 * numElems.x * numElems.y];
+			int NumRows = numElems.x;
 		    for (int j = 0; j <= NumRows - 1; j += 1)
 		    {
-				int NumberElemInCol = NElems[1] + NElems[1];
+				int NumberElemInCol = numElems.y + numElems.y;
 		        for (int i = 0; i <= NumberElemInCol / 2 - 1; i += 1)
 		        {
 		        	int ElemID = 2 * i + j*NumberElemInCol;
-		        	int[] elemnodes1 = new int[] {i + j * (NElems[0] + 1), i + j * (NElems[0] + 1) + 1, i + (j + 1) * (NElems[1] + 1)};
-		        	int[] elemnodes2 = new int[] {i + (j + 1) * (NElems[1] + 1) + 1, i + (j + 1) * (NElems[1] + 1), i + j * (NElems[0] + 1) + 1};
-		        	Elem[ElemID] = new Element(ElemID, getNodesByID(Node, elemnodes1), null, null, null, elemType);
-		        	Elem[ElemID + 1] = new Element(ElemID + 1, getNodesByID(Node, elemnodes2), null, null, null, elemType);
+		        	int[] elemnodes1 = new int[] {i + j * (numElems.x + 1), i + j * (numElems.x + 1) + 1, i + (j + 1) * (numElems.y + 1)};
+		        	int[] elemnodes2 = new int[] {i + (j + 1) * (numElems.y + 1) + 1, i + (j + 1) * (numElems.y + 1), i + j * (numElems.x + 1) + 1};
+		        	Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, elemnodes1), null, null, null, elemType);
+		        	Elem[ElemID + 1] = new Element(ElemID + 1, getNodesByID(nodes, elemnodes2), null, null, null, elemType);
 		        }
 		    }
 		}

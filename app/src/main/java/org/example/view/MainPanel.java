@@ -772,7 +772,7 @@ public class MainPanel extends JPanel
 				int loadid = loading.getConcLoads().size() - selectedNodes.size() + i;
 				if (-1 < selectedNodes.get(i).getID())
 				{
-					ConcLoad newConcLoad = new ConcLoad(loadid, selectedNodes.get(i), ConcLoadType.get(selectedConcLoadID));
+					ConcLoad newConcLoad = new ConcLoad(loadid, ConcLoadType.get(selectedConcLoadID));
 					loading.getConcLoads().add(newConcLoad);
 					selectedNodes.get(i).addConcLoad(newConcLoad);
 				}

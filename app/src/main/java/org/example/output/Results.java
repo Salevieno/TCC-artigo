@@ -71,7 +71,7 @@ public class Results
 	    {
 			if (Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U) != null)
 			{
-				ConcLoad newConcLoad = new ConcLoad(-1, node, Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U)) ;
+				ConcLoad newConcLoad = new ConcLoad(-1, Analysis.NodeForces(node, Node, Elem, NonlinearMat, NonlinearGeo, U)) ;
 		    	Node.get(node).addConcLoad(newConcLoad);
 			}
 	    }
