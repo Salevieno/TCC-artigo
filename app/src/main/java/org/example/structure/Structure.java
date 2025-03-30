@@ -435,7 +435,7 @@ public class Structure
 				
 				int distLoadType = (int) MenuFunctions.DistLoadType[distLoadID][0] ;
 				double distLoadIntensity = MenuFunctions.DistLoadType[distLoadID][1] ;
-				DistLoad distLoad = new DistLoad(1, elem.getID(), distLoadType, distLoadIntensity) ;
+				DistLoad distLoad = new DistLoad(elem.getID(), distLoadType, distLoadIntensity) ;
 				if (distLoad != null)
 				{
 					elem.addDistLoad(distLoad) ;

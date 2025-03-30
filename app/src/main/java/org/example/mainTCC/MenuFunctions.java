@@ -253,8 +253,8 @@ public abstract class MenuFunctions
 				{
 					String[] Line = Input[8][distload + 2].split("	");
 					DistLoad NewDistLoad;
-					NewDistLoad = new DistLoad(-1, -1, -1, -1);
-					NewDistLoad.setID(Integer.parseInt(Line[0]));
+					NewDistLoad = new DistLoad(-1, -1, -1);
+					NewDistLoad.setId(Integer.parseInt(Line[0]));
 					NewDistLoad.setElem(Integer.parseInt(Line[1]));
 					NewDistLoad.setType(Integer.parseInt(Line[2]));
 					NewDistLoad.setIntensity(Double.parseDouble(Line[3]));
@@ -437,7 +437,7 @@ public abstract class MenuFunctions
 				double Intensity = DistLoadType[loadid][2];
 				if (-1 < elemid)
 				{
-					loading.getDistLoads().set(loadid, new DistLoad(loadid, elemid, LoadType, Intensity)) ;
+					loading.getDistLoads().set(loadid, new DistLoad(elemid, LoadType, Intensity)) ;
 					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
 				}
 			}
