@@ -241,8 +241,8 @@ public abstract class MenuFunctions
 				{
 					String[] Line = Input[7][concload + 2].split("	");
 					ConcLoad NewConcLoad;
-					NewConcLoad = new ConcLoad(-1, new Force());
-					NewConcLoad.setID(Integer.parseInt(Line[0]));
+					NewConcLoad = new ConcLoad(new Force());
+					NewConcLoad.setId(Integer.parseInt(Line[0]));
 					// NewConcLoad.setNodeID(Integer.parseInt(Line[1]));
 					NewConcLoad.setForce(new Force(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])}));
 					concLoadTypes.add(NewConcLoad.getForce()) ;
@@ -413,7 +413,7 @@ public abstract class MenuFunctions
 				int nodeid = (int) concLoadTypes.get(loadid).y;
 				if (-1 < nodeid)
 				{
-					loading.getConcLoads().set(loadid, new ConcLoad(loadid, concLoadTypes.get(loadid))) ;
+					loading.getConcLoads().set(loadid, new ConcLoad(concLoadTypes.get(loadid))) ;
 					struct.getMesh().getNodes().get(nodeid).addConcLoad(loading.getConcLoads().get(loadid));
 				}
 			}

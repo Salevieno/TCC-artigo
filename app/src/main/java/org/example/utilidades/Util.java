@@ -358,7 +358,7 @@ public abstract class Util
 			ConcLoad[] NewArray = new ConcLoad[size];
 			for (int i = 0; i <= NewArray.length - 1; i += 1)
 			{
-				NewArray[i] = new ConcLoad(-1, new Force());
+				NewArray[i] = new ConcLoad(new Force());
 			}
 			return NewArray;
 		}
@@ -371,7 +371,7 @@ public abstract class Util
 			}
 			for (int i = OriginalArray.length; i <= OriginalArray.length + size - 1; i += 1)
 			{
-				NewArray[i] = new ConcLoad(-1, new Force());
+				NewArray[i] = new ConcLoad(new Force());
 			}
 			return NewArray;
 		}

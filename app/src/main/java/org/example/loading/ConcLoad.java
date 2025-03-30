@@ -12,22 +12,24 @@ import graphics.DrawPrimitives;
 
 public class ConcLoad
 {
-	private int ID;
+	private int id ;
 	private Force force ;
 
+	private static int currentID = 1;
 	private static int maxDisplaySize = 1;
 	private static int stroke = 2;
 	public static Color color = Menus.palette[7];
 
-	public ConcLoad(int ID, Force force)
+	public ConcLoad(Force force)
 	{
-		this.ID = ID;
+		this.id = currentID;
 		this.force = force;
+		currentID += 1;
 	}
 
-	public ConcLoad(int ID, double[] loads)
+	public ConcLoad(double[] loads)
 	{
-		this(ID, new Force(loads)) ;
+		this(new Force(loads)) ;
 	}
 
 
@@ -79,14 +81,14 @@ public class ConcLoad
 		
 	}
 
-	public int getID() {return ID;}
+	public int getId() {return id;}
 	public Force getForce() {return force;}
-	public void setID(int I) {ID = I;}
+	public void setId(int I) {id = I;}
 	public void setForce(Force force) {this.force = force;}
 
 	@Override
 	public String toString() {
-		return ID + "	" + force ;
+		return id + "	" + force ;
 	}
 
 }

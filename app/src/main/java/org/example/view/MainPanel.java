@@ -13,7 +13,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -769,10 +768,9 @@ public class MainPanel extends JPanel
 		{
 			for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 			{
-				int loadid = loading.getConcLoads().size() - selectedNodes.size() + i;
 				if (-1 < selectedNodes.get(i).getID())
 				{
-					ConcLoad newConcLoad = new ConcLoad(loadid, ConcLoadType.get(selectedConcLoadID));
+					ConcLoad newConcLoad = new ConcLoad(ConcLoadType.get(selectedConcLoadID));
 					loading.getConcLoads().add(newConcLoad);
 					selectedNodes.get(i).addConcLoad(newConcLoad);
 				}
