@@ -437,8 +437,9 @@ public abstract class MenuFunctions
 				double Intensity = DistLoadType[loadid][2];
 				if (-1 < elemid)
 				{
-					loading.getDistLoads().set(loadid, new DistLoad(LoadType, Intensity)) ;
-					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
+					DistLoad distLoad = new DistLoad(LoadType, Intensity) ;
+					loading.getDistLoads().set(loadid, distLoad) ;
+					struct.getMesh().getElements().get(elemid).addDistLoad(distLoad);
 				}
 			}
 		}

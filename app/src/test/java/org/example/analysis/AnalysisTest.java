@@ -163,7 +163,7 @@ public class AnalysisTest
     private void addUniDistLoad(Structure structure, double loadIntensity)
     {
         Loading loading = new Loading() ;
-        structure.getMesh().getElements().forEach(elem -> elem.setDistLoads(new DistLoad[] {new DistLoad(4, loadIntensity)})) ;
+        structure.getMesh().getElements().forEach(elem -> elem.addDistLoad(new DistLoad(4, loadIntensity))) ;
 
         MenuFunctions.CalcAnalysisParameters(structure, loading) ;
     }

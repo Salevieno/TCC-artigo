@@ -225,10 +225,10 @@ public abstract class Analysis
 			for (int e = 0; e <= ElemsWithDistLoad.length - 1; e += 1)
 			{
 				int elem = ElemsWithDistLoad[e];
-				for (int load = 0; load <= Elem.get(elem).getDistLoads().length - 1; load += 1)
+				for (int load = 0; load <= Elem.get(elem).getDistLoads().size() - 1; load += 1)
 				{
-					int LoadType = Elem.get(elem).getDistLoads()[load].getType();
-					double LoadIntensity = Elem.get(elem).getDistLoads()[load].getIntensity();
+					int LoadType = Elem.get(elem).getDistLoads().get(load).getType();
+					double LoadIntensity = Elem.get(elem).getDistLoads().get(load).getIntensity();
 					List<Node> nodes = Elem.get(elem).getExternalNodes();
 					double[][] Q = Elem.get(elem).LoadVector(meshNodes);
 					double[] p = new double[Elem.get(elem).getDOFs().length];

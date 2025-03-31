@@ -13,7 +13,7 @@ public class ElementDTO
     private List<Node> ExternalNodes;	// Nodes on the contour (along the edges) in the counter-clockwise direction
 	private Material mat ;
 	private Section sec;
-	private DistLoad[] DistLoads;	// Distributed loads in the node
+	private List<DistLoad> distLoads;	// Distributed loads in the node
 
     public ElementDTO()
     {
@@ -29,6 +29,6 @@ public class ElementDTO
         this.ExternalNodes = element.getExternalNodes();	// Nodes on the contour (along the edges) in the counter-clockwise direction
         this.mat = element.getMat() ;
         // this.sec = element.getSec();
-        this.DistLoads = element.getDistLoads();
+        this.distLoads = element.getDistLoads();
     }
 }

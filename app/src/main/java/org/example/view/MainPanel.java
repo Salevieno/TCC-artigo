@@ -795,7 +795,7 @@ public class MainPanel extends JPanel
 				double Intensity = DistLoadType[selectedDistLoadID][1];
 				DistLoad newDistLoad = new DistLoad(LoadType, Intensity) ;
 				loading.getDistLoads().add(newDistLoad);
-				elem.setDistLoads(Util.AddElem(elem.getDistLoads(), newDistLoad));
+				elem.addDistLoad(newDistLoad) ;
 				
 			}
 			MenuFunctions.ShowDistLoads = true;

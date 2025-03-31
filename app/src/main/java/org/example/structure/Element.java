@@ -11,7 +11,6 @@ import org.example.loading.DistLoad;
 import org.example.output.ResultDiagrams;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
-import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 import org.example.view.SelectionWindow;
@@ -33,7 +32,7 @@ public class Element
 	private List<Node> internalNodes;	// Nodes inside the element
 	private Material mat ;
 	private Section sec;
-	private DistLoad[] DistLoads;	// Distributed loads in the node
+	private List<DistLoad> distLoads;	// Distributed loads in the node
 	
 	
 	private int[] StrainTypes;		// All strain types present in the element
@@ -64,7 +63,7 @@ public class Element
 		this.internalNodes = InternalNodes;
 		this.mat = mat;
 		this.sec = sec;
-		DistLoads = null;
+		distLoads = new ArrayList<>() ;
 		StrainTypes = null;
 		Disp = null;
 		Stress = null;
@@ -243,7 +242,7 @@ public class Element
 	
 	public void addDistLoad(DistLoad distLoad)
 	{
-		DistLoads = Util.AddElem(DistLoads, distLoad) ;
+		distLoads.add(distLoad) ;
 	}
 
 	public void setUndeformedCoords(List<Node> nodes)
@@ -1122,7 +1121,7 @@ public class Element
 	public List<Node> getInternalNodes() {return internalNodes;}
 	public Material getMat() {return mat;}
 	public Section getSec() {return sec;}
-	public DistLoad[] getDistLoads() {return DistLoads;}
+	public List<DistLoad> getDistLoads() {return distLoads;}
 	public double[] getDisp() {return Disp;}
 	public double[] getStress() {return Stress;}
 	public double[] getStrain() {return Strain;}
@@ -1145,7 +1144,6 @@ public class Element
 	public void setInternalNodes(List<Node> N) {internalNodes = N;}
 	public void setMat(Material M) {mat = M;}
 	public void setSec(Section S) {sec = S;}
-	public void setDistLoads(DistLoad[] D) {DistLoads = D;}
 	public void setDisp(double[] D) {Disp = D;}
 	public void setStress(double[] S) {Stress = S;}
 	public void setStrain(double[] S) {Strain = S;}
@@ -1164,7 +1162,7 @@ public class Element
 	@Override
 	public String toString()
 	{
-		return ID + "	" + type + "	" + externalNodes + "	" + mat + "	" + sec + "	" + Arrays.toString(DistLoads) ;
+		return ID + "	" + type + "	" + externalNodes + "	" + mat + "	" + sec + "	" + distLoads ;
 	}
 
 }

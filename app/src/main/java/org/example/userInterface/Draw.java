@@ -145,11 +145,9 @@ public abstract class Draw
 		List<DistLoad> distLoads = new ArrayList<>() ;
 		for (Element elem : mesh.getElements())
 		{
-			DistLoad[] elemDistLoads = elem.getDistLoads() ;
-
-			if (elemDistLoads == null) { continue ;}
+			if (elem.getDistLoads() == null || elem.getDistLoads().isEmpty()) { continue ;}
 			
-			for (DistLoad distLoad : elemDistLoads)
+			for (DistLoad distLoad : elem.getDistLoads())
 			{
 				distLoads.add(distLoad) ;
 			}
@@ -158,11 +156,9 @@ public abstract class Draw
 
 		for (Element elem : mesh.getElements())
 		{
-			DistLoad[] elemDistLoads = elem.getDistLoads() ;
+			if (elem.getDistLoads() == null || elem.getDistLoads().isEmpty()) { continue ;}
 
-			if (elemDistLoads == null) { continue ;}
-
-			for (DistLoad distLoad : elemDistLoads)
+			for (DistLoad distLoad : elem.getDistLoads())
 			{
 				if (distLoad.getType() == 0)
 				{
