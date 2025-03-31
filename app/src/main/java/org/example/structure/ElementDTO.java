@@ -22,7 +22,7 @@ public class ElementDTO
 
     public ElementDTO(Element element)
     {
-        this.ID = element.getID();
+        this.ID = element.getId();
         this.type = element.getType();	// Type of element
         this.Shape = element.getShape();
         

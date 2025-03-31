@@ -213,7 +213,7 @@ public abstract class MenuFunctions
 				{
 					String[] Line = Input[3][elem + 2].split("	");
 					ElemType elemType = ElemType.valueOf(Line[1].toUpperCase()) ;
-					Element NewElem = new Element(Integer.parseInt(Line[0]), null, null, null, null, elemType);
+					Element NewElem = new Element(null, null, null, null, elemType);
 					int NumberOfElemNodes = Element.shapeToNumberNodes(NewElem.getShape(), elemType);
 					int[] ElemNodes = null;
 					for (int elemnode = 0; elemnode <= NumberOfElemNodes - 1; elemnode += 1)

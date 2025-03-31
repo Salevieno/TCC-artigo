@@ -20,7 +20,7 @@ import graphics.DrawPrimitives;
 
 public class Element
 {
-	private int ID;
+	private int id;
 	private ElemType type;
 	private ElemShape Shape;
 		
@@ -53,12 +53,13 @@ public class Element
 	private int[] CumDOFs = null;
 
 	private boolean isSelected ;
+	private static int currentId = 1 ;
 	// private Color MatColor;
 	// private Color SecColor;
 
-	public Element(int ID, List<Node> ExternalNodes, List<Node> InternalNodes, Material mat, Section sec, ElemType type)
+	public Element(List<Node> ExternalNodes, List<Node> InternalNodes, Material mat, Section sec, ElemType type)
 	{
-		this.ID = ID;
+		this.id = currentId;
 		this.externalNodes = ExternalNodes;
 		this.internalNodes = InternalNodes;
 		this.mat = mat;
@@ -72,16 +73,17 @@ public class Element
 		this.type = type;
 		this.isSelected = false ;
 		DefineProperties(type);
+		currentId += 1;
 	}
 
-	public Element(int ID, List<Node> ExternalNodes, List<Node> InternalNodes, ElemType type)
+	public Element(List<Node> ExternalNodes, List<Node> InternalNodes, ElemType type)
 	{
-		this(ID, ExternalNodes, InternalNodes, null, null, type);
+		this(ExternalNodes, InternalNodes, null, null, type);
 	}
 
-	public Element(int ID, List<Node> ExternalNodes, ElemType type)
+	public Element(List<Node> ExternalNodes, ElemType type)
 	{
-		this(ID, ExternalNodes, null, type);
+		this(ExternalNodes, null, type);
 	}
 
 
@@ -299,7 +301,7 @@ public class Element
 		// Point3D nodePos = new Point3D(Util.GetNodePos(node, deformed)[0], Util.GetNodePos(node, deformed)[1], Util.GetNodePos(node, deformed)[2]) ;
 		// Point nodeDrawingPos = canvas.inDrawingCoords(node.getOriginalCoords()) ;
 		Point centerDrawingPos = canvas.inDrawingCoords(new Point2D.Double(CenterCoords[0], CenterCoords[1])) ;
-		DP.drawText(centerDrawingPos, Align.center, String.valueOf(ID), Element.color) ;
+		DP.drawText(centerDrawingPos, Align.center, String.valueOf(id), Element.color) ;
 		// for (int elemnode = 0; elemnode <= externalNodes.length - 1; elemnode += 1)
 		// {
 		// 	int nodeID = externalNodes[elemnode];
@@ -1112,7 +1114,7 @@ public class Element
 	public void unselect() { isSelected = false ;}
 
 
-	public int getID() {return ID;}
+	public int getId() {return id;}
 	public ElemShape getShape() {return Shape;}
 	public int[] getDOFs() {return DOFs;}
 	public int[][] getDOFsPerNode() {return DOFsPerNode;}
@@ -1135,7 +1137,7 @@ public class Element
 	public boolean isSelected() { return isSelected ;}
 	// public Color getMatColor () {return MatColor;}
 	// public Color getSecColor () {return SecColor;}
-	public void setID(int I) {ID = I;}
+	public void setId(int I) {id = I;}
 	public void setShape(ElemShape S) {Shape = S;}
 	public void setDOFs(int[] D) {DOFs = D;}
 	public void setDOFsPerNode(int[][] D) {DOFsPerNode = D;}
@@ -1162,7 +1164,7 @@ public class Element
 	@Override
 	public String toString()
 	{
-		return ID + "	" + type + "	" + externalNodes + "	" + mat + "	" + sec + "	" + distLoads ;
+		return id + "	" + type + "	" + externalNodes + "	" + mat + "	" + sec + "	" + distLoads ;
 	}
 
 }

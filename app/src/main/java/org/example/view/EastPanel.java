@@ -164,7 +164,7 @@ public class EastPanel extends JPanel
 		iLabel.setForeground(TextColor);
 		
 		JLabel[] iInfo = new JLabel[4];
-		iInfo[0] = new JLabel(" Elem: " + String.valueOf(elem.getID()));
+		iInfo[0] = new JLabel(" Elem: " + String.valueOf(elem.getId()));
 		iInfo[1] = new JLabel(" Nâs: " + NodesText);
 		iInfo[2] = new JLabel(" Material: E = " + MatText);
 		iInfo[3] = new JLabel(" Seââo: t = " + SecText);

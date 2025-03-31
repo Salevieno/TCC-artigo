@@ -46,7 +46,7 @@ public class Mesh
 			nodes.add(new Node(1, new Point3D(9, 1, 0))) ;
 			nodes.add(new Node(2, new Point3D(9, 9, 0))) ;
 			nodes.add(new Node(3, new Point3D(1, 9, 0))) ;
-			Elem = new Element(0, nodes, elemType);
+			Elem = new Element(nodes, elemType);
 		}
 		else if (elemShape.equals(ElemShape.quad))
 		{
@@ -54,14 +54,14 @@ public class Mesh
 			nodes.add(new Node(1, new Point3D(9, 3, 0))) ;
 			nodes.add(new Node(2, new Point3D(7, 9, 0))) ;
 			nodes.add(new Node(3, new Point3D(3, 7, 0))) ;
-			Elem = new Element(0, nodes, elemType);
+			Elem = new Element(nodes, elemType);
 		}
 		else if (elemShape.equals(ElemShape.triangular))
 		{
 			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
 			nodes.add(new Node(1, new Point3D(9, 5, 0))) ;
 			nodes.add(new Node(2, new Point3D(1, 9, 0))) ;
-			Elem = new Element(0, nodes, elemType);
+			Elem = new Element(nodes, elemType);
 		}
 		else if (elemShape.equals(ElemShape.r8))
 		{
@@ -73,7 +73,7 @@ public class Mesh
 			nodes.add(new Node(3, new Point3D(5, 9, 0))) ;
 			nodes.add(new Node(3, new Point3D(1, 5, 0))) ;
 			nodes.add(new Node(3, new Point3D(9, 5, 0))) ;
-			Elem = new Element(0, nodes, elemType) ;
+			Elem = new Element(nodes, elemType) ;
 			// TODO testar elem r8
 			// Elem = new Element(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, elemType);
 		}
@@ -456,7 +456,7 @@ public class Mesh
 				{
 					int ElemID = i + j*numElems.x;
 					int[] ElemNodes = new int[] {i + j*NNodes[0], i + j*NNodes[0] + 1, (j + 1)*NNodes[0] + i + 1, (j + 1)*NNodes[0] + i};
-		        	Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, ElemNodes), null, null, null, elemType);
+		        	Elem[ElemID] = new Element(getNodesByID(nodes, ElemNodes), null, null, null, elemType);
 				}
 			}
 		}
@@ -479,7 +479,7 @@ public class Mesh
 					int[] ElemNodes = new int[] {2*i + 2*j*NNodes[0] - j*numElems.x, 					2*i + 2*j*NNodes[0] - j*numElems.x + 1, 						2*i + 2*j*NNodes[0] - j*numElems.x + 2,
 												 2*i + (2*j + 1)*NNodes[0] - j*numElems.x - i + 1, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*numElems.x + 2, 		2*i + (2*j + 2)*NNodes[0] - (j + 1)*numElems.x + 1,
 												 2*i + (2*j + 2)*NNodes[0] - (j + 1)*numElems.x,		 	2*i + (2*j + 1)*NNodes[0] - j*numElems.x - i};
-		        	Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, ElemNodes), null, null, null, elemType);
+		        	Elem[ElemID] = new Element(getNodesByID(nodes, ElemNodes), null, null, null, elemType);
 				}
 			}
 		}
@@ -502,7 +502,7 @@ public class Mesh
 					int[] ElemExtNodes = new int[] {2*i + 2*j*NNodes[0], 2*i + 2*j*NNodes[0] + 1, 2*i + 2*j*NNodes[0] + 2,
 													2*i + (2*j + 1)*NNodes[0] + 2, 2*i + (2*j + 2)*NNodes[0] + 2, 2*i + (2*j + 2)*NNodes[0] + 1, 2*i + (2*j + 2)*NNodes[0], 2*i + (2*j + 1)*NNodes[0]};
 					int[] ElemIntNodes = new int[] {2*i + (2*j + 1)*NNodes[0] + 1};
-					Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, ElemExtNodes), getNodesByID(nodes, ElemIntNodes), null, null, elemType);
+					Elem[ElemID] = new Element(getNodesByID(nodes, ElemExtNodes), getNodesByID(nodes, ElemIntNodes), null, null, elemType);
 				}
 			}
 		}
@@ -523,8 +523,8 @@ public class Mesh
 		        	int ElemID = 2 * i + j*NumberElemInCol;
 		        	int[] elemnodes1 = new int[] {i + j * (numElems.x + 1), i + j * (numElems.x + 1) + 1, i + (j + 1) * (numElems.y + 1)};
 		        	int[] elemnodes2 = new int[] {i + (j + 1) * (numElems.y + 1) + 1, i + (j + 1) * (numElems.y + 1), i + j * (numElems.x + 1) + 1};
-		        	Elem[ElemID] = new Element(ElemID, getNodesByID(nodes, elemnodes1), null, null, null, elemType);
-		        	Elem[ElemID + 1] = new Element(ElemID + 1, getNodesByID(nodes, elemnodes2), null, null, null, elemType);
+		        	Elem[ElemID] = new Element(getNodesByID(nodes, elemnodes1), null, null, null, elemType);
+		        	Elem[ElemID + 1] = new Element(getNodesByID(nodes, elemnodes2), null, null, null, elemType);
 		        }
 		    }
 		}
@@ -548,22 +548,22 @@ public class Mesh
 	    		    for (int j = 0; j <= nNodesPerCicle - 2; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i*nNodesPerCicle + j, i*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j};
-	        		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	        		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    	elemnodes = new int[] {(i + 1)*nNodesPerCicle - 1, i * nNodesPerCicle, (i + 1)*nNodesPerCicle, (i + 2)*nNodesPerCicle - 1};
-	    		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	    		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	    		    cont += 1;
 			    }
 			    else
 			    {
 			    	elemnodes = new int[] {(i + 1) * nNodesPerCicle - 1, i * nNodesPerCicle, i * nNodesPerCicle + 1, Node.size() - 1};
-	    		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	    		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	    		    cont += 1;
 	    		    for (int j = 1; j <= nNodesPerCicle / 2 - 1; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i * nNodesPerCicle + 2 * j - 1, i * nNodesPerCicle + 2 * j, i * nNodesPerCicle + 2 * j + 1, Node.size() - 1};
-	        		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	        		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    }
@@ -588,17 +588,17 @@ public class Mesh
 	    		    for (int j = 0; j <= nNodesPerCicle - 2; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i*nNodesPerCicle + j, i*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j};
-	        		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	        		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	        		    cont += 1;
 	        		    elemnodes = new int[] {i*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j + 1, (i + 1)*nNodesPerCicle + j};
-	        		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	        		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    	elemnodes = new int[] {(i + 1)*nNodesPerCicle - 1, (i + 1)*nNodesPerCicle, (i + 2)*nNodesPerCicle - 1};
-	    		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	    		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	    		    cont += 1;
 			    	elemnodes = new int[] {(i + 1)*nNodesPerCicle - 1, i*nNodesPerCicle, (i + 1)*nNodesPerCicle};
-	    		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	    		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	    		    cont += 1;
 			    }
 			    else
@@ -606,11 +606,11 @@ public class Mesh
 	    		    for (int j = 0; j <= nNodesPerCicle - 2; j += 1)
 	        		{
 	    		    	elemnodes = new int[] {i*nNodesPerCicle + j, i*nNodesPerCicle + j + 1, Node.size() - 1};
-	        		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	        		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	        		    cont += 1;
 	        		}
 			    	elemnodes = new int[] {i*nNodesPerCicle + nNodesPerCicle - 1, i*nNodesPerCicle, Node.size() - 1};
-	    		    Elem[cont] = new Element(cont, getNodesByID(Node, elemnodes), null, null, null, elemType);
+	    		    Elem[cont] = new Element(getNodesByID(Node, elemnodes), null, null, null, elemType);
 	    		    cont += 1;
 			    }
 			}
