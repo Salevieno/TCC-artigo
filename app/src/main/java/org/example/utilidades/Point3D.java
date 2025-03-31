@@ -20,6 +20,13 @@ public class Point3D
 	public Point asPoint() { return new Point((int)x, (int)y) ;}
 	public Point2D.Double asDoublePoint() { return new Point2D.Double(x, y) ;}
 
+	public void translateTo(double x, double y, double z)
+	{
+		this.x = x ;
+		this.y = y ;
+		this.z = z ;
+	}
+
 	public void translate(double dx, double dy, double dz)
 	{
 		x += dx ;

@@ -49,7 +49,7 @@ public class Reactions
 					double size = MaxArrowSize * LoadIntensity / (double) MaxAbsLoad;
 					if (r <= 2)
 					{
-						ConcLoad.DrawPL3D(new Point3D(RealDefCoords[0], RealDefCoords[1], RealDefCoords[2]), size, thickness, canvas.getAngles(), r, ReactionsColor, canvas, DP);
+						ConcLoad.DrawPL3D(new Point3D(RealDefCoords[0], RealDefCoords[1], RealDefCoords[2]), size, thickness, canvas.getAngles().asArray(), r, ReactionsColor, canvas, DP);
 					}
 					else if (r <= 5)
 					{
@@ -71,7 +71,7 @@ public class Reactions
 						{
 							RealTextPos[2] += -0.5*Math.signum(LoadIntensity);
 						}
-						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealTextPos, MainPanel.structure.getCenter().asArray(), canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());						
+						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealTextPos, MainPanel.structure.getCenter().asArray(), canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());						
 						Draw.DrawLoadValues(DrawingDefCoords, ElemDOFs, r, LoadIntensity, ReactionsColor, DP);
 					}
 				}

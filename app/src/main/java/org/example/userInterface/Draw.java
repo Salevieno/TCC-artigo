@@ -63,7 +63,7 @@ public abstract class Draw
     {
 		List<Point> pos = new ArrayList<>() ;
     	List<Point3D> realCoords = new ArrayList<>();
-		Point3D canvasRealCenter = new Point3D(canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])).x, canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])).y, 0.0) ;
+		Point3D canvasRealCenter = new Point3D(canvas.inRealCoords(new Point(canvas.getCenter().x, canvas.getCenter().y)).x, canvas.inRealCoords(new Point(canvas.getCenter().x, canvas.getCenter().y)).y, 0.0) ;
 
     	realCoords.add(new Point3D(Pos.x - Size, Pos.y, Pos.z)) ;
     	realCoords.add(new Point3D(Pos.x, Pos.y, Pos.z)) ;
@@ -73,7 +73,7 @@ public abstract class Draw
     	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaArrow), Pos.y, Pos.z + ArrowSize*Math.sin(thetaArrow))) ;
 
 		realCoords.forEach(coord -> coord.rotate(Pos, theta)) ;
-		realCoords.forEach(coord -> coord.rotate(canvasRealCenter, new Point3D(canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2]))) ;
+		realCoords.forEach(coord -> coord.rotate(canvasRealCenter, canvas.getAngles())) ;
 		realCoords.forEach(coord -> pos.add(canvas.inDrawingCoords(coord))) ;
 
 		DP.drawLine(pos.get(0), pos.get(1), stroke, color);
@@ -102,7 +102,7 @@ public abstract class Draw
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
-         	RealCoords[c] = Util.RotateCoord(RealCoords[c], RealCanvasCenter, canvas.getAngles());
+         	RealCoords[c] = Util.RotateCoord(RealCoords[c], RealCanvasCenter, canvas.getAngles().asArray());
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{

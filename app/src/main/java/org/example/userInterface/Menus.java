@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,9 +107,9 @@ public class Menus extends JFrame
 
 		setLocation(frameTopLeft);
 
-	    int[] ScreenTopLeft = new int[] {0, 0, 0};				// Initial coordinates from the top left of the canvas window 900 720
-		int[] mainCanvasSize = new int[] {(int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight()), 0} ;
-	    mainCanvas = new MyCanvas (new Point(575, 25), mainCanvasSize, new double[] {10, 10, 0}, ScreenTopLeft);	    
+	    Point ScreenTopLeft = new Point() ;				// Initial coordinates from the top left of the canvas window 900 720
+		Dimension mainCanvasSize = new Dimension((int) (0.4 * mainPanel.getSize().getWidth()), (int) (0.8 * mainPanel.getSize().getHeight())) ;
+	    mainCanvas = new MyCanvas(new Point(575, 25), mainCanvasSize, new Point2D.Double(10, 10), ScreenTopLeft);	    
 
 		menuBar = new JMenuBar();
 		menuStructure = new MenuStructure();

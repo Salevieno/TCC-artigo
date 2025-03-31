@@ -77,17 +77,17 @@ public class Supports
 		Point Coords = canvas.inDrawingCoords(MainPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords().asDoublePoint()) ;
 		if (suptype == 0)
 		{
-			double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1], -canvas.getAngles()[2]};
+			double[] angles = new double[] {-canvas.getAngles().x, canvas.getAngles().y, -canvas.getAngles().z};
 			DrawRoller(Coords, thick, angles, size, color, DP);
 		}
 		else if (suptype == 1)
 		{
-			double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1], -canvas.getAngles()[2] - Math.PI/2.0};
+			double[] angles = new double[] {-canvas.getAngles().x, canvas.getAngles().y, -canvas.getAngles().z - Math.PI/2.0};
 			DrawRoller(Coords, thick, angles, size, color, DP);
 		}
 		else if (suptype == 2)
 		{
-			double[] angles = new double[] {-canvas.getAngles()[0], canvas.getAngles()[1] + Math.PI/2.0, -canvas.getAngles()[2]};
+			double[] angles = new double[] {-canvas.getAngles().x, canvas.getAngles().y + Math.PI/2.0, -canvas.getAngles().z};
 			DrawRoller(Coords, thick, angles, size, color, DP);
 		}
 		else if (suptype == 3)

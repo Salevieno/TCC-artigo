@@ -77,7 +77,7 @@ public class Mesh
 			// TODO testar elem r8
 			// Elem = new Element(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, elemType);
 		}
-		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealStructCenter.asArray(), Center, canvas.getAngles()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealStructCenter.asArray(), Center, canvas.getAngles().asArray()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		int textSize = 16;
 		Color textColor = Menus.palette[8];
 		
@@ -123,11 +123,11 @@ public class Mesh
 			if (deformed)
 			{
 				double[] DeformedCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsPerNode, Defscale);
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			else
 			{
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			Point drawingCoords = new Point(DrawingCoords[node][0], DrawingCoords[node][1]) ;
 			DP.drawCircle(drawingCoords, size, NodeColor);

@@ -196,7 +196,7 @@ public class ResultDiagrams
 			
 			for (int point = 0; point <= ContourCoords.length - 1; point += 1)
 			{
-				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				xCoords[point] = DrawingCoords[point][0];
 				yCoords[point] = DrawingCoords[point][1];
 				colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, ColorSystem);

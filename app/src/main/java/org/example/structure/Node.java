@@ -61,16 +61,16 @@ public class Node
 
 	public Point deformedDrawingPos(MyCanvas canvas, int[] dofs, double defScale)
 	{
-		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
+		Point2D.Double canvasCenter = canvas.centerInRealCoords() ;
 		double[] deformedCoords = Util.ScaledDefCoords(coords, disp, dofs, defScale);
-		double[] rotatedCoord = Util.RotateCoord(deformedCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
+		double[] rotatedCoord = Util.RotateCoord(deformedCoords, new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles().asArray()) ;
 		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
 	}
 	
 	public Point undeformedDrawingPos(MyCanvas canvas)
 	{
-		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
-		double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
+		Point2D.Double canvasCenter = canvas.centerInRealCoords() ;
+		double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles().asArray()) ;
 		return canvas.inDrawingCoords(new Point2D.Double(rotatedCoord[0], rotatedCoord[1])) ;
 	}
 
@@ -89,9 +89,9 @@ public class Node
 
 	public void displayConcLoads(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
 	{
-		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
+		Point2D.Double canvasCenter = canvas.centerInRealCoords() ;
 		// double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
-		Point3D rotatedCoord = Point3D.rotate(coords, new Point3D(canvasCenter.x, canvasCenter.y, 0.0), new Point3D(canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2])) ;
+		Point3D rotatedCoord = Point3D.rotate(coords, new Point3D(canvasCenter.x, canvasCenter.y, 0.0), canvas.getAngles()) ;
 		concLoads.forEach(load -> load.display(rotatedCoord, ElemDOFs, ShowValues, maxLoad, deformed, defScale, canvas, DP)) ;
 	}
 

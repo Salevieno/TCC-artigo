@@ -52,7 +52,7 @@ public class ConcLoad
 				int displaySize = (int)(maxDisplaySize * LoadIntensity / maxLoad);
 				if (ElemDOFs[dof] <= 2)
 				{
-					DrawPL3D(rotatedPoint, displaySize, stroke, canvas.getAngles(), ElemDOFs[dof], color, canvas, DP);
+					DrawPL3D(rotatedPoint, displaySize, stroke, canvas.getAngles().asArray(), ElemDOFs[dof], color, canvas, DP);
 				}
 				else
 				{

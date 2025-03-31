@@ -1,10 +1,10 @@
 package org.example.service;
 
+import java.awt.geom.Point2D;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import org.example.mainTCC.MenuFunctions;
-import org.example.structure.Structure;
 import org.example.structure.StructureDTO;
 import org.example.userInterface.Menus;
 import org.example.view.MainPanel;
@@ -30,7 +30,7 @@ public class MenuFileService
 		if (MainPanel.structure == null) { System.out.println("Error: Structure is null after loading") ; return ;}
 
 		MainPanel.structure.updateMaxCoords() ;
-		Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 1});
+		Menus.getInstance().getMainCanvas().setDimension(new Point2D.Double(1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y)) ;
 		Menus.getInstance().getMenuAnalysis().setRunAnalysis(MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading));
 		// Menus.getInstance().showCanvasOn() ;
 		// Menus.getInstance().showGrid() ;

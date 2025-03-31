@@ -82,14 +82,14 @@ public abstract class MenuFunctions
 	{
 		int[] NGridPoints = MyCanvas.CalculateNumberOfGridPoints(canvas.getDimension());
 		Point GridNodePos = MousePos;
-		canvas.setGridSpacing(new double[] {canvas.getSize()[0]/(double)(NGridPoints[0]), canvas.getSize()[1]/(double)(NGridPoints[1])});
+		canvas.setGridSpacing(new Point2D.Double(canvas.getSize().width/(double)(NGridPoints[0]), canvas.getSize().height/(double)(NGridPoints[1]))) ;
 		double SnipPower = 1;
 		for (int i = 0; i <= NGridPoints[0]; i += 1)
 		{	
 			for (int j = 0; j <= NGridPoints[1]; j += 1)
 			{	
-				int[] Pos = new int[] {(int) (canvas.getPos().x + (double)(i)/NGridPoints[0]*canvas.getSize()[0]), (int) (canvas.getPos().y + (double)(j)/NGridPoints[1]*canvas.getSize()[1])};
-				if (Math.abs(MousePos.x - Pos[0]) <= SnipPower*canvas.getGridSpacing()[0]/2 && Math.abs(MousePos.y - Pos[1]) <= SnipPower*canvas.getGridSpacing()[1]/2)
+				int[] Pos = new int[] {(int) (canvas.getPos().x + (double)(i)/NGridPoints[0]*canvas.getSize().width), (int) (canvas.getPos().y + (double)(j)/NGridPoints[1]*canvas.getSize().height)};
+				if (Math.abs(MousePos.x - Pos[0]) <= SnipPower*canvas.getGridSpacing().x/2 && Math.abs(MousePos.y - Pos[1]) <= SnipPower*canvas.getGridSpacing().y/2)
 				{
 					GridNodePos = new Point(Pos[0], Pos[1]) ;
 				}

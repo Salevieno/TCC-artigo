@@ -310,6 +310,8 @@ public class Structure
 
 	public void updateDrawings(MyCanvas canvas)
 	{
+		if (mesh == null) { return ;}
+
 		mesh.getNodes().forEach(node -> node.updateDrawingPos(canvas, false, 1.0)) ;
 	}
 

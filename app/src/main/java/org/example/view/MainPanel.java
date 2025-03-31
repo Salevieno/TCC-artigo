@@ -98,8 +98,9 @@ public class MainPanel extends JPanel
 		showGrid = true ;
 		showMousePos = true ;
 		
-		int[] screenTopLeft = new int[] {0, 0, 0} ;
-		canvas = new MyCanvas(new Point(575, 25), new int[] {(int) (0.4 * initialSize.width), (int) (0.8 * initialSize.height), 0}, new double[] {10, 10, 0}, screenTopLeft);
+		Point screenTopLeft = new Point() ;
+		Dimension size = new Dimension((int) (0.4 * initialSize.width), (int) (0.8 * initialSize.height)) ;
+		canvas = new MyCanvas(new Point(575, 25), size, new Point2D.Double(10, 10), screenTopLeft);
 		panelPos = new int[] {frameTopLeftPos.x + 7 * NorthPanel.stdButtonSize.width + 8, frameTopLeftPos.y + 76 + 8, 0};
 		
 		structure = new Structure(null, null, null);
@@ -191,7 +192,7 @@ public class MainPanel extends JPanel
 
 	public static void StructureCreation(int[] MainPanelPos, MyCanvas canvas, Point mousePos, boolean SnipToGridIsOn)
 	{		   
-		if (!Util.MouseIsInside(mousePos, new int[2], canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1])) { return ;}
+		if (!Util.MouseIsInside(mousePos, new int[2], canvas.getPos(), canvas.getSize())) { return ;}
 		
 		Point3D newCoord ;
 		switch(structure.getShape())
@@ -234,30 +235,33 @@ public class MainPanel extends JPanel
 	public void displayCanvasElements(MyCanvas canvas, boolean ShowCanvas, boolean ShowGrid, boolean ShowMousePos, DrawPrimitives DP)
 	{
 		canvas.setPos(new Point((int) (0.1 * initialSize.width), (int) (0.1 * initialSize.height)));
-		canvas.setSize(new int[] {(int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height)});
-		canvas.setCenter(new int[] {canvas.getPos().x + canvas.getSize()[0] / 2, canvas.getPos().y + canvas.getSize()[1] / 2});
+		canvas.setSize(new Dimension((int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height))) ;
+		canvas.setCenter(new Point(canvas.getPos().x + canvas.getSize().width / 2, canvas.getPos().y + canvas.getSize().height / 2)) ;
 
-		Point LittleAxisPos = new Point(canvas.getPos().x + canvas.getSize()[0] + 10, canvas.getPos().y - 10);
-		Point BigAxisPos = new Point(canvas.getPos().x, canvas.getPos().y + canvas.getSize()[1]);		
-		DrawAxis(LittleAxisPos, canvas.getSize()[0] / 15, canvas.getSize()[1] / 15, 10, canvas.getAngles(), DP);
-		DrawAxis(BigAxisPos, canvas.getSize()[0] + 20, canvas.getSize()[1] + 20, 20, new double[] {0, 0, 0}, DP);
+		Point LittleAxisPos = new Point(canvas.getPos().x + canvas.getSize().width + 10, canvas.getPos().y - 10);
+		Point BigAxisPos = new Point(canvas.getPos().x, canvas.getPos().y + canvas.getSize().height);
+
+		DrawAxis(LittleAxisPos, canvas.getSize().width / 15, canvas.getSize().height / 15, 10, canvas.getAngles().asArray(), DP);
+		DrawAxis(BigAxisPos, canvas.getSize().width + 20, canvas.getSize().height + 20, 20, new double[] {0, 0, 0}, DP);
 		
-		Point posCanvasDimX = new Point(canvas.getPos().x + canvas.getSize()[0], canvas.getPos().y + canvas.getSize()[1] + 15) ;
+		Point posCanvasDimX = new Point(canvas.getPos().x + canvas.getSize().width, canvas.getPos().y + canvas.getSize().height + 15) ;
 		Point posCanvasDimY = new Point(canvas.getPos().x + 30, canvas.getPos().y - 10) ;
-		String canvasDimX = String.valueOf(Util.Round(canvas.getDimension()[0], 3)) + " m" ;
-		String canvasDimY = String.valueOf(Util.Round(canvas.getDimension()[1], 3)) + " m" ;
+		String canvasDimX = String.valueOf(Util.Round(canvas.getDimension().x, 3)) + " m" ;
+		String canvasDimY = String.valueOf(Util.Round(canvas.getDimension().y, 3)) + " m" ;
+
 		DP.drawText(posCanvasDimX, Align.center, canvasDimX, Menus.palette[7]) ;
 		DP.drawText(posCanvasDimY, Align.center, canvasDimY, Menus.palette[10]) ;
 		if (ShowCanvas)
 		{
-			canvas.draw( new double[] {Util.Round(canvas.getGridSpacing()[0], 1), Util.Round(canvas.getGridSpacing()[1], 1)}, DP);
+			canvas.draw( new double[] {Util.Round(canvas.getGridSpacing().x, 1), Util.Round(canvas.getGridSpacing().y, 1)}, DP);
 		}
 		if (ShowGrid)
 		{
 			canvas.drawGrid(2, DP) ;
 		}
+
 		Point2D.Double RealMousePos = canvas.inRealCoords(MenuFunctions.mousePos) ; // Util.ConvertToRealCoords(MenuFunctions.mousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension());
-		drawMousePosWindow(new Point(BigAxisPos.x + canvas.getSize()[0] / 2 - 60, BigAxisPos.y + 20), RealMousePos, Menus.palette[3], Menus.palette[0]);
+		drawMousePosWindow(new Point(BigAxisPos.x + canvas.getSize().width / 2 - 60, BigAxisPos.y + 20), RealMousePos, Menus.palette[3], Menus.palette[0]);
 	}
 	
 	public void DrawAxis(Point pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawPrimitives DP)
@@ -903,8 +907,8 @@ public class MainPanel extends JPanel
 		Assignable assignable = Menus.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
 		double qtdRotation = evt.getWheelRotation() ;
 
-		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1]);
-		if (Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize()[0], canvas.getSize()[1]))
+		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);
+		if (Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height))
 		{
 			// canvas.getDimension()[0] += Util.Round(0.2*Math.log10(canvas.getDimension()[0])*qtdRotation, 1);
 			// canvas.getDimension()[1] += Util.Round(0.2*Math.log10(canvas.getDimension()[1])*qtdRotation, 1);

@@ -1,6 +1,7 @@
 package org.example.utilidades;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.math.BigDecimal;
@@ -49,15 +50,15 @@ public abstract class Util
 		return Math.sqrt(Math.pow(Point2.x - Point1.x, 2) + Math.pow(Point2.y - Point1.y, 2));
 	}
 
-	public static double[] ConvertToRealCoordsPoint3D(int[] OriginalCoords, Point3D CoordsCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
+	public static double[] ConvertToRealCoordsPoint3D(Point OriginalCoords, Point3D CoordsCenter, Point CanvasPos, Dimension CanvasSize, Point2D.Double CanvasDim, Point CanvasCenter, Point DrawingPos)
 	{
-		return new double[] {(OriginalCoords[0] - DrawingPos[0] - CanvasCenter[0])*CanvasDim[0]/CanvasSize[0] + CoordsCenter.x, -(OriginalCoords[1] - DrawingPos[1] - CanvasCenter[1])*CanvasDim[1]/CanvasSize[1] + CoordsCenter.y};
+		return new double[] {(OriginalCoords.x - DrawingPos.x - CanvasCenter.x)*CanvasDim.x/CanvasSize.width + CoordsCenter.x, -(OriginalCoords.y - DrawingPos.y - CanvasCenter.y)*CanvasDim.y/CanvasSize.height + CoordsCenter.y};
 	}
 	
 	// Função que era usada pra centralizar a estrutura no canvas
-	public static int[] ConvertToDrawingCoords2Point3D(double[] OriginalCoords, Point3D CoordsCenter, Point CanvasPos, int[] CanvasSize, double[] CanvasDim, int[] CanvasCenter, int[] DrawingPos)
+	public static int[] ConvertToDrawingCoords2Point3D(double[] OriginalCoords, Point3D CoordsCenter, Point CanvasPos, Dimension CanvasSize, Point2D.Double CanvasDim, Point CanvasCenter, Point DrawingPos)
 	{
-		return new int[] {(int) (DrawingPos[0] + CanvasCenter[0] + (OriginalCoords[0] - CoordsCenter.x)/CanvasDim[0]*CanvasSize[0]), (int) (DrawingPos[1] + CanvasCenter[1] - (OriginalCoords[1] - CoordsCenter.y)/CanvasDim[1]*CanvasSize[1])};
+		return new int[] {(int) (DrawingPos.x + CanvasCenter.x + (OriginalCoords[0] - CoordsCenter.x)/CanvasDim.x*CanvasSize.width), (int) (DrawingPos.y + CanvasCenter.y - (OriginalCoords[1] - CoordsCenter.y)/CanvasDim.y*CanvasSize.height)};
 	}
 	
 
@@ -888,7 +889,12 @@ public abstract class Util
 		return MouseIsInside(MousePos, PanelPos, new int[] {RectPos.x, RectPos.y}, L, H) ;
 	}
 
-	public static boolean MouseIsOnElem(List<Node> nodes, Element elems, double[] MousePosRealCoords, int[] CanvasPos, int[] CanvasSize, int[] DrawingPos, boolean condition)
+	public static boolean MouseIsInside(Point MousePos, int[] PanelPos, Point RectPos, Dimension size)
+	{
+		return MouseIsInside(MousePos, PanelPos, new int[] {RectPos.x, RectPos.y}, size.width, size.height) ;
+	}
+
+	public static boolean MouseIsOnElem(List<Node> nodes, Element elems, double[] MousePosRealCoords, int[] CanvasPos, Dimension CanvasSize, Point DrawingPos, boolean condition)
 	{
 		ElemShape elemShape = elems.getShape();
 		if (elemShape.equals(ElemShape.rectangular))
@@ -897,8 +903,8 @@ public abstract class Util
 			double y0 = GetNodePos(elems.getExternalNodes().get(0), condition)[1];
 			double x1 = GetNodePos(elems.getExternalNodes().get(2), condition)[0];
 			double y1 = GetNodePos(elems.getExternalNodes().get(2), condition)[1];
-			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
-			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
+			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos.x + x0, CanvasPos[1] + CanvasSize.height - DrawingPos.y + y0}; 
+			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos.x + x1, CanvasPos[1] + CanvasSize.height - DrawingPos.y + y1};
 			if (InitPoint[0] <= MousePosRealCoords[0] && MousePosRealCoords[0] <= FinalPoint[0] && FinalPoint[1] <= MousePosRealCoords[1] && MousePosRealCoords[1] <= InitPoint[1])
 			{
 				return true;
@@ -934,8 +940,8 @@ public abstract class Util
 			double y0 = GetNodePos(elems.getExternalNodes().get(0), condition)[1];
 			double x1 = GetNodePos(elems.getExternalNodes().get(4), condition)[0];
 			double y1 = GetNodePos(elems.getExternalNodes().get(4), condition)[1];
-			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x0, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y0}; 
-			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos[0] + x1, CanvasPos[1] + CanvasSize[1] - DrawingPos[1] + y1};
+			double[] InitPoint = new double[] {CanvasPos[0] - DrawingPos.x + x0, CanvasPos[1] + CanvasSize.height - DrawingPos.y + y0}; 
+			double[] FinalPoint = new double[] {CanvasPos[0] - DrawingPos.x + x1, CanvasPos[1] + CanvasSize.height - DrawingPos.y + y1};
 			if (InitPoint[0] <= MousePosRealCoords[0] && MousePosRealCoords[0] <= FinalPoint[0] && FinalPoint[1] <= MousePosRealCoords[1] && MousePosRealCoords[1] <= InitPoint[1])
 			{
 				return true;
@@ -971,7 +977,7 @@ public abstract class Util
 	public static boolean MouseIsInsideCanvas(Point MousePos, MyCanvas canvas)
 	{
 		int[] rectPos = new int[] {canvas.getPos().x, canvas.getPos().y};
-		if (rectPos[0] <= MousePos.x && rectPos[1] <= MousePos.y && MousePos.x <= rectPos[0] + canvas.getDimension()[0] && MousePos.y <= rectPos[1] + canvas.getDimension()[1])
+		if (rectPos[0] <= MousePos.x && rectPos[1] <= MousePos.y && MousePos.x <= rectPos[0] + canvas.getDimension().x && MousePos.y <= rectPos[1] + canvas.getDimension().y)
 		{
 			return true;
 		} 
