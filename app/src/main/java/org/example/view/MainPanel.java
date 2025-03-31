@@ -376,7 +376,7 @@ public class MainPanel extends JPanel
 		}
 		if (MenuFunctions.ShowDistLoads && loading != null && loading.getDistLoads() != null)
 		{
-			Draw.DrawDistLoads3D(structure.getMesh(), loading.getDistLoads(), MenuFunctions.ShowLoadsValues, DistLoad.color,
+			Draw.DrawDistLoads3D(structure.getMesh(), MenuFunctions.ShowLoadsValues,
 				showDeformedStructure, structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas, DP);
 		}
 		if (MenuFunctions.ShowNodalDisps && loading != null && loading.getNodalDisps() != null)

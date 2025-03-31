@@ -8,14 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.ConcLoad;
-import org.example.loading.Force;
 import org.example.loading.NodalDisp;
-import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -52,10 +49,14 @@ public class Node
 		isSelected = false ;
 	}
 
-	
-	public double[] deformedPos()
+	public Point3D pos(boolean deformed)
 	{
-		return new double[] {coords.x + disp.x, coords.y + disp.y, coords.z + disp.z} ;
+		return deformed ? deformedPos() : coords ;
+	}
+	
+	public Point3D deformedPos()
+	{
+		return new Point3D(coords.x + disp.x, coords.y + disp.y, coords.z + disp.z) ;
 	}
 
 	public Point deformedDrawingPos(MyCanvas canvas, int[] dofs, double defScale)
@@ -89,7 +90,8 @@ public class Node
 	public void displayConcLoads(int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		Point2D.Double canvasCenter = canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])) ;
-		double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
+		// double[] rotatedCoord = Util.RotateCoord(coords.asArray(), new double[] {canvasCenter.x, canvasCenter.y}, canvas.getAngles()) ;
+		Point3D rotatedCoord = Point3D.rotate(coords, new Point3D(canvasCenter.x, canvasCenter.y, 0.0), new Point3D(canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2])) ;
 		concLoads.forEach(load -> load.display(rotatedCoord, ElemDOFs, ShowValues, maxLoad, deformed, defScale, canvas, DP)) ;
 	}
 

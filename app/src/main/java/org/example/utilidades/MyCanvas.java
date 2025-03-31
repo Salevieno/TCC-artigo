@@ -105,7 +105,7 @@ public class MyCanvas
 	
 	public Point inDrawingCoords(Point3D realPos)
 	{
-		return inDrawingCoords(new Point2D.Double(realPos.x, realPos.y)) ;
+		return inDrawingCoords(realPos.asDoublePoint()) ;
 	}
 
 	public void incAngles(double dX, double dY, double dZ)

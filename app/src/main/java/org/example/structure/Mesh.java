@@ -144,7 +144,18 @@ public class Mesh
 		}
 	}
 
-	
+	public static Point3D dofAngles(int dof)
+	{
+		switch (dof)
+		{
+			case 0: return new Point3D(0, 0, 0) ;
+			case 1: return new Point3D(0, 0, 0 - Math.PI/2.0) ;
+			case 2: return new Point3D(0, 0 + Math.PI/2.0, 0) ;
+		
+			default: return null ;
+		}
+	}
+
 	private static void DrawDOFSymbols(List<Node> Node, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
 	{
 		Color ForceDOFColor = Menus.palette[8];
@@ -158,17 +169,18 @@ public class Mesh
 			double[] NodeRealPos = Util.GetNodePos(Node.get(node), deformed);
 			for (int dof = 0; dof <= Node.get(node).dofs.length - 1; dof += 1)
 			{
+				// TODO use Mesh.dofAngles(dof)
 				if (Node.get(node).getDOFType()[dof] == 0)
 				{
-					Draw.DrawArrow3Dto(NodeRealPos, thickness, new double[] {0, 0, 0}, arrowsize, 0.3 * arrowsize, ForceDOFColor, canvas, DP);
+					Draw.DrawArrow3Dto(Node.get(node).pos(deformed), new Point3D(0, 0, 0), arrowsize, ForceDOFColor, canvas, DP);
 				}
 				if (Node.get(node).getDOFType()[dof] == 1)
 				{
-					Draw.DrawArrow3Dto(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, arrowsize, 0.3 * arrowsize, ForceDOFColor, canvas, DP);
+					Draw.DrawArrow3Dto(Node.get(node).pos(deformed), new Point3D(0, 0, Math.PI / 2), arrowsize, ForceDOFColor, canvas, DP);
 				}
 				if (Node.get(node).getDOFType()[dof] == 2)
 				{
-					Draw.DrawArrow3Dto(NodeRealPos, thickness, new double[] {0, Math.PI / 2, 0}, arrowsize, 0.3 * arrowsize, ForceDOFColor, canvas, DP);
+					Draw.DrawArrow3Dto(Node.get(node).pos(deformed), new Point3D(0, Math.PI / 2, 0), arrowsize, ForceDOFColor, canvas, DP);
 				}
 				if (Node.get(node).getDOFType()[dof] == 3)
 				{

@@ -1451,7 +1451,7 @@ public abstract class Util
 	{
 		if (condition)
 		{
-			return node.deformedPos();
+			return node.deformedPos().asArray();
 		}
 		else
 		{

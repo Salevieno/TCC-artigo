@@ -67,54 +67,34 @@ public abstract class Draw
 		DP.drawPolyLine(new int[] {xCoords[1], xCoords[5]}, new int[] {yCoords[1], yCoords[5]}, color);
     }
 
-	public static void DrawArrow3Dto(double[] Pos, double[] theta, double Size, Color color, MyCanvas canvas, DrawPrimitives DP)
+	public static void DrawArrow3Dto(Point3D Pos, Point3D theta, double Size, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
-		DrawArrow3Dto(Pos, 1, theta, Size, Size / 4.0, color, canvas, DP) ;
+		DrawArrow3Dto(Pos, 2, theta, Size, color, canvas, DP) ;
 	}
 
-	public static void DrawArrow3Dto(double[] Pos, int stroke, double[] theta, double Size, Color color, MyCanvas canvas, DrawPrimitives DP)
+	public static void DrawArrow3Dto(Point3D Pos, int stroke, Point3D theta, double Size, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
 		DrawArrow3Dto(Pos, stroke, theta, Size, Size / 4.0, color, canvas, DP) ;
 	}
     
-	public static void DrawArrow3Dto(double[] Pos, int stroke, double[] theta, double Size, double ArrowSize, Color color, MyCanvas canvas, DrawPrimitives DP)
+	public static void DrawArrow3Dto(Point3D Pos, int stroke, Point3D theta, double Size, double ArrowSize, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
-    	double thetaop = Math.PI / 8.0;	// opening
-    	List<Point3D> realCoords = new ArrayList<>();
-    	// int[][] DrawingCoords = new int[6][3];
-    	// int[] xCoords = new int[realCoords.length], yCoords = new int[realCoords.length];
+    	double thetaop = Math.PI / 8.0;	// arrow opening
 		List<Point> pos = new ArrayList<>() ;
-    	realCoords.add(new Point3D(Pos[0] - Size, Pos[1], Pos[2])) ;
-    	realCoords.add(new Point3D(Pos[0], Pos[1], Pos[2])) ;
-    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2])) ;
-    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2])) ;
-    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaop))) ;
-    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaop))) ;
-    	
-		// double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-    	// for (int c = 0; c <= RealCoords.length - 1; c += 1)
-    	// {
-        //  	RealCoords[c] = Util.RotateCoord(RealCoords[c], Pos, theta);
-    	// }
-    	// for (int c = 0; c <= RealCoords.length - 1; c += 1)
-    	// {
-        //  	RealCoords[c] = Util.RotateCoord(RealCoords[c], RealCanvasCenter, canvas.getAngles());
-    	// }
-    	// for (int c = 0; c <= realCoords.size() - 1; c += 1)
-    	// {
-    	// 	// DrawingCoords[c] = Util.ConvertToDrawingCoords2Point3D(RealCoords[c], MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		// 	// DrawingCoords[c] = canvas.inDrawingCoords(new Point2D.Double(RealCoords[c][0], RealCoords[c][1])) ;
-		// }
-    	// for (int c = 0; c <= realCoords.size() - 1; c += 1)
-    	// {
-		// 	// Point drawingCoods = canvas.inDrawingCoords(new Point2D.Double(realCoords[c][0], realCoords[c][1])) ;
-        //  	// xCoords[c] = drawingCoods.x;
-        //  	// yCoords[c] = drawingCoods.y;
-    	// }
+    	List<Point3D> realCoords = new ArrayList<>();
+		Point3D canvasRealCenter = new Point3D(canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])).x, canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])).y, 0.0) ;
 
-		// realCoords.forEach(coord -> coord.rotate(new Point3D(Pos[0], Pos[1], Pos[2]), new Point3D(theta[0], theta[1], theta[2]))) ;
-		// realCoords.forEach(coord -> coord.rotate(canvas.getCenter(), canvas.getAngles())) ;
+    	realCoords.add(new Point3D(Pos.x - Size, Pos.y, Pos.z)) ;
+    	realCoords.add(new Point3D(Pos.x, Pos.y, Pos.z)) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y - ArrowSize*Math.sin(thetaop), Pos.z)) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y + ArrowSize*Math.sin(thetaop), Pos.z)) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y, Pos.z - ArrowSize*Math.sin(thetaop))) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y, Pos.z + ArrowSize*Math.sin(thetaop))) ;
+
+		realCoords.forEach(coord -> coord.rotate(Pos, theta)) ;
+		realCoords.forEach(coord -> coord.rotate(canvasRealCenter, new Point3D(canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2]))) ;
 		realCoords.forEach(coord -> pos.add(canvas.inDrawingCoords(coord))) ;
+
 		DP.drawLine(pos.get(0), pos.get(1), stroke, color);
 		DP.drawLine(pos.get(1), pos.get(2), stroke, color);
 		DP.drawLine(pos.get(1), pos.get(3), stroke, color);
@@ -179,10 +159,21 @@ public abstract class Draw
 		}	
 	}
 	
-	public static void DrawDistLoads3D (Mesh mesh, List<DistLoad> distLoads, boolean ShowValues, Color DistLoadsColor, boolean condition,
-									int[] DOFsPerNode, double Defscale, MyCanvas canvas, DrawPrimitives DP)
+	public static void DrawDistLoads3D(Mesh mesh, boolean ShowValues, boolean condition, int[] DOFsPerNode, double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		// List<Element> Elem = mesh.getElements();
+		List<DistLoad> distLoads = new ArrayList<>() ;
+		for (Element elem : mesh.getElements())
+		{
+			DistLoad[] elemDistLoads = elem.getDistLoads() ;
+
+			if (elemDistLoads == null) { continue ;}
+			
+			for (DistLoad distLoad : elemDistLoads)
+			{
+				distLoads.add(distLoad) ;
+			}
+		}
 		double MaxLoad = Util.FindMaxDistLoad(distLoads);
 
 		for (Element elem : mesh.getElements())

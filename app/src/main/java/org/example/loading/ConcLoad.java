@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
+import org.example.structure.Mesh;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
+import org.example.utilidades.Point3D;
 
 import graphics.DrawPrimitives;
 
@@ -33,21 +35,12 @@ public class ConcLoad
 	}
 
 
-	public static void DrawPL3D(double[] RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas, DrawPrimitives DP)
+	public static void DrawPL3D(Point3D RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
-		double[] angle ;
-		switch (dof)
-		{
-			case 0: angle = new double[] {0, 0, 0} ; break ;
-			case 1: angle = new double[] {0, 0, 0 - Math.PI/2.0} ; break ;
-			case 2: angle = new double[] {0, 0 + Math.PI/2.0, 0} ; break ;
-		
-			default: return ;
-		}
-		Draw.DrawArrow3Dto(RealPos, thickness, angle, size, color, canvas, DP);
+		Draw.DrawArrow3Dto(RealPos, thickness, Mesh.dofAngles(dof), size, color, canvas, DP);
     }
 
-	public void display(double[] rotatedPoint, int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
+	public void display(Point3D rotatedPoint, int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		for (int dof = 0; dof <= ElemDOFs.length - 1; dof += 1)
 		{
@@ -69,7 +62,7 @@ public class ConcLoad
 			if (ShowValues)
 			{
 				// int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(point, DP.getRealStructCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-				Point drawingDefCoords = canvas.inDrawingCoords(new Point2D.Double(rotatedPoint[0], rotatedPoint[1])) ;
+				Point drawingDefCoords = canvas.inDrawingCoords(rotatedPoint.asDoublePoint()) ;
 				Draw.DrawLoadValues(new int[] {drawingDefCoords.x, drawingDefCoords.y, 0}, ElemDOFs, dof, LoadIntensity, color, DP);
 			}
 		}

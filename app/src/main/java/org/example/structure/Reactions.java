@@ -8,6 +8,7 @@ import org.example.loading.ConcLoad;
 import org.example.userInterface.Draw;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
+import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 
@@ -48,7 +49,7 @@ public class Reactions
 					double size = MaxArrowSize * LoadIntensity / (double) MaxAbsLoad;
 					if (r <= 2)
 					{
-						ConcLoad.DrawPL3D(RealDefCoords, size, thickness, canvas.getAngles(), r, ReactionsColor, canvas, DP);
+						ConcLoad.DrawPL3D(new Point3D(RealDefCoords[0], RealDefCoords[1], RealDefCoords[2]), size, thickness, canvas.getAngles(), r, ReactionsColor, canvas, DP);
 					}
 					else if (r <= 5)
 					{

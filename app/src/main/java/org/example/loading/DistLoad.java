@@ -54,7 +54,7 @@ public class DistLoad
 				double x = (botLeftPos.x + (topRightPos.x - botLeftPos.x)*(i/(double)(nArrows.x - 1)));
 				double y = (botLeftPos.y + (topRightPos.y - botLeftPos.y)*(j/(double)(nArrows.y - 1)));
 				double z = botLeftPos.z;
-				ConcLoad.DrawPL3D(new double[] {x, y, z}, MaxArrowSize*Intensity/MaxLoad, stroke, canvas.getAngles(), 2, color, canvas, DP);
+				ConcLoad.DrawPL3D(new Point3D(x, y, z), MaxArrowSize*Intensity/MaxLoad, stroke, canvas.getAngles(), 2, color, canvas, DP);
 			}
 		}
 	}
