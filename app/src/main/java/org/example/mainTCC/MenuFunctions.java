@@ -253,12 +253,12 @@ public abstract class MenuFunctions
 				{
 					String[] Line = Input[8][distload + 2].split("	");
 					DistLoad NewDistLoad;
-					NewDistLoad = new DistLoad(-1, -1, -1);
+					NewDistLoad = new DistLoad(-1, -1);
 					NewDistLoad.setId(Integer.parseInt(Line[0]));
-					NewDistLoad.setElem(Integer.parseInt(Line[1]));
+					// NewDistLoad.setElem(Integer.parseInt(Line[1]));
 					NewDistLoad.setType(Integer.parseInt(Line[2]));
 					NewDistLoad.setIntensity(Double.parseDouble(Line[3]));
-					DistLoadType = Util.AddElem(DistLoadType, new double[] {NewDistLoad.getElem(), NewDistLoad.getType(), NewDistLoad.getIntensity()});
+					DistLoadType = Util.AddElem(DistLoadType, new double[] {-1, NewDistLoad.getType(), NewDistLoad.getIntensity()});
 					MainPanel.loading.addDistLoad(NewDistLoad);
 				}
 				for (int nodaldisp = 0; nodaldisp <= Input[9].length - 4; nodaldisp += 1)
@@ -437,7 +437,7 @@ public abstract class MenuFunctions
 				double Intensity = DistLoadType[loadid][2];
 				if (-1 < elemid)
 				{
-					loading.getDistLoads().set(loadid, new DistLoad(elemid, LoadType, Intensity)) ;
+					loading.getDistLoads().set(loadid, new DistLoad(LoadType, Intensity)) ;
 					struct.getMesh().getElements().get(elemid).setDistLoads(Util.AddElem(struct.getMesh().getElements().get(elemid).getDistLoads(), loading.getDistLoads().get(loadid)));
 				}
 			}

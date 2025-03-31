@@ -35,21 +35,16 @@ public class ConcLoad
 
 	public static void DrawPL3D(double[] RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
-    	if (dof == 0)		// Fx
-    	{
-			double[] angle = new double[] {0, 0, 0};
-			Draw.DrawArrow3Dto(RealPos, thickness, angle, size, size / 4.0, color, canvas, DP);
-    	}
-    	else if (dof == 1)	// Fy
-    	{
-			double[] angle = new double[] {0, 0, 0 - Math.PI/2.0};
-			Draw.DrawArrow3Dto(RealPos, thickness, angle, size, size / 4.0, color, canvas, DP);	
-    	}
-    	else if (dof == 2)	// Fz
-    	{
-			double[] angle = new double[] {0, 0 + Math.PI/2.0, 0};
-			Draw.DrawArrow3Dto(RealPos, thickness, angle, size, size / 4.0, color, canvas, DP);
-    	}
+		double[] angle ;
+		switch (dof)
+		{
+			case 0: angle = new double[] {0, 0, 0} ; break ;
+			case 1: angle = new double[] {0, 0, 0 - Math.PI/2.0} ; break ;
+			case 2: angle = new double[] {0, 0 + Math.PI/2.0, 0} ; break ;
+		
+			default: return ;
+		}
+		Draw.DrawArrow3Dto(RealPos, thickness, angle, size, color, canvas, DP);
     }
 
 	public void display(double[] rotatedPoint, int[] ElemDOFs, boolean ShowValues, double maxLoad, boolean deformed, double defScale, MyCanvas canvas, DrawPrimitives DP)

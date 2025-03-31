@@ -789,7 +789,7 @@ public class MainPanel extends JPanel
 				Element elem = selectedElems.get(i);
 				int LoadType = (int) DistLoadType[selectedDistLoadID][0];
 				double Intensity = DistLoadType[selectedDistLoadID][1];
-				DistLoad newDistLoad = new DistLoad(selectedElems.get(i).getID(), LoadType, Intensity) ;
+				DistLoad newDistLoad = new DistLoad(LoadType, Intensity) ;
 				loading.getDistLoads().add(newDistLoad);
 				elem.setDistLoads(Util.AddElem(elem.getDistLoads(), newDistLoad));
 				

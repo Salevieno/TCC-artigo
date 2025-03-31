@@ -1155,6 +1155,10 @@ public class Element
 	// public void setMatColor (Color color) {MatColor = color;}
 	// public void setSecColor (Color color) {SecColor = color;}
 
+	// TODO
+	public Node getBottomLeftNode() { return externalNodes.get(3) ;}
+	public Node getTopRightNode() { return externalNodes.get(1) ;}
+
 
 	@Override
 	public String toString()

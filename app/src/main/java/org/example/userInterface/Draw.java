@@ -3,15 +3,16 @@ package org.example.userInterface;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.NodalDisp;
 import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;
 import org.example.utilidades.MyCanvas;
+import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
 
@@ -65,19 +66,30 @@ public abstract class Draw
 		DP.drawPolyLine(new int[] {xCoords[1], xCoords[4]}, new int[] {yCoords[1], yCoords[4]}, color);
 		DP.drawPolyLine(new int[] {xCoords[1], xCoords[5]}, new int[] {yCoords[1], yCoords[5]}, color);
     }
+
+	public static void DrawArrow3Dto(double[] Pos, double[] theta, double Size, Color color, MyCanvas canvas, DrawPrimitives DP)
+    {
+		DrawArrow3Dto(Pos, 1, theta, Size, Size / 4.0, color, canvas, DP) ;
+	}
+
+	public static void DrawArrow3Dto(double[] Pos, int stroke, double[] theta, double Size, Color color, MyCanvas canvas, DrawPrimitives DP)
+    {
+		DrawArrow3Dto(Pos, stroke, theta, Size, Size / 4.0, color, canvas, DP) ;
+	}
     
-	public static void DrawArrow3Dto(double[] Pos, int thickness, double[] theta, double Size, double ArrowSize, Color color, MyCanvas canvas, DrawPrimitives DP)
+	public static void DrawArrow3Dto(double[] Pos, int stroke, double[] theta, double Size, double ArrowSize, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
     	double thetaop = Math.PI / 8.0;	// opening
-    	double[][] RealCoords = new double[6][3];
+    	List<Point3D> realCoords = new ArrayList<>();
     	// int[][] DrawingCoords = new int[6][3];
-    	int[] xCoords = new int[RealCoords.length], yCoords = new int[RealCoords.length];
-    	RealCoords[0] = new double[] {Pos[0] - Size, Pos[1], Pos[2]};
-    	RealCoords[1] = new double[] {Pos[0], Pos[1], Pos[2]};
-    	RealCoords[2] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2]};
-    	RealCoords[3] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2]};
-    	RealCoords[4] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaop)};
-    	RealCoords[5] = new double[] {Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaop)};
+    	// int[] xCoords = new int[realCoords.length], yCoords = new int[realCoords.length];
+		List<Point> pos = new ArrayList<>() ;
+    	realCoords.add(new Point3D(Pos[0] - Size, Pos[1], Pos[2])) ;
+    	realCoords.add(new Point3D(Pos[0], Pos[1], Pos[2])) ;
+    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2])) ;
+    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2])) ;
+    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaop))) ;
+    	realCoords.add(new Point3D(Pos[0] - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaop))) ;
     	
 		// double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
     	// for (int c = 0; c <= RealCoords.length - 1; c += 1)
@@ -88,22 +100,26 @@ public abstract class Draw
     	// {
         //  	RealCoords[c] = Util.RotateCoord(RealCoords[c], RealCanvasCenter, canvas.getAngles());
     	// }
-    	for (int c = 0; c <= RealCoords.length - 1; c += 1)
-    	{
-    		// DrawingCoords[c] = Util.ConvertToDrawingCoords2Point3D(RealCoords[c], MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			// DrawingCoords[c] = canvas.inDrawingCoords(new Point2D.Double(RealCoords[c][0], RealCoords[c][1])) ;
-		}
-    	for (int c = 0; c <= RealCoords.length - 1; c += 1)
-    	{
-			Point drawingCoods = canvas.inDrawingCoords(new Point2D.Double(RealCoords[c][0], RealCoords[c][1])) ;
-         	xCoords[c] = drawingCoods.x;
-         	yCoords[c] = drawingCoods.y;
-    	}
-     	DP.drawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, thickness, color);
-     	DP.drawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, thickness, color);
-     	DP.drawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, thickness, color);
-     	DP.drawPolyLine(new int[] {xCoords[1], xCoords[4]}, new int[] {yCoords[1], yCoords[4]}, thickness, color);
-     	DP.drawPolyLine(new int[] {xCoords[1], xCoords[5]}, new int[] {yCoords[1], yCoords[5]}, thickness, color);
+    	// for (int c = 0; c <= realCoords.size() - 1; c += 1)
+    	// {
+    	// 	// DrawingCoords[c] = Util.ConvertToDrawingCoords2Point3D(RealCoords[c], MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		// 	// DrawingCoords[c] = canvas.inDrawingCoords(new Point2D.Double(RealCoords[c][0], RealCoords[c][1])) ;
+		// }
+    	// for (int c = 0; c <= realCoords.size() - 1; c += 1)
+    	// {
+		// 	// Point drawingCoods = canvas.inDrawingCoords(new Point2D.Double(realCoords[c][0], realCoords[c][1])) ;
+        //  	// xCoords[c] = drawingCoods.x;
+        //  	// yCoords[c] = drawingCoods.y;
+    	// }
+
+		// realCoords.forEach(coord -> coord.rotate(new Point3D(Pos[0], Pos[1], Pos[2]), new Point3D(theta[0], theta[1], theta[2]))) ;
+		// realCoords.forEach(coord -> coord.rotate(canvas.getCenter(), canvas.getAngles())) ;
+		realCoords.forEach(coord -> pos.add(canvas.inDrawingCoords(coord))) ;
+		DP.drawLine(pos.get(0), pos.get(1), stroke, color);
+		DP.drawLine(pos.get(1), pos.get(2), stroke, color);
+		DP.drawLine(pos.get(1), pos.get(3), stroke, color);
+		DP.drawLine(pos.get(1), pos.get(4), stroke, color);
+		DP.drawLine(pos.get(1), pos.get(5), stroke, color);
     }
     
 	public static void DrawArrow3Dfrom(double[] Pos, int thickness, double[] theta, double Size, double ArrowSize, Color color, MyCanvas canvas, DrawPrimitives DP)
@@ -166,38 +182,55 @@ public abstract class Draw
 	public static void DrawDistLoads3D (Mesh mesh, List<DistLoad> distLoads, boolean ShowValues, Color DistLoadsColor, boolean condition,
 									int[] DOFsPerNode, double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
-		int[] NArrows = new int[] {4, 4};
-		int MaxArrowSize = 1;
-		int thickness = 2;
+		// List<Element> Elem = mesh.getElements();
 		double MaxLoad = Util.FindMaxDistLoad(distLoads);
-		List<Element> Elem = mesh.getElements();
-		for (int l = 0; l <= distLoads.size() - 1; l += 1)
+
+		for (Element elem : mesh.getElements())
 		{
-			int elem = distLoads.get(l).getElem();
-			List<Node> nodes = Elem.get(elem).getExternalNodes();
-			double[] RealLeftBotDefCoords = Util.ScaledDefCoords(nodes.get(3).getOriginalCoords().asArray(), Util.GetNodePos(nodes.get(3), condition), DOFsPerNode, Defscale);
-			double[] RealRightTopDefCoords = Util.ScaledDefCoords(nodes.get(1).getOriginalCoords().asArray(), Util.GetNodePos(nodes.get(1), condition), DOFsPerNode, Defscale);
-			//int[] DrawingLeftBotCoords = Util.ConvertToDrawingCoords2Point3D(RealLeftBotDefCoords, MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-			//int[] DrawingRightTopCoords = Util.ConvertToDrawingCoords2Point3D(RealRightTopDefCoords, MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
-			if (distLoads.get(l).getType() == 0)
+			DistLoad[] elemDistLoads = elem.getDistLoads() ;
+
+			if (elemDistLoads == null) { continue ;}
+
+			for (DistLoad distLoad : elemDistLoads)
 			{
-				
-			}
-			if (distLoads.get(l).getType() == 4)
-			{
-				//double LoadIntensity = DistLoads[l].getIntensity();
-				for (int i = 0; i <= NArrows[0] - 1; i += 1)
+				if (distLoad.getType() == 0)
 				{
-					for (int j = 0; j <= NArrows[1] - 1; j += 1)
-					{
-						double x = (RealLeftBotDefCoords[0] + (RealRightTopDefCoords[0] - RealLeftBotDefCoords[0])*(i/(double)(NArrows[0] - 1)));
-						double y = (RealLeftBotDefCoords[1] + (RealRightTopDefCoords[1] - RealLeftBotDefCoords[1])*(j/(double)(NArrows[1] - 1)));
-						double z = RealLeftBotDefCoords[2];
-						ConcLoad.DrawPL3D(new double[] {x, y, z}, MaxArrowSize*distLoads.get(l).getIntensity()/MaxLoad, thickness, canvas.getAngles(), 2, DistLoadsColor, canvas, DP);
-					}
+					
+				}
+				if (distLoad.getType() == 4)
+				{
+					distLoad.display(elem, condition, DOFsPerNode, Defscale, MaxLoad, canvas, DP) ;
 				}
 			}
 		}
+
+		// for (int l = 0; l <= distLoads.size() -  1; l += 1)
+		// {
+		// 	int elem = distLoads.get(l).getElem();
+		// 	List<Node> nodes = Elem.get(elem).getExternalNodes();
+		// 	double[] RealLeftBotDefCoords = Util.ScaledDefCoords(nodes.get(3).getOriginalCoords().asArray(), Util.GetNodePos(nodes.get(3), condition), DOFsPerNode, Defscale);
+		// 	double[] RealRightTopDefCoords = Util.ScaledDefCoords(nodes.get(1).getOriginalCoords().asArray(), Util.GetNodePos(nodes.get(1), condition), DOFsPerNode, Defscale);
+		// 	//int[] DrawingLeftBotCoords = Util.ConvertToDrawingCoords2Point3D(RealLeftBotDefCoords, MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		// 	//int[] DrawingRightTopCoords = Util.ConvertToDrawingCoords2Point3D(RealRightTopDefCoords, MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDim(), canvas.getCenter(), canvas.getDrawingPos());
+		// 	if (distLoads.get(l).getType() == 0)
+		// 	{
+				
+		// 	}
+		// 	if (distLoads.get(l).getType() == 4)
+		// 	{
+		// 		//double LoadIntensity = DistLoads[l].getIntensity();
+		// 		for (int i = 0; i <= NArrows[0] - 1; i += 1)
+		// 		{
+		// 			for (int j = 0; j <= NArrows[1] - 1; j += 1)
+		// 			{
+		// 				double x = (RealLeftBotDefCoords[0] + (RealRightTopDefCoords[0] - RealLeftBotDefCoords[0])*(i/(double)(NArrows[0] - 1)));
+		// 				double y = (RealLeftBotDefCoords[1] + (RealRightTopDefCoords[1] - RealLeftBotDefCoords[1])*(j/(double)(NArrows[1] - 1)));
+		// 				double z = RealLeftBotDefCoords[2];
+		// 				ConcLoad.DrawPL3D(new double[] {x, y, z}, MaxArrowSize*distLoads.get(l).getIntensity()/MaxLoad, thickness, canvas.getAngles(), 2, DistLoadsColor, canvas, DP);
+		// 			}
+		// 		}
+		// 	}
+		// }
 	}
 
 	public static void DrawNodalDisps3D (List<Node> Node, List<NodalDisp> NodalDisps, int[] DOFsPerNode, boolean ShowValues, Color ConcLoadsColor, boolean condition, double Defscale)
