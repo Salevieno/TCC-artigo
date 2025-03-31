@@ -40,16 +40,7 @@ public abstract class Util
 		return RColors;
 	}
 	
-	public static double dist(double[] Point1, double[] Point2)
-	{
-		return Math.sqrt(Math.pow(Point2[0] - Point1[0], 2) + Math.pow(Point2[1] - Point1[1], 2));
-	}
 	
-	public static double dist(Point Point1, Point Point2)
-	{
-		return Math.sqrt(Math.pow(Point2.x - Point1.x, 2) + Math.pow(Point2.y - Point1.y, 2));
-	}
-
 	public static double[] ConvertToRealCoordsPoint3D(Point OriginalCoords, Point3D CoordsCenter, Point CanvasPos, Dimension CanvasSize, Point2D.Double CanvasDim, Point CanvasCenter, Point DrawingPos)
 	{
 		return new double[] {(OriginalCoords.x - DrawingPos.x - CanvasCenter.x)*CanvasDim.x/CanvasSize.width + CoordsCenter.x, -(OriginalCoords.y - DrawingPos.y - CanvasCenter.y)*CanvasDim.y/CanvasSize.height + CoordsCenter.y};
@@ -59,23 +50,6 @@ public abstract class Util
 	public static int[] ConvertToDrawingCoords2Point3D(double[] OriginalCoords, Point3D CoordsCenter, Point CanvasPos, Dimension CanvasSize, Point2D.Double CanvasDim, Point CanvasCenter, Point DrawingPos)
 	{
 		return new int[] {(int) (DrawingPos.x + CanvasCenter.x + (OriginalCoords[0] - CoordsCenter.x)/CanvasDim.x*CanvasSize.width), (int) (DrawingPos.y + CanvasCenter.y - (OriginalCoords[1] - CoordsCenter.y)/CanvasDim.y*CanvasSize.height)};
-	}
-	
-
-	public static double[] InNaturalCoordsTriangle(double[][] Coords, double[] Point)
-	{
-		double[] natCoords = new double[3];
-		double TriangleArea = TriArea(new double[][] {Coords[0], Coords[1], Coords[2]});
-		
-		natCoords[0] = TriArea(new double[][] {Point, Coords[1], Coords[2]}) / TriangleArea;
-		natCoords[1] = TriArea(new double[][] {Point, Coords[2], Coords[0]}) / TriangleArea;
-		natCoords[2] = 1 - natCoords[0] - natCoords[1];
-		return natCoords;
-	}
-	
-	public static double[] InNaturalCoordsRect(double[] CenterCoords, double L, double H, double[] Point)
-	{
-		return new double[] {2 * (Point[0] - CenterCoords[0]) / L, 2 * (Point[1] - CenterCoords[1]) / H};
 	}
 	
 	public static double[] ScaledDefCoords(double[] OriginalCoords, double[] Disp, int[] DOFsOnNode, double scale)
@@ -100,16 +74,6 @@ public abstract class Util
 	{
 		return ScaledDefCoords(OriginalCoords.asArray(), Disp.asArray(), DOFsOnNode, scale) ;
 	}
-		
-
-	public static double TriArea(double[][] Coords)
-    {
-        double x1 = Coords[0][0], x2 = Coords[1][0], x3 = Coords[2][0];
-    	double y1 = Coords[0][1], y2 = Coords[1][1], y3 = Coords[2][1];
-    	double A = (x1 * y2 + x2 * y3 + x3 * y1 - y1 * x2 - y2 * x3 - y3 * x1) / 2.0;
-    	return A;
-    }
-
 
 	public static double FindMaxAbs(double[] SetOfValues)
 	{
@@ -244,24 +208,6 @@ public abstract class Util
 		}
 	}
  	
- 	public static ConcLoad[] AddElem(ConcLoad[] OriginalArray, ConcLoad NewElem)
- 	{
- 		if (OriginalArray == null)
-		{
-			return new ConcLoad[] {NewElem};
-		}
-		else
-		{
-			ConcLoad[] NewArray = new ConcLoad[OriginalArray.length + 1];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			NewArray[OriginalArray.length] = NewElem;
-			return NewArray;
-		}
- 	}
- 	
  	public static DistLoad[] AddElem(DistLoad[] OriginalArray, DistLoad NewElem)
  	{
  		if (OriginalArray == null)
@@ -352,49 +298,6 @@ public abstract class Util
 		}
 	}
 
-	public static ConcLoad[] IncreaseArraySize(ConcLoad[] OriginalArray, int size)
-	{
-		if (OriginalArray == null)
-		{
-			ConcLoad[] NewArray = new ConcLoad[size];
-			for (int i = 0; i <= NewArray.length - 1; i += 1)
-			{
-				NewArray[i] = new ConcLoad(new Force());
-			}
-			return NewArray;
-		}
-		else
-		{
-			ConcLoad[] NewArray = new ConcLoad[OriginalArray.length + size];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			for (int i = OriginalArray.length; i <= OriginalArray.length + size - 1; i += 1)
-			{
-				NewArray[i] = new ConcLoad(new Force());
-			}
-			return NewArray;
-		}
-	}
-
-	public static NodalDisp[] IncreaseArraySize(NodalDisp[] OriginalArray, int size)
-	{
-		if (OriginalArray == null)
-		{
-			return new NodalDisp[size];
-		}
-		else
-		{
-			NodalDisp[] NewArray = new NodalDisp[OriginalArray.length + size];
-			for (int i = 0; i <= OriginalArray.length - 1; i += 1)
-			{
-				NewArray[i] = OriginalArray[i];
-			}
-			return NewArray;
-		}
-	}
-	
 	public static int[] AddElem(int[] OriginalArray, int NewElem)
 	{
 		if (OriginalArray == null)
@@ -698,17 +601,6 @@ public abstract class Util
 		}
 	}
 
-	public static int Average(int[] values)
-	{
-		int avr = 0;
-		for (int i = 0; i <= values.length - 1; i += 1)
-		{
-			avr += values[i];
-		}
-		avr = avr / (int)values.length;
-		return avr;
-	}
-	
 	public static int clamp(int value, int min, int max)
 	{
 		return Math.min(Math.max(value, min), max);
@@ -734,49 +626,6 @@ public abstract class Util
 		green = green / (double)colors.length;
 		blue = blue / (double)colors.length;
 		return new Color((int)red, (int)green, (int)blue);
-	}
-
-	public static String[] FitText(String inputstring, int NumberOfChars)
-	{
-		String[] newstring = new String[inputstring.length()];
-		int CharsExeeding = 0;		
-		int i = 0;
-		int FirstChar = 0;
-		int LastChar = 0;
-		do
-		{
-			FirstChar = i*NumberOfChars - CharsExeeding;
-			LastChar = FirstChar + Math.min(NumberOfChars, Math.min((i + 1)*NumberOfChars, inputstring.length() - i*NumberOfChars) + CharsExeeding);
-			char[] chararray = new char[NumberOfChars];
-			inputstring.getChars(FirstChar, LastChar, chararray, 0);
-			if (chararray[LastChar - FirstChar - 1] != ' ' && chararray[LastChar - FirstChar - 1] != '.' && chararray[LastChar - FirstChar - 1] != '?' && chararray[LastChar - FirstChar - 1] != '!' && chararray[LastChar - FirstChar - 1] != '/' && chararray[LastChar - FirstChar - 1] != ':')
-			{
-				for (int j = chararray.length - 1; 0 <= j; j += -1)
-				{
-					CharsExeeding += 1;
-					LastChar += -1;
-					if (chararray[j] == ' ' | chararray[j] == '.' | chararray[j] == '?' | chararray[j] == '!' | chararray[j] == '/' | chararray[j] == ':')
-					{
-						char[] chararray2 = new char[NumberOfChars];
-						inputstring.getChars(Math.min(Math.max(0, FirstChar), inputstring.length()), LastChar, chararray2, 0);
-						newstring[i] = String.valueOf(chararray2);
-						CharsExeeding += -1;
-						j = 0;
-					}
-				}
-			}
-			else
-			{
-				newstring[i] = String.valueOf(chararray);
-			}
-			i += 1;
-		} while(LastChar != inputstring.length() && i != inputstring.length());		
-		String[] newstring2 = new String[i];
-		for (int j = 0; j <= newstring2.length - 1; j += 1)
-		{
-			newstring2[j] = newstring[j];
-		}
-		return newstring2;
 	}
 
 	public static double[][] PolygonLines(double[][] Coords)
@@ -1009,83 +858,6 @@ public abstract class Util
 		}
 	}
 
-	public static int[] NodesInsideWindow(List<Node> Node, double[] RealStructCenter, int[] WindowTopLeft, Point WindowBotRight, MyCanvas canvas, int[] DOFsOnNode, double Defscale, boolean condition)
-	{
-		int[] NodesInsideWindow = null;
-		for (int node = 0; node <= Node.size() - 1; node += 1)
-		{
-			//double[] RealNodePos = GetNodePos(Node.get(node), condition);
-			double[] RealNodePos = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsOnNode, Defscale);
-			//int[] DrawingCoords = ConvertToDrawingCoords(RealNodePos, CanvasPos, CanvasSize, CanvasDim, DrawingPos);
-			Point DrawingCoords = canvas.inDrawingCoords(new Point2D.Double(RealNodePos[0], RealNodePos[1])); ;
-			// Util.ConvertToDrawingCoords2(RealNodePos, RealStructCenter, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			if (WindowTopLeft[0] <= DrawingCoords.x && DrawingCoords.x <= WindowBotRight.x && WindowTopLeft[1] <= DrawingCoords.y && DrawingCoords.y <= WindowBotRight.y)
-			{
-				NodesInsideWindow = AddElem(NodesInsideWindow, node);
-			}
-		}
-		if (NodesInsideWindow != null)
-		{
-			return Arrays.copyOfRange(NodesInsideWindow, 0, NodesInsideWindow.length);
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	// public static int[] NodesInsideWindow(List<Node> Node, double[] RealStructCenter, int[] WindowTopLeft, int[] WindowBotRight, MyCanvas canvas, int[] DOFsOnNode, double Defscale, boolean condition)
-	// {
-	// 	return NodesInsideWindow(Node, RealStructCenter, WindowTopLeft, WindowBotRight, canvas, DOFsOnNode, Defscale, condition) ;
-	// }
-
-	// public static int[] NodesInsideWindow(List<Node> Node, double[] RealStructCenter, int[] WindowTopLeft, Point WindowBotRight, Point CanvasPos, int[] CanvasCenter, int[] CanvasSize, double[] CanvasDim, int[] DrawingPos, int[] DOFsOnNode, double Defscale, boolean condition)
-	// {
-	// 	return NodesInsideWindow(Node, RealStructCenter, WindowTopLeft, new int[] {WindowBotRight.x, WindowBotRight.y}, new int[] {CanvasPos.x, CanvasPos.y}, CanvasCenter, CanvasSize,
-	// 			CanvasDim, DrawingPos, DOFsOnNode, Defscale, condition) ;
-	// }
-	
-	public static int[] ElemsInsideWindow(Mesh mesh, double[] RealStructCenter, int[] WindowTopLeft, Point WindowBotRight, int[] PanelPos,
-						MyCanvas canvas, double Defscale, boolean condition)
-	{
-		List<Node> Node = mesh.getNodes();
-		List<Element> Elem = mesh.getElements();
-		int[] ElemsInsideWindow = null;
-		int[] ElemDOFs = Elem.get(0).getDOFs();
-		int[] NodesInWindow = NodesInsideWindow(Node, RealStructCenter, WindowTopLeft, WindowBotRight, canvas, ElemDOFs, Defscale, condition);
-		boolean ElemIsInWindow;
-		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-		{
-			ElemIsInWindow = true;
-			for (Node node : Elem.get(elem).getExternalNodes())
-			{
-				if (NodesInWindow != null)
-				{
-					if (!ArrayContains(NodesInWindow, node.getID()))
-					{
-						ElemIsInWindow = false;
-					}
-				}
-				else
-				{
-					ElemIsInWindow = false;
-				}
-			}
-			if (ElemIsInWindow)
-			{
-				ElemsInsideWindow = AddElem(ElemsInsideWindow, elem);
-			}
-		}
-		if (ElemsInsideWindow != null)
-		{
-			return Arrays.copyOfRange(ElemsInsideWindow, 0, ElemsInsideWindow.length);
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
 	public static int[] DefineDOFsOnNode(List<Element> Elem)
 	{
 		int[] DOFsOnNode = null;  

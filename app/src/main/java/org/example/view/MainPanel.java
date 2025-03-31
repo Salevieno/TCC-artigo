@@ -296,7 +296,7 @@ public class MainPanel extends JPanel
 				return ;
 
 			case circular:
-				DP.drawCircle(topLeftCorner, (int)(2*Util.dist(MousePos, topLeftCorner)), color);
+				DP.drawCircle(topLeftCorner, (int)(2 * MousePos.distance(topLeftCorner)), color);
 				return ;
 
 			case polygonal:				

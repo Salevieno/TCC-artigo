@@ -2,6 +2,7 @@ package org.example.structure;
 
 import java.util.List;
 
+import org.example.output.ResultDiagrams;
 import org.example.utilidades.Util;
 
 public abstract class ShapeFunction
@@ -346,7 +347,7 @@ public abstract class ShapeFunction
     	if (type.equals(ElemType.T3G))
     	{
     		N = new double[2][6];
-    	    double A = Util.TriArea(NodesCoords);
+    	    double A = ResultDiagrams.TriArea(NodesCoords);
     	    double x1 = NodesCoords[0][0], x2 = NodesCoords[1][0], x3 = NodesCoords[2][0];
     	    double y1 = NodesCoords[0][1], y2 = NodesCoords[1][1], y3 = NodesCoords[2][1];
     	    double x = PointCoords[0];

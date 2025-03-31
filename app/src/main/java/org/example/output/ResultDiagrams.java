@@ -138,7 +138,7 @@ public class ResultDiagrams
 				double[] CenterCoords = Elem.get(elem).getCenterCoords();
 				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
 				{
-					double[] natCoords = Util.InNaturalCoordsRect(CenterCoords, L, H, ContourCoords[point]);
+					double[] natCoords = InNaturalCoordsRect(CenterCoords, L, H, ContourCoords[point]);
 					double e = natCoords[0];
 					double n = natCoords[1];
 					
@@ -180,7 +180,7 @@ public class ResultDiagrams
 			{			
 				for (int point = 0; point <= ContourCoords.length - 1; point += 1)
 				{
-					double[] natCoords = Util.InNaturalCoordsTriangle(EdgeCoords, ContourCoords[point]);
+					double[] natCoords = InNaturalCoordsTriangle(EdgeCoords, ContourCoords[point]);
 					double[] u = Elem.get(elem).getDisp();
 					ContourValue[point] = Analysis.DispOnPoint(nodes, Elem.get(elem), natCoords[0], natCoords[1], selecteddof, u);
 				}
@@ -225,6 +225,29 @@ public class ResultDiagrams
 		}
 		
 	}
+
+	private static double[] InNaturalCoordsTriangle(double[][] Coords, double[] Point)
+	{
+		double[] natCoords = new double[3];
+		double TriangleArea = TriArea(new double[][] {Coords[0], Coords[1], Coords[2]});
+		
+		natCoords[0] = TriArea(new double[][] {Point, Coords[1], Coords[2]}) / TriangleArea;
+		natCoords[1] = TriArea(new double[][] {Point, Coords[2], Coords[0]}) / TriangleArea;
+		natCoords[2] = 1 - natCoords[0] - natCoords[1];
+		return natCoords;
+	}
+
+	private static double[] InNaturalCoordsRect(double[] CenterCoords, double L, double H, double[] Point)
+	{
+		return new double[] {2 * (Point[0] - CenterCoords[0]) / L, 2 * (Point[1] - CenterCoords[1]) / H};
+	}
+
+	public static double TriArea(double[][] Coords)
+    {
+        double x1 = Coords[0][0], x2 = Coords[1][0], x3 = Coords[2][0];
+    	double y1 = Coords[0][1], y2 = Coords[1][1], y3 = Coords[2][1];
+    	return (x1 * y2 + x2 * y3 + x3 * y1 - y1 * x2 - y2 * x3 - y3 * x1) / 2.0;
+    }
 
     public double getScale() { return scale ;}
 

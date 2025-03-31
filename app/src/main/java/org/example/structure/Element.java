@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.loading.DistLoad;
+import org.example.output.ResultDiagrams;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
@@ -453,7 +454,7 @@ public class Element
 	    		
 	    	    double x1 = Coords[0][0], x2 = Coords[1][0], x3 = Coords[2][0];
 	    	    double y1 = Coords[0][1], y2 = Coords[1][1], y3 = Coords[2][1];
-	    	    double A = Util.TriArea(Coords);
+	    	    double A = ResultDiagrams.TriArea(Coords);
 	    	    double[] beta = new double[] {y2 - y3, y3 - y1, y1 - y2};
 	    	    double[] gama = new double[] {x3 - x2, x1 - x3, x2 - x1};
 	    	    B = new double[][] {{beta[0], 0, beta[1], 0, beta[2], 0}, {0, gama[0], 0, gama[1], 0, gama[2]}, {gama[0], beta[0], gama[1], beta[1], gama[2], beta[2]}};
@@ -751,12 +752,12 @@ public class Element
 						Coords[i][1] = externalNodes.get(i).getOriginalCoords().y ;
 						Coords[i][2] = externalNodes.get(i).getOriginalCoords().z ;
 	    			}     	
-	    			Area = Util.TriArea(Coords);
+	    			Area = ResultDiagrams.TriArea(Coords);
 	        	}
 	    		else
 	        	{
 	        		double[][] DefCoords = nodesDefPos() ;
-	        		Area = Util.TriArea(DefCoords);
+	        		Area = ResultDiagrams.TriArea(DefCoords);
 	        	}
 	    	    double[][] B = SecondDerivativesb(0, 0, nodes, sec, NonlinearGeo);
 	    	    k = Util.MultMatrix(Util.MultMatrix(Util.Transpose(B), D), B);
