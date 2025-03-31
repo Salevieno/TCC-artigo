@@ -2,7 +2,6 @@ package org.example.userInterface;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,51 +19,34 @@ import graphics.Align;
 import graphics.DrawPrimitives;
 
 public abstract class Draw
-{	
-	public static int TextHeight(int TextSize)
-	{
-		return (int)(0.8*TextSize);
-	}
+{
 
-	public static void DrawAxisArrow3D(int[] Pos, int thickness, double[] theta, boolean fill, double Size, double ArrowSize, Color color, DrawPrimitives DP)
+	private static final double thetaArrow = Math.PI / 8.0;
+
+	public static void DrawAxisArrow3D(Point3D pos, int stroke, Point3D theta, boolean fill, double Size, double ArrowSize, Color color, DrawPrimitives DP)
     {
-    	double thetaop = Math.PI/8.0;	// opening
-    	double[][] Coords = new double[6][3];
-    	int[] xCoords = new int[Coords.length], yCoords = new int[Coords.length];
-    	Coords[0][0] = Pos[0] - Size;
-    	Coords[0][1] = Pos[1];
-    	Coords[0][2] = Pos[2];
-    	Coords[1][0] = Pos[0];
-    	Coords[1][1] = Pos[1];
-    	Coords[1][2] = Pos[2];
-    	Coords[2][0] = (int)(Pos[0] - ArrowSize*Math.cos(thetaop));
-    	Coords[2][1] = (int)(Pos[1] - ArrowSize*Math.sin(thetaop));
-    	Coords[2][2] = Pos[2];
-    	Coords[3][0] = (int)(Pos[0] - ArrowSize*Math.cos(thetaop));
-    	Coords[3][1] = (int)(Pos[1] + ArrowSize*Math.sin(thetaop));
-    	Coords[3][2] = Pos[2];
-    	Coords[4][0] = (int)(Pos[0] - ArrowSize*Math.cos(thetaop));
-    	Coords[4][1] = Pos[1];
-    	Coords[4][2] = (int)(Pos[2] - ArrowSize*Math.sin(thetaop));
-    	Coords[5][0] = (int)(Pos[0] - ArrowSize*Math.cos(thetaop));
-    	Coords[5][1] = Pos[1];
-    	Coords[5][2] = (int)(Pos[2] + ArrowSize*Math.sin(thetaop));
-    	for (int c = 0; c <= Coords.length - 1; c += 1)
-    	{
-         	Coords[c] = Util.RotateCoord(Coords[c], Coords[0], theta);
-         	xCoords[c] = (int) Coords[c][0];
-         	yCoords[c] = (int) Coords[c][1];
-    	}
-     	// DrawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, thickness, color);
-     	// DrawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, thickness, color);
-     	// DrawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, thickness, color);
-     	// DrawPolyLine(new int[] {xCoords[1], xCoords[4]}, new int[] {yCoords[1], yCoords[4]}, thickness, color);
-     	// DrawPolyLine(new int[] {xCoords[1], xCoords[5]}, new int[] {yCoords[1], yCoords[5]}, thickness, color);
-		DP.drawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, color);
-		DP.drawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, color);
-		DP.drawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, color);
-		DP.drawPolyLine(new int[] {xCoords[1], xCoords[4]}, new int[] {yCoords[1], yCoords[4]}, color);
-		DP.drawPolyLine(new int[] {xCoords[1], xCoords[5]}, new int[] {yCoords[1], yCoords[5]}, color);
+		List<Point> rotatedPoints = new ArrayList<>() ;
+		List<Point3D> points = List.of
+		(
+			new Point3D(pos.x - Size, pos.y, pos.z),
+			new Point3D(pos.x, pos.y, pos.z),
+			new Point3D((int)(pos.x - ArrowSize*Math.cos(thetaArrow)), (int)(pos.y - ArrowSize*Math.sin(thetaArrow)), pos.z),
+			new Point3D((int)(pos.x - ArrowSize*Math.cos(thetaArrow)), (int)(pos.y + ArrowSize*Math.sin(thetaArrow)), pos.z),
+			new Point3D((int)(pos.x - ArrowSize*Math.cos(thetaArrow)), pos.y, (int)(pos.z - ArrowSize*Math.sin(thetaArrow))),
+			new Point3D((int)(pos.x - ArrowSize*Math.cos(thetaArrow)), pos.y, (int)(pos.z + ArrowSize*Math.sin(thetaArrow)))
+		) ;
+
+		for (Point3D point : points)
+		{
+			Point3D rotatedCoord = Point3D.rotate(point, points.get(0), theta) ;			
+			rotatedPoints.add(rotatedCoord.asPoint()) ;
+		}
+
+		DP.drawPolyLine(List.of(rotatedPoints.get(0), rotatedPoints.get(1)), color);
+		DP.drawPolyLine(List.of(rotatedPoints.get(1), rotatedPoints.get(2)), color);
+		DP.drawPolyLine(List.of(rotatedPoints.get(1), rotatedPoints.get(3)), color);
+		DP.drawPolyLine(List.of(rotatedPoints.get(1), rotatedPoints.get(4)), color);
+		DP.drawPolyLine(List.of(rotatedPoints.get(1), rotatedPoints.get(5)), color);
     }
 
 	public static void DrawArrow3Dto(Point3D Pos, Point3D theta, double Size, Color color, MyCanvas canvas, DrawPrimitives DP)
@@ -79,17 +61,16 @@ public abstract class Draw
     
 	public static void DrawArrow3Dto(Point3D Pos, int stroke, Point3D theta, double Size, double ArrowSize, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
-    	double thetaop = Math.PI / 8.0;	// arrow opening
 		List<Point> pos = new ArrayList<>() ;
     	List<Point3D> realCoords = new ArrayList<>();
 		Point3D canvasRealCenter = new Point3D(canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])).x, canvas.inRealCoords(new Point(canvas.getCenter()[0], canvas.getCenter()[1])).y, 0.0) ;
 
     	realCoords.add(new Point3D(Pos.x - Size, Pos.y, Pos.z)) ;
     	realCoords.add(new Point3D(Pos.x, Pos.y, Pos.z)) ;
-    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y - ArrowSize*Math.sin(thetaop), Pos.z)) ;
-    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y + ArrowSize*Math.sin(thetaop), Pos.z)) ;
-    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y, Pos.z - ArrowSize*Math.sin(thetaop))) ;
-    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaop), Pos.y, Pos.z + ArrowSize*Math.sin(thetaop))) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaArrow), Pos.y - ArrowSize*Math.sin(thetaArrow), Pos.z)) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaArrow), Pos.y + ArrowSize*Math.sin(thetaArrow), Pos.z)) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaArrow), Pos.y, Pos.z - ArrowSize*Math.sin(thetaArrow))) ;
+    	realCoords.add(new Point3D(Pos.x - ArrowSize*Math.cos(thetaArrow), Pos.y, Pos.z + ArrowSize*Math.sin(thetaArrow))) ;
 
 		realCoords.forEach(coord -> coord.rotate(Pos, theta)) ;
 		realCoords.forEach(coord -> coord.rotate(canvasRealCenter, new Point3D(canvas.getAngles()[0], canvas.getAngles()[1], canvas.getAngles()[2]))) ;
@@ -104,16 +85,15 @@ public abstract class Draw
     
 	public static void DrawArrow3Dfrom(double[] Pos, int thickness, double[] theta, double Size, double ArrowSize, Color color, MyCanvas canvas, DrawPrimitives DP)
     {
-    	double thetaop = Math.PI / 8.0;	// opening
     	double[][] RealCoords = new double[6][3];
     	int[][] DrawingCoords = new int[6][3];
     	int[] xCoords = new int[RealCoords.length], yCoords = new int[RealCoords.length];
     	RealCoords[0] = new double[] {Pos[0], Pos[1], Pos[2]};
     	RealCoords[1] = new double[] {Pos[0] + Size, Pos[1], Pos[2]};
-    	RealCoords[2] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaop), Pos[1] - ArrowSize*Math.sin(thetaop), Pos[2]};
-    	RealCoords[3] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaop), Pos[1] + ArrowSize*Math.sin(thetaop), Pos[2]};
-    	RealCoords[4] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaop)};
-    	RealCoords[5] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaop), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaop)};
+    	RealCoords[2] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaArrow), Pos[1] - ArrowSize*Math.sin(thetaArrow), Pos[2]};
+    	RealCoords[3] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaArrow), Pos[1] + ArrowSize*Math.sin(thetaArrow), Pos[2]};
+    	RealCoords[4] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaArrow), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaArrow)};
+    	RealCoords[5] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaArrow), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaArrow)};
     	
 		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
@@ -153,7 +133,7 @@ public abstract class Draw
 				double angle = 2 * Math.PI * dof / Node.get(node).dofs.length;
 				// int[] Pos = new int[] {(int)(DrawingNodePos[node][0] + Offset*Math.cos(angle)), (int)(DrawingNodePos[node][1] + Offset*Math.sin(angle) + 1.1*TextHeight(FontSize))};
 				// DrawText(Pos, Integer.toString(Node.get(node).dofs[dof]), "Left", 0, "Bold", FontSize, NodeColor);
-				Point pos = new Point((int)(DrawingNodePos[node][0] + Offset*Math.cos(angle)), (int)(DrawingNodePos[node][1] + Offset*Math.sin(angle) + 1.1*TextHeight(FontSize))) ;
+				Point pos = new Point((int)(DrawingNodePos[node][0] + Offset*Math.cos(angle)), (int)(DrawingNodePos[node][1] + Offset*Math.sin(angle) + FontSize)) ;
 				DP.drawText(pos, Align.topLeft, String.valueOf(Node.get(node).dofs[dof]), NodeColor) ;
 			}	
 		}	

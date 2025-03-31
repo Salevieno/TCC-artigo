@@ -237,8 +237,8 @@ public class MainPanel extends JPanel
 		canvas.setSize(new int[] {(int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height)});
 		canvas.setCenter(new int[] {canvas.getPos().x + canvas.getSize()[0] / 2, canvas.getPos().y + canvas.getSize()[1] / 2});
 
-		int[] LittleAxisPos = new int[] {canvas.getPos().x + canvas.getSize()[0] + 10, canvas.getPos().y - 10, 0};
-		int[] BigAxisPos = new int[] {canvas.getPos().x, canvas.getPos().y + canvas.getSize()[1], 0};		
+		Point LittleAxisPos = new Point(canvas.getPos().x + canvas.getSize()[0] + 10, canvas.getPos().y - 10);
+		Point BigAxisPos = new Point(canvas.getPos().x, canvas.getPos().y + canvas.getSize()[1]);		
 		DrawAxis(LittleAxisPos, canvas.getSize()[0] / 15, canvas.getSize()[1] / 15, 10, canvas.getAngles(), DP);
 		DrawAxis(BigAxisPos, canvas.getSize()[0] + 20, canvas.getSize()[1] + 20, 20, new double[] {0, 0, 0}, DP);
 		
@@ -257,15 +257,15 @@ public class MainPanel extends JPanel
 			canvas.drawGrid(2, DP) ;
 		}
 		Point2D.Double RealMousePos = canvas.inRealCoords(MenuFunctions.mousePos) ; // Util.ConvertToRealCoords(MenuFunctions.mousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension());
-		drawMousePosWindow(new Point(BigAxisPos[0] + canvas.getSize()[0] / 2 - 60, BigAxisPos[1] + 20), RealMousePos, Menus.palette[3], Menus.palette[0]);
+		drawMousePosWindow(new Point(BigAxisPos.x + canvas.getSize()[0] / 2 - 60, BigAxisPos.y + 20), RealMousePos, Menus.palette[3], Menus.palette[0]);
 	}
 	
-	public void DrawAxis(int[] Pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawPrimitives DP)
+	public void DrawAxis(Point pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawPrimitives DP)
 	{
     	int thickness = 2;
-		Draw.DrawAxisArrow3D(new int[] {Pos[0] + sizex, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1], CanvasAngles[2]}, true, sizex, sizex / 40.0, Color.red, DP);
-		Draw.DrawAxisArrow3D(new int[] {Pos[0] + sizey, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1], CanvasAngles[2] - Math.PI/2.0}, true, sizey, sizey / 40.0, Color.green, DP);
-		Draw.DrawAxisArrow3D(new int[] {Pos[0] + sizez, Pos[1], Pos[2]}, thickness, new double[] {CanvasAngles[0], CanvasAngles[1] - Math.PI/2.0, CanvasAngles[2]}, true, sizez, sizez / 40.0, Color.blue, DP);	// z points outward
+		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizex, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1], CanvasAngles[2]), true, sizex, sizex / 40.0, Color.red, DP);
+		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizey, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1], CanvasAngles[2] - Math.PI/2.0), true, sizey, sizey / 40.0, Color.green, DP);
+		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizez, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1] - Math.PI/2.0, CanvasAngles[2]), true, sizez, sizez / 40.0, Color.blue, DP);	// z points outward
 	}
 	
 	private static void drawMousePosWindow(Point pos, Point2D.Double RealMousePos, Color bgcolor, Color contourcolor)
