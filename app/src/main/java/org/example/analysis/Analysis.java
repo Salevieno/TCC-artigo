@@ -303,6 +303,7 @@ public abstract class Analysis
 		    for (int iter = 0; iter <= NIter - 1; iter += 1)
 			{
 		    	structure.setK(Structure.StructureStiffnessMatrix(structure.NFreeDOFs, structure.getMesh().getNodes(), structure.getMesh().getElements(), NonlinearMat, NonlinearGeo));
+				
 				if (structure.getK() == null) { System.out.println("Error: Structure stiffness matrix null while calculating the displacements") ; return null ;}
 				if (structure.getP() == null) { System.out.println("Error: Structure loading vector null while calculating the displacements") ; return null ;}
 

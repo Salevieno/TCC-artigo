@@ -474,6 +474,8 @@ public abstract class MenuFunctions
 		Reactions.setSumReactions(Analysis.SumReactions(reactions));
 
 		Menus.getInstance().getWestPanel().setStructure(structure) ;
+		MainPanel.activateNodeSelection() ;
+		MainPanel.deactivateElemSelection() ;
 				
 		System.out.println("Max disp: " + MaxDisp);
 	}

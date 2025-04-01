@@ -50,12 +50,17 @@ public class SelectionWindow
 
     public void selectNodesInside(Mesh mesh, MyCanvas canvas, Point mousePos)
     {
+        if (mesh == null)
+        {
+            close() ;
+            return ;
+        }
+
         bottomRightPos = new Point(mousePos) ;
         mesh.unselectAllNodes() ;
         for (Node node : mesh.getNodes())
 		{
-            Point drawingCoords = canvas.inDrawingCoords(node.getOriginalCoords()) ;
-			if (contains(drawingCoords))
+			if (contains(node.getDrawingPos()))
 			{
 				node.select() ;
 			}
@@ -65,6 +70,12 @@ public class SelectionWindow
 
     public void selectElementsInside(Mesh mesh, MyCanvas canvas, Point mousePos)
     {
+        if (mesh == null)
+        {
+            close() ;
+            return ;
+        }
+        
         bottomRightPos = new Point(mousePos) ;
         mesh.unselectAllElements() ;
         for (Element elem : mesh.getElements())

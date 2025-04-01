@@ -189,7 +189,7 @@ public class Structure
 	public static double[][] StructureStiffnessMatrix(int NFreeDOFs, List<Node> nodes, List<Element> elems, boolean nonlinearMat, boolean nonlinearGeo)
     {
         double[][] K = new double[NFreeDOFs][NFreeDOFs];
-        		
+
         for (int elem = 0; elem <= elems.size() - 1; elem += 1)
         {
 	        double[][] k = elems.get(elem).StiffnessMatrix(nodes, nonlinearMat, nonlinearGeo);
