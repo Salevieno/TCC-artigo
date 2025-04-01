@@ -27,7 +27,7 @@ public abstract class Analysis
     	{
     	    for (int dof = 0; dof <= nodes.get(i).getDOFType().length - 1; dof += 1)
         	{
-    	    	if (-1 < nodes.get(i).dofs[dof])
+    	    	if (-1 < nodes.get(i).getDofs()[dof])
     	        {
     	    		FreeDOFTypes = Util.AddElem(FreeDOFTypes, nodes.get(i).getDOFType()[dof]);
     	        }
@@ -182,13 +182,13 @@ public abstract class Analysis
 			{
 				for (int dof = 0; dof <= node.getDOFType().length - 1; dof += 1)
 				{
-					if (node.dofs[dof] <= -1) { continue ;}
+					if (node.getDofs()[dof] <= -1) { continue ;}
 
 					int dofType = node.getDOFType()[dof] ;
 					
 					if (concLoad.getForce().array().length <= dofType) { continue ;}
 
-					P[node.dofs[dof]] += concLoad.getForce().array()[dofType] * loadfactor;
+					P[node.getDofs()[dof]] += concLoad.getForce().array()[dofType] * loadfactor;
 				}
 			}
 		}
@@ -243,9 +243,9 @@ public abstract class Analysis
 
 							for (int dof = 0; dof <= node.getDOFType().length - 1; dof += 1)
 							{
-								if (-1 < node.dofs[dof])
+								if (-1 < node.getDofs()[dof])
 								{									
-									P[node.dofs[dof]] += q[Elem.get(elem).getCumDOFs()[elemNodeID] + dof] * loadfactor;
+									P[node.getDofs()[dof]] += q[Elem.get(elem).getCumDOFs()[elemNodeID] + dof] * loadfactor;
 								}
 							}
 						}
@@ -262,11 +262,11 @@ public abstract class Analysis
 				int node = loading.getNodalDisps().get(disp).getNode();
 				for (int dof = 0; dof <= Elem.get(0).getDOFsPerNode().length - 1; dof += 1)
 				{
-					if (-1 < meshNodes.get(node).dofs[dof])
+					if (-1 < meshNodes.get(node).getDofs()[dof])
 					{
 						if (meshNodes.get(node).getDOFType()[dof] <= loading.getNodalDisps().get(disp).getDisps().length - 1)
 						{
-							Uapplied[meshNodes.get(node).dofs[dof]] += loading.getNodalDisps().get(disp).getDisps()[meshNodes.get(node).getDOFType()[dof]]*loadfactor;
+							Uapplied[meshNodes.get(node).getDofs()[dof]] += loading.getNodalDisps().get(disp).getDisps()[meshNodes.get(node).getDOFType()[dof]]*loadfactor;
 						}
 					}
 				}
@@ -276,9 +276,9 @@ public abstract class Analysis
 				double[] Peq = NodeForces(node, meshNodes, Elem, NonlinearMat, NonlinearGeo, Uapplied);
 				for (int dof = 0; dof <= Peq.length - 1; dof += 1)
 				{
-					if (-1 < meshNodes.get(node).dofs[dof])
+					if (-1 < meshNodes.get(node).getDofs()[dof])
 					{
-						P[meshNodes.get(node).dofs[dof]] += Peq[dof];
+						P[meshNodes.get(node).getDofs()[dof]] += Peq[dof];
 					}
 				}
 			}
@@ -383,9 +383,9 @@ public abstract class Analysis
     	    	int dofPos = Util.ElemPosInArray(Node.get(node).getDOFType(), dim);
     	    	if (-1 < dofPos)
     	    	{
-        	        if (-1 < Node.get(node).dofs[dofPos])
+        	        if (-1 < Node.get(node).getDofs()[dofPos])
         	        {
-        	           NodeDisp[node][dofPos] = u[Node.get(node).dofs[dofPos]];
+        	           NodeDisp[node][dofPos] = u[Node.get(node).getDofs()[dofPos]];
         	        }
         	        else
         	        {

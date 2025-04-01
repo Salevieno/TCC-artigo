@@ -265,8 +265,8 @@ public class DiagramsPanel extends JPanel
 		{
 			if (-1 < SelectedVar)
 			{						
-				double[] XValues = structure.getMesh().getNodes().get(nodeid).LoadDisp[SelectedVar][0];
-				double[] YValues = structure.getMesh().getNodes().get(nodeid).LoadDisp[SelectedVar][1];
+				double[] XValues = structure.getMesh().getNodes().get(nodeid).getLoadDisp()[SelectedVar][0];
+				double[] YValues = structure.getMesh().getNodes().get(nodeid).getLoadDisp()[SelectedVar][1];
 				display2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]),
 						"Curva carga-deslocamento", "u (mm)", "Fator de carga", XValues, YValues,
 						Util.FindMin(XValues), Util.FindMin(YValues), Util.FindMaxAbs(XValues), Util.FindMaxAbs(YValues), 3, 3, Menus.palette[5], Menus.palette[10], DP);					

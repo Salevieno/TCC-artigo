@@ -380,11 +380,11 @@ public abstract class MenuFunctions
         {
 			struct.getMesh().getNodes().get(node).setDOFType(Util.DefineDOFsOnNode(struct.getMesh().getElements()));
 			struct.getMesh().getNodes().get(node).calcdofs(struct.getSupports(), struct.NFreeDOFs + 1);
-			for (int dof = 0; dof <= struct.getMesh().getNodes().get(node).dofs.length - 1; dof += 1)
+			for (int dof = 0; dof <= struct.getMesh().getNodes().get(node).getDofs().length - 1; dof += 1)
 	        {
-				if (-1 < struct.getMesh().getNodes().get(node).dofs[dof])
+				if (-1 < struct.getMesh().getNodes().get(node).getDofs()[dof])
 				{
-					struct.NFreeDOFs = struct.getMesh().getNodes().get(node).dofs[dof];
+					struct.NFreeDOFs = struct.getMesh().getNodes().get(node).getDofs()[dof];
 				}
 	        }
 			struct.getMesh().getNodes().get(node).setLoadDispCurve();
@@ -402,7 +402,7 @@ public abstract class MenuFunctions
 			for (int elemnode = 0; elemnode <= struct.getMesh().getElements().get(elem).getExternalNodes().size() - 1; elemnode += 1)
 	    	{
 				int nodeID = struct.getMesh().getElements().get(elem).getExternalNodes().get(elemnode).getID() ;
-				ElemNodeDOF = Util.AddElem(ElemNodeDOF, struct.getMesh().getNodes().get(nodeID).dofs);
+				ElemNodeDOF = Util.AddElem(ElemNodeDOF, struct.getMesh().getNodes().get(nodeID).getDofs());
 	    	}
 			struct.getMesh().getElements().get(elem).setNodeDOF(ElemNodeDOF);
 		}
@@ -529,9 +529,9 @@ public abstract class MenuFunctions
 					vars[sec][node][0] = String.valueOf(node);
 					for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
 					{
-						if (-1 < structure.getMesh().getNodes().get(node).dofs[dof])
+						if (-1 < structure.getMesh().getNodes().get(node).getDofs()[dof])
 						{
-							vars[sec][node][dof + 1] = String.valueOf(structure.getU()[structure.getMesh().getNodes().get(node).dofs[dof]]);
+							vars[sec][node][dof + 1] = String.valueOf(structure.getU()[structure.getMesh().getNodes().get(node).getDofs()[dof]]);
 						}
 						else
 						{
@@ -589,12 +589,12 @@ public abstract class MenuFunctions
 		if (-1 < MainPanel.SelectedVar)
 		{
 			int nodeid = structure.getMesh().getSelectedNodes().get(0).getID();
-			double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).LoadDisp;
+			double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).getLoadDisp();
 			String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
-			String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).dofs.length][loaddisp[0][0].length];
+			String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).getDofs().length][loaddisp[0][0].length];
 			for (int sec = 0; sec <= Sections.length - 1; sec += 1)
 			{
-				for (int dof = 0; dof <= structure.getMesh().getNodes().get(nodeid).dofs.length - 1; dof += 1)
+				for (int dof = 0; dof <= structure.getMesh().getNodes().get(nodeid).getDofs().length - 1; dof += 1)
 				{
 					for (int loadinc = 0; loadinc <= loaddisp[dof][sec].length - 1; loadinc += 1)
 					{

@@ -128,13 +128,13 @@ public abstract class Draw
 		{
 			int[][] DrawingNodePos = new int[Node.size()][];
 			DrawingNodePos[node] = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node.get(node), deformed), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			for (int dof = 0; dof <= Node.get(node).dofs.length - 1; dof += 1)
+			for (int dof = 0; dof <= Node.get(node).getDofs().length - 1; dof += 1)
 			{
-				double angle = 2 * Math.PI * dof / Node.get(node).dofs.length;
+				double angle = 2 * Math.PI * dof / Node.get(node).getDofs().length;
 				// int[] Pos = new int[] {(int)(DrawingNodePos[node][0] + Offset*Math.cos(angle)), (int)(DrawingNodePos[node][1] + Offset*Math.sin(angle) + 1.1*TextHeight(FontSize))};
 				// DrawText(Pos, Integer.toString(Node.get(node).dofs[dof]), "Left", 0, "Bold", FontSize, NodeColor);
 				Point pos = new Point((int)(DrawingNodePos[node][0] + Offset*Math.cos(angle)), (int)(DrawingNodePos[node][1] + Offset*Math.sin(angle) + FontSize)) ;
-				DP.drawText(pos, Align.topLeft, String.valueOf(Node.get(node).dofs[dof]), NodeColor) ;
+				DP.drawText(pos, Align.topLeft, String.valueOf(Node.get(node).getDofs()[dof]), NodeColor) ;
 			}	
 		}	
 	}

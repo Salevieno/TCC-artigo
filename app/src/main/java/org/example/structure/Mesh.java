@@ -88,10 +88,10 @@ public class Mesh
 		Elem.setCumDOFs(Util.CumDOFsOnElem(nodes, Elem.getExternalNodes().size()));
 		for (int node = 0; node <= nodes.size() - 1; node += 1)
 		{
-			nodes.get(node).dofs = new int[Elem.getDOFsPerNode()[node].length];
+			nodes.get(node).setDofs(new int[Elem.getDOFsPerNode()[node].length]);
 			for (int dof = 0; dof <= Elem.getDOFsPerNode()[node].length - 1; dof += 1)
 			{
-				nodes.get(node).dofs[dof] = Elem.getCumDOFs()[node] + dof;
+				nodes.get(node).getDOFs()[dof] = Elem.getCumDOFs()[node] + dof;
 			}
 		}
 		DrawNodes3D(nodes, null, Node.color, false, nodes.get(0).getDOFType(), 1, canvas, DP);
@@ -167,7 +167,7 @@ public class Mesh
 		for (int node = 0; node <= Node.size() - 1; node += 1)
 		{
 			double[] NodeRealPos = Util.GetNodePos(Node.get(node), deformed);
-			for (int dof = 0; dof <= Node.get(node).dofs.length - 1; dof += 1)
+			for (int dof = 0; dof <= Node.get(node).getDOFs().length - 1; dof += 1)
 			{
 				// TODO use Mesh.dofAngles(dof)
 				if (Node.get(node).getDOFType()[dof] == 0)

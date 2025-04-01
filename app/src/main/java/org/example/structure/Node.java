@@ -27,9 +27,9 @@ public class Node
 	private List<ConcLoad> concLoads;	// Concentrated loads in the node
 	private List<NodalDisp> nodalDisps;// Nodal displacements in the node
 		
-	public int[] dofs;
+	private int[] dofs;
 	private int[] DOFType;			// DOFs on node
-	public double[][][] LoadDisp;		// Load displacement curve of the node [dof][x values][y values]
+	private double[][][] LoadDisp;		// Load displacement curve of the node [dof][x values][y values]
 	private boolean isSelected ;
 	
 	public static int size = 6;
@@ -114,16 +114,20 @@ public class Node
 
 	public int getID() {return ID;}
 	public Point3D getOriginalCoords() {return coords;}
-	public Point3D getDisp() {return disp;}
+	public Point3D getDisp() {return disp;}	
+	public int[] getDofs() { return dofs ;}
 	public int[] getSup() {return Sup;}
 	public List<ConcLoad> getConcLoads() {return concLoads;}
 	public List<NodalDisp> getNodalDisps() {return nodalDisps;}
 	public int[] getDOFs() { return dofs ;}
 	public int[] getDOFType() {return DOFType;}	
-	public Point getDrawingPos() { return drawingPos ;}
+	public Point getDrawingPos() { return drawingPos ;}	
+	public double[][][] getLoadDisp() {return LoadDisp ;}
+
 	public void setID(int I) {ID = I;}
 	public void setOriginalCoords(Point3D C) {coords = C;}
-	public void setDisp(Point3D C) {disp = C;}
+	public void setDisp(Point3D C) {disp = C;}	
+	public void setDofs(int[] dofs) { this.dofs = dofs ;}
 	public void setSup(int[] S) {Sup = S;}
 	public void setConcLoads(List<ConcLoad> C) {concLoads = C;}
 	public void setNodalDisps(List<NodalDisp> D) {nodalDisps = D;}
