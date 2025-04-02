@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.guava)
 
     implementation(files("libs/libGraphics.jar"))
+    implementation(files("libs/libChart.jar"))
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

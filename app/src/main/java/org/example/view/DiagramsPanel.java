@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import org.example.userInterface.Menus;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 
+import charts.Chart;
+import charts.Dataset;
 import graphics.Align;
 import graphics.DrawPrimitives;
 
@@ -27,16 +30,23 @@ public class DiagramsPanel extends JPanel
 	
 	private int selectedDiagram = - 1 ;
 	private int selectedDOF = -1 ;
+	private Chart chart = new Chart(new Point(0, 0), "", 0) ;
+	private Dataset data = new Dataset() ;
+	private List<Dataset> datasets = new ArrayList<>() ;
     // private static final long serialVersionUID = 1L;
     
     private static final Dimension initialSize = new Dimension(0, 100) ;
+	private static final String title = "Curva carga deslocamento" ;
 
     public DiagramsPanel()
     {
-        setSize(initialSize);
-        setBackground(Menus.palette[3]);
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createTitledBorder(""), "Curva carga deslocamento", TitledBorder.CENTER, TitledBorder.CENTER));
+        this.setSize(initialSize);
+        this.setBackground(Menus.palette[3]);
+        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createTitledBorder(""), title, TitledBorder.CENTER, TitledBorder.CENTER));
 
+		// chart.setTitle("load") ;
+		chart.setGridColor(new Color(Menus.palette[10].getRed(), Menus.palette[10].getGreen(), Menus.palette[10].getBlue(), 50));
+		chart.setTitleColor(Menus.palette[10]) ;
     }
 
     private static void DrawArrow2D(int[] Pos, int thickness, double[] theta, double Size, double ArrowSize, String dir, Color color, DrawPrimitives DP)
@@ -112,6 +122,12 @@ public class DiagramsPanel extends JPanel
 		DrawGrid(Pos, new int[] {Pos[0] + size, Pos[1] - size}, NumSpacing, GridColor, DP);
 	}
     
+	public void updateData(List<Double> yData)
+	{
+		this.data.addYData(yData) ;
+		datasets = List.of(data) ;
+		chart.setData(datasets) ;
+	}
 
     private static void display2DPlot(int[] Pos, int size, String Title, String XaxisName, String YaxisName,
 										double[] XValues, double[] YValues, double XMin, double YMin, double XMaxAbs, double YMaxAbs, int xprec, int yprec,
@@ -267,14 +283,17 @@ public class DiagramsPanel extends JPanel
 		
 		Dimension panelSize = getSize() ;
 
-		List<Node> selectedNodes = structure.getMesh().getSelectedNodes() ;
+		// List<Node> selectedNodes = structure.getMesh().getSelectedNodes() ;
 
-		int[] CurvePos = new int[] {(int) (0.38 * panelSize.getWidth()), (int) (0.8 * panelSize.getHeight())};
-		int[] CurveSize = new int[] {(int) (0.8 * panelSize.getWidth()), (int) (0.6 * panelSize.getHeight())};
-		
-		Node selectedNode = structure.getMesh().getNodes().get(0) ;
-		double[] XValues = selectedNode.getLoadDisp()[selectedDOF][0];
-		double[] YValues = selectedNode.getLoadDisp()[selectedDOF][1];
+		// int[] CurvePos = new int[] {(int) (0.38 * panelSize.getWidth()), (int) (0.8 * panelSize.getHeight())};
+		// int[] CurveSize = new int[] {(int) (0.8 * panelSize.getWidth()), (int) (0.6 * panelSize.getHeight())};
+
+		chart.setPos(new Point((int) (0.35 * panelSize.getWidth()), (int) (0.9 * panelSize.getHeight()))) ;
+		chart.setSize((int) (0.65 * panelSize.getHeight())) ;
+
+		// Node selectedNode = structure.getMesh().getNodes().get(0) ;
+		// double[] XValues = selectedNode.getLoadDisp()[selectedDOF][0];
+		// double[] YValues = selectedNode.getLoadDisp()[selectedDOF][1];
 
 		// if (1 < selectedNodes.size())
 		// {
@@ -292,9 +311,11 @@ public class DiagramsPanel extends JPanel
 		// 	}
 		// }
 
-		display2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]),
-		"Curva carga-deslocamento", "u (mm)", "Fator de carga", XValues, YValues,
-		Util.FindMin(XValues), Util.FindMin(YValues), Util.FindMaxAbs(XValues), Util.FindMaxAbs(YValues), 3, 3, Menus.palette[5], Menus.palette[10], DP);					
+		chart.display(DP) ;
+
+		// display2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]),
+		// "Curva carga-deslocamento", "u (mm)", "Fator de carga", XValues, YValues,
+		// Util.FindMin(XValues), Util.FindMin(YValues), Util.FindMaxAbs(XValues), Util.FindMaxAbs(YValues), 3, 3, Menus.palette[5], Menus.palette[10], DP);					
 
 	}
 
