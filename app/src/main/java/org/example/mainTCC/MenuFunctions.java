@@ -387,7 +387,7 @@ public abstract class MenuFunctions
 					struct.NFreeDOFs = struct.getMesh().getNodes().get(node).getDofs()[dof];
 				}
 	        }
-			struct.getMesh().getNodes().get(node).setLoadDispCurve();
+			struct.getMesh().getNodes().get(node).resetLoadDispCurve();
         }
 		struct.NFreeDOFs += 1;
 		for (Element elem : struct.getMesh().getElements())

@@ -5,15 +5,19 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.example.loading.ConcLoad;
+import org.example.loading.DOF;
 import org.example.loading.NodalDisp;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 
+import charts.Dataset;
 import graphics.Align;
 import graphics.DrawPrimitives;
 
@@ -30,6 +34,7 @@ public class Node
 	private int[] dofs;
 	private int[] DOFType;			// DOFs on node
 	private double[][][] LoadDisp;		// Load displacement curve of the node [dof][x values][y values]
+	private Map<DOF, Dataset> loadDisp ;
 	private boolean isSelected ;
 	
 	public static int size = 6;
@@ -131,7 +136,17 @@ public class Node
 	public void setSup(int[] S) {Sup = S;}
 	public void setConcLoads(List<ConcLoad> C) {concLoads = C;}
 	public void setNodalDisps(List<NodalDisp> D) {nodalDisps = D;}
-	public void setDOFType(int[] D) {DOFType = D;}
+	public void setDOFType(int[] D)
+	{
+		DOFType = D;
+		
+		loadDisp = new HashMap<>() ;
+		for (int i = 0; i <= DOFType.length - 1; i += 1)
+		{
+			loadDisp.put(DOF.values()[i], new Dataset()) ;
+			loadDisp.get(DOF.values()[i]).addPoint(0, 0) ;
+		}
+	}
 	
 	public void calcdofs(List<Supports> Sup, int cont)
 	{
@@ -192,11 +207,11 @@ public class Node
 		}
 		nodalDisps.add(newNodalDisp);
 	}
-	public void setLoadDispCurve()
+	public void resetLoadDispCurve()
 	{
 		LoadDisp = new double[DOFType.length][2][];		// [dof][x values][y values]
 	}
-	public void addLoadDispCurve(double[] U, double loadfactor)
+	public void addPointToLoadDispCurve(double[] U, double loadfactor)
 	{
 		for (int dof = 0; dof <= DOFType.length - 1; dof += 1)
 		{
@@ -211,7 +226,18 @@ public class Node
 		    	LoadDisp[dof][1] = Util.AddElem(LoadDisp[dof][1], 0);
 	    	}
 		}
+
+		for (int i = 0; i <= DOFType.length - 1; i += 1)
+		{
+	    	if (-1 < dofs[i])
+	    	{
+				loadDisp.get(DOF.values()[i]).addPoint(U[dofs[i]], loadfactor) ;
+			}
+		}
+
 	}
+
+	public Map<DOF, Dataset> getLoadDisp2() { return loadDisp ;}
 
 	@Override
 	public String toString()

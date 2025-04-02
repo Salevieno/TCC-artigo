@@ -331,7 +331,7 @@ public abstract class Analysis
 			}
 			for (int node = 0; node <= structure.getMesh().getNodes().size() - 1; node += 1)
 			{
-				structure.getMesh().getNodes().get(node).addLoadDispCurve(structure.getU(), loadfactor);
+				structure.getMesh().getNodes().get(node).addPointToLoadDispCurve(structure.getU(), loadfactor);
 			}
 		}
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
