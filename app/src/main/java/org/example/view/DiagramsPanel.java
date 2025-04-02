@@ -47,6 +47,8 @@ public class DiagramsPanel extends JPanel
 		// chart.setTitle("load") ;
 		chart.setGridColor(new Color(Menus.palette[10].getRed(), Menus.palette[10].getGreen(), Menus.palette[10].getBlue(), 50));
 		chart.setTitleColor(Menus.palette[10]) ;
+		chart.setLineColor(Menus.palette[10]) ;
+		chart.setDataSetColor(List.of(Menus.palette[0])) ;
     }
 
     private static void DrawArrow2D(int[] Pos, int thickness, double[] theta, double Size, double ArrowSize, String dir, Color color, DrawPrimitives DP)
@@ -122,11 +124,33 @@ public class DiagramsPanel extends JPanel
 		DrawGrid(Pos, new int[] {Pos[0] + size, Pos[1] - size}, NumSpacing, GridColor, DP);
 	}
     
+	public void updateData(List<Double> xData, List<Double> yData)
+	{
+		for (int i = 0 ; i <= xData.size() ; i += 1)
+		{
+			this.data.addPoint(xData.get(i), yData.get(i)) ;
+		}
+		datasets = List.of(data) ;
+		chart.setData(datasets) ;
+	}
+
 	public void updateData(List<Double> yData)
 	{
 		this.data.addYData(yData) ;
 		datasets = List.of(data) ;
 		chart.setData(datasets) ;
+		chart.setMaxX(yData.size()) ;
+		chart.setMaxY(yData.stream().map(i -> i).max(Double::compare).get()) ;
+	}
+
+	public void updateData()
+	{
+		List<Double> yData = new ArrayList<>() ;
+		for (double u : MainPanel.structure.getU())
+		{
+			yData.add(u) ;
+		}
+		updateData(yData) ;
 	}
 
     private static void display2DPlot(int[] Pos, int size, String Title, String XaxisName, String YaxisName,
