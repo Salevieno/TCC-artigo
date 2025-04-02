@@ -73,7 +73,6 @@ public class MainPanel extends JPanel
 	public static boolean nodeSelectionIsActive ;
 	public static boolean elemSelectionIsActive;
 	
-	public static int SelectedDiagram = -1;
 	public static int SelectedVar = -1;
 	
 	private SelectionWindow selectionWindow ;

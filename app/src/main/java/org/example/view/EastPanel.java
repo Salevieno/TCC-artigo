@@ -7,7 +7,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.Node;
 import org.example.userInterface.Menus;
@@ -15,10 +14,8 @@ import org.example.utilidades.Util;
 
 public class EastPanel extends JPanel
 {
-	private JPanel bp1 ;
-    private JPanel bp2 ;
-    private JPanel bp3 ;
-	private JPanel LDpanel ;
+	private JPanel nodeInfoPanel ;
+    private JPanel elemInfoPanel ;
 	private LegendPanel legendPanel ;
 
 	private DiagramsPanel diagramsPanel;
@@ -29,27 +26,17 @@ public class EastPanel extends JPanel
         this.setLayout(new GridLayout(0, 1)) ;
         
 		legendPanel = new LegendPanel();
-		bp1 = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
-		bp2 = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
-		bp3 = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
-		LDpanel = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
-		bp1.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
-		bp2.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
-		bp3.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
-		LDpanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
-
-		this.add(bp1);
-		this.add(bp2);
-		this.add(bp3);
-		this.add(legendPanel) ;
-		this.add(LDpanel);
-
-        
+		nodeInfoPanel = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
+		elemInfoPanel = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
 		diagramsPanel = new DiagramsPanel();
+		nodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
+		elemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
 
+		this.add(nodeInfoPanel);
+		this.add(elemInfoPanel);
+		this.add(legendPanel) ;
+		this.add(diagramsPanel);
     }
-
-    
 	
 	public void reset()
 	{
@@ -57,36 +44,34 @@ public class EastPanel extends JPanel
 		if (MainPanel.structure.getMesh().hasNodesSelected())
 		{
 			Node node = MainPanel.structure.getMesh().getSelectedNodes().get(0) ;
-			bp1 = createNodeInfoPanel(node) ;
+			nodeInfoPanel = createNodeInfoPanel(node) ;
 		}
 		if (MainPanel.structure.getMesh().hasElementsSelected())
 		{
 			Element elem = MainPanel.structure.getMesh().getSelectedElements().get(0) ;
-			bp2 = createElemInfoPanel(elem) ;
+			elemInfoPanel = createElemInfoPanel(elem) ;
 		}
-		this.removeAll();
-		this.add(bp1);
-		this.add(bp2);
-
-		this.add(bp3);
-		this.add(LDpanel);
+		// this.removeAll();
+		// this.add(nodeInfoPanel);
+		// this.add(elemInfoPanel);
+		// this.add(legendPanel) ;
+		// this.add(diagramsPanel);
 
 	}
 
     public void activatePostAnalysisView()
     {
-        this.remove(LDpanel);
-        this.remove(bp3);
-        LDpanel = diagramsPanel;
-        bp3 = legendPanel;
-        this.add(bp3);
-        this.add(LDpanel);
+        // this.remove(diagramsPanel);
+        // this.remove(bp3);
+        // bp3 = legendPanel;
+        // this.add(bp3);
+        // this.add(diagramsPanel);
     }
 
     public void removeBp1Bp2()
     {
-        remove(bp1);
-        remove(bp2);
+        remove(nodeInfoPanel);
+        remove(elemInfoPanel);
     }
 	
 	private JPanel createNodeInfoPanel(Node Node)
@@ -180,5 +165,6 @@ public class EastPanel extends JPanel
 
 
 	public LegendPanel getLegendPanel() { return legendPanel ;}
+	public DiagramsPanel getDiagramsPanel() { return diagramsPanel ;}
 
 }

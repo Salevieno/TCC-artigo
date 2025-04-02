@@ -24,7 +24,10 @@ import graphics.DrawPrimitives;
 
 public class DiagramsPanel extends JPanel
 {
-    private static final long serialVersionUID = 1L;
+	
+	private int selectedDiagram = - 1 ;
+	private int selectedDOF = -1 ;
+    // private static final long serialVersionUID = 1L;
     
     private static final Dimension initialSize = new Dimension(0, 100) ;
 
@@ -93,16 +96,19 @@ public class DiagramsPanel extends JPanel
 		//DrawLine(Pos, new int[] {(int) (Pos[0] + 1.1*size), Pos[1]}, 1, AxisColor);
 		//DrawPolyLine(new int[] {Pos[0] - asize, Pos[0], Pos[0] + asize}, new int[] {(int) (Pos[1] - 1.1*size) + asize, (int) (Pos[1] - 1.1*size), (int) (Pos[1] - 1.1*size) + asize}, 1, AxisColor);
 		//DrawPolyLine(new int[] {(int) (Pos[0] + 1.1*size - asize), (int) (Pos[0] + 1.1*size), (int) (Pos[0] + 1.1*size - asize)}, new int[] {Pos[1] - asize, Pos[1], Pos[1] + asize}, 1, AxisColor);
-		if (type == 0)		// All axis positive
-		{
-			DrawArrow2D(Pos, 1, new double[] {0, 0, -Math.PI / 2.0}, 1.1 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
-			DrawArrow2D(Pos, 1, new double[] {0, 0, 0}, 1.2 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
-		}
-		else if (type == 1)		// X axis negative and Y axis positive
-		{
-			DrawArrow2D(new int[] {Pos[0] + size, Pos[1]}, 1, new double[] {0, 0, -Math.PI / 2.0}, 1.1 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
-			DrawArrow2D(new int[] {Pos[0] + size, Pos[1]}, 1, new double[] {0, 0, -Math.PI}, 1.1 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
-		}
+		
+		// if (type == 0)		// All axis positive
+		// {
+		// 	DrawArrow2D(Pos, 1, new double[] {0, 0, -Math.PI / 2.0}, 1.1 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
+		// 	DrawArrow2D(Pos, 1, new double[] {0, 0, 0}, 1.2 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
+		// }
+		// else if (type == 1)		// X axis negative and Y axis positive
+		// {
+		// 	DrawArrow2D(new int[] {Pos[0] + size, Pos[1]}, 1, new double[] {0, 0, -Math.PI / 2.0}, 1.1 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
+		// 	DrawArrow2D(new int[] {Pos[0] + size, Pos[1]}, 1, new double[] {0, 0, -Math.PI}, 1.1 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
+		// }
+		DrawArrow2D(Pos, 1, new double[] {0, 0, -Math.PI / 2.0}, 1.1 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
+		DrawArrow2D(Pos, 1, new double[] {0, 0, 0}, 1.2 * size, 1.1 * size / 10.0, "FromPoint", Color.black, DP);
 		DrawGrid(Pos, new int[] {Pos[0] + size, Pos[1] - size}, NumSpacing, GridColor, DP);
 	}
     
@@ -167,115 +173,137 @@ public class DiagramsPanel extends JPanel
 			}
 		}
 	}
-	
-	public static void display(Structure structure, List<Node> selectedNodes, int SelectedVar, int SelectedDiagram, boolean AnalysisIsComplete, DrawPrimitives DP)
+
+	private void displayDiagram(int SelectedDiagram, List<Node> selectedNodes)
 	{
+		// double[] Xaxisvalues = new double[selectedNodes.size()] ;
+		// double[] Yaxisvalues = new double[selectedNodes.size()];
+		// int dir = -1;
+		// int dof = selectedDOF;
+		// if (SelectedDiagram == 0)
+		// {
+		// 	for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
+		// 	{
+		// 		int nodeID = selectedNodes.get(i).getID();
+		// 		Yaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getDisp().asArray()[dof];
+		// 	}
+		// }
+		// else if (SelectedDiagram == 1)
+		// {
+		// 	for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
+		// 	{
+		// 		int elemID = -1;
+		// 		for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
+		// 		{
+		// 			if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
+		// 			{
+		// 				elemID = i;
+		// 			}
+		// 		}
+		// 		Yaxisvalues[node] = structure.getMesh().getElements().get(elemID).getStress()[dof];
+		// 	}
+		// }
+		// else if (SelectedDiagram == 2)
+		// {
+		// 	for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
+		// 	{
+		// 		int elemID = -1;
+		// 		for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
+		// 		{
+		// 			if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
+		// 			{
+		// 				elemID = i;
+		// 			}
+		// 		}
+		// 		Yaxisvalues[node] = structure.getMesh().getElements().get(elemID).getStrain()[dof];
+		// 	}
+		// }
+		// else if (SelectedDiagram == 3)
+		// {
+		// 	for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
+		// 	{
+		// 		int elemID = -1;
+		// 		for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
+		// 		{
+		// 			if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
+		// 			{
+		// 				elemID = i;
+		// 			}
+		// 		}
+		// 		Yaxisvalues[node] = structure.getMesh().getElements().get(elemID).getIntForces()[dof];
+		// 	}
+		// }
+			
+		// Point3D FirstNodePos = selectedNodes.get(0).getOriginalCoords();
+		// Point3D FinalNodePos = selectedNodes.get(selectedNodes.size() - 1).getOriginalCoords();
+		// dir = (FinalNodePos.y - FirstNodePos.y <= FinalNodePos.x - FirstNodePos.x) ? 0 : 1 ;
+		
+		// for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
+		// {
+		// 	int nodeID = selectedNodes.get(i).getID();
+		// 	double minCoord = dir == 0 ? Structure.calcMinCoords(structure.getCoords()).x : Structure.calcMinCoords(structure.getCoords()).y ;
+		// 	if (dir == 0)
+		// 	{
+		// 		Xaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getOriginalCoords().x - minCoord;
+		// 	}
+		// 	else
+		// 	{
+		// 		Xaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getOriginalCoords().y - minCoord;
+		// 	}
+		// }
+		// display2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]), "Resultados na seção", "x var", "y var",
+		// 	Xaxisvalues, Yaxisvalues, Util.FindMin(Xaxisvalues), Util.FindMin(Yaxisvalues),
+		// 	Util.FindMaxAbs(Xaxisvalues), Util.FindMaxAbs(Yaxisvalues), 2, 2, Menus.palette[5], Menus.palette[10], DP);
+	}
+	
+	public void display(Structure structure, int SelectedDiagram, boolean AnalysisIsComplete, DrawPrimitives DP)
+	{
+
 		if (!AnalysisIsComplete) { return ;}
+		if (structure == null) { return ;}
+		if (structure.getMesh() == null) { return ;}
+		if (!structure.getMesh().hasNodesSelected()) { return ;}
+		if (selectedDOF <= -1) { return ;}
+		
+		Dimension panelSize = getSize() ;
 
-		if (selectedNodes == null || selectedNodes.isEmpty()) { return ;}
+		List<Node> selectedNodes = structure.getMesh().getSelectedNodes() ;
 
-		int nodeid = selectedNodes.get(0).getID() ;
-
-		if (structure.getMesh().getNodes().get(nodeid) == null) { return ;}
-
-		Dimension panelSize = initialSize;
 		int[] CurvePos = new int[] {(int) (0.38 * panelSize.getWidth()), (int) (0.8 * panelSize.getHeight())};
 		int[] CurveSize = new int[] {(int) (0.8 * panelSize.getWidth()), (int) (0.6 * panelSize.getHeight())};
-		if (1 < selectedNodes.size())
-		{
-			double[] Xaxisvalues = new double[selectedNodes.size()], Yaxisvalues = new double[selectedNodes.size()];
-			int dir = -1;
-			int dof = SelectedVar;
-			
-			Point3D FirstNodePos = selectedNodes.get(0).getOriginalCoords();
-			Point3D FinalNodePos = selectedNodes.get(selectedNodes.size() - 1).getOriginalCoords();
-			dir = (FinalNodePos.y - FirstNodePos.y <= FinalNodePos.x - FirstNodePos.x) ? 0 : 1 ;
-			
-			for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
-			{
-				int nodeID = selectedNodes.get(i).getID();
-				double minCoord = dir == 0 ? Structure.calcMinCoords(structure.getCoords()).x : Structure.calcMinCoords(structure.getCoords()).y ;
-				if (dir == 0)
-				{
-					Xaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getOriginalCoords().x - minCoord;
-				}
-				else
-				{
-					Xaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getOriginalCoords().y - minCoord;
-				}
-			}
-			if (SelectedDiagram == 0)
-			{
-				for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
-				{
-					int nodeID = selectedNodes.get(i).getID();
-					Yaxisvalues[i] = structure.getMesh().getNodes().get(nodeID).getDisp().asArray()[dof];
-				}
-			}
-			else if (SelectedDiagram == 1)
-			{
-				for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
-				{
-					int elemID = -1;
-					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
-					{
-						if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
-						{
-							elemID = i;
-						}
-					}
-					Yaxisvalues[node] = structure.getMesh().getElements().get(elemID).getStress()[dof];
-				}
-			}
-			else if (SelectedDiagram == 2)
-			{
-				for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
-				{
-					int elemID = -1;
-					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
-					{
-						if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
-						{
-							elemID = i;
-						}
-					}
-					Yaxisvalues[node] = structure.getMesh().getElements().get(elemID).getStrain()[dof];
-				}
-			}
-			else if (SelectedDiagram == 3)
-			{
-				for (int node = 0; node <= selectedNodes.size() - 1; node += 1)
-				{
-					int elemID = -1;
-					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
-					{
-						if (structure.getMesh().getElements().get(i).getExternalNodes().contains(selectedNodes.get(node)))
-						{
-							elemID = i;
-						}
-					}
-					Yaxisvalues[node] = structure.getMesh().getElements().get(elemID).getIntForces()[dof];
-				}
-			}
-			display2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]), "Resultados na seção", "x var", "y var",
-				Xaxisvalues, Yaxisvalues, Util.FindMin(Xaxisvalues), Util.FindMin(Yaxisvalues),
-				Util.FindMaxAbs(Xaxisvalues), Util.FindMaxAbs(Yaxisvalues), 2, 2, Menus.palette[5], Menus.palette[10], DP);
-		}
-		else if (-1 < selectedNodes.get(0).getID())
-		{
-			if (-1 < SelectedVar)
-			{						
-				double[] XValues = structure.getMesh().getNodes().get(nodeid).getLoadDisp()[SelectedVar][0];
-				double[] YValues = structure.getMesh().getNodes().get(nodeid).getLoadDisp()[SelectedVar][1];
-				display2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]),
-						"Curva carga-deslocamento", "u (mm)", "Fator de carga", XValues, YValues,
-						Util.FindMin(XValues), Util.FindMin(YValues), Util.FindMaxAbs(XValues), Util.FindMaxAbs(YValues), 3, 3, Menus.palette[5], Menus.palette[10], DP);					
-			}
-		}
+		
+		Node selectedNode = structure.getMesh().getNodes().get(0) ;
+		double[] XValues = selectedNode.getLoadDisp()[selectedDOF][0];
+		double[] YValues = selectedNode.getLoadDisp()[selectedDOF][1];
+
+		// if (1 < selectedNodes.size())
+		// {
+		// 	displayDiagram(SelectedDiagram, selectedNodes) ;
+		// }
+		// else
+		// {
+		// 	// Node selectedNode = structure.getMesh().getNodes().get(0) ;
+
+		// 	if (-1 < selectedDOF)
+		// 	{
+		// 		// double[] XValues = selectedNode.getLoadDisp()[selectedDOF][0];
+		// 		// double[] YValues = selectedNode.getLoadDisp()[selectedDOF][1];
+
+		// 	}
+		// }
+
+		display2DPlot(CurvePos, Math.min(CurveSize[0], CurveSize[1]),
+		"Curva carga-deslocamento", "u (mm)", "Fator de carga", XValues, YValues,
+		Util.FindMin(XValues), Util.FindMin(YValues), Util.FindMaxAbs(XValues), Util.FindMaxAbs(YValues), 3, 3, Menus.palette[5], Menus.palette[10], DP);					
+
 	}
 
 	
-    @Override
+	
+    public void setSelectedDiagram(int selectedDiagram) {this.selectedDiagram = selectedDiagram ;}
+	public void setSelectedDOF(int selectedDOF) {this.selectedDOF = selectedDOF ;}
+
+	@Override
     public void paintComponent(Graphics graphs) 
     {
         super.paintComponent(graphs);
@@ -283,7 +311,7 @@ public class DiagramsPanel extends JPanel
 		{
 			DrawPrimitives DP = Menus.getInstance().getMainPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-			display(MainPanel.structure, MainPanel.structure.getMesh().getSelectedNodes(), MainPanel.SelectedVar, MainPanel.SelectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
+			display(MainPanel.structure, selectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
 			repaint();
 		}
     }

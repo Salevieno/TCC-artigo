@@ -62,6 +62,7 @@ public class ToolbarResults extends JPanel
 
                     // ShowResult(structure);
                     Menus.getInstance().getEastPanel().getLegendPanel().switchDisplay(selectedDiagram, selectedVar) ;
+                    Menus.getInstance().getEastPanel().getDiagramsPanel().setSelectedDOF(selectedVar) ;
                     Menus.getInstance().getMainPanel().switchDisplay(selectedDiagram, selectedVar) ;
                 }
             }
