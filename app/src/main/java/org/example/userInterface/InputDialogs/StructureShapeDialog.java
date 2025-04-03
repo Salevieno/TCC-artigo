@@ -35,7 +35,7 @@ public class StructureShapeDialog extends InputDialogWithButtons
         StructureShape structureShape = StructureShape.valueOf(inputStructureShape) ;
         MainPanel.CreateStructureOnClick(structureShape) ;
         Menus.getInstance().getNorthPanel().getUpperToolbar().showButtonSnipToGridOn();
-        Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
+        Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
     }
 
 }

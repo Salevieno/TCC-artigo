@@ -32,6 +32,11 @@ public class Mesh
         this.elems = elem;
     }
 
+	public Mesh(MeshDTO dto)
+	{
+		this.nodes = dto.createNodes() ;
+		this.elems = dto.createElements() ;
+	}
     
 	public static void DrawElemDetails(ElemType elemType, MyCanvas canvas, DrawPrimitives DP)
 	{
@@ -85,7 +90,7 @@ public class Mesh
 		{
 			nodes.get(node).setDOFType(Elem.getDOFsPerNode()[node]);
 		}
-		Elem.setCumDOFs(Util.CumDOFsOnElem(nodes, Elem.getExternalNodes().size()));
+		Elem.setCumDOFs(Elem.cumDOFs());
 		for (int node = 0; node <= nodes.size() - 1; node += 1)
 		{
 			nodes.get(node).setDofs(new int[Elem.getDOFsPerNode()[node].length]);
@@ -217,6 +222,32 @@ public class Mesh
 	}
 
 
+	public int[] defineDOFsOnNode()
+	{
+		int[] DOFsOnNode = null;  
+		int[][] DOFsPerNode = (int[][]) elems.get(0).getDOFsPerNode() ;
+		for (Element elem : elems)
+		{
+        	for (int elemnode = 0; elemnode <= elem.getExternalNodes().size() - 1; elemnode += 1)
+        	{
+        		DOFsOnNode = DOFsPerNode[elemnode];
+        	}
+		}
+        
+        return DOFsOnNode;
+	}
+
+	public void assignElementDOFs()
+	{
+		for (Element elem : elems)
+		{
+			elem.setCumDOFs(elem.cumDOFs());
+        	elem.setUndeformedCoords(nodes);
+        	elem.updateCenterCoords();
+		}
+	}
+
+	
     public void reset()
     {
         nodes = null ;
@@ -761,5 +792,6 @@ public class Mesh
 
 		return string ;
     }
+
 
 }

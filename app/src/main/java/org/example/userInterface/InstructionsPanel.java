@@ -63,9 +63,9 @@ public class InstructionsPanel extends JPanel
         }) ;
     }
 
-    public void updateStepsCompletion()
+    public void updateStepsCompletion(Structure structure, Loading loading)
     {
-        stepIsComplete = updateSteps(MainPanel.structure, MainPanel.loading);
+        stepIsComplete = updateSteps(structure, loading);
         for (int i = 0; i < stepIsComplete.size(); i++)
         {
             JLabel label = (JLabel) this.getComponent(i+1);

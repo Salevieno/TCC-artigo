@@ -828,7 +828,7 @@ public class MainPanel extends JPanel
 			{
 				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, MenuFunctions.SnipToGridIsOn);
 				Menus.getInstance().EnableButtons();
-				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
+				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
 			}
 			if (!StructureCreationIsOn)
 			{

@@ -41,7 +41,7 @@ public class CreateMeshDialog extends InputDialogWithGrid
             Menus.getInstance().getMainPanel().updateDrawings() ;
 			MenuFunctions.NodeView();
 			MenuFunctions.ElemView();
-			Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
+			Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
 			MenuStructure.updateEnabledSubMenus();
     }
 

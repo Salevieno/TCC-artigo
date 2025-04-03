@@ -72,7 +72,7 @@ public class Element
 		IntForces = null;
 		this.type = type;
 		this.isSelected = false ;
-		DefineProperties(type);
+		defineProperties(type);
 		currentId += 1;
 	}
 
@@ -86,8 +86,20 @@ public class Element
 		this(ExternalNodes, null, type);
 	}
 
+	public Element(ElementDTO dto)
+	{
+		this.id = dto.getID() ;
+		this.type = dto.getType() ;
+		this.Shape = dto.getShape() ;
+		this.externalNodes = dto.getExternalNodes() ;
+		this.mat = dto.getMat() ;
+		this.sec = dto.getSec() ;
+		this.distLoads = dto.getDistLoads() ;
+		defineProperties(type) ;
+	}
 
-	public void DefineProperties(ElemType type)
+
+	public void defineProperties(ElemType type)
 	{
 		int nodesPerElem ;
 		switch (type)
@@ -196,6 +208,17 @@ public class Element
 		Strain = new double[StrainTypes.length];
 		Stress = new double[StrainTypes.length];
 		IntForces = new double[StrainTypes.length];
+	}
+
+	public int[] cumDOFs()
+	{
+		int[] CumDOFsOnElem = new int[externalNodes.size()];
+        for (int elemnode = 1; elemnode <= externalNodes.size() - 1; elemnode += 1)
+        {
+        	CumDOFsOnElem[elemnode] = CumDOFsOnElem[elemnode - 1] + externalNodes.get(elemnode - 1).getDOFType().length;
+        }
+        
+        return CumDOFsOnElem;
 	}
 
 	public double[] calcHalfSize(List<Node> nodes)

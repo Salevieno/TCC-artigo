@@ -32,7 +32,7 @@ public class DiagramsPanel extends JPanel
 	
 	private int selectedDiagram = - 1 ;
 	private int selectedDOF = -1 ;
-	private Chart chart = new Chart(new Point(0, 0), ChartType.line, "", 0) ;
+	private Chart chart = new Chart(new Point(0, 0), ChartType.point, "", 0) ;
 	private Dataset data = new Dataset() ;
 	private List<Dataset> datasets = new ArrayList<>() ;
     // private static final long serialVersionUID = 1L;

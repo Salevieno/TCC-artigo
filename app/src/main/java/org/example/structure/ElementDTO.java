@@ -28,7 +28,37 @@ public class ElementDTO
         
         this.ExternalNodes = element.getExternalNodes();	// Nodes on the contour (along the edges) in the counter-clockwise direction
         this.mat = element.getMat() ;
-        // this.sec = element.getSec();
+        this.sec = element.getSec() ;
         this.distLoads = element.getDistLoads();
     }
+
+    public int getID() {
+        return ID;
+    }
+
+    public ElemType getType() {
+        return type;
+    }
+
+    public ElemShape getShape() {
+        return Shape;
+    }
+
+    public List<Node> getExternalNodes() {
+        return ExternalNodes;
+    }
+
+    public Material getMat() {
+        return mat;
+    }
+
+    public Section getSec() {
+        return sec;
+    }
+
+    public List<DistLoad> getDistLoads() {
+        return distLoads;
+    }
+
+    
 }

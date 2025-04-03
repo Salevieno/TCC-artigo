@@ -54,6 +54,16 @@ public class Node
 		isSelected = false ;
 	}
 
+	public Node(NodeDTO dto)
+	{
+		this.ID = dto.getID() ;
+		this.coords = dto.getCoords() ;
+		this.Sup = dto.getSup() ;
+		this.concLoads = dto.getConcLoad() ;
+		this.nodalDisps = dto.getNodalDisp() ;
+		this.dofs = dto.getDofs() ;
+	}
+
 	public Point3D pos(boolean deformed)
 	{
 		return deformed ? deformedPos() : coords ;

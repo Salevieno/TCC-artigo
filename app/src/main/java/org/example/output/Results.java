@@ -290,15 +290,7 @@ public class Results
 				+ Arrays.toString(StressMin) + ", StressMax=" + Arrays.toString(StressMax) + ", InternalForcesMin="
 				+ Arrays.toString(InternalForcesMin) + ", InternalForcesMax=" + Arrays.toString(InternalForcesMax)
 				+ ", Reactions=" + Arrays.toString(Reactions) + ", SumReactions=" + Arrays.toString(SumReactions)
-				+ ", LoadDisp=" + Arrays.toString(LoadDisp) + ", getClass()=" + getClass() + ", hashCode()="
-				+ hashCode() + ", getDispMin()=" + Arrays.toString(getDispMin()) + ", getDispMax()="
-				+ Arrays.toString(getDispMax()) + ", getStrainMin()=" + Arrays.toString(getStrainMin())
-				+ ", getStrainMax()=" + Arrays.toString(getStrainMax()) + ", getStressMin()="
-				+ Arrays.toString(getStressMin()) + ", getStressMax()=" + Arrays.toString(getStressMax())
-				+ ", getInternalForcesMin()=" + Arrays.toString(getInternalForcesMin()) + ", getInternalForcesMax()="
-				+ Arrays.toString(getInternalForcesMax()) + ", getReactions()=" + Arrays.toString(getReactions())
-				+ ", getSumReactions()=" + Arrays.toString(getSumReactions()) + ", getLoadDisp()="
-				+ Arrays.toString(getLoadDisp()) + ", toString()=" + super.toString() + "]";
+				+ ", LoadDisp=" + Arrays.toString(LoadDisp);
 	}
 	
 	

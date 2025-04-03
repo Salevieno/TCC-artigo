@@ -858,31 +858,6 @@ public abstract class Util
 		}
 	}
 
-	public static int[] DefineDOFsOnNode(List<Element> Elem)
-	{
-		int[] DOFsOnNode = null;  
-		int[][] DOFsPerNode = (int[][]) Elem.get(0).getDOFsPerNode() ;
-		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
-        {
-        	for (int elemnode = 0; elemnode <= Elem.get(elem).getExternalNodes().size() - 1; elemnode += 1)
-        	{
-        		DOFsOnNode = DOFsPerNode[elemnode];
-        	}
-        }
-        
-        return DOFsOnNode;
-	}
-	
-	public static int[] CumDOFsOnElem(List<Node> Node, int NumberOfNodes)
-	{
-		int[] CumDOFsOnElem = new int[NumberOfNodes];
-        for (int elemnode = 1; elemnode <= NumberOfNodes - 1; elemnode += 1)
-        {
-        	CumDOFsOnElem[elemnode] = CumDOFsOnElem[elemnode - 1] + Node.get(elemnode - 1).getDOFType().length;
-        }
-        
-        return CumDOFsOnElem;
-	}
 	
 	public static InputDTO LoadEspecialInput(String fileName)
 	{

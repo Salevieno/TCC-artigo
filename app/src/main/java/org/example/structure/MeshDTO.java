@@ -27,4 +27,26 @@ public class MeshDTO
             this.elemsDTO.add(new ElementDTO(elem)) ;
         }
     }
+
+    public List<Node> createNodes()
+    {
+        List<Node> nodes = new ArrayList<>() ;
+        for (NodeDTO dto : nodesDTO)
+        {
+            nodes.add(new Node(dto)) ;
+        }
+
+        return nodes ;
+    }
+
+    public List<Element> createElements()
+    {
+        List<Element> elems = new ArrayList<>() ;
+        for (ElementDTO dto : elemsDTO)
+        {
+            elems.add(new Element(dto)) ;
+        }
+
+        return elems ;
+    }
 }

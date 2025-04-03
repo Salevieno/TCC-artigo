@@ -28,4 +28,30 @@ public class StructureDTO
         this.supports = structure.getSupports() ;
         this.results = structure.getResults() ;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public StructureShape getShape() {
+        return shape;
+    }
+
+    public List<Point3D> getCoords() {
+        return coords;
+    }
+
+    public MeshDTO getMeshDTO() {
+        return meshDTO;
+    }
+
+    public List<Supports> getSupports() {
+        return supports;
+    }
+
+    public Results getResults() {
+        return results;
+    }
+
+    
 }

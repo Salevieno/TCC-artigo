@@ -66,6 +66,22 @@ public class Structure
 		resultDiagrams = new ResultDiagrams() ;
 	}
 	
+	public Structure(StructureDTO dto)
+	{
+		this.name = dto.getName() ;
+		this.shape = dto.getShape() ;
+		this.coords = dto.getCoords() ;
+		if (coords != null && !coords.isEmpty())
+		{
+			center = calcCenter(coords);
+			minCoords = calcMinCoords(coords);
+			maxCoords = calcMaxCoords(coords);
+		}
+		this.mesh = new Mesh(dto.getMeshDTO()) ;
+		this.supports = dto.getSupports() ;
+		this.results = dto.getResults() ;
+	}
+
 	private static Point3D calcCenter(List<Point3D> coords)
 	{
 		Point3D center = new Point3D(0, 0, 0);
@@ -102,6 +118,25 @@ public class Structure
 	public void updateCenter() { center = calcCenter(coords) ;}
 	public void updateMinCoords() { minCoords = calcMinCoords(coords) ;}
 	public void updateMaxCoords() { maxCoords = calcMaxCoords(coords) ;}
+
+	public void calcAndAssignDOFs()
+	{
+		NFreeDOFs = -1;
+		for (Node node : mesh.getNodes())
+		{
+			node.setDOFType(mesh.defineDOFsOnNode());
+			node.calcdofs(getSupports(), NFreeDOFs + 1);
+			for (int dof = 0; dof <= node.getDofs().length - 1; dof += 1)
+	        {
+				if (-1 < node.getDofs()[dof])
+				{
+					NFreeDOFs = node.getDofs()[dof];
+				}
+	        }
+			node.resetLoadDispCurve();
+		}
+		NFreeDOFs += 1;
+	}
 
 	public static Structure create(List<Point3D> coords, MeshType meshType, int[] meshSizes, ElemType elemType,
 			Material currentMatType, List<Material> matTypes,

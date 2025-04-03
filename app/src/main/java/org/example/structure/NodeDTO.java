@@ -29,4 +29,30 @@ public class NodeDTO
         this.NodalDisp = node.getNodalDisps() ;
         this.dofs = node.getDOFs() ;
     }
+
+    public int getID() {
+        return ID;
+    }
+
+    public Point3D getCoords() {
+        return coords;
+    }
+
+    public int[] getSup() {
+        return Sup;
+    }
+
+    public List<ConcLoad> getConcLoad() {
+        return ConcLoad;
+    }
+
+    public List<NodalDisp> getNodalDisp() {
+        return NodalDisp;
+    }
+
+    public int[] getDofs() {
+        return dofs;
+    }
+
+    
 }

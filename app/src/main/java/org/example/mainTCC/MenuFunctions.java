@@ -375,27 +375,8 @@ public abstract class MenuFunctions
 	/* Analysis menu functions */
 	public static void CalcAnalysisParameters(Structure struct, Loading loading)
 	{
-		struct.NFreeDOFs = -1;
-		for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
-        {
-			struct.getMesh().getNodes().get(node).setDOFType(Util.DefineDOFsOnNode(struct.getMesh().getElements()));
-			struct.getMesh().getNodes().get(node).calcdofs(struct.getSupports(), struct.NFreeDOFs + 1);
-			for (int dof = 0; dof <= struct.getMesh().getNodes().get(node).getDofs().length - 1; dof += 1)
-	        {
-				if (-1 < struct.getMesh().getNodes().get(node).getDofs()[dof])
-				{
-					struct.NFreeDOFs = struct.getMesh().getNodes().get(node).getDofs()[dof];
-				}
-	        }
-			struct.getMesh().getNodes().get(node).resetLoadDispCurve();
-        }
-		struct.NFreeDOFs += 1;
-		for (Element elem : struct.getMesh().getElements())
-		{
-			elem.setCumDOFs(Util.CumDOFsOnElem(struct.getMesh().getNodes(), elem.getExternalNodes().size()));
-        	elem.setUndeformedCoords(struct.getMesh().getNodes());
-        	elem.updateCenterCoords();
-		}
+		struct.calcAndAssignDOFs() ;
+		struct.getMesh().assignElementDOFs() ;
 		for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
 		{
 			int[][] ElemNodeDOF = null;
@@ -723,7 +704,7 @@ public abstract class MenuFunctions
 
 			boolean NonlinearMat = true;
 			boolean NonlinearGeo = false;
-			Analysis.run(structure2, loading, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
+			Analysis.run(structure2, loading, NonlinearMat, NonlinearGeo, 10, 10, 15); // 10, 5, 15.743
 
 			System.out.println("\nresults structure 2");
 			System.out.println(Arrays.toString(structure2.getU()));
