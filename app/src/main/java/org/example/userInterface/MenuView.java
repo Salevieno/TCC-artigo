@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.example.mainTCC.MenuFunctions;
+import org.example.service.MenuViewService;
 
 public class MenuView extends JMenu
 {
@@ -32,7 +32,8 @@ public class MenuView extends JMenu
 	private JMenuItem DOFNumberView ;
     private JMenuItem NodeNumberView, ElemNumberView, MatView, SecView, NodeView, ElemView, ElemContourView, SupView, LoadsValuesView, ConcLoadsView, DistLoadsView, NodalDispsView, ReactionsView;
 	private JMenuItem ReactionValues, ReactionArrows;
-	private boolean ShowReactionArrows, ShowReactionValues ;
+
+	private MenuViewService view = MenuViewService.getInstance() ;
 
     public MenuView()
     {
@@ -41,25 +42,25 @@ public class MenuView extends JMenu
 
 		NodeView = new JMenuItem(ViewMenuItemsNames[0]);
 		ElemView = new JMenuItem(ViewMenuItemsNames[1]);
-		DOFNumberView = new JMenuItem(ViewMenuItemsNames[2], KeyEvent.VK_D);
-		NodeNumberView = new JMenuItem(ViewMenuItemsNames[3], KeyEvent.VK_N);
-		ElemNumberView = new JMenuItem(ViewMenuItemsNames[4], KeyEvent.VK_E);
-		MatView = new JMenuItem(ViewMenuItemsNames[5], KeyEvent.VK_M);
-		SecView = new JMenuItem(ViewMenuItemsNames[6], KeyEvent.VK_S);
-		ElemContourView = new JMenuItem(ViewMenuItemsNames[7]);
-		SupView = new JMenuItem(ViewMenuItemsNames[8]);
 		ConcLoadsView = new JMenuItem(ViewMenuItemsNames[9], KeyEvent.VK_C);
 		DistLoadsView = new JMenuItem(ViewMenuItemsNames[10]);
 		NodalDispsView = new JMenuItem(ViewMenuItemsNames[11]);
-		LoadsValuesView = new JMenuItem(ViewMenuItemsNames[12]);
 		ReactionsView = new JMenu(ViewMenuItemsNames[13]);
+		LoadsValuesView = new JMenuItem(ViewMenuItemsNames[12]);
+		SupView = new JMenuItem(ViewMenuItemsNames[8]);
+		DOFNumberView = new JMenuItem(ViewMenuItemsNames[2], KeyEvent.VK_D);
+		NodeNumberView = new JMenuItem(ViewMenuItemsNames[3], KeyEvent.VK_N);
+		ElemNumberView = new JMenuItem(ViewMenuItemsNames[4], KeyEvent.VK_E);
+		ElemContourView = new JMenuItem(ViewMenuItemsNames[7]);
+		MatView = new JMenuItem(ViewMenuItemsNames[5], KeyEvent.VK_M);
+		SecView = new JMenuItem(ViewMenuItemsNames[6], KeyEvent.VK_S);
 		DOFNumberView.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowDOFNumber = !ShowDOFNumber;
-				MenuFunctions.DOFNumberView();
+				view.switchDOFNumberView() ;
 			}
 		});
 		NodeNumberView.addActionListener(new ActionListener()
@@ -68,7 +69,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowNodeNumber = !ShowNodeNumber;
-				MenuFunctions.NodeNumberView();
+				view.switchNodeNumberView();
 			}
 		});
 		ElemNumberView.addActionListener(new ActionListener()
@@ -77,7 +78,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowElemNumber = !ShowElemNumber;
-				MenuFunctions.ElemNumberView();
+				view.switchElemNumberView();
 			}
 		});
 		MatView.addActionListener(new ActionListener()
@@ -86,7 +87,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowMatColor = !ShowMatColor;
-				MenuFunctions.MatView();
+				view.switchMatView();
 			}
 		});
 		SecView.addActionListener(new ActionListener()
@@ -95,7 +96,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowSecColor = !ShowSecColor;
-				MenuFunctions.SecView();
+				view.switchSecView();
 			}
 		});
 		NodeView.addActionListener(new ActionListener()
@@ -104,7 +105,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowNodes = !ShowNodes;
-				MenuFunctions.NodeView();
+				view.switchNodeView();
 			}
 		});
 		ElemView.addActionListener(new ActionListener()
@@ -113,7 +114,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowElems = !ShowElems;
-				MenuFunctions.ElemView();
+				view.switchElemView();
 			}
 		});
 		ElemContourView.addActionListener(new ActionListener()
@@ -122,7 +123,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowElemContour = !ShowElemContour;
-				MenuFunctions.ElemContourView();
+				view.switchElemContourView();
 			}
 		});
 		SupView.addActionListener(new ActionListener()
@@ -131,7 +132,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowSup = !ShowSup;
-				MenuFunctions.SupView();
+				view.switchSupView();
 			}
 		});
 		LoadsValuesView.addActionListener(new ActionListener()
@@ -140,7 +141,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowLoadsValues = !ShowLoadsValues;
-				MenuFunctions.LoadsValuesView();
+				view.switchLoadsValuesView();
 			}
 		});
 		ConcLoadsView.addActionListener(new ActionListener()
@@ -149,7 +150,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowConcLoads = !ShowConcLoads;
-				MenuFunctions.ConcLoadsView();
+				view.switchConcLoadsView();
 			}
 		});
 		DistLoadsView.addActionListener(new ActionListener()
@@ -158,7 +159,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowDistLoads = !ShowDistLoads;
-				MenuFunctions.DistLoadsView();
+				view.switchDistLoadsView();
 			}
 		});
 		NodalDispsView.addActionListener(new ActionListener()
@@ -167,7 +168,7 @@ public class MenuView extends JMenu
 			public void actionPerformed(ActionEvent e) 
 			{
 				//ShowNodalDisps = !ShowNodalDisps;
-				MenuFunctions.NodalDispsView();
+				view.switchNodalDispsView();
 			}
 		});
 		DOFNumberView.setForeground(Menus.palette[5]);
@@ -212,8 +213,8 @@ public class MenuView extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				ShowReactionArrows = !ShowReactionArrows;
-				repaint();
+				// ShowReactionArrows = !ShowReactionArrows;
+				view.switchReactionArrowsView() ;
 			}
 		});
 		ReactionValues.addActionListener(new ActionListener()
@@ -221,8 +222,8 @@ public class MenuView extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				ShowReactionValues = !ShowReactionValues;
-				repaint();
+				// ShowReactionValues = !ShowReactionValues;
+				view.switchReactionValuesView() ;
 			}
 		});
 		ReactionsView.add(ReactionArrows);

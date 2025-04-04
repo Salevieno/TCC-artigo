@@ -38,117 +38,7 @@ public class Mesh
 		this.elems = dto.createElements() ;
 	}
     
-	public static void DrawElemDetails(ElemType elemType, MyCanvas canvas, DrawPrimitives DP)
-	{
-		Point3D RealStructCenter = new Point3D(5, 5, 0);
-		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		ElemShape elemShape = Element.typeToShape(elemType);
-		List<Node> nodes = new ArrayList<>();
-		Element Elem = null;
-		if (elemShape.equals(ElemShape.rectangular))
-		{
-			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
-			nodes.add(new Node(1, new Point3D(9, 1, 0))) ;
-			nodes.add(new Node(2, new Point3D(9, 9, 0))) ;
-			nodes.add(new Node(3, new Point3D(1, 9, 0))) ;
-			Elem = new Element(nodes, elemType);
-		}
-		else if (elemShape.equals(ElemShape.quad))
-		{
-			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
-			nodes.add(new Node(1, new Point3D(9, 3, 0))) ;
-			nodes.add(new Node(2, new Point3D(7, 9, 0))) ;
-			nodes.add(new Node(3, new Point3D(3, 7, 0))) ;
-			Elem = new Element(nodes, elemType);
-		}
-		else if (elemShape.equals(ElemShape.triangular))
-		{
-			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
-			nodes.add(new Node(1, new Point3D(9, 5, 0))) ;
-			nodes.add(new Node(2, new Point3D(1, 9, 0))) ;
-			Elem = new Element(nodes, elemType);
-		}
-		else if (elemShape.equals(ElemShape.r8))
-		{
-			nodes.add(new Node(0, new Point3D(1, 1, 0))) ;
-			nodes.add(new Node(1, new Point3D(9, 1, 0))) ;
-			nodes.add(new Node(2, new Point3D(9, 9, 0))) ;
-			nodes.add(new Node(3, new Point3D(1, 9, 0))) ;
-			nodes.add(new Node(3, new Point3D(5, 1, 0))) ;
-			nodes.add(new Node(3, new Point3D(5, 9, 0))) ;
-			nodes.add(new Node(3, new Point3D(1, 5, 0))) ;
-			nodes.add(new Node(3, new Point3D(9, 5, 0))) ;
-			Elem = new Element(nodes, elemType) ;
-			// TODO testar elem r8
-			// Elem = new Element(0, new int[] {0, 4, 1, 7, 2, 5, 3, 6}, elemType);
-		}
-		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealStructCenter.asArray(), Center, canvas.getAngles().asArray()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		int textSize = 16;
-		Color textColor = Menus.palette[8];
-		
-		for (int node = 0; node <= nodes.size() - 1; node += 1)
-		{
-			nodes.get(node).setDOFType(Elem.getDOFsPerNode()[node]);
-		}
-		Elem.setCumDOFs(Elem.cumDOFs());
-		for (int node = 0; node <= nodes.size() - 1; node += 1)
-		{
-			nodes.get(node).setDofs(new int[Elem.getDOFsPerNode()[node].length]);
-			for (int dof = 0; dof <= Elem.getDOFsPerNode()[node].length - 1; dof += 1)
-			{
-				nodes.get(node).getDOFs()[dof] = Elem.getCumDOFs()[node] + dof;
-			}
-		}
-		DrawNodes3D(nodes, null, Node.color, false, nodes.get(0).getDOFType(), 1, canvas, DP);
-		Element.draw3D(new Mesh(nodes, List.of(Elem)), null, false, false, true, false, 1, canvas, DP);
-		Draw.DrawDOFNumbers(nodes, Node.color, false, canvas, DP);
-		DrawDOFSymbols(nodes, Node.color, false, canvas, DP);
-		// DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)}, elemType.toString(), "Center", 0, "Bold", textSize, textColor);
-		// DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1]}, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), "Center", 0, "Bold", textSize, textColor);
-		// DP.DrawText(new int[] {DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)}, "Deformaçõs: " + Arrays.toString(Elem.getStrainTypes()), "Center", 0, "Bold", textSize, textColor);
 	
-		Point p1 = new Point(DrawingStructCenter[0], DrawingStructCenter[1] - (int) (1 * 1.5 * textSize)) ;
-		Point p2 = new Point(DrawingStructCenter[0], DrawingStructCenter[1]) ;
-		Point p3 = new Point(DrawingStructCenter[0], DrawingStructCenter[1] + (int) (1 * 1.5 * textSize)) ;
-
-		DP.drawText(p1, Align.center, elemType.toString(), textColor) ;
-		DP.drawText(p2, Align.center, "Graus de liberdade: " + Arrays.toString(Elem.getDOFs()), textColor) ;
-		DP.drawText(p3, Align.center, "Deformaçõs: " + Arrays.toString(Elem.getStrainTypes()), textColor) ;
-	}
-
-	
-	private static void DrawNodes3D(List<Node> Node, List<Node> selectedNodes, Color NodeColor, boolean deformed,
-									int[] DOFsPerNode, double Defscale, MyCanvas canvas, DrawPrimitives DP)
-	{
-		int size = 6;
-		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-		for (int node = 0; node <= Node.size() - 1; node += 1)
-		{
-			int[][] DrawingCoords = new int[Node.size()][3];
-			if (deformed)
-			{
-				double[] DeformedCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsPerNode, Defscale);
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			}
-			else
-			{
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
-			}
-			Point drawingCoords = new Point(DrawingCoords[node][0], DrawingCoords[node][1]) ;
-			DP.drawCircle(drawingCoords, size, NodeColor);
-			if (selectedNodes != null)
-			{
-				for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
-				{
-					if (node == selectedNodes.get(i).getID())
-					{
-						DP.drawCircle(drawingCoords, 2*size, Menus.palette[4]);
-					}
-				}
-			}
-		}
-	}
-
 	public static Point3D dofAngles(int dof)
 	{
 		switch (dof)
@@ -159,66 +49,6 @@ public class Mesh
 		
 			default: return null ;
 		}
-	}
-
-	private static void DrawDOFSymbols(List<Node> Node, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
-	{
-		Color ForceDOFColor = Menus.palette[8];
-		Color MomentDOFColor = Menus.palette[9];
-		Color CrossDerivativeDOFColor = Menus.palette[11];
-		Color ShearRotationDOFColor = Menus.palette[11];
-		int thickness = 2;
-		double arrowsize = 0.5;
-		for (int node = 0; node <= Node.size() - 1; node += 1)
-		{
-			double[] NodeRealPos = Util.GetNodePos(Node.get(node), deformed);
-			for (int dof = 0; dof <= Node.get(node).getDOFs().length - 1; dof += 1)
-			{
-				// TODO use Mesh.dofAngles(dof)
-				if (Node.get(node).getDOFType()[dof] == 0)
-				{
-					Draw.DrawArrow3Dto(Node.get(node).pos(deformed), new Point3D(0, 0, 0), arrowsize, ForceDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 1)
-				{
-					Draw.DrawArrow3Dto(Node.get(node).pos(deformed), new Point3D(0, 0, Math.PI / 2), arrowsize, ForceDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 2)
-				{
-					Draw.DrawArrow3Dto(Node.get(node).pos(deformed), new Point3D(0, Math.PI / 2, 0), arrowsize, ForceDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 3)
-				{
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 1.5 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 1.8 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 4)
-				{
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 1.5 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 1.8 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 5)
-				{
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, Math.PI / 2, 0}, 1.5 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, Math.PI / 2, 0}, 1.8 * arrowsize, 0.3 * arrowsize, MomentDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 6)
-				{
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 4}, 1.5 * arrowsize, 0.3 * arrowsize, CrossDerivativeDOFColor, canvas, DP);
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 4}, 1.8 * arrowsize, 0.3 * arrowsize, CrossDerivativeDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 7)
-				{
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 0.7 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, 0}, 1.0 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
-				}
-				if (Node.get(node).getDOFType()[dof] == 8)
-				{
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 0.7 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
-					Draw.DrawArrow3Dfrom(NodeRealPos, thickness, new double[] {0, 0, Math.PI / 2}, 1.0 * arrowsize, 0.3 * arrowsize, ShearRotationDOFColor, canvas, DP);
-				}
-			}	
-		}	
 	}
 
 
@@ -270,6 +100,28 @@ public class Mesh
 
 	public List<Node> getSelectedNodes() { return nodes.stream().filter(node -> node.isSelected()).collect(Collectors.toList()) ;}
 	public List<Element> getSelectedElements() { return elems.stream().filter(elem -> elem.isSelected()).collect(Collectors.toList()) ;}
+
+	public void assignMaterials(Material mat)
+	{
+		if (mat == null) { return ;}
+		if (!hasElementsSelected()) { return ;}		
+		
+		List<Element> selectedElems = getSelectedElements() ;
+		selectedElems.forEach(elem -> elem.setMat(mat)) ;
+		
+		unselectAllElements() ;
+	}
+
+	public void assignSections(Section sec)
+	{
+		if (sec == null) { return ;}		
+		if (!hasElementsSelected()) { return ;}
+		
+		List<Element> selectedElems = getSelectedElements() ;
+		selectedElems.forEach(elem -> elem.setSec(sec)) ;
+		
+		unselectAllElements() ;
+	}
 
 	private boolean hasElements() { return elems != null && !elems.isEmpty() ;}
 

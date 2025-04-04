@@ -9,6 +9,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.mainTCC.MenuFunctions;
+import org.example.service.MenuViewService;
 import org.example.structure.Element;
 import org.example.utilidades.Util;
 import org.example.view.MainPanel;
@@ -49,7 +50,7 @@ public class MenuResults extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.DeformedStructureView();
+				MenuViewService.getInstance().switchDeformedStructureView();
 			}
 		});
 		/*DisplacementContours.addActionListener(new ActionListener()

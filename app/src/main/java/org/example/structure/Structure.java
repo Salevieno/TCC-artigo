@@ -14,6 +14,7 @@ import org.example.mainTCC.MenuFunctions;
 import org.example.output.Diagram;
 import org.example.output.ResultDiagrams;
 import org.example.output.Results;
+import org.example.service.MenuViewService;
 import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
@@ -383,7 +384,7 @@ public class Structure
 		for (Node node : mesh.getNodes())
 		{
 			if (node.getConcLoads() == null) { continue ;}
-			node.displayConcLoads(dofs, MenuFunctions.ShowLoadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			node.displayConcLoads(dofs, MenuViewService.getInstance().loadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
 			// for (ConcLoad concLoad : node.getConcLoads())
 			// {
 			// 	int[] dofs = mesh.getElements().get(0).getDOFs() ;

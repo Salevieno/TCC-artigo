@@ -14,6 +14,7 @@ import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
 import org.example.output.SaveOutput;
+import org.example.service.MenuViewService;
 import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
@@ -34,12 +35,8 @@ public abstract class MenuFunctions
 {
 
 	public static Point mousePos;
-	public static boolean ShowNodes ;
-	public static boolean ShowElems, ShowConcLoads, ShowDistLoads, ShowNodalDisps, ShowReactionArrows, ShowReactionValues, ShowLoadsValues, ShowSup;
-	public static boolean ShowDOFNumber, ShowNodeNumber, ShowElemNumber, ShowElemContour, ShowMatColor, ShowSecColor, ShowElemDetails;
 	public static boolean SnipToGridIsOn;
 	public static boolean AnalysisIsComplete;
-	public static boolean ShowDeformedStructure ;
 	
 	public static double[] DiagramScales;
 	
@@ -51,13 +48,12 @@ public abstract class MenuFunctions
 	public static boolean NonlinearGeo;
 	
 	public static Point ElemSelectionWindowInitialPos;
+	private static MenuViewService view = MenuViewService.getInstance() ;
 	
 	static
 	{
 		mousePos = new Point();
 		SnipToGridIsOn = false;
-		ShowDeformedStructure = false;			
-		ShowLoadsValues = true;
 		
 		SupType = Supports.Types;
 		
@@ -289,103 +285,21 @@ public abstract class MenuFunctions
 			return null ;
 		}
 	}
-
-	/* Visual menu functions */
 	
-	public static void DOFNumberView()
-	{
-		ShowDOFNumber = !ShowDOFNumber;
-	}
-	
-	public static void NodeNumberView()
-	{
-		ShowNodeNumber = !ShowNodeNumber;
-	}
-	
-	public static void ElemNumberView()
-	{
-		ShowElemNumber = !ShowElemNumber;
-	}
-	
-	public static void MatView()
-	{
-		ShowMatColor = !ShowMatColor;
-	}
-	
-	public static void SecView()
-	{
-		ShowSecColor = !ShowSecColor;
-	}
-	
-	public static void NodeView()
-	{
-		ShowNodes = !ShowNodes;
-	}
-	
-	public static void ElemView()
-	{
-		ShowElems = !ShowElems;
-	}
-	
-	public static void ElemContourView()
-	{
-		ShowElemContour = !ShowElemContour;
-	}
-	
-	public static void SupView()
-	{
-		ShowSup = !ShowSup;
-	}
-	
-	public static void ConcLoadsView()
-	{
-		ShowConcLoads = !ShowConcLoads;
-	}
-	
-	public static void DistLoadsView()
-	{
-		ShowDistLoads = !ShowDistLoads;
-	}
-	
-	public static void NodalDispsView()
-	{
-		ShowNodalDisps = !ShowNodalDisps;
-	}
-	
-	public static void LoadsValuesView()
-	{
-		ShowLoadsValues = !ShowLoadsValues;
-	}
-	
-	public static void ReactionArrowsView()
-	{
-		ShowReactionArrows= !ShowReactionArrows;
-	}
-	
-	public static void ReactionValuesView()
-	{
-		ShowReactionValues = !ShowReactionValues;
-	}
-	
-	public static void ElemDetailsView()
-	{
-		ShowElemDetails = !ShowElemDetails;
-	}
 	
 	/* Analysis menu functions */
 	public static void CalcAnalysisParameters(Structure struct, Loading loading)
 	{
 		struct.calcAndAssignDOFs() ;
 		struct.getMesh().assignElementDOFs() ;
-		for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
+		for (Element elem : struct.getMesh().getElements())
 		{
 			int[][] ElemNodeDOF = null;
-			for (int elemnode = 0; elemnode <= struct.getMesh().getElements().get(elem).getExternalNodes().size() - 1; elemnode += 1)
+			for (Node node : elem.getExternalNodes())
 	    	{
-				int nodeID = struct.getMesh().getElements().get(elem).getExternalNodes().get(elemnode).getID() ;
-				ElemNodeDOF = Util.AddElem(ElemNodeDOF, struct.getMesh().getNodes().get(nodeID).getDofs());
+				ElemNodeDOF = Util.AddElem(ElemNodeDOF, struct.getMesh().getNodes().get(node.getID()).getDofs());
 	    	}
-			struct.getMesh().getElements().get(elem).setNodeDOF(ElemNodeDOF);
+			elem.setNodeDOF(ElemNodeDOF);
 		}
 		if (concLoadTypes != null)
 		{
@@ -439,13 +353,15 @@ public abstract class MenuFunctions
 		}
 		structure.getResults().register(structure.getMesh(), structure.getSupports(), structure.getU(), NonlinearMat, NonlinearGeo);
 		System.out.println(structure.getResults()) ;
-		ShowNodes = true;
-		ShowElems = true;
+
+		view.nodes = true;
+		view.elems = true;
+		view.reactionArrows = true;
+		view.deformedStructure = true;
+
 		MainPanel.nodeSelectionIsActive = true;
 		MainPanel.elemSelectionIsActive = true;
 		AnalysisIsComplete = true;
-		ShowReactionArrows = true;
-		ShowDeformedStructure = true;
 		DiagramScales[1] = 1;
 		double MaxDisp = Util.FindMaxAbs(structure.getU());
 		if (0 < MaxDisp)
@@ -562,11 +478,6 @@ public abstract class MenuFunctions
 		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
 	}
 	
-	public static void DeformedStructureView()
-	{
-		ShowDeformedStructure = !ShowDeformedStructure;
-	}
-	
 	public static void SaveLoadDispCurve(Structure structure)
 	{
 		if (-1 < MainPanel.SelectedVar)
@@ -611,7 +522,7 @@ public abstract class MenuFunctions
 			}
 		}
 		MainPanel.selectedConcLoadID = SelConcLoad;
-		MainPanel.AddConcLoads(loading, selectedNodes, ConcLoadType);
+		Menus.getInstance().getMainPanel().AddConcLoads(loading, selectedNodes, ConcLoadType);
 
 
 		MainPanel.selectedDistLoadID = SelDistLoad;
@@ -622,7 +533,7 @@ public abstract class MenuFunctions
 			// {
 			// 	SelectedElems = Util.AddElem(SelectedElems, elem);
 			// }
-			MainPanel.AddDistLoads(structure, loading, SelectedElems, DistLoadType);
+			Menus.getInstance().getMainPanel().AddDistLoads(structure, loading, SelectedElems, DistLoadType);
 		}
 
 		return loading ;
@@ -704,7 +615,7 @@ public abstract class MenuFunctions
 
 			boolean NonlinearMat = true;
 			boolean NonlinearGeo = false;
-			Analysis.run(structure2, loading, NonlinearMat, NonlinearGeo, 10, 10, 15); // 10, 5, 15.743
+			Analysis.run(structure2, loading, NonlinearMat, NonlinearGeo, 10, 5, 15.743);
 
 			System.out.println("\nresults structure 2");
 			System.out.println(Arrays.toString(structure2.getU()));
@@ -762,7 +673,8 @@ public abstract class MenuFunctions
 		Structure structure = new Structure(null, null, null);
 		MainPanel.loading.clearLoads() ;
 		Menus.getInstance().getMainPanel().resetDisplay() ;
-		resetDisplay();
+		view.reset() ;
+		reset() ;
 		if (exampleID == 0)
 		{
  			structure = LoadFile(".\\Exemplos\\", "0-KR1");
@@ -833,10 +745,13 @@ public abstract class MenuFunctions
 		MainPanel.structure.getResults().register(MainPanel.structure.getMesh(), MainPanel.structure.getSupports(), MainPanel.structure.getU(), NonlinearMat, NonlinearGeo);
 		MainPanel.nodeSelectionIsActive = true;
 		MainPanel.elemSelectionIsActive = true;
+
 		AnalysisIsComplete = true;
-		ShowReactionArrows = true;
-		ShowReactionValues = true;
-		ShowDeformedStructure = true;
+
+		view.reactionArrows = true;
+		view.reactionValues = true;
+		view.deformedStructure = true;
+
 		double MaxDisp = Util.FindMaxAbs(MainPanel.structure.getU());
 		if (0 < MaxDisp)
 		{
@@ -858,28 +773,11 @@ public abstract class MenuFunctions
 		}
 	}
 
-	public static void resetDisplay()
+	public static void reset()
 	{
 		concLoadTypes = null ;
 		DistLoadType = null ;
 		NodalDispType = null ;
-		ShowNodes = false;
-		ShowElems = false;
-		ShowConcLoads = false;
-		ShowDistLoads = false;
-		ShowNodalDisps = false;
-		ShowReactionArrows = false;
-		ShowReactionValues = false;
-		ShowSup = false;
-		ShowDOFNumber = false;
-		ShowNodeNumber = false;
-		ShowElemNumber = false;
-		ShowElemContour = true;
-		ShowMatColor = false;
-		ShowSecColor = false;
-		// StructureCreationIsOn = false;
-		ShowLoadsValues = true;
 		AnalysisIsComplete = false;
-		ShowDeformedStructure = false;
 	}
 }

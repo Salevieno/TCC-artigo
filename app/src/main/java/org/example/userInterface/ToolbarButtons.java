@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.example.mainTCC.MenuFunctions;
+import org.example.service.MenuViewService;
 import org.example.view.MainPanel;
 
 public class ToolbarButtons extends JPanel
@@ -54,6 +55,7 @@ public class ToolbarButtons extends JPanel
     private static String exampleid ;
     // private static final InputDialogWithButtons exampleInputPanel ;
     private static final String assetsPath = "./assets/Tb1B" ;
+    private static final MenuViewService view = MenuViewService.getInstance() ;
 
     static
     {
@@ -242,7 +244,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.DOFNumberView();
+                view.switchDOFNumberView();
             }
         });
         buttonShowNodeNumbers.addActionListener(new ActionListener()
@@ -250,7 +252,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.NodeNumberView();
+                view.switchNodeNumberView();
             }
         });
         buttonShowElemNumbers.addActionListener(new ActionListener()
@@ -258,7 +260,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.ElemNumberView();
+                view.switchElemNumberView();
             }
         });
         buttonShowElemMats.addActionListener(new ActionListener()
@@ -266,7 +268,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.MatView();
+                view.switchMatView();
             }
         });
         buttonShowNodes.addActionListener(new ActionListener()
@@ -274,7 +276,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.SecView();
+                view.switchSecView();
             }
         });
         buttonShowElems.addActionListener(new ActionListener()
@@ -282,7 +284,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.NodeView();
+                view.switchNodeView();
             }
         });
         buttonShowElemContours.addActionListener(new ActionListener()
@@ -290,7 +292,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.ElemView();
+                view.switchElemView();
             }
         });
         buttonShowSups.addActionListener(new ActionListener()
@@ -298,7 +300,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.ElemContourView();
+                view.switchElemContourView();
             }
         });
         buttonShowConcLoads.addActionListener(new ActionListener()
@@ -306,7 +308,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.SupView();
+                view.switchSupView();
             }
         });
         buttonShowDistLoads.addActionListener(new ActionListener()
@@ -314,7 +316,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.ConcLoadsView();
+                view.switchConcLoadsView();
             }
         });
         buttonShowNodalDisps.addActionListener(new ActionListener()
@@ -322,7 +324,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.DistLoadsView();
+                view.switchDistLoadsView();
             }
         });
         buttonShowLoadsReactions.addActionListener(new ActionListener()
@@ -330,7 +332,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.NodalDispsView();
+                view.switchNodalDispsView();
             }
         });
         buttonShowReactions.addActionListener(new ActionListener()
@@ -338,8 +340,8 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                MenuFunctions.LoadsValuesView();
-                MenuFunctions.ReactionValuesView();
+                view.switchLoadsValuesView();
+                view.switchReactionValuesView();
             }
         });
         // buttonShowReactions.addActionListener(new ActionListener()

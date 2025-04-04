@@ -29,6 +29,7 @@ import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
 import org.example.mainTCC.MenuFunctions;
 import org.example.output.Diagram;
+import org.example.service.MenuViewService;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -83,6 +84,8 @@ public class MainPanel extends JPanel
 	public static List<Material> matTypes ;
 	public static List<Section> secTypes ;
 	
+	private MenuViewService view = MenuViewService.getInstance() ;
+
 	public static Structure structure ;
 	public static Loading loading ;
 	
@@ -340,7 +343,7 @@ public class MainPanel extends JPanel
 			}
 			// structure.displayMesh(canvas, MenuFunctions.DiagramScales[1], showMatColor, showSecColor, showElemContour, showDeformedStructure, DP) ;
 		}
-		if (MenuFunctions.ShowNodes && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
+		if (view.nodes && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
 			// DP.DrawNodes3D(structure.getMesh().getNodes(), MenuFunctions.selectedNodes, Node.color, showDeformedStructure,
 			// structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas);
@@ -348,61 +351,63 @@ public class MainPanel extends JPanel
 		if (MenuFunctions.AnalysisIsComplete)
 		{
 			// DrawResults(canvas, structure, MenuFunctions.SelectedElems, SelectedVar,
-			// MenuFunctions.ShowElemContour, showDeformedStructure,
+			// view.ElemContour, showDeformedStructure,
 			// MenuFunctions.DiagramScales, ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces,
 			// MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo);
 
 			// Results.displayContours(canvas, structure, MenuFunctions.SelectedElems, SelectedVar,
-			// 						MenuFunctions.ShowElemContour, showDeformedStructure,
+			// 						view.ElemContour, showDeformedStructure,
 			// 						MenuFunctions.DiagramScales, ShowDisplacementContour, ShowStressContour, ShowStrainContour, ShowInternalForces,
 			// 						MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, DP);
 			structure.displayDiagrams(canvas, diagram, SelectedVar, DP) ;
 			
-			if (MenuFunctions.ShowReactionArrows && structure != null && structure.getReactions() != null)
+			if (view.reactionArrows && structure != null && structure.getReactions() != null)
 			{
 				// DP.DrawReactions3D(structure.getMesh().getNodes(), structure.getReactions(),
-				// 	structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues,
-				// 	Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas, DPP);
+				// 	structure.getMesh().getElements().get(0).getDOFs(), view.ReactionValues,
+				// 	Reactions.color, view.DeformedStructure, MenuFunctions.DiagramScales[1], canvas, DPP);
 
 				Reactions.display3D(structure.getMesh().getNodes(), structure.getReactions(),
-						structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowReactionValues,
-						Reactions.color, MenuFunctions.ShowDeformedStructure, MenuFunctions.DiagramScales[1], canvas, DP);
+						structure.getMesh().getElements().get(0).getDOFs(), view.reactionValues,
+						Reactions.color, view.deformedStructure, MenuFunctions.DiagramScales[1], canvas, DP);
 			}
 		}
-		if (MenuFunctions.ShowSup && structure != null && structure.getSupports() != null)
+		if (view.sup && structure != null && structure.getSupports() != null)
 		{
 			structure.displaySupports(canvas, DP) ;
 		}
-		if (MenuFunctions.ShowConcLoads && loading != null && loading.getConcLoads() != null)
+		if (view.concLoads && loading != null && loading.getConcLoads() != null)
 		{
 			structure.displayConcLoads(canvas, showDeformedStructure, DP) ;
 		}
-		if (MenuFunctions.ShowDistLoads && loading != null && loading.getDistLoads() != null)
+		if (view.distLoads && loading != null && loading.getDistLoads() != null)
 		{
-			Draw.DrawDistLoads3D(structure.getMesh(), MenuFunctions.ShowLoadsValues,
-				showDeformedStructure, structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.DiagramScales[1], canvas, DP);
+			Draw.DrawDistLoads3D(structure.getMesh(), view.loadsValues,
+							showDeformedStructure, structure.getMesh().getElements().get(0).getDOFs(),
+							MenuFunctions.DiagramScales[1], canvas, DP);
 		}
-		if (MenuFunctions.ShowNodalDisps && loading != null && loading.getNodalDisps() != null)
+		if (view.nodalDisps && loading != null && loading.getNodalDisps() != null)
 		{
-			Draw.DrawNodalDisps3D(structure.getMesh().getNodes(), loading.getNodalDisps(), structure.getMesh().getElements().get(0).getDOFs(), MenuFunctions.ShowLoadsValues,
-			NodalDisp.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
+			Draw.DrawNodalDisps3D(structure.getMesh().getNodes(), loading.getNodalDisps(),
+							structure.getMesh().getElements().get(0).getDOFs(), view.loadsValues,
+							NodalDisp.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
 		}
-		if (MenuFunctions.ShowDOFNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
+		if (view.DOFNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
 			Draw.DrawDOFNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas, DP);
 		}
-		if (MenuFunctions.ShowNodeNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
+		if (view.nodeNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
 			structure.getMesh().getNodes().forEach(node -> node.displayNumber(canvas, showDeformedStructure, DP)) ;
 		}
-		if (MenuFunctions.ShowElemNumber && structure != null && structure.getMesh() != null &&  structure.getMesh().getElements() != null)
+		if (view.elemNumber && structure != null && structure.getMesh() != null &&  structure.getMesh().getElements() != null)
 		{
 			// DP.DrawElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas);
 			structure.getMesh().displayElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas, DP) ;
 		}
-		if (MenuFunctions.ShowElemDetails && MenuFunctions.SelectedElemType != null)
+		if (view.elemDetails && MenuFunctions.SelectedElemType != null)
 		{
-			Mesh.DrawElemDetails(ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()), canvas, DP);
+			Element.displayTypeDetails(ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase()), canvas, DP);
 		}
 
 		if (selectionWindow != null && selectionWindow.isActive())
@@ -695,24 +700,10 @@ public class MainPanel extends JPanel
 		structure.getMesh().unselectAllElements() ;
 	}
 
-	public static void AddSectionsToElements(List<Element> elems, Section sec)
-	{
-		if (sec == null || elems == null || elems.isEmpty()) { return ;}
-
-		for (Element elem : elems)
-		{
-			if (elem.isSelected())
-			{
-				elem.setSec(sec) ;
-			}
-		}
-		
-		structure.getMesh().unselectAllElements() ;
-	}
 	
-	public static void AddSupports()
+	public void AddSupports()
 	{
-		if (selectedSupID <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.SupType == null ) { return ;}
+		if (selectedSupID <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.SupType == null) { return ;}
 
 		for (Node node : structure.getMesh().getSelectedNodes())
 		{
@@ -722,11 +713,11 @@ public class MainPanel extends JPanel
 			node.setSup(MenuFunctions.SupType[selectedSupID]);
 		}
 
-		MenuFunctions.ShowSup = true;
+		view.sup = true;
 		structure.getMesh().unselectAllNodes() ;
 	}
 	
-	public static void AddConcLoads(Loading loading, List<Node> selectedNodes, List<Force> ConcLoadType)
+	public void AddConcLoads(Loading loading, List<Node> selectedNodes, List<Force> ConcLoadType)
 	{
 		if (-1 < selectedConcLoadID && selectedNodes != null && ConcLoadType != null && 1 <= ConcLoadType.size())
 		{
@@ -739,12 +730,12 @@ public class MainPanel extends JPanel
 					selectedNodes.get(i).addConcLoad(newConcLoad);
 				}
 			}
-			MenuFunctions.ShowConcLoads = true;
+			view.concLoads = true;
 			selectedNodes = null;
 		}
 	}
 	
-	public static void AddDistLoads(Structure structure, Loading loading, List<Element> selectedElems, double[][] DistLoadType)
+	public void AddDistLoads(Structure structure, Loading loading, List<Element> selectedElems, double[][] DistLoadType)
 	{
 		if (-1 < selectedDistLoadID && selectedElems != null && DistLoadType != null)
 		{
@@ -758,12 +749,12 @@ public class MainPanel extends JPanel
 				elem.addDistLoad(newDistLoad) ;
 				
 			}
-			MenuFunctions.ShowDistLoads = true;
+			view.distLoads = true;
 			selectedElems = null;
 		}
 	}
 	
-	public static void AddNodalDisps()
+	public void AddNodalDisps()
 	{
 		if (selectedNodalDispID <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.NodalDispType == null ) { return ;}
 		
@@ -774,7 +765,7 @@ public class MainPanel extends JPanel
 			loading.getNodalDisps().add(newNodalDisp);
 			node.addNodalDisp(newNodalDisp);
 		}
-		MenuFunctions.ShowNodalDisps = true;
+		view.nodalDisps = true;
 		structure.getMesh().unselectAllNodes() ;
 	}
 	
@@ -846,7 +837,6 @@ public class MainPanel extends JPanel
 		if (evt.getButton() == 3)	// Right click
 		{
 			MainPanel.structure.printStructure(matTypes, secTypes, MainPanel.structure.getSupports(), loading);
-			MenuFunctions.ElemDetailsView();
 		}
 	}
 

@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
+import org.example.structure.Material;
+import org.example.structure.Section;
 import org.example.view.Assignable;
 import org.example.view.MainPanel;
 import org.example.view.NorthPanel;
@@ -99,15 +101,17 @@ public class UpperToolbar extends JPanel
 			{
 				if (Assignable.materials.equals(assignable))
 				{
-					MainPanel.AddMaterialToElements(MainPanel.structure.getMesh().getSelectedElements(), MainPanel.matTypes.get(MainPanel.selectedMatID));
+					Material mat = MainPanel.matTypes.get(MainPanel.selectedMatID) ;
+					MainPanel.structure.getMesh().assignMaterials(mat) ;
 				}
 				if (Assignable.sections.equals(assignable))
 				{
-					MainPanel.AddSectionsToElements(MainPanel.structure.getMesh().getSelectedElements(), MainPanel.secTypes.get(MainPanel.selectedSecID));
+					Section sec = MainPanel.secTypes.get(MainPanel.selectedSecID) ;
+					MainPanel.structure.getMesh().assignSections(sec) ;
 				}
 				if (Assignable.distLoads.equals(assignable))
 				{
-					MainPanel.AddDistLoads(MainPanel.structure, MainPanel.loading, MainPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
+					Menus.getInstance().getMainPanel().AddDistLoads(MainPanel.structure, MainPanel.loading, MainPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
 				}
 			}
 		});
@@ -118,15 +122,15 @@ public class UpperToolbar extends JPanel
 			{
 				if (Assignable.supports.equals(assignable))
 				{
-					MainPanel.AddSupports();					
+					Menus.getInstance().getMainPanel().AddSupports();					
 				}
 				if (Assignable.concLoads.equals(assignable))
 				{
-					MainPanel.AddConcLoads(MainPanel.loading, MainPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
+					Menus.getInstance().getMainPanel().AddConcLoads(MainPanel.loading, MainPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
 				}
 				if (Assignable.nodalDisps.equals(assignable))
 				{
-					MainPanel.AddNodalDisps();
+					Menus.getInstance().getMainPanel().AddNodalDisps();
 				}
 			}
 		});
