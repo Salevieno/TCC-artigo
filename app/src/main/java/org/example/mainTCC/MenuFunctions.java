@@ -288,16 +288,16 @@ public abstract class MenuFunctions
 	
 	
 	/* Analysis menu functions */
-	public static void CalcAnalysisParameters(Structure struct, Loading loading)
+	public static void CalcAnalysisParameters(Structure structure, Loading loading)
 	{
-		struct.calcAndAssignDOFs() ;
-		struct.getMesh().assignElementDOFs() ;
-		for (Element elem : struct.getMesh().getElements())
+		structure.calcAndAssignDOFs() ;
+		structure.getMesh().assignElementDOFs() ;
+		for (Element elem : structure.getMesh().getElements())
 		{
 			int[][] ElemNodeDOF = null;
 			for (Node node : elem.getExternalNodes())
 	    	{
-				ElemNodeDOF = Util.AddElem(ElemNodeDOF, struct.getMesh().getNodes().get(node.getID()).getDofs());
+				ElemNodeDOF = Util.AddElem(ElemNodeDOF, structure.getMesh().getNodes().get(node.getID()).getDofs());
 	    	}
 			elem.setNodeDOF(ElemNodeDOF);
 		}
@@ -309,7 +309,7 @@ public abstract class MenuFunctions
 				if (-1 < nodeid)
 				{
 					loading.getConcLoads().set(loadid, new ConcLoad(concLoadTypes.get(loadid))) ;
-					struct.getMesh().getNodes().get(nodeid).addConcLoad(loading.getConcLoads().get(loadid));
+					structure.getMesh().getNodes().get(nodeid).addConcLoad(loading.getConcLoads().get(loadid));
 				}
 			}
 		}
@@ -334,7 +334,7 @@ public abstract class MenuFunctions
 				{
 					DistLoad distLoad = new DistLoad(LoadType, Intensity) ;
 					loading.getDistLoads().set(loadid, distLoad) ;
-					struct.getMesh().getElements().get(elemid).addDistLoad(distLoad);
+					structure.getMesh().getElements().get(elemid).addDistLoad(distLoad);
 				}
 			}
 		}

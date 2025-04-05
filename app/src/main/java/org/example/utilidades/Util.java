@@ -841,6 +841,11 @@ public abstract class Util
 		int red = -1, green = -1, blue = -1;
 		double maxAbs = Math.max(Math.abs(min), max);
 
+		if (value < min || max < value)
+		{
+			return Color.black ;
+		}
+
 		switch (colorSystem)
 		{
 			case redToGreen:

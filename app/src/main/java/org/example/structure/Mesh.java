@@ -35,7 +35,7 @@ public class Mesh
 	public Mesh(MeshDTO dto)
 	{
 		this.nodes = dto.createNodes() ;
-		this.elems = dto.createElements() ;
+		this.elems = dto.createElements(nodes) ;
 	}
     
 	

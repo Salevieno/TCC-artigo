@@ -229,12 +229,7 @@ public class UpperToolbar extends JPanel
         MainPanel.nodeSelectionIsActive = false;
         MainPanel.elemSelectionIsActive = false;
         Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
-        boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
-        
-        if (ReadyForAnalysis)
-        {
-            Menus.getInstance().getMenuAnalysis().setRunAnalysis(true) ;
-        }
+        Menus.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(MainPanel.structure, MainPanel.loading) ;
     }
 
     public void enableMaterialAssignment() { assignable = Assignable.materials ;}

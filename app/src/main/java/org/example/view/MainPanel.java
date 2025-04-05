@@ -850,7 +850,10 @@ public class MainPanel extends JPanel
 		{
 			// canvas.getDimension()[0] += Util.Round(0.2*Math.log10(canvas.getDimension()[0])*qtdRotation, 1);
 			// canvas.getDimension()[1] += Util.Round(0.2*Math.log10(canvas.getDimension()[1])*qtdRotation, 1);
-			structure.getResultDiagrams().incScale(Util.Round(Math.log10(structure.getResultDiagrams().getScale()) * qtdRotation, 1)) ;
+			if (structure.getResultDiagrams() != null)
+			{
+				structure.getResultDiagrams().incScale(Util.Round(Math.log10(structure.getResultDiagrams().getScale()) * qtdRotation, 1)) ;
+			}
 		}
 		if (!MouseIsInMainCanvas & assignable != null)
 		{

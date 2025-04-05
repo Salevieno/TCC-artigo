@@ -88,15 +88,21 @@ public class Element
 		this(ExternalNodes, null, type);
 	}
 
-	public Element(ElementDTO dto)
+	public Element(List<Node> nodes, ElementDTO dto)
 	{
 		this.id = dto.getID() ;
 		this.type = dto.getType() ;
 		this.Shape = dto.getShape() ;
-		this.externalNodes = dto.getExternalNodes() ;
 		this.mat = dto.getMat() ;
 		this.sec = dto.getSec() ;
 		this.distLoads = dto.getDistLoads() ;
+
+		this.externalNodes = dto.getExternalNodes() ;
+		for (int i = 0 ; i <= externalNodes.size() - 1 ; i += 1)
+		{
+			Node extNode = externalNodes.get(i) ;
+			externalNodes.set(i, nodes.stream().filter(node -> node.getID() == extNode.getID()).findFirst().get()) ;
+		}
 		defineProperties(type) ;
 	}
 
@@ -525,11 +531,11 @@ public class Element
 		{
 			color = Util.AddColor(color, new double[] {0, -50, 100});
 		}
-		if (showmatcolor && mat != null)
+		if (showmatcolor && mat != null && mat.getColor() != null)
 		{
 			color = mat.getColor() ;
 		}
-		if (showseccolor && sec != null)
+		if (showseccolor && sec != null && sec.getColor() != null)
 		{
 			color = sec.getColor() ;
 		}

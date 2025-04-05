@@ -8,8 +8,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.analysis.Analysis;
+import org.example.loading.Loading;
 import org.example.mainTCC.MenuFunctions;
-import org.example.structure.Element;
+import org.example.structure.Structure;
 import org.example.userInterface.InputDialogs.DefineAnalysisDialog;
 import org.example.view.MainPanel;
 
@@ -58,9 +59,10 @@ public class MenuAnalysis extends JMenu
 		this.add(runAnalysis);
     }
 
-	public void updateIsReadyForAnalysis()
+	public void updateIsReadyForAnalysis(Structure structure, Loading loading)
 	{
-        isReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
+        isReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(structure, loading);
+		setRunAnalysisEnabled(isReadyForAnalysis) ;
 	}
 
 	public void setAnalysisTypeID(int analysisTypeID) { this.analysisTypeID = analysisTypeID ;}
@@ -79,6 +81,6 @@ public class MenuAnalysis extends JMenu
 		Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
 	}
 
-	public void setRunAnalysis(boolean state) { runAnalysis.setEnabled(state) ;}
+	public void setRunAnalysisEnabled(boolean state) { runAnalysis.setEnabled(state) ;}
 
 }

@@ -72,9 +72,8 @@ public class InstructionsPanel extends JPanel
             ImageIcon updatedIcon = stepIsComplete.get(i) ? okIcon : null;
             label.setIcon(updatedIcon);
         }
-        
-        boolean ReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(MainPanel.structure, MainPanel.loading);
-        Menus.getInstance().getMenuAnalysis().updateIsReadyForAnalysis() ;
+
+        Menus.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(structure, loading) ;
     }
     
 	public List<Boolean> updateSteps(Structure structure, Loading loading)

@@ -39,12 +39,12 @@ public class MeshDTO
         return nodes ;
     }
 
-    public List<Element> createElements()
+    public List<Element> createElements(List<Node> nodes)
     {
         List<Element> elems = new ArrayList<>() ;
         for (ElementDTO dto : elemsDTO)
         {
-            elems.add(new Element(dto)) ;
+            elems.add(new Element(nodes, dto)) ;
         }
 
         return elems ;

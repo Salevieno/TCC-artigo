@@ -81,6 +81,7 @@ public class Structure
 		this.mesh = new Mesh(dto.getMeshDTO()) ;
 		this.supports = dto.getSupports() ;
 		this.results = dto.getResults() ;
+		resultDiagrams = new ResultDiagrams() ;
 	}
 
 	private static Point3D calcCenter(List<Point3D> coords)
@@ -395,6 +396,8 @@ public class Structure
 
 	public void displayDiagrams(MyCanvas canvas, Diagram diagram, int selectedVar, DrawPrimitives DP)
 	{
+		if (resultDiagrams == null) { return ;}
+
 		resultDiagrams.setDiagram(diagram) ;
 		resultDiagrams.setSelectedVar(selectedVar) ;
 		resultDiagrams.display(canvas, mesh, results, DP) ;
