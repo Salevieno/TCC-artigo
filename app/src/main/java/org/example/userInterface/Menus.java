@@ -125,10 +125,11 @@ public class Menus extends JFrame
 		menuBar.add(resultsMenu);
 		menuBar.add(especialMenu);
 
-		setJMenuBar(menuBar);
-		setTitle("TCC");				// Super frame sets its title
-		setPreferredSize(initialSize) ;		// Super frame sets its size
-		setVisible(true);					// Super frame gets into the show
+		this.setJMenuBar(menuBar);
+		this.setTitle("TCC");				// Super frame sets its title
+		this.setPreferredSize(initialSize) ;		// Super frame sets its size
+		this.setVisible(true);					// Super frame gets into the show
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE) ;
 		pack();
 		/* Super frame sets its everything. Super frame is so independent! =,) */
 

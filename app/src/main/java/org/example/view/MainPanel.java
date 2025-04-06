@@ -33,7 +33,6 @@ import org.example.service.MenuViewService;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
-import org.example.structure.Mesh;
 import org.example.structure.Node;
 import org.example.structure.Reactions;
 import org.example.structure.Section;
@@ -77,8 +76,6 @@ public class MainPanel extends JPanel
 	public static int SelectedVar = -1;
 	
 	private SelectionWindow selectionWindow ;
-	private boolean showNodeSelectionWindow ;
-	private boolean showElemSelectionWindow;
 	
 	private static boolean StructureCreationIsOn = false;
 	public static List<Material> matTypes ;
@@ -806,7 +803,6 @@ public class MainPanel extends JPanel
 
 	public void resetDisplay()
 	{
-		showElemSelectionWindow = false;
 		diagram = null ;
 	}
 

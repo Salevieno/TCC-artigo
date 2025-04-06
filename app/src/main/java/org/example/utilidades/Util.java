@@ -839,7 +839,7 @@ public abstract class Util
 	public static Color FindColor(double value, double min, double max, ColorSystem colorSystem)
 	{
 		int red = -1, green = -1, blue = -1;
-		double maxAbs = Math.max(Math.abs(min), max);
+		double maxAbs = Math.max(Math.abs(min), Math.abs(max));
 
 		if (value < min || max < value)
 		{
