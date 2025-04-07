@@ -13,7 +13,7 @@ public class CreateMaterialsDialog extends InputDialogWithGrid
 
     public CreateMaterialsDialog()
     {
-        super("Materials", "Mat", labels, false) ;
+        super("Materials", "Mat", labels, true) ;
     }
 
     @Override
