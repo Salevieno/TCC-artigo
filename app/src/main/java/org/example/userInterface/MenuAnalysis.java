@@ -7,12 +7,14 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.example.Main;
 import org.example.analysis.Analysis;
 import org.example.loading.Loading;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Structure;
 import org.example.userInterface.InputDialogs.DefineAnalysisDialog;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class MenuAnalysis extends JMenu
 {
@@ -20,8 +22,8 @@ public class MenuAnalysis extends JMenu
 	private JMenuItem runAnalysis;
     private boolean isReadyForAnalysis;
 	private int analysisTypeID = -1 ;
-	private static boolean geometryIsNonLinear ;
-	private static boolean matIsNonLinear ;
+	// private static boolean geometryIsNonLinear ;
+	// private static boolean matIsNonLinear ;
 	private static int qtdIterations = 1 ;
 	private static int qtdLoadSteps = 1;
 	private static double maxLoadFactor = 1;
@@ -55,7 +57,7 @@ public class MenuAnalysis extends JMenu
 			}
 		});
 		runAnalysis.setEnabled(false);
-		runAnalysis.setForeground(Menus.palette[5]);
+		runAnalysis.setForeground(Main.palette[5]);
 		this.add(runAnalysis);
     }
 
@@ -69,16 +71,17 @@ public class MenuAnalysis extends JMenu
 	
 	public static void runAnalysis(int analysisTypeID)
 	{
-		geometryIsNonLinear = analysisTypeID == 1 || analysisTypeID == 3 ;
-		matIsNonLinear = analysisTypeID == 2 || analysisTypeID == 3 ;
-		MenuFunctions.CalcAnalysisParameters(MainPanel.structure, MainPanel.loading);
-		Analysis.run(MainPanel.structure, MainPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, qtdIterations, qtdLoadSteps, maxLoadFactor);
-		MenuFunctions.PostAnalysis(MainPanel.structure);
+		// geometryIsNonLinear = analysisTypeID == 1 || analysisTypeID == 3 ;
+		// matIsNonLinear = analysisTypeID == 2 || analysisTypeID == 3 ;
+		MenuFunctions.CalcAnalysisParameters(CentralPanel.structure, CentralPanel.loading);
+		Analysis.run(CentralPanel.structure, CentralPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, qtdIterations, qtdLoadSteps, maxLoadFactor);
+		MenuFunctions.PostAnalysis(CentralPanel.structure);
 		// for (Element elem : MainPanel.structure.getMesh().getElements())
 		// {
 		// 	elem.RecordResults(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getU(), matIsNonLinear, geometryIsNonLinear);
 		// }
-		Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
+		MainPanel.getInstance().ActivatePostAnalysisView(CentralPanel.structure);
+		MenuBar.getInstance().updateEnabledMenus() ;
 	}
 
 	public void setRunAnalysisEnabled(boolean state) { runAnalysis.setEnabled(state) ;}

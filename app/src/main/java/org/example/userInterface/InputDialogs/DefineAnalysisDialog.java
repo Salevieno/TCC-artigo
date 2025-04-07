@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import org.example.userInterface.Menus;
+import org.example.userInterface.MenuBar;
 
 public class DefineAnalysisDialog extends InputDialogWithButtons
 {
@@ -33,8 +33,8 @@ public class DefineAnalysisDialog extends InputDialogWithButtons
     {
         String analysisType = clickedButtonText(ae) ;
         int analysisTypeID = buttonNames.indexOf(analysisType) ;
-        Menus.getInstance().getMenuAnalysis().setAnalysisTypeID(analysisTypeID) ;        
-        Menus.getInstance().getMenuAnalysis().runAnalysis(analysisTypeID) ;
+        MenuBar.getInstance().getMenuAnalysis().setAnalysisTypeID(analysisTypeID) ;        
+        MenuBar.getInstance().getMenuAnalysis().runAnalysis(analysisTypeID) ;
     }
 
 }

@@ -7,9 +7,10 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.example.Main;
 import org.example.service.MenuFileService;
 import org.example.structure.StructureDTO;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public abstract class MenuFile
 {
@@ -34,11 +35,11 @@ public abstract class MenuFile
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				String filename = Menus.getInstance().getSaveLoadFile().run().getText();
+				String filename = CentralPanel.structure.getName() ;
 				// MenuFileService.SaveFile(filename, Menus.getInstance().getMainCanvas(), MainPanel.structure, MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getMesh().getElements(),
 				// 		MainPanel.structure.getSupports(), MainPanel.loading, MenuFunctions.matTypes,
 				// 		MenuFunctions.secTypes);
-				MenuFileService.saveStructure(filename, new StructureDTO(MainPanel.structure)) ;
+				MenuFileService.saveStructure(filename, new StructureDTO(CentralPanel.structure)) ;
 			}
 		});
 		Load.addActionListener(new ActionListener()
@@ -49,8 +50,8 @@ public abstract class MenuFile
 				MenuFileService.loadStructure() ;
 			}
 		});
-		Save.setForeground(Menus.palette[3]);
-		Load.setForeground(Menus.palette[3]);
+		Save.setForeground(Main.palette[3]);
+		Load.setForeground(Main.palette[3]);
 		FileMenu.add(Save);
 		FileMenu.add(Load);
 	}

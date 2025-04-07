@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 
 import org.example.structure.Section;
 import org.example.userInterface.MenuStructure;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class CreateSectionsDialog extends InputDialogWithGrid
 {
@@ -21,7 +21,7 @@ public class CreateSectionsDialog extends InputDialogWithGrid
     {
         for (int i = 0 ; i <= input.length - 1 ; i += 1)
 		{
-            MainPanel.addSection(new Section(input[i][0])) ;
+            CentralPanel.addSection(new Section(input[i][0])) ;
 		}
 		MenuStructure.updateEnabledSubMenus();
     }

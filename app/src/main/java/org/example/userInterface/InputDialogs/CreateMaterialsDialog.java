@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 
 import org.example.structure.Material;
 import org.example.userInterface.MenuStructure;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class CreateMaterialsDialog extends InputDialogWithGrid
 {
@@ -21,7 +21,7 @@ public class CreateMaterialsDialog extends InputDialogWithGrid
     {
         for (int i = 0 ; i <= input.length - 1 ; i += 1)
         {
-            MainPanel.addMaterial(new Material(input[i][0], input[i][1], input[i][2])) ;
+            CentralPanel.addMaterial(new Material(input[i][0], input[i][1], input[i][2])) ;
         }
         MenuStructure.updateEnabledSubMenus();
     }

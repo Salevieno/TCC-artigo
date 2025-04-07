@@ -3,9 +3,9 @@ package org.example.loading;
 import java.awt.Color;
 import java.awt.Point;
 
+import org.example.Main;
 import org.example.structure.Element;
 import org.example.structure.Node;
-import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 
@@ -21,7 +21,7 @@ public class DistLoad
 	private static int MaxArrowSize = 1;
 	private static int stroke = 2;
 	private static Point nArrows = new Point(4, 4) ;
-	public static Color color = Menus.palette[7];
+	public static Color color = Main.palette[7];
 
 	public DistLoad(int Type, double Intensity)
 	{

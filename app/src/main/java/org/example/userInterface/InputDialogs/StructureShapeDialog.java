@@ -7,10 +7,9 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import org.example.mainTCC.MenuFunctions;
+import org.example.mainTCC.MainPanel;
 import org.example.structure.StructureShape;
-import org.example.userInterface.Menus;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class StructureShapeDialog extends InputDialogWithButtons
 {
@@ -33,9 +32,9 @@ public class StructureShapeDialog extends InputDialogWithButtons
     {
         String inputStructureShape = clickedButtonText(ae) ;
         StructureShape structureShape = StructureShape.valueOf(inputStructureShape) ;
-        MainPanel.CreateStructureOnClick(structureShape) ;
-        Menus.getInstance().getNorthPanel().getUpperToolbar().showButtonSnipToGridOn();
-        Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
+        CentralPanel.CreateStructureOnClick(structureShape) ;
+        MainPanel.getInstance().getNorthPanel().getUpperToolbar().showButtonSnipToGridOn();
+        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
     }
 
 }

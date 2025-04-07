@@ -2,13 +2,11 @@ package org.example.view;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.example.Main;
 import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;
-import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 
 import graphics.Align;
@@ -38,7 +36,7 @@ public class SelectionWindow
 		Dimension size = new Dimension(mousePos.x - topLeftPos.x, mousePos.y - topLeftPos.y) ;
 		if (topLeftPos.x <= mousePos.x && topLeftPos.y <= mousePos.y)
 		{
-            DP.drawRect(topLeftPos, Align.topLeft, size, null, Menus.palette[0]) ;
+            DP.drawRect(topLeftPos, Align.topLeft, size, null, Main.palette[0]) ;
 		}
 	}
 

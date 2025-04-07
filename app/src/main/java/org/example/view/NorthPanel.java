@@ -5,20 +5,30 @@ import java.awt.GridBagLayout ;
 
 import javax.swing.JPanel;
 
-import org.example.userInterface.Menus;
+import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.userInterface.UpperToolbar;
 
 public class NorthPanel extends JPanel
 {
 
-	public static final Dimension stdButtonSize = new Dimension(32, 30) ;
+	public static final Dimension stdButtonSize ;
 
-    private UpperToolbar upperToolbar = new UpperToolbar();
-    private JPanel buttonsPanel1 = Menus.stdPanel(new Dimension(7 * stdButtonSize.width + 4, stdButtonSize.height), Menus.palette[2]);
-    private JPanel buttonsPanel2 = Menus.stdPanel(new Dimension(260, 30), Menus.palette[2]);
+    private UpperToolbar upperToolbar ;
+    private JPanel buttonsPanel1 ;
+    private JPanel buttonsPanel2 ;
+
+    static
+    {        
+        stdButtonSize = new Dimension(32, 30) ;
+    }
 
     public NorthPanel()
     {
+        upperToolbar = new UpperToolbar();
+        buttonsPanel1 = MainPanel.stdPanel(new Dimension(7 * stdButtonSize.width + 4, stdButtonSize.height), Main.palette[2]);
+        buttonsPanel2 = MainPanel.stdPanel(new Dimension(260, 30), Main.palette[2]);
+        
         this.setLayout(new GridBagLayout()) ;
 		this.add(buttonsPanel1);
 		this.add(upperToolbar);

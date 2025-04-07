@@ -7,8 +7,10 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class MenuEspecial extends JMenu
 {
@@ -21,15 +23,16 @@ public class MenuEspecial extends JMenu
         this.setMnemonic(KeyEvent.VK_E) ;
 
 		Star = new JMenuItem("Estrela", KeyEvent.VK_S);
-		Star.setForeground(Menus.palette[7]);
+		Star.setForeground(Main.palette[7]);
 		this.add(Star);
 		Star.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MainPanel.structure = MenuFunctions.Especial();
-				Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
+				CentralPanel.structure = MenuFunctions.Especial();
+				MainPanel.getInstance().ActivatePostAnalysisView(CentralPanel.structure);
+				MenuBar.getInstance().updateEnabledMenus() ;
 			}
 		}) ;	
 

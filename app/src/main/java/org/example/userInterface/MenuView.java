@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.example.Main;
 import org.example.service.MenuViewService;
 
 public class MenuView extends JMenu
@@ -171,20 +172,20 @@ public class MenuView extends JMenu
 				view.switchNodalDispsView();
 			}
 		});
-		DOFNumberView.setForeground(Menus.palette[5]);
-		NodeNumberView.setForeground(Menus.palette[5]);
-		ElemNumberView.setForeground(Menus.palette[5]);
-		MatView.setForeground(Menus.palette[5]);
-		SecView.setForeground(Menus.palette[5]);
-		NodeView.setForeground(Menus.palette[5]);
-		ElemView.setForeground(Menus.palette[5]);
-		ElemContourView.setForeground(Menus.palette[5]);
-		SupView.setForeground(Menus.palette[5]);
-		ConcLoadsView.setForeground(Menus.palette[5]);
-		DistLoadsView.setForeground(Menus.palette[5]);
-		NodalDispsView.setForeground(Menus.palette[5]);
-		LoadsValuesView.setForeground(Menus.palette[5]);
-		ReactionsView.setForeground(Menus.palette[5]);
+		DOFNumberView.setForeground(Main.palette[5]);
+		NodeNumberView.setForeground(Main.palette[5]);
+		ElemNumberView.setForeground(Main.palette[5]);
+		MatView.setForeground(Main.palette[5]);
+		SecView.setForeground(Main.palette[5]);
+		NodeView.setForeground(Main.palette[5]);
+		ElemView.setForeground(Main.palette[5]);
+		ElemContourView.setForeground(Main.palette[5]);
+		SupView.setForeground(Main.palette[5]);
+		ConcLoadsView.setForeground(Main.palette[5]);
+		DistLoadsView.setForeground(Main.palette[5]);
+		NodalDispsView.setForeground(Main.palette[5]);
+		LoadsValuesView.setForeground(Main.palette[5]);
+		ReactionsView.setForeground(Main.palette[5]);
 		DOFNumberView.setEnabled(false);
 		this.add(DOFNumberView);
 		this.add(NodeNumberView);
@@ -206,8 +207,8 @@ public class MenuView extends JMenu
 	    String[] ReactionsViewMenuNames = new String[] {"Desenhos", "Valores"};
 		ReactionArrows = new JMenuItem(ReactionsViewMenuNames[0], KeyEvent.VK_C);
 		ReactionValues = new JMenuItem(ReactionsViewMenuNames[1], KeyEvent.VK_C);
-		ReactionArrows.setForeground(Menus.palette[5]);
-		ReactionValues.setForeground(Menus.palette[5]);
+		ReactionArrows.setForeground(Main.palette[5]);
+		ReactionValues.setForeground(Main.palette[5]);
 		ReactionArrows.addActionListener(new ActionListener()
 		{
 			@Override

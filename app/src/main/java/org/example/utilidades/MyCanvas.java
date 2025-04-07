@@ -5,8 +5,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
-import org.example.userInterface.Menus;
-import org.example.view.MainPanel;
+import org.example.Main;
+import org.example.view.CentralPanel;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -48,9 +48,9 @@ public class MyCanvas
 		PointDist[1] = dimension.y/NPoints[1];
 		if (Title != null)
 		{
-			DP.drawText(new Point(pos.x + size.width / 2, pos.y), Align.center, Title, Menus.palette[6]) ;
+			DP.drawText(new Point(pos.x + size.width / 2, pos.y), Align.center, Title, Main.palette[6]) ;
 		}
-		// DP.drawRect(pos, Align.topLeft, new Dimension(size.width, size.height), null, Menus.palette[0]) ;
+		// DP.drawRect(pos, Align.topLeft, new Dimension(size.width, size.height), null, Main.palette[0]) ;
 	}
 
 	public void draw(double[] PointDist, DrawPrimitives DP)
@@ -76,7 +76,7 @@ public class MyCanvas
 	
 	public void drawCenter(DrawPrimitives DP)
 	{
-		DP.drawCircle(new Point(center.x, center.y), 10, 1, Menus.palette[7], null);
+		DP.drawCircle(new Point(center.x, center.y), 10, 1, Main.palette[7], null);
 	}
 
 	public static int[] CalculateNumberOfGridPoints(Point2D.Double CanvasDim)
@@ -114,32 +114,32 @@ public class MyCanvas
 	public void incAngles(double dX, double dY, double dZ)
 	{
 		angles.translate(dX, dY, dZ) ;
-		MainPanel.structure.updateDrawings(this) ;
+		CentralPanel.structure.updateDrawings(this) ;
 	}
 
 	public void topView()
 	{
 		angles.translateTo(0, 0, 0) ;
-		MainPanel.structure.updateDrawings(this) ;
+		CentralPanel.structure.updateDrawings(this) ;
 	}
 
 	public void frontView()
 	{
 		angles.translateTo(0, -Math.PI/2, 0) ;
-		MainPanel.structure.updateDrawings(this) ;
+		CentralPanel.structure.updateDrawings(this) ;
 	}
 
 	public void sideView()
 	{
 		angles.translateTo(-Math.PI/2, 0, 0) ;
-		MainPanel.structure.updateDrawings(this) ;
+		CentralPanel.structure.updateDrawings(this) ;
 	}
 
 	public void incDrawingPos(int dx, int dy)
 	{
 		drawingPos.x += dx;
 		drawingPos.y += dy;
-		MainPanel.structure.updateDrawings(this) ;
+		CentralPanel.structure.updateDrawings(this) ;
 	}
 
 	public Point getPos() {return pos;}

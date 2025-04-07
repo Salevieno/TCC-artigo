@@ -1,4 +1,13 @@
 package org.example.mainTCC;
+
+/*
+ Prâximas adiçõs
+ *Ajustar o desenho de momento 3D
+ *
+ *Mnemonics do menu nâo funcionam
+ *Selecionar elemento retangular clicando dentro
+ */
+
 /*
  * Os menus estâo como variâveis globais pq sâo chamados em mais de uma funââo (sâo criados em uma funââo e set enable em outras)
  * A gente tem que pegar um mousemovementListener pra ele sâ pegar a posiââo do mouse quando o mouse se mover

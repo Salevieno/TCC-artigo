@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.example.Main;
 import org.example.loading.ConcLoad;
 import org.example.loading.DOF;
 import org.example.loading.NodalDisp;
-import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
@@ -39,7 +39,7 @@ public class Node
 	
 	public static int size = 6;
 	public static int stroke = 1;
-	public static Color color = Menus.palette[10];
+	public static Color color = Main.palette[10];
 
 	public Node(int ID, Point3D coords)
 	{
@@ -115,8 +115,8 @@ public class Node
 	{
 		// Point drawingCoords = deformed ? deformedDrawingPos(canvas, dofs, defScale) : undeformedDrawingPos(canvas) ;
 		int displaySize = isSelected ? 2 * size : size ;
-		Color displayColor = isSelected ? Menus.palette[4] : color ;
-		DP.drawCircle(drawingPos, displaySize, stroke, Menus.palette[0], displayColor);
+		Color displayColor = isSelected ? Main.palette[4] : color ;
+		DP.drawCircle(drawingPos, displaySize, stroke, Main.palette[0], displayColor);
 	}
 
 

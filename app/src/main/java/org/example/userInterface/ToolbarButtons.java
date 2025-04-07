@@ -16,9 +16,11 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class ToolbarButtons extends JPanel
 {
@@ -59,7 +61,7 @@ public class ToolbarButtons extends JPanel
 
     static
     {
-        buttonsBGColor = Menus.palette[1];
+        buttonsBGColor = Main.palette[1];
         buttonEspecial = new ButtonToolbarButtons("Especial");
         buttonExample = new ButtonToolbarButtons("Exemplo");
         buttonCreateMesh = new ButtonToolbarButtons("Criar malha");
@@ -98,7 +100,8 @@ public class ToolbarButtons extends JPanel
             if (exampleid != null)
             {
                 MenuFunctions.RunExample(Integer.parseInt(exampleid));
-                Menus.getInstance().ActivatePostAnalysisView(MainPanel.structure);
+                MainPanel.getInstance().ActivatePostAnalysisView(CentralPanel.structure);
+                MenuBar.getInstance().updateEnabledMenus() ;
             }
         } ;
 		ActionWithString defineExampleID = (String exampleID) -> exampleid = exampleID ;
@@ -108,9 +111,9 @@ public class ToolbarButtons extends JPanel
     public ToolbarButtons()
     {        
         this.setLayout(new GridLayout(4, 0));
-        this.setBackground(Menus.palette[1]);
+        this.setBackground(Main.palette[1]);
         this.setVisible(true);
-        this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
+        this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[1]));
     
         ButtonToolbarButtons.getAll().forEach(button -> {
             button.setToolTipText(button.getText());
@@ -196,7 +199,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMainPanel().activateMaterialAssignment();
+                MainPanel.getInstance().getCentralPanel().activateMaterialAssignment();
             }
         });
         buttonAddSec.addActionListener(new ActionListener()
@@ -204,7 +207,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMainPanel().activateSectionAssignment();
+                MainPanel.getInstance().getCentralPanel().activateSectionAssignment();
             }
         });
         buttonAddSup.addActionListener(new ActionListener()
@@ -212,7 +215,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMainPanel().activateSupportAssignment();
+                MainPanel.getInstance().getCentralPanel().activateSupportAssignment();
             }
         });
         buttonAddConcLoads.addActionListener(new ActionListener()
@@ -220,7 +223,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMainPanel().activateConcLoadAssignment();
+                MainPanel.getInstance().getCentralPanel().activateConcLoadAssignment();
             }
         });
         buttonAddDistLoads.addActionListener(new ActionListener()
@@ -228,7 +231,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMainPanel().activateDistLoadAssignment();
+                MainPanel.getInstance().getCentralPanel().activateDistLoadAssignment();
             }
         });
         buttonAddNodalDisps.addActionListener(new ActionListener()
@@ -236,7 +239,7 @@ public class ToolbarButtons extends JPanel
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                Menus.getInstance().getMainPanel().activateNodalDispAssignment();
+                MainPanel.getInstance().getCentralPanel().activateNodalDispAssignment();
             }
         });
         buttonShowDOFs.addActionListener(new ActionListener()

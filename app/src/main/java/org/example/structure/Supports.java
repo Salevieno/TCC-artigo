@@ -5,10 +5,10 @@ import java.awt.Point;
 import java.util.Arrays;
 import java.util.List;
 
-import org.example.userInterface.Menus;
+import org.example.Main;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 import graphics.DrawPrimitives;
 
@@ -19,7 +19,7 @@ public class Supports
 	private int[] DoFs;		// Restrained DoFs
 
 	public static int[][] Types = new int[][] {{1, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0}, {1, 1, 0, 0, 0, 0}, {1, 1, 0, 0, 0, 1}, {1, 1, 1, 1, 1, 1}};
-	public static Color color = Menus.palette[7];
+	public static Color color = Main.palette[7];
 	
 	public Supports(int ID, Node Node, int[] DoFs)
 	{
@@ -74,7 +74,7 @@ public class Supports
 		int thick = 2;
 		int suptype = typeFromDOFs();
 		// int[] rotatedCoords = Util.RotateCoord(MainPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords(), Center, canvas.getAngles()) ;
-		Point Coords = canvas.inDrawingCoords(MainPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords().asDoublePoint()) ;
+		Point Coords = canvas.inDrawingCoords(CentralPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords().asDoublePoint()) ;
 		if (suptype == 0)
 		{
 			double[] angles = new double[] {-canvas.getAngles().x, canvas.getAngles().y, -canvas.getAngles().z};

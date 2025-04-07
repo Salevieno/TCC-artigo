@@ -13,10 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import org.example.Main;
 import org.example.loading.Loading;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Structure;
-import org.example.view.MainPanel;
 
 public class InstructionsPanel extends JPanel
 {
@@ -41,23 +42,23 @@ public class InstructionsPanel extends JPanel
     static
     {
         title = new JLabel("Passo a passo", 2) ;
-		title.setForeground(Menus.palette[0]);
+		title.setForeground(Main.palette[0]);
         okIcon = new ImageIcon("./assets/OkIcon.png");
     }
 
     public InstructionsPanel()
     {
         this.setLayout(new GridLayout(0,1));
-		this.setBackground(Menus.palette[3]);
-		this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Menus.palette[1], null, Menus.palette[2])) ;
-		this.setSize(Menus.defaultPanelSize);
-        // setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
+		this.setBackground(Main.palette[3]);
+		this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Main.palette[1], null, Main.palette[2])) ;
+		this.setSize(MainPanel.defaultPanelSize);
+        // setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[1]));
         
 		this.add(title);
 
         stepText.forEach(step -> {
             JLabel label = new JLabel("    " + step);
-            label.setForeground(Menus.palette[0]);
+            label.setForeground(Main.palette[0]);
             label.setFont(new Font("SansSerif", Font.BOLD, 12));
             this.add(label);
         }) ;
@@ -73,7 +74,7 @@ public class InstructionsPanel extends JPanel
             label.setIcon(updatedIcon);
         }
 
-        Menus.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(structure, loading) ;
+        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(structure, loading) ;
     }
     
 	public List<Boolean> updateSteps(Structure structure, Loading loading)

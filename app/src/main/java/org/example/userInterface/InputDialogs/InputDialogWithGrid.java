@@ -15,8 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.example.userInterface.Menus;
-import org.example.view.MainPanel;
+import org.example.mainTCC.MainFrame;
+import org.example.view.CentralPanel;
 
 public abstract class InputDialogWithGrid extends JDialog implements ActionListener
 {
@@ -69,7 +69,7 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 
 	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons)
 	{
-		this(PanelName, NameLabel, Menus.frameTopLeft, Labels, AddRemoveButtons);
+		this(PanelName, NameLabel, MainFrame.getTopLeft(), Labels, AddRemoveButtons);
 	}
 
 	public abstract void onOkClick(double[][] input) ;
@@ -118,7 +118,7 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 				onOkClick(input) ;
 				// okActionWithInput.act(this.Input) ;
 				// okAction.run() ;
-				System.out.println(MainPanel.structure);
+				System.out.println(CentralPanel.structure);
 				dispose();
 			}
 			if(source == buttons.get(i) && buttons.get(i).getText().equals("Cancel"))

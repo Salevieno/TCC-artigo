@@ -14,8 +14,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.example.mainTCC.MainFrame;
 import org.example.userInterface.ActionWithString;
-import org.example.userInterface.Menus;
 
 public abstract class InputDialogWithButtons extends JDialog implements ActionListener
 {
@@ -43,7 +43,7 @@ public abstract class InputDialogWithButtons extends JDialog implements ActionLi
 
 	public InputDialogWithButtons (String PanelName, JLabel[] Labels, List<JButton> Buttons, ActionWithString okActionWithInput, Runnable okAction)
 	{
-		this(PanelName, Menus.frameTopLeft, Labels, Buttons, okActionWithInput, okAction) ;
+		this(PanelName, MainFrame.getTopLeft(), Labels, Buttons, okActionWithInput, okAction) ;
 	}
 	
 	public InputDialogWithButtons (String PanelName, List<JButton> Buttons, ActionWithString okActionWithInput, Runnable okAction)

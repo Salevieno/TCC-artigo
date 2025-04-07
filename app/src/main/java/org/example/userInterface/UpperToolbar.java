@@ -13,38 +13,46 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.Material;
 import org.example.structure.Section;
 import org.example.view.Assignable;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 import org.example.view.NorthPanel;
 
 public class UpperToolbar extends JPanel
 {
-    private static final String[] buttonNames = new String[]
-    {
-        "Ligar ima",
-        "Desligar ima",
-        "Atribuir aos elementos",
-        "Atribuir aos nos",
-        "+escala",
-        "-escala",
-        "Concluir",
-        "Limpar"
-    };
-	private static final Color stdButtonColor = Menus.palette[8];
-	private static final Font stdButtonFont = new Font(Font.SANS_SERIF, Font.BOLD, 11) ;
+    private static final String[] buttonNames ;
+	private static final Color stdButtonColor ;
+	private static final Font stdButtonFont ;
 
     private List<JButton> buttons = new ArrayList<>();
-    // private boolean MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn;
 	private Assignable assignable ;
+
+	static
+	{
+		buttonNames = new String[]
+		{
+			"Ligar ima",
+			"Desligar ima",
+			"Atribuir aos elementos",
+			"Atribuir aos nos",
+			"+escala",
+			"-escala",
+			"Concluir",
+			"Limpar"
+		};
+		stdButtonColor = Main.palette[8];
+		stdButtonFont = new Font(Font.SANS_SERIF, Font.BOLD, 11) ;
+	}
 
     public UpperToolbar()
     {
         this.setLayout(new GridBagLayout());
-		this.setBackground(Menus.palette[2]);
+		this.setBackground(Main.palette[2]);
 		this.setPreferredSize(new Dimension(580, NorthPanel.stdButtonSize.height));
 
 		int[] ButtonLength = new int[] {62, 80, 138, 100, 50, 52, 50, 50};
@@ -101,17 +109,17 @@ public class UpperToolbar extends JPanel
 			{
 				if (Assignable.materials.equals(assignable))
 				{
-					Material mat = MainPanel.matTypes.get(MainPanel.selectedMatID) ;
-					MainPanel.structure.getMesh().assignMaterials(mat) ;
+					Material mat = CentralPanel.matTypes.get(CentralPanel.selectedMatID) ;
+					CentralPanel.structure.getMesh().assignMaterials(mat) ;
 				}
 				if (Assignable.sections.equals(assignable))
 				{
-					Section sec = MainPanel.secTypes.get(MainPanel.selectedSecID) ;
-					MainPanel.structure.getMesh().assignSections(sec) ;
+					Section sec = CentralPanel.secTypes.get(CentralPanel.selectedSecID) ;
+					CentralPanel.structure.getMesh().assignSections(sec) ;
 				}
 				if (Assignable.distLoads.equals(assignable))
 				{
-					Menus.getInstance().getMainPanel().AddDistLoads(MainPanel.structure, MainPanel.loading, MainPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
+					MainPanel.getInstance().getCentralPanel().AddDistLoads(CentralPanel.structure, CentralPanel.loading, CentralPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
 				}
 			}
 		});
@@ -122,15 +130,15 @@ public class UpperToolbar extends JPanel
 			{
 				if (Assignable.supports.equals(assignable))
 				{
-					Menus.getInstance().getMainPanel().AddSupports();					
+					MainPanel.getInstance().getCentralPanel().AddSupports();					
 				}
 				if (Assignable.concLoads.equals(assignable))
 				{
-					Menus.getInstance().getMainPanel().AddConcLoads(MainPanel.loading, MainPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
+					MainPanel.getInstance().getCentralPanel().AddConcLoads(CentralPanel.loading, CentralPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
 				}
 				if (Assignable.nodalDisps.equals(assignable))
 				{
-					Menus.getInstance().getMainPanel().AddNodalDisps();
+					MainPanel.getInstance().getCentralPanel().AddNodalDisps();
 				}
 			}
 		});
@@ -163,7 +171,7 @@ public class UpperToolbar extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.Clean(MainPanel.structure, assignable);
+				MenuFunctions.Clean(CentralPanel.structure, assignable);
 			}
 		});
 		
@@ -192,7 +200,7 @@ public class UpperToolbar extends JPanel
         
         if (Assignable.materials.equals(assignable))
         {
-            Element.createRandomMatColors(MainPanel.matTypes);
+            Element.createRandomMatColors(CentralPanel.matTypes);
             // for (Element elem : MainPanel.structure.getMesh().getElements())
             // {
                 // int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;
@@ -217,19 +225,19 @@ public class UpperToolbar extends JPanel
             buttons.get(3).setEnabled(false);
             buttons.get(3).setVisible(false);
         }
-        Menus.getInstance().getEastPanel().removeBp1Bp2();
-        Menus.getInstance().getEastPanel().removeBp1Bp2();
+        MainPanel.getInstance().getEastPanel().removeBp1Bp2();
+        MainPanel.getInstance().getEastPanel().removeBp1Bp2();
         buttons.get(6).setEnabled(false);
         buttons.get(6).setVisible(false);
         buttons.get(7).setEnabled(false);
         buttons.get(7).setVisible(false);
-        MainPanel.structure.getMesh().unselectAllNodes() ;
-        MainPanel.structure.getMesh().unselectAllElements() ;
+        CentralPanel.structure.getMesh().unselectAllNodes() ;
+        CentralPanel.structure.getMesh().unselectAllElements() ;
 		assignable = null ;
-        MainPanel.nodeSelectionIsActive = false;
-        MainPanel.elemSelectionIsActive = false;
-        Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
-        Menus.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(MainPanel.structure, MainPanel.loading) ;
+        CentralPanel.nodeSelectionIsActive = false;
+        CentralPanel.elemSelectionIsActive = false;
+        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
+        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(CentralPanel.structure, CentralPanel.loading) ;
     }
 
     public void enableMaterialAssignment() { assignable = Assignable.materials ;}

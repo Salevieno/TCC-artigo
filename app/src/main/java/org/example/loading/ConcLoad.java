@@ -2,11 +2,10 @@ package org.example.loading;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.geom.Point2D;
 
+import org.example.Main;
 import org.example.structure.Mesh;
 import org.example.userInterface.Draw;
-import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 
@@ -20,7 +19,7 @@ public class ConcLoad
 	private static int currentID = 1;
 	private static int maxDisplaySize = 1;
 	private static int stroke = 2;
-	public static Color color = Menus.palette[7];
+	public static Color color = Main.palette[7];
 
 	public ConcLoad(Force force)
 	{

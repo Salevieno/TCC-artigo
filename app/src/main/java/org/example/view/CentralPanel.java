@@ -22,11 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
+import org.example.Main;
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.output.Diagram;
 import org.example.service.MenuViewService;
@@ -40,7 +42,7 @@ import org.example.structure.Structure;
 import org.example.structure.StructureShape;
 import org.example.structure.Supports;
 import org.example.userInterface.Draw;
-import org.example.userInterface.Menus;
+import org.example.userInterface.MenuBar;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
@@ -48,11 +50,11 @@ import org.example.utilidades.Util;
 import graphics.Align;
 import graphics.DrawPrimitives ;
 
-public class MainPanel extends JPanel
+public class CentralPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;	
 	private static final Dimension initialSize = new Dimension(582, 610) ;
-	private static final Color bgColor = Menus.palette[2] ;
+	private static final Color bgColor = Main.palette[2] ;
 	private static final DrawPrimitives DP = new DrawPrimitives() ;
 	
 	private final MyCanvas canvas ;
@@ -91,7 +93,7 @@ public class MainPanel extends JPanel
 		matTypes = new ArrayList<>() ;
 		secTypes = new ArrayList<>() ;
 	}
-	public MainPanel(Point frameTopLeftPos)
+	public CentralPanel(Point frameTopLeftPos)
 	{
 		showCanvas = true ;
 		showGrid = true ;
@@ -248,8 +250,8 @@ public class MainPanel extends JPanel
 		String canvasDimX = String.valueOf(Util.Round(canvas.getDimension().x, 3)) + " m" ;
 		String canvasDimY = String.valueOf(Util.Round(canvas.getDimension().y, 3)) + " m" ;
 
-		DP.drawText(posCanvasDimX, Align.center, canvasDimX, Menus.palette[7]) ;
-		DP.drawText(posCanvasDimY, Align.center, canvasDimY, Menus.palette[10]) ;
+		DP.drawText(posCanvasDimX, Align.center, canvasDimX, Main.palette[7]) ;
+		DP.drawText(posCanvasDimY, Align.center, canvasDimY, Main.palette[10]) ;
 		if (ShowCanvas)
 		{
 			canvas.draw( new double[] {Util.Round(canvas.getGridSpacing().x, 1), Util.Round(canvas.getGridSpacing().y, 1)}, DP);
@@ -260,7 +262,7 @@ public class MainPanel extends JPanel
 		}
 
 		Point2D.Double RealMousePos = canvas.inRealCoords(MenuFunctions.mousePos) ; // Util.ConvertToRealCoords(MenuFunctions.mousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension());
-		drawMousePosWindow(new Point(BigAxisPos.x + canvas.getSize().width / 2 - 60, BigAxisPos.y + 20), RealMousePos, Menus.palette[3], Menus.palette[0]);
+		drawMousePosWindow(new Point(BigAxisPos.x + canvas.getSize().width / 2 - 60, BigAxisPos.y + 20), RealMousePos, Main.palette[3], Main.palette[0]);
 	}
 	
 	public void DrawAxis(Point pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawPrimitives DP)
@@ -275,9 +277,9 @@ public class MainPanel extends JPanel
 	{
 		Dimension windowSize = new Dimension(200, 24) ;
 		DP.drawRoundRect(pos, Align.topLeft, windowSize, bgcolor, true);
-		DP.drawText(new Point(pos.x + 5, pos.y + windowSize.height / 2), Align.centerLeft, "Mouse at:", Menus.palette[0]) ;
-		DP.drawText(new Point(pos.x + 85, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.x, 2)) + " m", Menus.palette[0]) ;
-		DP.drawText(new Point(pos.x + 130, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.y, 2)) + " m", Menus.palette[0]) ;
+		DP.drawText(new Point(pos.x + 5, pos.y + windowSize.height / 2), Align.centerLeft, "Mouse at:", Main.palette[0]) ;
+		DP.drawText(new Point(pos.x + 85, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.x, 2)) + " m", Main.palette[0]) ;
+		DP.drawText(new Point(pos.x + 130, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.y, 2)) + " m", Main.palette[0]) ;
 	}
 	
 	public void updateDrawings()
@@ -330,7 +332,7 @@ public class MainPanel extends JPanel
 		canvas.drawCenter(DP) ;
 		if (StructureCreationIsOn && structure != null && structure.getCoords() != null)
 		{
-			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.mousePos, 2, structure.getShape(), Menus.palette[6]);
+			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.mousePos, 2, structure.getShape(), Main.palette[6]);
 		}
 		if (showElems && structure != null && structure.getMesh() != null && structure.getMesh().getElements() != null)
 		{
@@ -580,7 +582,7 @@ public class MainPanel extends JPanel
 	// 		if (showelemcontour)
 	// 		{
 	// 			// DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, null);
-	// 			DP.drawPolygon(xCoords, yCoords, Menus.palette[0]) ;
+	// 			DP.drawPolygon(xCoords, yCoords, Main.palette[0]) ;
 	// 		}
 	// 		if (SelectedElems != null)
 	// 		{
@@ -589,7 +591,7 @@ public class MainPanel extends JPanel
 	// 				if (elem == SelectedElems[i])
 	// 				{
 	// 					// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
-	// 					DP.drawPolygon(xCoords, yCoords, Menus.palette[4]) ;
+	// 					DP.drawPolygon(xCoords, yCoords, Main.palette[4]) ;
 	// 				}
 	// 			}
 	// 		}		
@@ -599,7 +601,7 @@ public class MainPanel extends JPanel
 
 	public static void CreateStructureOnClick(StructureShape structureShape)
 	{
-		MainPanel.structure.setShape(structureShape);
+		CentralPanel.structure.setShape(structureShape);
 		StructureCreationIsOn = !StructureCreationIsOn;
 	}
 
@@ -610,50 +612,50 @@ public class MainPanel extends JPanel
 
 	public void activateMaterialAssignment()
 	{
-		MainPanel.elemSelectionIsActive = !MainPanel.elemSelectionIsActive;
-		MainPanel.selectedMatID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;	
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
+		CentralPanel.selectedMatID = 0;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;	
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
 	
 	public void activateSectionAssignment()
 	{
-		MainPanel.elemSelectionIsActive = !MainPanel.elemSelectionIsActive;
-		MainPanel.selectedSecID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSectionAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
+		CentralPanel.selectedSecID = 0;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableSectionAssignment() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
 	
 	public void activateSupportAssignment()
 	{
-		MainPanel.nodeSelectionIsActive = !MainPanel.nodeSelectionIsActive;
-		MainPanel.selectedSupID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableSupportAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
+		CentralPanel.selectedSupID = 0;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableSupportAssignment() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
 	
 	public void activateConcLoadAssignment()
 	{
-		MainPanel.nodeSelectionIsActive = !MainPanel.nodeSelectionIsActive;
-		MainPanel.selectedConcLoadID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableConcLoadAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
+		CentralPanel.selectedConcLoadID = 0;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableConcLoadAssignment() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
 	
 	public void activateDistLoadAssignment()
 	{
-		MainPanel.elemSelectionIsActive = !MainPanel.elemSelectionIsActive;
-		MainPanel.selectedDistLoadID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableDistLoadAssignment() ;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
+		CentralPanel.selectedDistLoadID = 0;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableDistLoadAssignment() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
 	
 	public void activateNodalDispAssignment()
 	{
-		Menus.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
-		MainPanel.nodeSelectionIsActive = !MainPanel.nodeSelectionIsActive;
-		MainPanel.selectedNodalDispID = 0;
-		Menus.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
+		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
+		CentralPanel.selectedNodalDispID = 0;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
 
 	public static void setElemType(String ElemType)
@@ -678,7 +680,7 @@ public class MainPanel extends JPanel
 		{
 			selectionWindow.selectElementsInside(structure.getMesh(), canvas, MenuFunctions.mousePos) ;
 		}
-		Menus.getInstance().getEastPanel().reset() ;
+		MainPanel.getInstance().getEastPanel().reset() ;
 	}
 
 	
@@ -706,7 +708,7 @@ public class MainPanel extends JPanel
 		{
 			// int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
 			Supports newSupport = new Supports(1, node, MenuFunctions.SupType[selectedSupID]);
-			MainPanel.structure.addSupport(newSupport) ;
+			CentralPanel.structure.addSupport(newSupport) ;
 			node.setSup(MenuFunctions.SupType[selectedSupID]);
 		}
 
@@ -814,13 +816,14 @@ public class MainPanel extends JPanel
 			if (StructureCreationIsOn)
 			{
 				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, MenuFunctions.SnipToGridIsOn);
-				Menus.getInstance().EnableButtons();
-				Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
+				MenuBar.getInstance().updateEnabledMenus();
+				MainPanel.getInstance().EnableButtons() ;
+				MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
 			}
 			if (!StructureCreationIsOn)
 			{
-				Menus.getInstance().getWestPanel().getInstructionsPanel().updateSteps(MainPanel.structure, MainPanel.loading) ;
-				Menus.getInstance().getNorthPanel().getUpperToolbar().disableButtonsSnipToGrid() ;
+				MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateSteps(CentralPanel.structure, CentralPanel.loading) ;
+				MainPanel.getInstance().getNorthPanel().getUpperToolbar().disableButtonsSnipToGrid() ;
 			}
 
 			if (selectionWindow != null)
@@ -832,13 +835,13 @@ public class MainPanel extends JPanel
 
 		if (evt.getButton() == 3)	// Right click
 		{
-			MainPanel.structure.printStructure(matTypes, secTypes, MainPanel.structure.getSupports(), loading);
+			CentralPanel.structure.printStructure(matTypes, secTypes, CentralPanel.structure.getSupports(), loading);
 		}
 	}
 
 	private void handleMouseWheel(MouseWheelEvent evt)
 	{
-		Assignable assignable = Menus.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
+		Assignable assignable = MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
 		double qtdRotation = evt.getWheelRotation() ;
 
 		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);

@@ -3,7 +3,7 @@ package org.example.userInterface.InputDialogs;
 import javax.swing.JLabel;
 
 import org.example.userInterface.MenuStructure;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class CreateDistLoadsDialog extends InputDialogWithGrid
 {
@@ -18,7 +18,7 @@ public class CreateDistLoadsDialog extends InputDialogWithGrid
     @Override
     public void onOkClick(double[][] input)
     {
-		MainPanel.DefineDistLoadTypes(input);
+		CentralPanel.DefineDistLoadTypes(input);
 		MenuStructure.updateEnabledSubMenus();
     }
 }

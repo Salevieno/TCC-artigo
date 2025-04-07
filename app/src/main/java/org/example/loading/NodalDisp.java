@@ -3,8 +3,8 @@ package org.example.loading;
 import java.awt.Color;
 import java.util.Arrays;
 
+import org.example.Main;
 import org.example.structure.Node;
-import org.example.userInterface.Menus;
 
 public class NodalDisp
 {
@@ -12,7 +12,7 @@ public class NodalDisp
 	private int Node;		// Node
 	private double[] Disps;	// Loads [Fx, Fy, Fz, Mx, My, Mz]
 
-	public static Color color = Menus.palette[7];
+	public static Color color = Main.palette[7];
 	
 	public NodalDisp(int ID, Node Node, double[] Disps)
 	{

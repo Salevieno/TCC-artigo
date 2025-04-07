@@ -11,13 +11,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import org.example.Main;
 import org.example.loading.Force;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Material;
 import org.example.structure.Section;
-import org.example.userInterface.Draw;
-import org.example.userInterface.Menus;
-import org.example.utilidades.Util;
+import org.example.userInterface.MenuBar;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -31,10 +31,10 @@ public class ListPanel extends JPanel
     public ListPanel()
     {
         this.setPreferredSize(initialSize);
-        this.setBackground(Menus.palette[2]);
+        this.setBackground(Main.palette[2]);
         this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-		// DP = Menus.getInstance().getMainPanel().getDP() ;
-		// setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
+		// DP = MainPanel.getInstance().getCentralPanel().getDP() ;
+		// setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[1]));
     }
 
 	private void displayMaterialOptions(Dimension panelSize, int selectedItemID)
@@ -45,14 +45,14 @@ public class ListPanel extends JPanel
 				"v",
 				"fu (MPa)"
 			};
-		List<Material> matType = MainPanel.matTypes;
+		List<Material> matType = CentralPanel.matTypes;
 //			TODO DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", matType);
 	}
 
 	private void displaySectionOptions(Dimension panelSize, int selectedItemID)
 	{
 		String[] SecNames = new String[] {"Nome", "Espessura (mm)"};
-		List<Section> SecType = MainPanel.secTypes;
+		List<Section> SecType = CentralPanel.secTypes;
 //			DP.DrawLists(jpListSize, SelectedSec, SecNames, "Sections list", "Sec", SecType);
 	}
 
@@ -275,11 +275,11 @@ public class ListPanel extends JPanel
     {
         super.paintComponent(graphs);
         // DP.setG(g);
-        if (Menus.getInstance() != null)
+        if (MenuBar.getInstance() != null)
         {
-			DrawPrimitives DP = Menus.getInstance().getMainPanel().getDP() ;
+			DrawPrimitives DP = MainPanel.getInstance().getCentralPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-            display(Menus.getInstance().getNorthPanel().getUpperToolbar().getAssignable(), MainPanel.selectedSupID, MainPanel.selectedConcLoadID, MainPanel.selectedDistLoadID, MainPanel.selectedNodalDispID, DP);
+            display(MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable(), CentralPanel.selectedSupID, CentralPanel.selectedConcLoadID, CentralPanel.selectedDistLoadID, CentralPanel.selectedNodalDispID, DP);
         }
         repaint();
     }

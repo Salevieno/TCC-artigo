@@ -8,7 +8,9 @@ import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.example.Main;
 import org.example.loading.Force;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -24,7 +26,7 @@ import org.example.userInterface.InputDialogs.CreateNodalDispsDialog;
 import org.example.userInterface.InputDialogs.CreateSectionsDialog;
 import org.example.userInterface.InputDialogs.DefineElementTypeDialog;
 import org.example.userInterface.InputDialogs.StructureShapeDialog;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class MenuStructure extends JMenu
 {
@@ -141,7 +143,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				Menus.getInstance().getMainPanel().activateMaterialAssignment();
+				MainPanel.getInstance().getCentralPanel().activateMaterialAssignment();
 			}
 		});
 		AssignSections.addActionListener(new ActionListener()
@@ -149,7 +151,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				Menus.getInstance().getMainPanel().activateSectionAssignment();
+				MainPanel.getInstance().getCentralPanel().activateSectionAssignment();
 			}
 		});
 		AssignSupports.addActionListener(new ActionListener()
@@ -157,7 +159,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				Menus.getInstance().getMainPanel().activateSupportAssignment();
+				MainPanel.getInstance().getCentralPanel().activateSupportAssignment();
 			}
 		});
 		AssignConcLoads.addActionListener(new ActionListener()
@@ -165,7 +167,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				Menus.getInstance().getMainPanel().activateConcLoadAssignment();
+				MainPanel.getInstance().getCentralPanel().activateConcLoadAssignment();
 			}
 		});
 		AssignDistLoads.addActionListener(new ActionListener()
@@ -173,7 +175,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				Menus.getInstance().getMainPanel().activateDistLoadAssignment();
+				MainPanel.getInstance().getCentralPanel().activateDistLoadAssignment();
 			}
 		});
 		AssignNodalDisp.addActionListener(new ActionListener()
@@ -181,7 +183,7 @@ public class MenuStructure extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				Menus.getInstance().getMainPanel().activateNodalDispAssignment();
+				MainPanel.getInstance().getCentralPanel().activateNodalDispAssignment();
 			}
 		});
 		
@@ -192,20 +194,20 @@ public class MenuStructure extends JMenu
 		AssignConcLoads.setEnabled(false);
 		AssignDistLoads.setEnabled(false);
 		AssignNodalDisp.setEnabled(false);
-		DefineElemType.setForeground(Menus.palette[5]);
-		CreateNodes.setForeground(Menus.palette[5]);
-		CreateMesh.setForeground(Menus.palette[5]);
-		CreateMaterials.setForeground(Menus.palette[5]);
-		CreateSections.setForeground(Menus.palette[5]);
-		CreateConcLoads.setForeground(Menus.palette[5]);
-		CreateDistLoads.setForeground(Menus.palette[5]);
-		CreateNodalDisp.setForeground(Menus.palette[5]);
-		AssignMaterials.setForeground(Menus.palette[5]);
-		AssignSections.setForeground(Menus.palette[5]);
-		AssignSupports.setForeground(Menus.palette[5]);
-		AssignConcLoads.setForeground(Menus.palette[5]);
-		AssignDistLoads.setForeground(Menus.palette[5]);
-		AssignNodalDisp.setForeground(Menus.palette[5]);
+		DefineElemType.setForeground(Main.palette[5]);
+		CreateNodes.setForeground(Main.palette[5]);
+		CreateMesh.setForeground(Main.palette[5]);
+		CreateMaterials.setForeground(Main.palette[5]);
+		CreateSections.setForeground(Main.palette[5]);
+		CreateConcLoads.setForeground(Main.palette[5]);
+		CreateDistLoads.setForeground(Main.palette[5]);
+		CreateNodalDisp.setForeground(Main.palette[5]);
+		AssignMaterials.setForeground(Main.palette[5]);
+		AssignSections.setForeground(Main.palette[5]);
+		AssignSupports.setForeground(Main.palette[5]);
+		AssignConcLoads.setForeground(Main.palette[5]);
+		AssignDistLoads.setForeground(Main.palette[5]);
+		AssignNodalDisp.setForeground(Main.palette[5]);
 		this.add(DefineElemType);
 		this.add(CreateNodes);
 		this.add(CreateMesh);
@@ -251,7 +253,7 @@ public class MenuStructure extends JMenu
 				// 	MainPanel.structure.updateMaxCoords() ;
 				// 	Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
 				// 	Menus.getInstance().getMainCanvas().setDrawingPos(new int[2]);
-				// 	Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
+				// 	MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 				// }
 			}
 		});
@@ -263,8 +265,8 @@ public class MenuStructure extends JMenu
 				structureShapeInputPanel.activate() ;
 			}
 		});
-		TypeNodes.setForeground(Menus.palette[5]);
-		ClickNodes.setForeground(Menus.palette[5]);
+		TypeNodes.setForeground(Main.palette[5]);
+		ClickNodes.setForeground(Main.palette[5]);
 		CreateNodes.add(ClickNodes);
 		CreateNodes.add(TypeNodes);
 		
@@ -288,21 +290,21 @@ public class MenuStructure extends JMenu
 				// createMeshInputPanel.activate() ;
 			}
 		});
-		CartesianMesh.setForeground(Menus.palette[5]);
-		RadialMesh.setForeground(Menus.palette[5]);
+		CartesianMesh.setForeground(Main.palette[5]);
+		RadialMesh.setForeground(Main.palette[5]);
 		CreateMesh.add(CartesianMesh);
 		CreateMesh.add(RadialMesh);
     }
 
 	public static void updateEnabledSubMenus()
 	{
-		Structure structure = MainPanel.structure;
-		List<Node> nodes = MainPanel.structure.getMesh() != null ? MainPanel.structure.getMesh().getNodes() : null ;
-		List<Element> elems = MainPanel.structure.getMesh() != null ? MainPanel.structure.getMesh().getElements() : null;
+		Structure structure = CentralPanel.structure;
+		List<Node> nodes = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getNodes() : null ;
+		List<Element> elems = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getElements() : null;
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
 		String SelectedElemType = MenuFunctions.SelectedElemType;
-		List<Material> MatTypes = MainPanel.matTypes;
-		List<Section> SecTypes = MainPanel.secTypes;
+		List<Material> MatTypes = CentralPanel.matTypes;
+		List<Section> SecTypes = CentralPanel.secTypes;
 		List<Force> ConcLoadTypes = MenuFunctions.concLoadTypes;
 		double[][] DistLoadTypes = MenuFunctions.DistLoadType;
 		double[][] NodalDispTypes = MenuFunctions.NodalDispType;
@@ -345,7 +347,7 @@ public class MenuStructure extends JMenu
 			// StressContours.setEnabled(true);
 			// StrainContours.setEnabled(true);
 			// InternalForcesContours.setEnabled(true);
-			Menus.getInstance().getNorthPanel().getUpperToolbar().enableButtonsScale() ;
+			MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableButtonsScale() ;
 			// for (int i = 0; i <= elems.get(0).getStrainTypes().length - 1; i += 1)
 			// {
 			// 	if (elems.get(0).getStrainTypes()[i] <= 5)

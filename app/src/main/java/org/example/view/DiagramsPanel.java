@@ -13,18 +13,18 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import org.example.Main;
 import org.example.loading.DOF;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Node;
 import org.example.structure.Structure;
-import org.example.userInterface.Menus;
-import org.example.utilidades.Point3D;
+import org.example.userInterface.MenuBar;
 import org.example.utilidades.Util;
 
 import charts.Chart;
 import charts.ChartType;
 import charts.Dataset;
-import graphics.Align;
 import graphics.DrawPrimitives;
 
 public class DiagramsPanel extends JPanel
@@ -39,19 +39,19 @@ public class DiagramsPanel extends JPanel
     
     private static final Dimension initialSize = new Dimension(0, 100) ;
 	private static final String title = "Curva carga deslocamento" ;
-	private static final Color gridColor = new Color(Menus.palette[10].getRed(), Menus.palette[10].getGreen(), Menus.palette[10].getBlue(), 50) ;
+	private static final Color gridColor = new Color(Main.palette[10].getRed(), Main.palette[10].getGreen(), Main.palette[10].getBlue(), 50) ;
 
     public DiagramsPanel()
     {
         this.setSize(initialSize);
-        this.setBackground(Menus.palette[3]);
+        this.setBackground(Main.palette[3]);
         this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createTitledBorder(""), title, TitledBorder.CENTER, TitledBorder.CENTER));
 
 		// chart.setTitle("load") ;
 		chart.setGridColor(gridColor);
-		chart.setTitleColor(Menus.palette[10]) ;
-		chart.setLineColor(Menus.palette[10]) ;
-		chart.setDataSetColor(List.of(Menus.palette[0])) ;
+		chart.setTitleColor(Main.palette[10]) ;
+		chart.setLineColor(Main.palette[10]) ;
+		chart.setDataSetColor(List.of(Main.palette[0])) ;
 
     }
 
@@ -120,9 +120,9 @@ public class DiagramsPanel extends JPanel
 		// 	System.out.println(firstNode.getLoadDisp2().get(DOF.z));
 		// }
 
-		if (!MainPanel.structure.getMesh().hasNodesSelected()) { return ;}
+		if (!CentralPanel.structure.getMesh().hasNodesSelected()) { return ;}
 
-		Node selectedNode = MainPanel.structure.getMesh().getSelectedNodes().get(0) ;
+		Node selectedNode = CentralPanel.structure.getMesh().getSelectedNodes().get(0) ;
 		Dataset dataset = selectedNode.getLoadDisp2().get(DOF.z) ;
 		if (dataset != null && 0 < dataset.size())
 		{
@@ -182,11 +182,11 @@ public class DiagramsPanel extends JPanel
     public void paintComponent(Graphics graphs) 
     {
         super.paintComponent(graphs);
-		if (Menus.getInstance() != null)
+		if (MenuBar.getInstance() != null)
 		{
-			DrawPrimitives DP = Menus.getInstance().getMainPanel().getDP() ;
+			DrawPrimitives DP = MainPanel.getInstance().getCentralPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-			display(MainPanel.structure, selectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
+			display(CentralPanel.structure, selectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
 			repaint();
 		}
     }

@@ -11,6 +11,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+import org.example.Main;
+
 public class ButtonToolbarButtons extends JButton
 {
 
@@ -19,7 +21,7 @@ public class ButtonToolbarButtons extends JButton
 
     static
     {
-        bgColor = Menus.palette[1];
+        bgColor = Main.palette[1];
     }
 
     public ButtonToolbarButtons(String text)

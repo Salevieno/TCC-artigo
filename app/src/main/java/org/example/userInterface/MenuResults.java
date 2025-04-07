@@ -8,11 +8,12 @@ import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.example.Main;
 import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
 import org.example.structure.Element;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class MenuResults extends JMenu
 {
@@ -69,7 +70,7 @@ public class MenuResults extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.ResultsMenuSaveResults(MainPanel.structure);
+				MenuFunctions.ResultsMenuSaveResults(CentralPanel.structure);
 			}
 		});
 		SaveLoadDispCurve.addActionListener(new ActionListener()
@@ -77,7 +78,7 @@ public class MenuResults extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.SaveLoadDispCurve(MainPanel.structure);
+				MenuFunctions.SaveLoadDispCurve(CentralPanel.structure);
 			}
 		});
 		DeformedShape.setEnabled(false);
@@ -87,13 +88,13 @@ public class MenuResults extends JMenu
 		InternalForcesContours.setEnabled(false);
 		SaveResults.setEnabled(false);
 		SaveLoadDispCurve.setEnabled(false);
-		DeformedShape.setForeground(Menus.palette[7]);
-		DisplacementContours.setForeground(Menus.palette[7]);
-		StressContours.setForeground(Menus.palette[7]);
-		StrainContours.setForeground(Menus.palette[7]);
-		InternalForcesContours.setForeground(Menus.palette[7]);
-		SaveResults.setForeground(Menus.palette[7]);
-		SaveLoadDispCurve.setForeground(Menus.palette[7]);
+		DeformedShape.setForeground(Main.palette[7]);
+		DisplacementContours.setForeground(Main.palette[7]);
+		StressContours.setForeground(Main.palette[7]);
+		StrainContours.setForeground(Main.palette[7]);
+		InternalForcesContours.setForeground(Main.palette[7]);
+		SaveResults.setForeground(Main.palette[7]);
+		SaveLoadDispCurve.setForeground(Main.palette[7]);
 		this.add(DeformedShape);
 		this.add(DisplacementContours);
 		this.add(StressContours);
@@ -128,13 +129,13 @@ public class MenuResults extends JMenu
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 0;
-					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), d2);
+					CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), d2);
 					//DrawDisplacementContours(SelectedVar);
 					//ResetE1Panel();
 				}
 			});
 			SubMenuDisp[d].setEnabled(false);
-			SubMenuDisp[d].setForeground(Menus.palette[7]);
+			SubMenuDisp[d].setForeground(Main.palette[7]);
 			DisplacementContours.add(SubMenuDisp[d]);
 		}
 		
@@ -157,13 +158,13 @@ public class MenuResults extends JMenu
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 1;
-					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
+					CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
 					//DrawStressContours(SelectedVar);
 					//ResetE1Panel();
 				}
 			});
 			SubMenuStresses[s].setEnabled(false);
-			SubMenuStresses[s].setForeground(Menus.palette[7]);
+			SubMenuStresses[s].setForeground(Main.palette[7]);
 			StressContours.add(SubMenuStresses[s]);
 		}
 		
@@ -186,13 +187,13 @@ public class MenuResults extends JMenu
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 2;
-					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
+					CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
 					//DrawStrainContours(SelectedVar);
 					//ResetE1Panel();
 				}
 			});
 			SubMenuStrains[s].setEnabled(false);
-			SubMenuStrains[s].setForeground(Menus.palette[7]);
+			SubMenuStrains[s].setForeground(Main.palette[7]);
 			StrainContours.add(SubMenuStrains[s]);
 		}
 		
@@ -215,20 +216,20 @@ public class MenuResults extends JMenu
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 3;
-					MainPanel.SelectedVar = Util.ElemPosInArray(MainPanel.structure.getMesh().getElements().get(0).getDOFs(), f2);
+					CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), f2);
 					//DrawInternalForcesContours(Util.ElemPosInArray(Elem[0].getDOFs(), f2));
 					//ResetE1Panel();
 				}
 			});
 			SubMenuInternalForces[f].setEnabled(false);
-			SubMenuInternalForces[f].setForeground(Menus.palette[7]);
+			SubMenuInternalForces[f].setForeground(Main.palette[7]);
 			InternalForcesContours.add(SubMenuInternalForces[f]);
 		}
     }
 
     public void enableButtons()
     {
-		List<Element> elems = MainPanel.structure.getMesh() != null ? MainPanel.structure.getMesh().getElements() : null;
+		List<Element> elems = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getElements() : null;
         
         DeformedShape.setEnabled(true);
         DisplacementContours.setEnabled(true);

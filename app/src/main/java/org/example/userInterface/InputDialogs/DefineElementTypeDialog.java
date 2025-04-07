@@ -7,10 +7,10 @@ import java.util.List;
 
 import javax.swing.JButton;
 
+import org.example.mainTCC.MainPanel;
 import org.example.structure.ElemType;
 import org.example.userInterface.MenuStructure;
-import org.example.userInterface.Menus;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class DefineElementTypeDialog extends InputDialogWithButtons
 {
@@ -34,8 +34,8 @@ public class DefineElementTypeDialog extends InputDialogWithButtons
     public void onOkClick(ActionEvent ae)
     {
         String elemType = clickedButtonText(ae) ;
-        MainPanel.setElemType(elemType) ;
-        Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.structure, MainPanel.loading) ;
+        CentralPanel.setElemType(elemType) ;
+        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
         MenuStructure.updateEnabledSubMenus() ;
     }
 }

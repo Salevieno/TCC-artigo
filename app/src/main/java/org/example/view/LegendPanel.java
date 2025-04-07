@@ -10,9 +10,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.output.ColorSystem;
 import org.example.structure.Structure;
-import org.example.userInterface.Menus;
+import org.example.userInterface.MenuBar;
 import org.example.utilidades.Util;
 
 import graphics.Align;
@@ -36,7 +38,7 @@ public class LegendPanel extends JPanel
     public LegendPanel()
     {
         setPreferredSize(initialSize);
-        setBackground(Menus.palette[3]);
+        setBackground(Main.palette[3]);
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createTitledBorder(""), "Legenda", TitledBorder.CENTER, TitledBorder.CENTER));
 		setVisible(true);
     }
@@ -66,8 +68,8 @@ public class LegendPanel extends JPanel
 		BarLength = (panelSize.width / NumColumns)/2;
 		sx = BarLength;
 		sy = panelSize.height / (double)(NumLines);
-		// DP.DrawText(new int[] {}, title, "Center", 0, "Bold", titleSize, Menus.palette[6]);
-		DP.drawText(new Point(Pos[0] + panelSize.width / 2, (int) (Pos[1])), Align.center, title, Menus.palette[6]);
+		// DP.DrawText(new int[] {}, title, "Center", 0, "Bold", titleSize, Main.palette[6]);
+		DP.drawText(new Point(Pos[0] + panelSize.width / 2, (int) (Pos[1])), Align.center, title, Main.palette[6]);
 
 		// DP.DrawWindow(Pos, panelSize.width, panelSize.height, 1, null, Color.blue);
 		for (int i = 0; i <= NumCat - 1; i += 1)
@@ -115,9 +117,9 @@ public class LegendPanel extends JPanel
     public void paintComponent(Graphics graphs) 
     {
         super.paintComponent(graphs);
-		if (Menus.getInstance() != null)
+		if (MenuBar.getInstance() != null)
 		{
-			DrawPrimitives DP = Menus.getInstance().getMainPanel().getDP() ;
+			DrawPrimitives DP = MainPanel.getInstance().getCentralPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs) ;
 			display(structure, selectedVar, showDisplacementContour, showStressContour, showStrainContour, showInternalForces, DP);
 			repaint();

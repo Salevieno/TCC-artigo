@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.Main;
 import org.example.loading.DistLoad;
 import org.example.output.ResultDiagrams;
 import org.example.userInterface.Draw;
-import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 import org.example.view.SelectionWindow;
 
 import graphics.Align;
@@ -44,7 +44,7 @@ public class Element
 	private double[] IntForces;		// External forces on the element
 	
 	public static int stroke = 1;
-	public static Color color = Menus.palette[10];
+	public static Color color = Main.palette[10];
 	public static Color[] matColors;
 	public static Color[] SecColors;
 	
@@ -373,7 +373,7 @@ public class Element
 		}
 		int[] DrawingStructCenter = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealStructCenter.asArray(), Center, canvas.getAngles().asArray()), RealStructCenter, canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		int textSize = 16;
-		Color textColor = Menus.palette[8];
+		Color textColor = Main.palette[8];
 		
 		for (int node = 0; node <= nodes.size() - 1; node += 1)
 		{
@@ -409,18 +409,18 @@ public class Element
 									int[] DOFsPerNode, double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		int size = 6;
-		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int node = 0; node <= Node.size() - 1; node += 1)
 		{
 			int[][] DrawingCoords = new int[Node.size()][3];
 			if (deformed)
 			{
 				double[] DeformedCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsPerNode, Defscale);
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			else
 			{
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			Point drawingCoords = new Point(DrawingCoords[node][0], DrawingCoords[node][1]) ;
 			DP.drawCircle(drawingCoords, size, NodeColor);
@@ -430,7 +430,7 @@ public class Element
 				{
 					if (node == selectedNodes.get(i).getID())
 					{
-						DP.drawCircle(drawingCoords, 2*size, Menus.palette[4]);
+						DP.drawCircle(drawingCoords, 2*size, Main.palette[4]);
 					}
 				}
 			}
@@ -439,10 +439,10 @@ public class Element
 
 	private static void DrawDOFSymbols(List<Node> Node, Color NodeColor, boolean deformed, MyCanvas canvas, DrawPrimitives DP)
 	{
-		Color ForceDOFColor = Menus.palette[8];
-		Color MomentDOFColor = Menus.palette[9];
-		Color CrossDerivativeDOFColor = Menus.palette[11];
-		Color ShearRotationDOFColor = Menus.palette[11];
+		Color ForceDOFColor = Main.palette[8];
+		Color MomentDOFColor = Main.palette[9];
+		Color CrossDerivativeDOFColor = Main.palette[11];
+		Color ShearRotationDOFColor = Main.palette[11];
 		int thickness = 2;
 		double arrowsize = 0.5;
 		for (int node = 0; node <= Node.size() - 1; node += 1)
@@ -541,7 +541,7 @@ public class Element
 		}
 		if (isSelected)
 		{
-			color = Menus.palette[4] ;
+			color = Main.palette[4] ;
 		}
 		for (int i = 0; i <= externalNodes.size() - 1; i += 1)
 		{
@@ -570,7 +570,7 @@ public class Element
 		DP.drawPolygon(xCoords, yCoords, stroke, color);
 		if (showcontour)
 		{
-			DP.drawPolyLine(xCoords, yCoords, stroke, Menus.palette[0]);
+			DP.drawPolyLine(xCoords, yCoords, stroke, Main.palette[0]);
 		}
 	}
 
@@ -1226,7 +1226,7 @@ public class Element
 						double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		List<Element> Elem = mesh.getElements();
-		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
 			List<Node> Nodes = Elem.get(elem).getExternalNodes();
@@ -1255,12 +1255,12 @@ public class Element
 				if (showdeformed)
 				{
 					double[] DeformedCoords = Util.ScaledDefCoords(Nodes.get(node).getOriginalCoords(), Nodes.get(node).getDisp(), ElemDOFs, Defscale);
-					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				else
 				{
 					double[] OriginalCoords = Util.GetNodePos(Nodes.get(node), showdeformed);
-					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				xCoords[node] = DrawingCoord[node][0];
 				yCoords[node] = DrawingCoord[node][1];
@@ -1281,7 +1281,7 @@ public class Element
 					if (elem == SelectedElems[i])
 					{
 						// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
-						DP.drawPolygon(xCoords, yCoords, Menus.palette[4]) ;
+						DP.drawPolygon(xCoords, yCoords, Main.palette[4]) ;
 					}
 				}
 			}

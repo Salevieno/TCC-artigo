@@ -7,9 +7,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.structure.Element;
 import org.example.structure.Node;
-import org.example.userInterface.Menus;
+import org.example.userInterface.MenuBar;
 import org.example.utilidades.Util;
 
 public class EastPanel extends JPanel
@@ -26,11 +28,11 @@ public class EastPanel extends JPanel
         this.setLayout(new GridLayout(0, 1)) ;
         
 		legendPanel = new LegendPanel();
-		nodeInfoPanel = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
-		elemInfoPanel = Menus.stdPanel(Menus.defaultPanelSize, Menus.palette[2]);
+		nodeInfoPanel = MainPanel.stdPanel(MainPanel.defaultPanelSize, Main.palette[2]);
+		elemInfoPanel = MainPanel.stdPanel(MainPanel.defaultPanelSize, Main.palette[2]);
 		diagramsPanel = new DiagramsPanel();
-		nodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
-		elemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
+		nodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[1]));
+		elemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[1]));
 
 		this.add(nodeInfoPanel);
 		this.add(elemInfoPanel);
@@ -41,14 +43,14 @@ public class EastPanel extends JPanel
 	public void reset()
 	{
 
-		if (MainPanel.structure.getMesh().hasNodesSelected())
+		if (CentralPanel.structure.getMesh().hasNodesSelected())
 		{
-			Node node = MainPanel.structure.getMesh().getSelectedNodes().get(0) ;
+			Node node = CentralPanel.structure.getMesh().getSelectedNodes().get(0) ;
 			nodeInfoPanel = createNodeInfoPanel(node) ;
 		}
-		if (MainPanel.structure.getMesh().hasElementsSelected())
+		if (CentralPanel.structure.getMesh().hasElementsSelected())
 		{
-			Element elem = MainPanel.structure.getMesh().getSelectedElements().get(0) ;
+			Element elem = CentralPanel.structure.getMesh().getSelectedElements().get(0) ;
 			elemInfoPanel = createElemInfoPanel(elem) ;
 		}
 		// this.removeAll();
@@ -77,10 +79,10 @@ public class EastPanel extends JPanel
 	private JPanel createNodeInfoPanel(Node Node)
 	{
 		JPanel NodeInfoPanel = new JPanel(new GridLayout(0,1));
-		Color TextColor = Menus.palette[4];
-		NodeInfoPanel.setBackground(Menus.palette[9]);
-		NodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[5]));
-		NodeInfoPanel.setSize(Menus.defaultPanelSize);		
+		Color TextColor = Main.palette[4];
+		NodeInfoPanel.setBackground(Main.palette[9]);
+		NodeInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[5]));
+		NodeInfoPanel.setSize(MainPanel.defaultPanelSize);		
 
 		String OriginalCoords = "", DeformedCoords = "";
 		String ConcLoads = String.valueOf(0 + "," + 0 + "," + 0 + "," + 0 + "," + 0 + "," + 0);
@@ -122,11 +124,11 @@ public class EastPanel extends JPanel
 	private JPanel createElemInfoPanel(Element elem)
 	{
 		JPanel ElemInfoPanel = new JPanel(new GridLayout(0,1));
-		Color TextColor = Menus.palette[4];
+		Color TextColor = Main.palette[4];
 		
-		ElemInfoPanel.setBackground(Menus.palette[9]);
-		ElemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[5]));
-		ElemInfoPanel.setSize(Menus.defaultPanelSize);		
+		ElemInfoPanel.setBackground(Main.palette[9]);
+		ElemInfoPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[5]));
+		ElemInfoPanel.setSize(MainPanel.defaultPanelSize);		
 
 		String NodesText = "";
 		for (int i = 0; i <= elem.getExternalNodes().size() - 1; i += 1)

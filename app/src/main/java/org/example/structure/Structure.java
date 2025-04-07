@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.Main;
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Loading;
@@ -15,11 +16,10 @@ import org.example.output.Diagram;
 import org.example.output.ResultDiagrams;
 import org.example.output.Results;
 import org.example.service.MenuViewService;
-import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 import graphics.DrawPrimitives;
 
@@ -45,7 +45,7 @@ public class Structure
 	private ResultDiagrams resultDiagrams ;
 	
 	private static final int NCirclePoints = 20;
-	public static final Color color = Menus.palette[5];
+	public static final Color color = Main.palette[5];
 	
 	public Structure()
 	{
@@ -312,26 +312,26 @@ public class Structure
 			System.out.println("Id	Node	DoFs (Fx Fy Fz Mx My Mz)");
 			sups.forEach(System.out::println);
 		}
-		if (MainPanel.loading.getConcLoads() != null)
+		if (CentralPanel.loading.getConcLoads() != null)
 		{
 			System.out.println();
 			System.out.println("ConcLoads");
 			System.out.println("Id	Node	Loads Fx Fy Fz Mx My Mz (kN)");
-			MainPanel.loading.getConcLoads().forEach(System.out::println);
+			CentralPanel.loading.getConcLoads().forEach(System.out::println);
 		}
-		if (MainPanel.loading.getDistLoads() != null)
+		if (CentralPanel.loading.getDistLoads() != null)
 		{
 			System.out.println();
 			System.out.println("DistLoads");
 			System.out.println("Id	Elem type	Intensity (kN/m)");
-			MainPanel.loading.getDistLoads().forEach(System.out::println);
+			CentralPanel.loading.getDistLoads().forEach(System.out::println);
 		}
-		if (MainPanel.loading.getNodalDisps() != null)
+		if (CentralPanel.loading.getNodalDisps() != null)
 		{
 			System.out.println();
 			System.out.println("NodalDisps");
 			System.out.println("Id	Node	Disp ux uy uz thetax thetay thetaz (m)");
-			MainPanel.loading.getNodalDisps().forEach(System.out::println);
+			CentralPanel.loading.getNodalDisps().forEach(System.out::println);
 		}
 	}
 
@@ -380,7 +380,7 @@ public class Structure
 
 	public void displayConcLoads(MyCanvas canvas, boolean deformed, DrawPrimitives DP)
 	{
-		double maxLoad = Util.FindMaxConcLoad(MainPanel.loading.getConcLoads());
+		double maxLoad = Util.FindMaxConcLoad(CentralPanel.loading.getConcLoads());
 		int[] dofs = mesh.getElements().get(0).getDOFs() ;
 		for (Node node : mesh.getNodes())
 		{

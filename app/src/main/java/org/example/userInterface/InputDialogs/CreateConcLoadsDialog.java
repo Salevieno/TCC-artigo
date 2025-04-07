@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 
 import org.example.loading.Force;
 import org.example.userInterface.MenuStructure;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class CreateConcLoadsDialog extends InputDialogWithGrid
 {
@@ -27,7 +27,7 @@ public class CreateConcLoadsDialog extends InputDialogWithGrid
         {
             forces.add(new Force(inp)) ;
         }
-        MainPanel.setConcLoadTypes(forces);
+        CentralPanel.setConcLoadTypes(forces);
 		MenuStructure.updateEnabledSubMenus();
     }		
 }

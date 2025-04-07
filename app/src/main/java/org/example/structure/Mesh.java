@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 import org.example.mainTCC.MenuFunctions;
 import org.example.userInterface.Draw;
-import org.example.userInterface.Menus;
+import org.example.userInterface.MenuBar;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 import org.example.view.SelectionWindow;
 
 import graphics.Align;

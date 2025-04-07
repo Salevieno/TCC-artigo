@@ -4,15 +4,15 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
+import org.example.Main;
 import org.example.analysis.Analysis;
 import org.example.structure.ElemShape;
 import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;
-import org.example.userInterface.Menus;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 import graphics.DrawPrimitives;
 
@@ -190,13 +190,13 @@ public class ResultDiagrams
 			int[][] DrawingCoords = new int[ContourCoords.length][3];
 			int[] xCoords = new int[ContourCoords.length] ;
             int[] yCoords = new int[ContourCoords.length];
-			double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+			double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			Color[] colors = new Color[ContourCoords.length];
 			Arrays.fill(colors, new Color(0, 100, 55));
 			
 			for (int point = 0; point <= ContourCoords.length - 1; point += 1)
 			{
-				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles().asArray()), MainPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[point] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(ContourCoords[point], Center, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				xCoords[point] = DrawingCoords[point][0];
 				yCoords[point] = DrawingCoords[point][1];
 				colors[point] = Util.FindColor(ContourValue[point], minvalue, maxvalue, ColorSystem);
@@ -209,7 +209,7 @@ public class ResultDiagrams
 			if (showelemcontour)
 			{
 				// DrawPolygon(xCoords, yCoords, thick, true, false, Color.black, null);
-				DP.drawPolygon(xCoords, yCoords, Menus.palette[0]) ;
+				DP.drawPolygon(xCoords, yCoords, Main.palette[0]) ;
 			}
 			if (SelectedElems != null)
 			{
@@ -218,7 +218,7 @@ public class ResultDiagrams
 					if (elem == SelectedElems[i])
 					{
 						// DrawPolygon(xCoords, yCoords, thick, false, true, Color.black, Color.red);
-						DP.drawPolygon(xCoords, yCoords, Menus.palette[4]) ;
+						DP.drawPolygon(xCoords, yCoords, Main.palette[4]) ;
 					}
 				}
 			}		

@@ -9,7 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import org.example.Main;
 import org.example.analysis.Analysis;
+import org.example.mainTCC.MainPanel;
 import org.example.output.Results;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
@@ -22,8 +24,8 @@ public class ToolbarResults extends JPanel
     {
         /* Listas no segundo painel*/
         this.setLayout(new GridLayout(5, 0));
-        this.setBackground(Menus.palette[1]);
-        this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Menus.palette[1]));
+        this.setBackground(Main.palette[1]);
+        this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[1]));
 		this.setVisible(false);
         
         String[] ResultsNames = new String[]{"Deslocamentos", "Tensâes", "Deformaçõs", "Forâas Internas"};
@@ -61,10 +63,10 @@ public class ToolbarResults extends JPanel
                     }
 
                     // ShowResult(structure);
-                    Menus.getInstance().getEastPanel().getLegendPanel().switchDisplay(selectedDiagram, selectedVar) ;
-                    Menus.getInstance().getEastPanel().getDiagramsPanel().setSelectedDOF(selectedVar) ;
-                    Menus.getInstance().getEastPanel().getDiagramsPanel().updateData() ;
-                    Menus.getInstance().getMainPanel().switchDisplay(selectedDiagram, selectedVar) ;
+                    MainPanel.getInstance().getEastPanel().getLegendPanel().switchDisplay(selectedDiagram, selectedVar) ;
+                    MainPanel.getInstance().getEastPanel().getDiagramsPanel().setSelectedDOF(selectedVar) ;
+                    MainPanel.getInstance().getEastPanel().getDiagramsPanel().updateData() ;
+                    MainPanel.getInstance().getCentralPanel().switchDisplay(selectedDiagram, selectedVar) ;
                 }
             }
         });

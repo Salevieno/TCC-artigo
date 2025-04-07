@@ -5,11 +5,12 @@ import java.io.IOException;
 
 import org.example.loading.Loading;
 import org.example.mainTCC.InputFunctions;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Structure;
 import org.example.structure.StructureDTO;
-import org.example.userInterface.Menus;
-import org.example.view.MainPanel;
+import org.example.userInterface.MenuBar;
+import org.example.view.CentralPanel;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,12 +25,12 @@ public class MenuFileService
 		Structure structure = new Structure(input) ;
 		// TODO fazer o parse dos materiais numa lista específica e depois atribuir aos elementos. Evita criar 100 materiais idênticos
 		structure.updateMaxCoords() ;
-		structure.getMesh().getNodes().forEach(node -> node.updateDrawingPos(Menus.getInstance().getMainCanvas(), false, 1)) ;
-		MainPanel.structure = structure ;
+		structure.getMesh().getNodes().forEach(node -> node.updateDrawingPos(MainPanel.getInstance().getMainCanvas(), false, 1)) ;
+		CentralPanel.structure = structure ;
 		
 		Loading loading = new Loading() ;
 		structure.getMesh().getNodes().stream().filter(node -> node.getConcLoads() != null).forEach(node -> node.getConcLoads().forEach(load -> loading.addConcLoad(load))) ;
-		MainPanel.loading = loading ;
+		CentralPanel.loading = loading ;
 
 		MenuFunctions.CalcAnalysisParameters(structure, loading) ;
 
@@ -40,7 +41,7 @@ public class MenuFileService
 
 		// Menus.getInstance().getMainCanvas().setDimension(new Point2D.Double(1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y)) ;
 
-		Menus.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(structure, MainPanel.loading) ;
+		MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(structure, CentralPanel.loading) ;
 	}
 
 	public static void saveStructure(String filename, StructureDTO structureDTO)

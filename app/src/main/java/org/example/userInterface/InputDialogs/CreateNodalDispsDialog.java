@@ -3,7 +3,7 @@ package org.example.userInterface.InputDialogs;
 import javax.swing.JLabel;
 
 import org.example.userInterface.MenuStructure;
-import org.example.view.MainPanel;
+import org.example.view.CentralPanel;
 
 public class CreateNodalDispsDialog extends InputDialogWithGrid
 {
@@ -19,7 +19,7 @@ public class CreateNodalDispsDialog extends InputDialogWithGrid
     @Override
     public void onOkClick(double[][] input)
     {
-		MainPanel.DefineNodalDispTypes(input);
+		CentralPanel.DefineNodalDispTypes(input);
 		MenuStructure.updateEnabledSubMenus();
     }
 
