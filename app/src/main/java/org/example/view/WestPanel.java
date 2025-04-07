@@ -15,7 +15,7 @@ public class WestPanel extends JPanel
 	private final InstructionsPanel instructionsPanel = new InstructionsPanel() ;
 	private final ToolbarButtons toolbarButtons = new ToolbarButtons() ;
 	private final ToolbarResults toolbarResults = new ToolbarResults() ;
-	private ListPanel listsPanel = new ListPanel() ;
+	private final ListPanel listsPanel = new ListPanel() ;
 
     public WestPanel()
     {        

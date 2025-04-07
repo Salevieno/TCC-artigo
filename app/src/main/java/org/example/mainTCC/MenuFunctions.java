@@ -521,11 +521,11 @@ public abstract class MenuFunctions
 				selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
 			}
 		}
-		CentralPanel.selectedConcLoadID = SelConcLoad;
+		MainPanel.getInstance().getWestPanel().getListsPanel().setSelectedID(SelConcLoad);
 		MainPanel.getInstance().getCentralPanel().AddConcLoads(loading, selectedNodes, ConcLoadType);
 
 
-		CentralPanel.selectedDistLoadID = SelDistLoad;
+		MainPanel.getInstance().getWestPanel().getListsPanel().setSelectedID(SelDistLoad);
 		if (-1 < SelDistLoad)
 		{
 			// SelectedElems = null;
@@ -597,7 +597,8 @@ public abstract class MenuFunctions
 			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
 					materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
 			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-					structure2.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;			
+					structure2.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;
+		
 			MenuFunctions.CalcAnalysisParameters(structure2, loading);
 			CentralPanel.structure = structure2 ;
 			MainPanel.getInstance().getCentralPanel().updateDrawings() ;

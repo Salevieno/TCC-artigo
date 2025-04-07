@@ -107,14 +107,15 @@ public class UpperToolbar extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
+				int selectedID = MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() ;
 				if (Assignable.materials.equals(assignable))
 				{
-					Material mat = CentralPanel.matTypes.get(CentralPanel.selectedMatID) ;
+					Material mat = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes().get(selectedID) ;
 					CentralPanel.structure.getMesh().assignMaterials(mat) ;
 				}
 				if (Assignable.sections.equals(assignable))
 				{
-					Section sec = CentralPanel.secTypes.get(CentralPanel.selectedSecID) ;
+					Section sec = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes().get(selectedID) ;
 					CentralPanel.structure.getMesh().assignSections(sec) ;
 				}
 				if (Assignable.distLoads.equals(assignable))
@@ -200,7 +201,7 @@ public class UpperToolbar extends JPanel
         
         if (Assignable.materials.equals(assignable))
         {
-            Element.createRandomMatColors(CentralPanel.matTypes);
+            Element.createRandomMatColors(MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes());
             // for (Element elem : MainPanel.structure.getMesh().getElements())
             // {
                 // int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;

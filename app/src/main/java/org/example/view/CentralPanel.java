@@ -37,7 +37,6 @@ import org.example.structure.Element;
 import org.example.structure.Material;
 import org.example.structure.Node;
 import org.example.structure.Reactions;
-import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.structure.StructureShape;
 import org.example.structure.Supports;
@@ -52,20 +51,13 @@ import graphics.DrawPrimitives ;
 
 public class CentralPanel extends JPanel
 {
-	private static final long serialVersionUID = 1L;	
+	private static final long serialVersionUID = 1L;
 	private static final Dimension initialSize = new Dimension(582, 610) ;
 	private static final Color bgColor = Main.palette[2] ;
 	private static final DrawPrimitives DP = new DrawPrimitives() ;
 	
 	private final MyCanvas canvas ;
 	private final int[] panelPos ;
-	
-	public static int selectedMatID;
-	public static int selectedSecID;
-	public static int selectedSupID;
-	public static int selectedConcLoadID;
-	public static int selectedDistLoadID;
-	public static int selectedNodalDispID;
 	
 	private boolean showCanvas, showGrid, showMousePos;
 	private boolean showElems, showDeformedStructure ;
@@ -80,19 +72,12 @@ public class CentralPanel extends JPanel
 	private SelectionWindow selectionWindow ;
 	
 	private static boolean StructureCreationIsOn = false;
-	public static List<Material> matTypes ;
-	public static List<Section> secTypes ;
 	
 	private MenuViewService view = MenuViewService.getInstance() ;
 
 	public static Structure structure ;
 	public static Loading loading ;
-	
-	static
-	{
-		matTypes = new ArrayList<>() ;
-		secTypes = new ArrayList<>() ;
-	}
+
 	public CentralPanel(Point frameTopLeftPos)
 	{
 		showCanvas = true ;
@@ -113,12 +98,6 @@ public class CentralPanel extends JPanel
 		showMatColor = true ;
 		showSecColor = true ;
 		showElemContour = true ;
-		selectedMatID = -1;
-		selectedSecID = -1;
-		selectedSupID = -1;
-		selectedConcLoadID = -1;
-		selectedDistLoadID = -1;
-		selectedNodalDispID = -1;
 
 		this.setBackground(bgColor);
 	    this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -613,7 +592,7 @@ public class CentralPanel extends JPanel
 	public void activateMaterialAssignment()
 	{
 		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
-		CentralPanel.selectedMatID = 0;
+		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;	
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
@@ -621,7 +600,7 @@ public class CentralPanel extends JPanel
 	public void activateSectionAssignment()
 	{
 		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
-		CentralPanel.selectedSecID = 0;
+		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableSectionAssignment() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
@@ -629,7 +608,7 @@ public class CentralPanel extends JPanel
 	public void activateSupportAssignment()
 	{
 		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
-		CentralPanel.selectedSupID = 0;
+		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableSupportAssignment() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
@@ -637,7 +616,7 @@ public class CentralPanel extends JPanel
 	public void activateConcLoadAssignment()
 	{
 		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
-		CentralPanel.selectedConcLoadID = 0;
+		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableConcLoadAssignment() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
@@ -645,16 +624,16 @@ public class CentralPanel extends JPanel
 	public void activateDistLoadAssignment()
 	{
 		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
-		CentralPanel.selectedDistLoadID = 0;
+		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableDistLoadAssignment() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
 	}
 	
 	public void activateNodalDispAssignment()
 	{
-		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
 		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
-		CentralPanel.selectedNodalDispID = 0;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
+		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
 	}
 
@@ -702,14 +681,14 @@ public class CentralPanel extends JPanel
 	
 	public void AddSupports()
 	{
-		if (selectedSupID <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.SupType == null) { return ;}
+		if (MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.SupType == null) { return ;}
 
 		for (Node node : structure.getMesh().getSelectedNodes())
 		{
 			// int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
-			Supports newSupport = new Supports(1, node, MenuFunctions.SupType[selectedSupID]);
+			Supports newSupport = new Supports(1, node, MenuFunctions.SupType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
 			CentralPanel.structure.addSupport(newSupport) ;
-			node.setSup(MenuFunctions.SupType[selectedSupID]);
+			node.setSup(MenuFunctions.SupType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
 		}
 
 		view.sup = true;
@@ -718,13 +697,13 @@ public class CentralPanel extends JPanel
 	
 	public void AddConcLoads(Loading loading, List<Node> selectedNodes, List<Force> ConcLoadType)
 	{
-		if (-1 < selectedConcLoadID && selectedNodes != null && ConcLoadType != null && 1 <= ConcLoadType.size())
+		if (-1 < MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() && selectedNodes != null && ConcLoadType != null && 1 <= ConcLoadType.size())
 		{
 			for (int i = 0; i <= selectedNodes.size() - 1; i += 1)
 			{
 				if (-1 < selectedNodes.get(i).getID())
 				{
-					ConcLoad newConcLoad = new ConcLoad(ConcLoadType.get(selectedConcLoadID));
+					ConcLoad newConcLoad = new ConcLoad(ConcLoadType.get(MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()));
 					loading.getConcLoads().add(newConcLoad);
 					selectedNodes.get(i).addConcLoad(newConcLoad);
 				}
@@ -736,13 +715,13 @@ public class CentralPanel extends JPanel
 	
 	public void AddDistLoads(Structure structure, Loading loading, List<Element> selectedElems, double[][] DistLoadType)
 	{
-		if (-1 < selectedDistLoadID && selectedElems != null && DistLoadType != null)
+		if (-1 < MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() && selectedElems != null && DistLoadType != null)
 		{
 			for (int i = 0; i <= selectedElems.size() - 1; i += 1)
 			{
 				Element elem = selectedElems.get(i);
-				int LoadType = (int) DistLoadType[selectedDistLoadID][0];
-				double Intensity = DistLoadType[selectedDistLoadID][1];
+				int LoadType = (int) DistLoadType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()][0];
+				double Intensity = DistLoadType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()][1];
 				DistLoad newDistLoad = new DistLoad(LoadType, Intensity) ;
 				loading.getDistLoads().add(newDistLoad);
 				elem.addDistLoad(newDistLoad) ;
@@ -755,39 +734,18 @@ public class CentralPanel extends JPanel
 	
 	public void AddNodalDisps()
 	{
-		if (selectedNodalDispID <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.NodalDispType == null ) { return ;}
+		if (MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.NodalDispType == null ) { return ;}
 		
 		for (Node node : structure.getMesh().getSelectedNodes())
 		{
 			// int dispid = loading.getNodalDisps().size() - MenuFunctions.selectedNodes.size() + i;			
-			NodalDisp newNodalDisp = new NodalDisp(1, node, MenuFunctions.NodalDispType[selectedNodalDispID]) ;
+			NodalDisp newNodalDisp = new NodalDisp(1, node, MenuFunctions.NodalDispType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]) ;
 			loading.getNodalDisps().add(newNodalDisp);
 			node.addNodalDisp(newNodalDisp);
 		}
 		view.nodalDisps = true;
 		structure.getMesh().unselectAllNodes() ;
 	}
-	
-	public static void addMaterials(List<Material> newMaterials)
-	{
-		matTypes.addAll(newMaterials) ;
-	}
-
-	public static void addMaterial(Material newMaterial)
-	{
-		matTypes.add(newMaterial) ;
-	}
-
-	public static void addSections(List<Section> newSections)
-	{
-		secTypes.addAll(newSections);
-	}
-
-	public static void addSection(Section newSection)
-	{
-		secTypes.add(newSection);
-	}
-
 	public static void setConcLoadTypes(List<Force> ConcLoads)
 	{
 		MenuFunctions.concLoadTypes = ConcLoads;
@@ -833,18 +791,17 @@ public class CentralPanel extends JPanel
 
 		}
 
-		if (evt.getButton() == 3)	// Right click
-		{
-			CentralPanel.structure.printStructure(matTypes, secTypes, CentralPanel.structure.getSupports(), loading);
-		}
+		// if (evt.getButton() == 3)	// Right click
+		// {
+		// 	CentralPanel.structure.printStructure(matTypes, secTypes, CentralPanel.structure.getSupports(), loading);
+		// }
 	}
 
 	private void handleMouseWheel(MouseWheelEvent evt)
 	{
-		Assignable assignable = MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
 		double qtdRotation = evt.getWheelRotation() ;
+		MainPanel.getInstance().getWestPanel().getListsPanel().handleMouseWheel(evt) ;
 
-		boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);
 		if (Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height))
 		{
 			// canvas.getDimension()[0] += Util.Round(0.2*Math.log10(canvas.getDimension()[0])*qtdRotation, 1);
@@ -853,50 +810,7 @@ public class CentralPanel extends JPanel
 			{
 				structure.getResultDiagrams().incScale(Util.Round(Math.log10(structure.getResultDiagrams().getScale()) * qtdRotation, 1)) ;
 			}
-		}
-		if (!MouseIsInMainCanvas & assignable != null)
-		{
-			switch (assignable)
-			{
-				case materials:
-					selectedMatID += qtdRotation;
-					selectedMatID = Util.clamp(selectedMatID, 0, matTypes.size() - 1) ;
-					
-					break;
-
-				case sections:
-					selectedSecID += qtdRotation;
-					selectedSecID = Util.clamp(selectedSecID, 0, secTypes.size() - 1) ;
-					
-					break;
-
-				case supports:
-					selectedSupID += qtdRotation;
-					selectedSupID = Util.clamp(selectedSupID, 0, MenuFunctions.SupType.length - 1) ;
-					
-					break;
-
-				case concLoads:
-					selectedConcLoadID += qtdRotation;
-					selectedConcLoadID = Util.clamp(selectedConcLoadID, 0, MenuFunctions.concLoadTypes.size() - 1) ;
-					
-					break;
-
-				case distLoads:
-					selectedDistLoadID += qtdRotation;
-					selectedDistLoadID = Util.clamp(selectedDistLoadID, 0, MenuFunctions.DistLoadType.length - 1) ;
-					
-					break;
-
-				case nodalDisps:
-					selectedNodalDispID += qtdRotation;
-					selectedNodalDispID = Util.clamp(selectedNodalDispID, 0, MenuFunctions.NodalDispType.length - 1) ;
-					
-					break;
-			
-				default: System.out.println("Warn: No assignable selected when moving mouse wheel") ; break ;
-			}
-		}	
+		}		
 
 		MenuFunctions.updateDiagramScale(canvas, evt.getWheelRotation());
 	}

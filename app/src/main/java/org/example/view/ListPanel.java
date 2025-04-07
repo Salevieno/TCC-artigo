@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -18,6 +21,7 @@ import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Material;
 import org.example.structure.Section;
 import org.example.userInterface.MenuBar;
+import org.example.utilidades.Util;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -26,18 +30,63 @@ public class ListPanel extends JPanel
 {
     private static final long serialVersionUID = 1L;
     private static final Dimension initialSize = new Dimension(10, 100) ;
+
+	private List<Material> matTypes ;
+	private List<Section> secTypes ;
+	private int selectedID ;
+
 	// private final DrawPrimitives DP ;
 
     public ListPanel()
     {
+		matTypes = new ArrayList<>() ;
+		secTypes = new ArrayList<>() ;
+
         this.setPreferredSize(initialSize);
         this.setBackground(Main.palette[2]);
         this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-		// DP = MainPanel.getInstance().getCentralPanel().getDP() ;
-		// setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Main.palette[1]));
     }
 
-	private void displayMaterialOptions(Dimension panelSize, int selectedItemID)
+	public void resetSelectedID() { selectedID = 0 ;}
+	
+	public void addMaterials(List<Material> newMaterials) { matTypes.addAll(newMaterials) ;}
+
+	public void addMaterial(Material newMaterial) { matTypes.add(newMaterial) ;}
+
+	public void addSections(List<Section> newSections) { secTypes.addAll(newSections) ;}
+
+	public void addSection(Section newSection) { secTypes.add(newSection) ;}
+
+	public void handleMouseWheel(MouseWheelEvent evt)
+	{
+		// boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);
+		Assignable assignable = MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
+		double qtdRotation = evt.getWheelRotation() ;
+
+		if (!false & assignable != null) // MouseIsInMainCanvas
+		{
+			selectedID += qtdRotation;
+
+			switch (assignable)
+			{
+				case materials: selectedID = Util.clamp(selectedID, 0, matTypes.size() - 1) ; return ;
+
+				case sections: selectedID = Util.clamp(selectedID, 0, secTypes.size() - 1) ; return ;
+
+				case supports: selectedID = Util.clamp(selectedID, 0, MenuFunctions.SupType.length - 1) ; return ;
+
+				case concLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.concLoadTypes.size() - 1) ; return ;
+
+				case distLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.DistLoadType.length - 1) ; return ;
+
+				case nodalDisps: selectedID = Util.clamp(selectedID, 0, MenuFunctions.NodalDispType.length - 1) ; return ;
+			
+				default: System.out.println("Warn: No assignable selected when moving mouse wheel") ; break ;
+			}
+		}
+	}
+
+	private void displayMaterialOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
 	{
 		String[] MatNames = new String[] {
 				"Nome",
@@ -45,15 +94,23 @@ public class ListPanel extends JPanel
 				"v",
 				"fu (MPa)"
 			};
-		List<Material> matType = CentralPanel.matTypes;
-//			TODO DP.DrawLists(jpListSize, SelectedMat, MatNames, "Materials list", "Mat", matType);
+		List<String[]> matTypesProp = new ArrayList<>() ;
+		for (Material mat : matTypes)
+		{
+			matTypesProp.add(new String[] {"Mat", String.valueOf(mat.getE()), String.valueOf(mat.getV()), String.valueOf(mat.getG())}) ;
+		}
+		displayTable(panelSize, selectedItemID, MatNames, "Materials list", matTypesProp, DP);
 	}
 
-	private void displaySectionOptions(Dimension panelSize, int selectedItemID)
+	private void displaySectionOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
 	{
 		String[] SecNames = new String[] {"Nome", "Espessura (mm)"};
-		List<Section> SecType = CentralPanel.secTypes;
-//			DP.DrawLists(jpListSize, SelectedSec, SecNames, "Sections list", "Sec", SecType);
+		List<String[]> secTypesProp = new ArrayList<>() ;
+		for (Section sec : secTypes)
+		{
+			secTypesProp.add(new String[] {"Sec", String.valueOf(sec.getT())}) ;
+		}
+		displayTable(panelSize, selectedItemID, SecNames, "Sections list", secTypesProp, DP);
 	}
 
 	private void displaySupportOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
@@ -67,8 +124,13 @@ public class ListPanel extends JPanel
 				"Tetay",
 				"Tetaz"
 			};
-		int[][] SupType = MenuFunctions.SupType;
-		DrawLists(panelSize, selectedItemID, SupNames, "Supports list", "Sup", SupType, DP);
+		List<String[]> supTypes = new ArrayList<>() ;
+		for (int[] supType : MenuFunctions.SupType)
+		{
+			String[] stringArray = Arrays.stream(supType).mapToObj(String::valueOf).toArray(String[]::new) ;
+			supTypes.add(stringArray) ;
+		}
+		// displayTable(panelSize, selectedItemID, SupNames, "Supports list", "Sup", supTypes, DP);
 	}
 
 	private void displayConcLoadOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
@@ -82,8 +144,13 @@ public class ListPanel extends JPanel
 				"My (kN)",
 				"Mz (kN)"
 			};
-		List<Force> ConcLoadType = MenuFunctions.concLoadTypes;
-		DrawLists(panelSize, selectedItemID, ConcLoadNames, "Conc loads list", "Conc load", ConcLoadType, DP);
+		List<Force> ConcLoadTypes = MenuFunctions.concLoadTypes;
+		List<String[]> loadTypes = new ArrayList<>() ;
+		for (Force load : ConcLoadTypes)
+		{
+			loadTypes.add(new String[] {"Conc load", String.valueOf(load.x), String.valueOf(load.y), String.valueOf(load.z), String.valueOf(load.tx), String.valueOf(load.ty), String.valueOf(load.tz)}) ;
+		}
+		displayTable(panelSize, selectedItemID, ConcLoadNames, "Conc loads list", loadTypes, DP);
 	}
 
 	private void displayDistLoadOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
@@ -96,8 +163,13 @@ public class ListPanel extends JPanel
 				"Distini (m)",
 				"Distfin (m)"
 			};
-		double[][] DistLoadType = MenuFunctions.DistLoadType;
-		DrawLists(panelSize, selectedItemID, DistLoadNames, "Dist loads list", "Dist load", DistLoadType, DP);
+		List<String[]> distLoadTypes = new ArrayList<>() ;
+		for (double[] loadType : MenuFunctions.DistLoadType)
+		{
+			String[] stringArray = Arrays.stream(loadType).mapToObj(String::valueOf).toArray(String[]::new) ;
+			distLoadTypes.add(stringArray) ;
+		}
+		// displayTable(panelSize, selectedItemID, DistLoadNames, "Dist loads list", "Dist load", distLoadTypes, DP);
 	}
 
 	private void displayNodalDispOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
@@ -111,11 +183,16 @@ public class ListPanel extends JPanel
 				"rot y",
 				"rot z"
 			};
-		double[][] NodalDispType = MenuFunctions.NodalDispType;
-		DrawLists(panelSize, selectedItemID, NodalDispNames, "Nodal disps list", "Nodal disp", NodalDispType, DP);
+		List<String[]> nodalDispTypes = new ArrayList<>() ;
+		for (double[] dispType : MenuFunctions.NodalDispType)
+		{
+			String[] stringArray = Arrays.stream(dispType).mapToObj(String::valueOf).toArray(String[]::new) ;
+			nodalDispTypes.add(stringArray) ;
+		}
+		// displayTable(panelSize, selectedItemID, NodalDispNames, "Nodal disps list", "Nodal disp", nodalDispTypes, DP);
 	}
     
-	public void display(Assignable assignable, int selectedSup, int selectedConcLoad, int selectedDistLoad, int selectedNodalDisp, DrawPrimitives DP)
+	public void display(Assignable assignable, DrawPrimitives DP)
 	{
 
 		if (assignable == null) { this.setBackground(null) ; return ;}
@@ -125,150 +202,68 @@ public class ListPanel extends JPanel
 
 		switch (assignable)
 		{
-			// case materials:
-			// 	displayMaterialOptions(panelSize, selectedMat) ;
-			// 	return;
+			case materials: displayMaterialOptions(panelSize, selectedID, DP) ; return ;
 
-			// case sections:
-			// 	displaySectionOptions(panelSize, selectedSec) ;
-			// 	return;
+			case sections: displaySectionOptions(panelSize, selectedID, DP) ; return ;
 
-			case supports:
-				displaySupportOptions(panelSize, selectedSup, DP) ;
-				return;
+			case supports: displaySupportOptions(panelSize, selectedID, DP) ; return ;
 
-			case concLoads:
-				displayConcLoadOptions(panelSize, selectedConcLoad, DP) ;
-				return;
+			case concLoads: displayConcLoadOptions(panelSize, selectedID, DP) ; return ;
 
-			case distLoads:
-				displayDistLoadOptions(panelSize, selectedDistLoad, DP) ;
-				return;
+			case distLoads: displayDistLoadOptions(panelSize, selectedID, DP) ; return ;
 
-			case nodalDisps:
-				displayNodalDispOptions(panelSize, selectedNodalDisp, DP) ;
-				return;
+			case nodalDisps: displayNodalDispOptions(panelSize, selectedID, DP) ; return ;
 		
-			default: return;
+			default: return ;
 		}
 	}
-	
-	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, List<Force> Forces, DrawPrimitives DP)
+
+	private void displayTable(Dimension panelSize, int selectedRow, String[] PropName, String Title, List<String[]> rowData, DrawPrimitives DP)
 	{
-		int[] ListPos = new int[] {(int) (0.025 * PanelSize.getWidth()), (int) (0.15 * PanelSize.getHeight())};
-		int[] ListSize = new int[] {(int) (0.95 * PanelSize.getWidth()), (int) (0.9 * PanelSize.getHeight())};
-		double[][] loadTypes = new double[Forces.size()][6] ;
-		for (int i = 0 ; i <= Forces.size() - 1 ; i += 1)
+		Point pos = new Point((int) (0.025 * panelSize.getWidth()), (int) (0.15 * panelSize.getHeight())) ;
+		Dimension size = new Dimension((int) (0.95 * panelSize.getWidth()), (int) (0.9 * panelSize.getHeight())) ;
+		displayTable(pos, size, selectedRow, PropName, Title, rowData, DP);
+	}
+
+	private void displayTable(Point pos, Dimension size, int selectedRow, String[] header, String Title, List<String[]> rowData, DrawPrimitives DP)
+	{
+		int Ncol = header.length;
+		Point padding = new Point(20, 10) ;
+		int sx = (int) (size.width - padding.x) / Ncol ;
+		int sy = 16 ;
+		Color stdItemColor = Main.palette[0] ;
+		Color selectedItemColor = Main.palette[10] ;
+		
+		Point titlePos = new Point(pos.x + size.width / 2, (int) (pos.y - 1.3 * 11 / 2 - padding.y / 2)) ;
+		DP.drawText(titlePos, Align.center, Title, Main.palette[1]);
+		
+		Point textPos = new Point(pos.x + padding.x, pos.y + padding.y) ;
+		for (int col = 0; col <= rowData.get(0).length - 1; col += 1)
 		{
-			loadTypes[i] = new double[] {Forces.get(i).x, Forces.get(i).y, Forces.get(i).z, Forces.get(i).tx, Forces.get(i).ty, Forces.get(i).tz} ;
+			DP.drawText(textPos, Align.center, header[col], Main.palette[0]);
+			textPos.translate(sx, 0) ;
 		}
-		DrawList(ListPos, ListSize, SelectedItem, ItemNames, Title, Label, loadTypes, DP);
-	}
-	
-	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, double[][] ItemTypes, DrawPrimitives DP)
-	{
-		int[] ListPos = new int[] {(int) (0.025 * PanelSize.getWidth()), (int) (0.15 * PanelSize.getHeight())};
-		int[] ListSize = new int[] {(int) (0.95 * PanelSize.getWidth()), (int) (0.9 * PanelSize.getHeight())};
-		DrawList(ListPos, ListSize, SelectedItem, ItemNames, Title, Label, ItemTypes, DP);
-	}
 
-	private void DrawLists(Dimension PanelSize, int SelectedItem, String[] ItemNames, String Title, String Label, int[][] ItemTypes, DrawPrimitives DP)
-	{
-		int[] ListPos = new int[] {(int) (0.025 * PanelSize.getWidth()), (int) (0.15 * PanelSize.getHeight())};
-		int[] ListSize = new int[] {(int) (0.95 * PanelSize.getWidth()), (int) (0.9 * PanelSize.getHeight())};
-		DrawList(ListPos, ListSize, SelectedItem, ItemNames, Title, Label, ItemTypes, DP);
-	}
-		
-	private void DrawList(int[] Pos, int[] Size, int SelectedItem, String[] PropName, String Title, String ItemName, double[][] Input, DrawPrimitives DP)
-	{
-		int FontSize = 11;
-		int offset = 10;
-		int sx = 0 ;
-		int sy = 0;
-		int Nrow = Input.length ;
-		int Ncol = PropName.length;
-		Color TitleColor = Color.blue ;
-		Color PropNameColor = new Color(200, 180, 150) ;
-		Color UnselectedItemColor = Color.cyan ;
-		Color SelectedItemColor = Color.green;
-
-		sx = (int) (Size[0] - 2 * offset) / Ncol;
-		sy = FontSize + 5;
-		Size[1] = Nrow * sy + FontSize + 2 * offset;
-		
-		DP.drawText(new Point(Pos[0] + Size[0] / 2, (int) (Pos[1] - 1.3 * FontSize / 2 - offset / 2)), Align.center, Title, TitleColor);
-		// DrawText(new int[] {Pos[0] + Size[0] / 2, (int) (Pos[1] - 1.3 * FontSize / 2 - offset / 2)}, Title, "Center", 0, "Bold", (int) (1.3 * FontSize), TitleColor);
-		// DrawWindow(Pos, Size[0], Size[1], 2, new Color(50, 100, 120), null);		
-		for (int row = 0; row <= Nrow - 1; row += 1)
-		{
-			int[] TextPos = new int[] {Pos[0] + offset + sx / 2, Pos[1] + offset + FontSize / 2};
-			if (row == 0)
+		textPos = new Point(pos.x + padding.x, pos.y + padding.y) ;
+		textPos.translate(0, sy) ;
+		for (int row = 0; row <= rowData.size() - 1 ; row += 1)
+		{						
+			Color textColor = selectedRow == row ? selectedItemColor : stdItemColor;
+			for (int col = 0; col <= rowData.get(row).length - 1; col += 1)
 			{
-				for (int prop = 0; prop <= Input[row].length; prop += 1)
-				{
-					DP.drawText(new Point(TextPos[0] + prop*sx, TextPos[1]), Align.center, PropName[prop], PropNameColor);			
-					// DrawText(new int[] {TextPos[0] + prop*sx, TextPos[1]}, PropName[prop], "Center", 0, "Bold", FontSize, PropNameColor);					
-				}
-			}							
-			Color TextColor = UnselectedItemColor;
-			if (SelectedItem == row)
-			{
-				TextColor = SelectedItemColor;
+				String text = rowData.get(row)[col] + (col == 0 ? " " + String.valueOf(row) : "") ;
+				
+				DP.drawText(textPos, Align.center, text, textColor) ;
+				textPos.translate(sx, 0) ;
 			}
-			DP.drawText(new Point(TextPos[0], TextPos[1] + (row + 1) * sy), Align.center, ItemName + " " + String.valueOf(row), TextColor);	
-			// DrawText(new int[] {TextPos[0], TextPos[1] + (row + 1) * sy}, ItemName + " " + String.valueOf(row), "Center", 0, "Bold", FontSize, TextColor);
-			for (int prop = 0; prop <= Input[row].length - 1; prop += 1)
-			{
-				DP.drawText(new Point(TextPos[0] + (prop + 1) * sx, TextPos[1] + (row + 1) * sy), Align.center, String.valueOf(Input[row][prop]), TextColor);	
-				// DrawText(new int[] {TextPos[0] + (prop + 1) * sx, TextPos[1] + (row + 1) * sy}, String.valueOf(Input[row][prop]), "Center", 0, "Bold", FontSize, TextColor);			
-			}
+			textPos.translate(-sx * rowData.get(row).length, sy) ;
 		}
 	}
 
-	private void DrawList(int[] Pos, int[] Size, int SelectedItem, String[] PropName, String Title, String ItemName, int[][] Input, DrawPrimitives DP)
-	{
-		double[][] inputAsDouble = new double[Input.length][Input[0].length] ;
-		for (int i = 0 ; i <= Input.length - 1 ; i += 1)
-		{
-			for (int j = 0 ; j <= Input.length - 1 ; j += 1)
-			{
-				inputAsDouble[i][j] = Input[i][j] ;
- 			}
-		}
-		DrawList(Pos, Size, SelectedItem, PropName, Title, ItemName, inputAsDouble, DP) ;
-		// int FontSize = 11;
-		// int offset = 10;
-		// int sx = 0, sy = 0;
-		// int Nrow = Input.length, Ncol = PropName.length;
-		// Color TitleColor = Color.blue, PropNameColor = new Color(200, 180, 150), UnselectedItemColor = Color.cyan, SelectedItemColor = Color.green;
-		// sx = (int) (Size[0] - 2 * offset) / Ncol;
-		// sy = FontSize + 5;
-		// Size[1] = Nrow * sy + FontSize + 2 * offset;
-		
-		// DrawText(new int[] {Pos[0] + Size[0] / 2, (int) (Pos[1] - 1.3 * FontSize / 2 - offset / 2)}, Title, "Center", 0, "Bold", (int) (1.3 * FontSize), TitleColor);
-		// DrawWindow(Pos, Size[0], Size[1], 2, new Color(50, 100, 120), null);		
-		// for (int row = 0; row <= Nrow - 1; row += 1)
-		// {
-		// 	int[] TextPos = new int[] {Pos[0] + offset + sx / 2, Pos[1] + offset + FontSize / 2};
-		// 	if (row == 0)
-		// 	{
-		// 		for (int prop = 0; prop <= Input[row].length; prop += 1)
-		// 		{					
-		// 			DrawText(new int[] {TextPos[0] + prop*sx, TextPos[1]}, PropName[prop], "Center", 0, "Bold", FontSize, PropNameColor);					
-		// 		}
-		// 	}							
-		// 	Color TextColor = UnselectedItemColor;
-		// 	if (SelectedItem == row)
-		// 	{
-		// 		TextColor = SelectedItemColor;
-		// 	}
-		// 	DrawText(new int[] {TextPos[0], TextPos[1] + (row + 1) * sy}, ItemName + " " + String.valueOf(row), "Center", 0, "Bold", FontSize, TextColor);
-		// 	for (int prop = 0; prop <= Input[row].length - 1; prop += 1)
-		// 	{
-		// 		DrawText(new int[] {TextPos[0] + (prop + 1) * sx, TextPos[1] + (row + 1) * sy}, String.valueOf(Util.Round(Input[row][prop], 1)), "Center", 0, "Bold", FontSize, TextColor);			
-		// 	}
-		// }
-	}
+	public List<Material> getMatTypes() { return matTypes ;}
+	public List<Section> getSecTypes() { return secTypes ;}
+	public int getSelectedID() { return selectedID ;}
+	public void setSelectedID(int selectedID) { this.selectedID = selectedID ;}
 
     @Override
     public void paintComponent(Graphics graphs) 
@@ -279,7 +274,7 @@ public class ListPanel extends JPanel
         {
 			DrawPrimitives DP = MainPanel.getInstance().getCentralPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-            display(MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable(), CentralPanel.selectedSupID, CentralPanel.selectedConcLoadID, CentralPanel.selectedDistLoadID, CentralPanel.selectedNodalDispID, DP);
+            display(MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable(), DP);
         }
         repaint();
     }

@@ -25,7 +25,7 @@ public class MenuFileService
 		Structure structure = new Structure(input) ;
 		// TODO fazer o parse dos materiais numa lista específica e depois atribuir aos elementos. Evita criar 100 materiais idênticos
 		structure.updateMaxCoords() ;
-		structure.getMesh().getNodes().forEach(node -> node.updateDrawingPos(MainPanel.getInstance().getMainCanvas(), false, 1)) ;
+		// structure.getMesh().getNodes().forEach(node -> node.updateDrawingPos(MainPanel.getInstance().getMainCanvas(), false, 1)) ;
 		CentralPanel.structure = structure ;
 		
 		Loading loading = new Loading() ;

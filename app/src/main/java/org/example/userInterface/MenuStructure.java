@@ -303,8 +303,8 @@ public class MenuStructure extends JMenu
 		List<Element> elems = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getElements() : null;
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
 		String SelectedElemType = MenuFunctions.SelectedElemType;
-		List<Material> MatTypes = CentralPanel.matTypes;
-		List<Section> SecTypes = CentralPanel.secTypes;
+		List<Material> MatTypes = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes() ;
+		List<Section> SecTypes = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes() ;
 		List<Force> ConcLoadTypes = MenuFunctions.concLoadTypes;
 		double[][] DistLoadTypes = MenuFunctions.DistLoadType;
 		double[][] NodalDispTypes = MenuFunctions.NodalDispType;
