@@ -15,6 +15,11 @@ public class Point3D
 		this.y = y;
 		this.z = z;
 	}
+
+	public Point3D(Point2D.Double point)
+	{
+		this(point.x, point.y, 0.0) ;
+	}
 	
 	public double[] asArray() { return new double[] {x, y, z} ;}
 	public Point asPoint() { return new Point((int)x, (int)y) ;}

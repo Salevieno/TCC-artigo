@@ -20,9 +20,13 @@ public class MyCanvas
 	private Point2D.Double dimension;
 	private Point drawingPos;
 	private Point center;
-	private Point2D.Double GridSpacing;
 	private double zoom;
+	private double snipPower = 1 ;
 	
+	private Point2D.Double gridSpacing;
+	private final int qtdPointsMin = 6 ;
+	private final int qtdPointsMax = 46 ;
+	// TODO classe para grid
 	public MyCanvas(Point pos, Dimension size, Point2D.Double dimension, Point drawingPos)
 	{
 		this.title = null;
@@ -30,7 +34,8 @@ public class MyCanvas
 		this.size = size;
 		this.dimension = dimension;
 		this.drawingPos = drawingPos;
-		this.GridSpacing = new Point2D.Double(5.0, 5.0);
+		Point qtdPoints = calculateNumberOfGridPoints();
+		this.gridSpacing = new Point2D.Double(dimension.x / qtdPoints.x, dimension.y / qtdPoints.y) ;	
 		this.zoom = 1;
 		this.angles = new Point3D(0.0, 0.0, 0.0) ;
 
@@ -41,54 +46,42 @@ public class MyCanvas
 
 	public Point2D.Double centerInRealCoords() { return inRealCoords(center) ;}
 
-	public void draw(String Title, double[] PointDist, DrawPrimitives DP)
+	public Point calculateNumberOfGridPoints()
 	{
-		int[] NPoints = new int[] {(int) (size.width/PointDist[0]), (int) (size.height / PointDist[1])};
-		PointDist[0] = dimension.x/NPoints[0];
-		PointDist[1] = dimension.y/NPoints[1];
-		if (Title != null)
-		{
-			DP.drawText(new Point(pos.x + size.width / 2, pos.y), Align.center, Title, Main.palette[6]) ;
-		}
-		// DP.drawRect(pos, Align.topLeft, new Dimension(size.width, size.height), null, Main.palette[0]) ;
-	}
-
-	public void draw(double[] PointDist, DrawPrimitives DP)
-	{
-		draw(title, PointDist, DP) ;
+		Point qtdPoints = new Point();
+		qtdPoints.x = (int) (qtdPointsMin + (qtdPointsMax - qtdPointsMin) * (dimension.x % 100) / 100.0);
+		qtdPoints.y = (int) (qtdPointsMin + (qtdPointsMax - qtdPointsMin) * (dimension.y % 100) / 100.0);	
+		return qtdPoints;
 	}
 	
-	public void drawGrid(int pointSize, DrawPrimitives DP)
+	public Point2D.Double closestGridNodePos(Point2D.Double point)
 	{
-		int[] NPoints = CalculateNumberOfGridPoints(dimension);
-		double[] PointsDist = new double[2];
-		PointsDist[0] = size.width/(double)(NPoints[0]);
-		PointsDist[1] = size.height/(double)(NPoints[1]);		
-		for (int i = 0; i <= NPoints[0]; i += 1)
+		Point qtdGridPoints = calculateNumberOfGridPoints();
+
+		for (int i = 0; i <= qtdGridPoints.x; i += 1)
 		{	
-			for (int j = 0; j <= NPoints[1]; j += 1)
+			for (int j = 0; j <= qtdGridPoints.y; j += 1)
 			{	
-				Point Pos = new Point((int) (pos.x + i*PointsDist[0]), (int) (pos.y + j*PointsDist[1])) ;
-				DP.drawCircle(Pos, pointSize, 1, Color.black, Color.black);
+				Point2D.Double pos = new Point2D.Double(i * gridSpacing.x, j * gridSpacing.x) ;
+				double dx = Math.abs(point.x - pos.x) ;
+				double dy = Math.abs(point.y - pos.y) ;
+				if (dx <= snipPower * gridSpacing.x / 2.0 && dy <= snipPower * gridSpacing.y / 2.0)
+				{
+					return pos ;
+				}
 			}
 		}
-	}	
-	
-	public void drawCenter(DrawPrimitives DP)
-	{
-		DP.drawCircle(new Point(center.x, center.y), 10, 1, Main.palette[7], null);
+
+		return point ;
 	}
 
-	public static int[] CalculateNumberOfGridPoints(Point2D.Double CanvasDim)
+	public Point2D.Double getCoordFromMouseClick(Point MousePos, boolean SnipToGridIsOn)
 	{
-		int[] NPointsMin = new int[] {6, 6}, NPointsMax = new int[] {46, 46};
-		int[] NPoints = new int[2];
-		NPoints[0] = (int) (NPointsMin[0] + (NPointsMax[0] - NPointsMin[0]) * (CanvasDim.x % 100) / 100.0);
-		NPoints[1] = (int) (NPointsMin[1] + (NPointsMax[1] - NPointsMin[1]) * (CanvasDim.y % 100) / 100.0);	
-		return NPoints;
-	}
-	
+		Point2D.Double mousePosRealCoords = inRealCoords(MousePos) ;
 
+		return SnipToGridIsOn ? closestGridNodePos(mousePosRealCoords) : mousePosRealCoords ;
+
+	}
 
 	public Point2D.Double inRealCoords(Point drawingPos)
 	{
@@ -142,12 +135,49 @@ public class MyCanvas
 		CentralPanel.structure.updateDrawings(this) ;
 	}
 
+	
+	public void drawGrid(int pointSize, DrawPrimitives DP)
+	{
+		Point qtdPoints = calculateNumberOfGridPoints();	
+		for (int i = 0; i <= qtdPoints.x; i += 1)
+		{	
+			for (int j = 0; j <= qtdPoints.y; j += 1)
+			{	
+				Point2D.Double realPos = new Point2D.Double(i * gridSpacing.x, j * gridSpacing.y) ;
+				Point drawingPos = inDrawingCoords(realPos) ;
+				DP.drawCircle(drawingPos, pointSize, 1, Color.black, Color.black);
+			}
+		}
+	}	
+	
+	public void drawCenter(DrawPrimitives DP)
+	{
+		DP.drawCircle(new Point(center.x, center.y), 10, 1, Main.palette[7], null);
+	}
+
+	public void display(String Title, boolean displayGrid, DrawPrimitives DP)
+	{
+		if (Title != null)
+		{
+			DP.drawText(new Point(pos.x + size.width / 2, pos.y), Align.center, Title, Main.palette[6]) ;
+		}
+		if (displayGrid)
+		{
+			drawGrid(2, DP) ;
+		}
+	}
+
+	public void display(boolean displayGrid, DrawPrimitives DP)
+	{
+		display(title, displayGrid, DP) ;
+	}
+
 	public Point getPos() {return pos;}
 	public Dimension getSize() {return size;}
 	public Point2D.Double getDimension() {return dimension;}
 	public Point getDrawingPos() {return drawingPos;}
 	public Point getCenter() {return center;}
-	public Point2D.Double getGridSpacing() {return GridSpacing;}
+	public Point2D.Double getGridSpacing() {return gridSpacing;}
 	public double getZoom() {return zoom;}
 	public Point3D getAngles() {return angles;}
 	public void setTitle(String T) {title = T;}
@@ -156,7 +186,7 @@ public class MyCanvas
 	public void setDimension(Point2D.Double D) {dimension = D;}
 	public void setDrawingPos(Point D) {drawingPos = D;}
 	public void setCenter(Point C) {center = C;}
-	public void setGridSpacing(Point2D.Double G) {GridSpacing = G;}
+	public void setGridSpacing(Point2D.Double G) {gridSpacing = G;}
 	public void setZoom(double Z) {zoom = Z;}
 	public void setAngles(Point3D a) {angles = a;}
 
@@ -166,7 +196,5 @@ public class MyCanvas
 				+ dimension + ", DrawingPos=" + drawingPos + ", Center="
 				+ center + ", zoom=" + zoom + "]";
 	}
-
-
 	
 }

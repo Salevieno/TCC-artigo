@@ -58,21 +58,21 @@ public class CentralPanel extends JPanel
 	
 	private final MyCanvas canvas ;
 	private final int[] panelPos ;
+
 	
 	private boolean showCanvas, showGrid, showMousePos;
 	private boolean showElems, showDeformedStructure ;
 	private boolean showMatColor, showSecColor, showElemContour ;
 	private Diagram diagram ;
 	
+	private boolean snipToGridIsActive ;
+	private static boolean StructureCreationIsOn ;
 	public static boolean nodeSelectionIsActive ;
-	public static boolean elemSelectionIsActive;
+	public static boolean elemSelectionIsActive ;
 	
 	public static int SelectedVar = -1;
 	
 	private SelectionWindow selectionWindow ;
-	
-	private static boolean StructureCreationIsOn = false;
-	
 	private MenuViewService view = MenuViewService.getInstance() ;
 
 	public static Structure structure ;
@@ -170,7 +170,7 @@ public class CentralPanel extends JPanel
         getActionMap().put(String.valueOf(keyCode), abstractAction);
     }
 
-	public static void StructureCreation(int[] MainPanelPos, MyCanvas canvas, Point mousePos, boolean SnipToGridIsOn)
+	public static void StructureCreation(int[] MainPanelPos, MyCanvas canvas, Point mousePos, boolean snipToGridIsActive)
 	{		   
 		if (!Util.MouseIsInside(mousePos, new int[2], canvas.getPos(), canvas.getSize())) { return ;}
 		
@@ -184,7 +184,7 @@ public class CentralPanel extends JPanel
 					StructureCreationIsOn = false;
 					structure.updateCenter() ;
 				}
-				newCoord = MenuFunctions.getCoordFromMouseClick(canvas, mousePos, SnipToGridIsOn) ;
+				newCoord = new Point3D(canvas.getCoordFromMouseClick(mousePos, snipToGridIsActive)) ;
 				structure.addCoordFromMouseClick(newCoord) ;
 
 				return ;
@@ -200,7 +200,7 @@ public class CentralPanel extends JPanel
 						structure.updateCenter() ;
 					}
 				}
-				newCoord = MenuFunctions.getCoordFromMouseClick(canvas, mousePos, SnipToGridIsOn) ;
+				newCoord = new Point3D(canvas.getCoordFromMouseClick(mousePos, snipToGridIsActive)) ;
 				structure.addCoordFromMouseClick(newCoord) ;
 
 				return ;
@@ -233,11 +233,7 @@ public class CentralPanel extends JPanel
 		DP.drawText(posCanvasDimY, Align.center, canvasDimY, Main.palette[10]) ;
 		if (ShowCanvas)
 		{
-			canvas.draw( new double[] {Util.Round(canvas.getGridSpacing().x, 1), Util.Round(canvas.getGridSpacing().y, 1)}, DP);
-		}
-		if (ShowGrid)
-		{
-			canvas.drawGrid(2, DP) ;
+			canvas.display(ShowGrid, DP) ;
 		}
 
 		Point2D.Double RealMousePos = canvas.inRealCoords(MenuFunctions.mousePos) ; // Util.ConvertToRealCoords(MenuFunctions.mousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension());
@@ -767,13 +763,15 @@ public class CentralPanel extends JPanel
 	}
 
 
+
+
 	private void handleMousePress(MouseEvent evt)
 	{
 		if (evt.getButton() == 1)	// Left click
 		{
 			if (StructureCreationIsOn)
 			{
-				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, MenuFunctions.SnipToGridIsOn);
+				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, snipToGridIsActive);
 				MenuBar.getInstance().updateEnabledMenus();
 				MainPanel.getInstance().EnableButtons() ;
 				MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
@@ -814,6 +812,9 @@ public class CentralPanel extends JPanel
 
 		MenuFunctions.updateDiagramScale(canvas, evt.getWheelRotation());
 	}
+
+	public void activateSnipToClick() { snipToGridIsActive = true ;}
+	public void deactivateSnipToClick() { snipToGridIsActive = false ;}
 
 	@Override
     public void paintComponent(Graphics graphs) 

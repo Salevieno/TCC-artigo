@@ -63,7 +63,7 @@ public class UpperToolbar extends JPanel
 			buttons.add(newButton) ;
 		}
 
-		buttons.forEach(button -> button.setEnabled(false)) ;
+		// buttons.forEach(button -> button.setEnabled(false)) ;
 		buttons.forEach(button -> button.setVisible(false)) ;
 		buttons.forEach(button -> button.setFocusable(false)) ;
 		
@@ -83,7 +83,7 @@ public class UpperToolbar extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.SnipToGridIsOn = true;
+				MainPanel.getInstance().getCentralPanel().activateSnipToClick() ;
 				buttons.get(0).setEnabled(false);
 				buttons.get(0).setVisible(false);
 				buttons.get(1).setEnabled(true);
@@ -95,7 +95,7 @@ public class UpperToolbar extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.SnipToGridIsOn = false;
+				MainPanel.getInstance().getCentralPanel().deactivateSnipToClick() ;
 				buttons.get(1).setEnabled(false);
 				buttons.get(1).setVisible(false);
 				buttons.get(0).setEnabled(true);

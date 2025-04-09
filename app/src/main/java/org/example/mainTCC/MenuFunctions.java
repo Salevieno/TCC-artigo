@@ -35,7 +35,6 @@ public abstract class MenuFunctions
 {
 
 	public static Point mousePos;
-	public static boolean SnipToGridIsOn;
 	public static boolean AnalysisIsComplete;
 	
 	public static double[] DiagramScales;
@@ -53,7 +52,6 @@ public abstract class MenuFunctions
 	static
 	{
 		mousePos = new Point();
-		SnipToGridIsOn = false;
 		
 		SupType = Supports.Types;
 		
@@ -74,39 +72,6 @@ public abstract class MenuFunctions
 
 	public static void updateMousePosRelToPanelPos(int[] panelPos) { mousePos = GetRelMousePos(panelPos) ;}
 
-	public static Point ClosestGridNodePos(MyCanvas canvas, Point MousePos)
-	{
-		int[] NGridPoints = MyCanvas.CalculateNumberOfGridPoints(canvas.getDimension());
-		Point GridNodePos = MousePos;
-		canvas.setGridSpacing(new Point2D.Double(canvas.getSize().width/(double)(NGridPoints[0]), canvas.getSize().height/(double)(NGridPoints[1]))) ;
-		double SnipPower = 1;
-		for (int i = 0; i <= NGridPoints[0]; i += 1)
-		{	
-			for (int j = 0; j <= NGridPoints[1]; j += 1)
-			{	
-				int[] Pos = new int[] {(int) (canvas.getPos().x + (double)(i)/NGridPoints[0]*canvas.getSize().width), (int) (canvas.getPos().y + (double)(j)/NGridPoints[1]*canvas.getSize().height)};
-				if (Math.abs(MousePos.x - Pos[0]) <= SnipPower*canvas.getGridSpacing().x/2 && Math.abs(MousePos.y - Pos[1]) <= SnipPower*canvas.getGridSpacing().y/2)
-				{
-					GridNodePos = new Point(Pos[0], Pos[1]) ;
-				}
-			}
-		}
-		return GridNodePos;
-	}
-
-	public static Point3D getCoordFromMouseClick(MyCanvas canvas, Point MousePos, boolean SnipToGridIsOn)
-	{
-		
-		if (SnipToGridIsOn)
-		{
-			Point closestGridPoint = ClosestGridNodePos(canvas, MousePos) ;
-			return new Point3D(closestGridPoint.x, closestGridPoint.y, 0.0) ;
-		}
-
-		Point2D.Double mousePosRealCoords = canvas.inRealCoords(MousePos) ;
-		return new Point3D(mousePosRealCoords.x, mousePosRealCoords.y, 0.0) ;
-
-	}
 
 	public static boolean CheckIfAnalysisIsReady(Structure structure, Loading loading)
 	{
