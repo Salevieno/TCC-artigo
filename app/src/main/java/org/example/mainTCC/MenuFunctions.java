@@ -27,7 +27,6 @@ import org.example.userInterface.MenuBar;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.Assignable;
 import org.example.view.CentralPanel;
 
 public abstract class MenuFunctions
@@ -85,44 +84,7 @@ public abstract class MenuFunctions
 		return false;
 		
 	}
-	
-	
-	/* Upper toolbar button functions */
-	public static void Clean(Structure struct, Assignable assignable)
-	{
-		for (int elem = 0; elem <= struct.getMesh().getElements().size() - 1; elem += 1)
-		{
-			if (Assignable.materials.equals(assignable))
-			{
-				struct.getMesh().getElements().get(elem).setMat(null);
-			}
-			if (Assignable.sections.equals(assignable))
-			{
-				struct.getMesh().getElements().get(elem).setSec(null);
-			}
-		}
-		if (Assignable.supports.equals(assignable))
-		{
-			for (int node = 0; node <= struct.getMesh().getNodes().size() - 1; node += 1)
-			{
-				struct.getMesh().getNodes().get(node).setSup(null);
-			}
-			struct.removeSupports() ;
-		}
-		if (Assignable.concLoads.equals(assignable))
-		{
-			CentralPanel.loading.setConcLoads(null) ;
-		}
-		if (Assignable.distLoads.equals(assignable))
-		{
-			CentralPanel.loading.setDistLoads(null) ;
-		}
-		if (Assignable.nodalDisps.equals(assignable))
-		{
-			CentralPanel.loading.setNodalDisps(null) ;
-		}
-	}
-	
+
 	/* Results toolbar functions */
 	
 	public static Structure LoadFile(String Path, String FileName)
@@ -303,7 +265,6 @@ public abstract class MenuFunctions
 			}
 		}
 	}
-	
 
 	public static void PostAnalysis(Structure structure)
 	{

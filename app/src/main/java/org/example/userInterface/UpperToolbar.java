@@ -5,15 +5,18 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.example.Main;
+import org.example.loading.Loading;
 import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Material;
 import org.example.structure.Section;
+import org.example.structure.Structure;
 import org.example.utilidades.ButtonOnOff;
 import org.example.view.Assignable;
 import org.example.view.CentralPanel;
@@ -59,7 +62,7 @@ public class UpperToolbar extends JPanel
 
 		buttonAssign.addActionListener(e -> assign(assignable)) ;
 		buttonDone.addActionListener(e -> finishAssignment()) ;
-		buttonClean.addActionListener(e -> MenuFunctions.Clean(CentralPanel.structure, assignable)) ;
+		buttonClean.addActionListener(e -> clean(CentralPanel.structure, CentralPanel.loading, assignable)) ;
 
 		this.add(buttonMagnet) ;
 		this.add(buttonAssign) ;
@@ -129,6 +132,39 @@ public class UpperToolbar extends JPanel
         MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
         MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(CentralPanel.structure, CentralPanel.loading) ;
     }
+
+	public static void clean(Structure structure, Loading loading, Assignable assignable)
+	{
+		switch(assignable)
+		{
+			case materials:
+				structure.getMesh().getElements().forEach(elem -> elem.setMat(null)) ;
+				return ;
+			
+			case sections:
+				structure.getMesh().getElements().forEach(elem -> elem.setSec(null)) ;
+				return ;
+		
+			case supports:
+				structure.getMesh().getNodes().forEach(node -> node.setSup(null)) ;
+				structure.removeSupports() ;
+				return ;
+		
+			case concLoads:
+				loading.setConcLoads(new ArrayList<>()) ;
+				return ;
+		
+			case distLoads:
+				loading.setDistLoads(new ArrayList<>()) ;
+				return ;
+		
+			case nodalDisps:
+				loading.setNodalDisps(new ArrayList<>()) ;
+				return ;
+
+			default: return ;
+		}
+	}	
 
     public void enableMaterialAssignment() { assignable = Assignable.materials ;}
     public void enableSectionAssignment() { assignable = Assignable.sections ;}
