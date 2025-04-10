@@ -194,7 +194,7 @@ public class CentralPanel extends JPanel
 				int precision = 10;
 				if (structure.getCoords() != null && !structure.getCoords().isEmpty())
 				{
-					if (mousePos.distance(structure.getCoords().get(0).asPoint()) < precision)
+					if (mousePos.distance(canvas.inDrawingCoords(structure.getCoords().get(0))) < precision)
 					{
 						StructureCreationIsOn = false;
 						structure.updateCenter() ;
@@ -788,10 +788,14 @@ public class CentralPanel extends JPanel
 
 		}
 
-		// if (evt.getButton() == 3)	// Right click
-		// {
-		// 	CentralPanel.structure.printStructure(matTypes, secTypes, CentralPanel.structure.getSupports(), loading);
-		// }
+		if (evt.getButton() == 3)	// Right click
+		{
+			if (StructureCreationIsOn)
+			{
+
+			}
+			// CentralPanel.structure.printStructure(matTypes, secTypes, CentralPanel.structure.getSupports(), loading);
+		}
 	}
 
 	private void handleMouseWheel(MouseWheelEvent evt)
