@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,224 +127,41 @@ public class ToolbarButtons extends JPanel
             this.add(button);
         }) ;
         
-        buttonEspecial.addActionListener(new ActionListener()
+        buttonEspecial.addActionListener(e -> MenuFunctions.Especial()) ;
+        // buttonExample.addActionListener(e -> // exampleInputPanel.activate() ;               ) ;
+        buttonCreateMesh.addActionListener(e ->
         {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                MenuFunctions.Especial();
-            }
-        });
-        buttonExample.addActionListener(new ActionListener()
+            //StructureMenuCreateMesh("Cartesian", ElemType, ElemShape, Anal);
+            // Menus.getInstance().getMenuStructure().StructureMenuCreateMesh(MeshType.radial)
+        }) ;
+        // buttonCreateMat.addActionListener(e -> // Menus.getInstance().getMenuStructure().createMaterials()) ;
+        // buttonCreateSec.addActionListener(e -> // Menus.getInstance().getMenuStructure().createSections()) ;
+        // buttonCreateConcLoad.addActionListener(e -> // Menus.getInstance().getMenuStructure().createConcLoads()) ;
+        // buttonCreateDistLoad.addActionListener(e -> // Menus.getInstance().getMenuStructure().createDistLoads()) ;
+        // buttonCreateNodalDisp.addActionListener(e -> // Menus.getInstance().getMenuStructure().createNodalDisp()) ;
+        buttonAddMat.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateMaterialAssignment()) ;
+        buttonAddSec.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateSectionAssignment()) ;
+        buttonAddSup.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateSupportAssignment()) ;
+        buttonAddConcLoads.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateConcLoadAssignment()) ;
+        buttonAddDistLoads.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateDistLoadAssignment()) ;
+        buttonAddNodalDisps.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateNodalDispAssignment()) ;
+        buttonShowDOFs.addActionListener(e -> view.switchDOFNumberView()) ;
+        buttonShowNodeNumbers.addActionListener(e -> view.switchNodeNumberView()) ;
+        buttonShowElemNumbers.addActionListener(e -> view.switchElemNumberView()) ;
+        buttonShowElemMats.addActionListener(e -> view.switchMatView()) ;
+        buttonShowNodes.addActionListener(e -> view.switchSecView()) ;
+        buttonShowElems.addActionListener(e -> view.switchNodeView()) ;
+        buttonShowElemContours.addActionListener(e -> view.switchElemView()) ;
+        buttonShowSups.addActionListener(e -> view.switchElemContourView()) ;
+        buttonShowConcLoads.addActionListener(e -> view.switchSupView()) ;
+        buttonShowDistLoads.addActionListener(e -> view.switchConcLoadsView()) ;
+        buttonShowNodalDisps.addActionListener(e -> view.switchDistLoadsView()) ;
+        buttonShowLoadsReactions.addActionListener(e -> view.switchNodalDispsView()) ;
+        buttonShowReactions.addActionListener(e ->
         {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                // exampleInputPanel.activate() ;                
-            }
-        });
-        buttonCreateMesh.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                //StructureMenuCreateMesh("Cartesian", ElemType, ElemShape, Anal);
-                // Menus.getInstance().getMenuStructure().StructureMenuCreateMesh(MeshType.radial);
-            }
-        });
-        buttonCreateMat.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                // Menus.getInstance().getMenuStructure().createMaterials();
-            }
-        });
-        buttonCreateSec.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                // Menus.getInstance().getMenuStructure().createSections();
-            }
-        });
-        buttonCreateConcLoad.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                // Menus.getInstance().getMenuStructure().createConcLoads();
-            }
-        });
-        buttonCreateDistLoad.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                // Menus.getInstance().getMenuStructure().createDistLoads();
-            }
-        });
-        buttonCreateNodalDisp.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                // Menus.getInstance().getMenuStructure().createNodalDisp();
-            }
-        });
-        buttonAddMat.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                MainPanel.getInstance().getCentralPanel().activateMaterialAssignment();
-            }
-        });
-        buttonAddSec.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                MainPanel.getInstance().getCentralPanel().activateSectionAssignment();
-            }
-        });
-        buttonAddSup.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                MainPanel.getInstance().getCentralPanel().activateSupportAssignment();
-            }
-        });
-        buttonAddConcLoads.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                MainPanel.getInstance().getCentralPanel().activateConcLoadAssignment();
-            }
-        });
-        buttonAddDistLoads.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                MainPanel.getInstance().getCentralPanel().activateDistLoadAssignment();
-            }
-        });
-        buttonAddNodalDisps.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                MainPanel.getInstance().getCentralPanel().activateNodalDispAssignment();
-            }
-        });
-        buttonShowDOFs.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchDOFNumberView();
-            }
-        });
-        buttonShowNodeNumbers.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchNodeNumberView();
-            }
-        });
-        buttonShowElemNumbers.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchElemNumberView();
-            }
-        });
-        buttonShowElemMats.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchMatView();
-            }
-        });
-        buttonShowNodes.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchSecView();
-            }
-        });
-        buttonShowElems.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchNodeView();
-            }
-        });
-        buttonShowElemContours.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchElemView();
-            }
-        });
-        buttonShowSups.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchElemContourView();
-            }
-        });
-        buttonShowConcLoads.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchSupView();
-            }
-        });
-        buttonShowDistLoads.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchConcLoadsView();
-            }
-        });
-        buttonShowNodalDisps.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchDistLoadsView();
-            }
-        });
-        buttonShowLoadsReactions.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchNodalDispsView();
-            }
-        });
-        buttonShowReactions.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                view.switchLoadsValuesView();
-                view.switchReactionValuesView();
-            }
-        });
+            view.switchLoadsValuesView() ;
+            view.switchReactionValuesView() ;
+        }) ;
         // buttonShowReactions.addActionListener(new ActionListener()
         // {
         //     @Override
@@ -354,7 +169,5 @@ public class ToolbarButtons extends JPanel
         //     {
         //         MenuFunctions.ReactionArrowsView();
         //     }
-        // });
-    }
-    
+    }    
 }
