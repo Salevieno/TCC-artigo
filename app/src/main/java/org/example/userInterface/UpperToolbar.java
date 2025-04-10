@@ -19,15 +19,21 @@ import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.Material;
 import org.example.structure.Section;
+import org.example.utilidades.ButtonOnOff;
 import org.example.view.Assignable;
 import org.example.view.CentralPanel;
 import org.example.view.NorthPanel;
 
 public class UpperToolbar extends JPanel
 {
+
+	private final ButtonOnOff buttonMagnet ;
+
     private static final String[] buttonNames ;
 	private static final Color stdButtonColor ;
 	private static final Font stdButtonFont ;
+
+	private static final String pathPrefix = "./assets/" ;
 
     private List<JButton> buttons = new ArrayList<>();
 	private Assignable assignable ;
@@ -36,8 +42,6 @@ public class UpperToolbar extends JPanel
 	{
 		buttonNames = new String[]
 		{
-			"Ligar ima",
-			"Desligar ima",
 			"Atribuir aos elementos",
 			"Atribuir aos nos",
 			"+escala",
@@ -55,6 +59,11 @@ public class UpperToolbar extends JPanel
 		this.setBackground(Main.palette[2]);
 		this.setPreferredSize(new Dimension(580, NorthPanel.stdButtonSize.height));
 
+
+		buttonMagnet = new ButtonOnOff(pathPrefix + "BtnMagnetOff.png", pathPrefix + "BtnMagnetOn.png") ;
+		buttonMagnet.setVisible(true) ;
+		buttons.add(buttonMagnet) ;
+
 		int[] ButtonLength = new int[] {62, 80, 138, 100, 50, 52, 50, 50};
 		
 		for (int b = 0; b <= buttonNames.length - 1; b += 1)
@@ -66,115 +75,96 @@ public class UpperToolbar extends JPanel
 		// buttons.forEach(button -> button.setEnabled(false)) ;
 		buttons.forEach(button -> button.setVisible(false)) ;
 		buttons.forEach(button -> button.setFocusable(false)) ;
+
 		
-		/* Buttons: 
-		 * 0: snip to grid on
-		 * 1: snip to grid off
-		 * 2: add materials, sections and  dist loads to elements
-		 * 3: add supports, concentrated loads and nodal displacements to nodes
-		 * 4: increase diagrams scale
-		 * 5: decrease diagrams scale
-		 * 6: done
-		 * 7: clean
-		 * */
-		
-		buttons.get(0).addActionListener(new ActionListener()
+		/* Buttons:
+		* 2: add materials, sections and  dist loads to elements
+		* 3: add supports, concentrated loads and nodal displacements to nodes
+		* 4: increase diagrams scale
+		* 5: decrease diagrams scale
+		* 6: done
+		* 7: clean
+		* */
+
+		buttonMagnet.addActionListener(e ->
 		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().activateSnipToClick() ;
-				buttons.get(0).setEnabled(false);
-				buttons.get(0).setVisible(false);
-				buttons.get(1).setEnabled(true);
-				buttons.get(1).setVisible(true);
-			}
+			buttonMagnet.switchState() ;
+			MainPanel.getInstance().getCentralPanel().setSnipToGridIsActive(buttonMagnet.getState()) ;
 		});
-		buttons.get(1).addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().deactivateSnipToClick() ;
-				buttons.get(1).setEnabled(false);
-				buttons.get(1).setVisible(false);
-				buttons.get(0).setEnabled(true);
-				buttons.get(0).setVisible(true);
-			}
-		});
-		buttons.get(2).addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				int selectedID = MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() ;
-				if (Assignable.materials.equals(assignable))
-				{
-					Material mat = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes().get(selectedID) ;
-					CentralPanel.structure.getMesh().assignMaterials(mat) ;
-				}
-				if (Assignable.sections.equals(assignable))
-				{
-					Section sec = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes().get(selectedID) ;
-					CentralPanel.structure.getMesh().assignSections(sec) ;
-				}
-				if (Assignable.distLoads.equals(assignable))
-				{
-					MainPanel.getInstance().getCentralPanel().AddDistLoads(CentralPanel.structure, CentralPanel.loading, CentralPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
-				}
-			}
-		});
-		buttons.get(3).addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				if (Assignable.supports.equals(assignable))
-				{
-					MainPanel.getInstance().getCentralPanel().AddSupports();					
-				}
-				if (Assignable.concLoads.equals(assignable))
-				{
-					MainPanel.getInstance().getCentralPanel().AddConcLoads(CentralPanel.loading, CentralPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
-				}
-				if (Assignable.nodalDisps.equals(assignable))
-				{
-					MainPanel.getInstance().getCentralPanel().AddNodalDisps();
-				}
-			}
-		});
-		buttons.get(4).addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.DiagramScales[1] += 0.1*MenuFunctions.DiagramScales[1];
-			}
-		});
-		buttons.get(5).addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.DiagramScales[1] += -0.1*MenuFunctions.DiagramScales[1];
-			}
-		});
-		buttons.get(6).addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				assignToElement() ;
-			}
-		});
-		buttons.get(7).addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MenuFunctions.Clean(CentralPanel.structure, assignable);
-			}
-		});
+
+		// buttons.get(2).addActionListener(new ActionListener()
+		// {
+		// 	@Override
+		// 	public void actionPerformed(ActionEvent e) 
+		// 	{
+		// 		int selectedID = MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() ;
+		// 		if (Assignable.materials.equals(assignable))
+		// 		{
+		// 			Material mat = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes().get(selectedID) ;
+		// 			CentralPanel.structure.getMesh().assignMaterials(mat) ;
+		// 		}
+		// 		if (Assignable.sections.equals(assignable))
+		// 		{
+		// 			Section sec = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes().get(selectedID) ;
+		// 			CentralPanel.structure.getMesh().assignSections(sec) ;
+		// 		}
+		// 		if (Assignable.distLoads.equals(assignable))
+		// 		{
+		// 			MainPanel.getInstance().getCentralPanel().AddDistLoads(CentralPanel.structure, CentralPanel.loading, CentralPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
+		// 		}
+		// 	}
+		// });
+		// buttons.get(3).addActionListener(new ActionListener()
+		// {
+		// 	@Override
+		// 	public void actionPerformed(ActionEvent e) 
+		// 	{
+		// 		if (Assignable.supports.equals(assignable))
+		// 		{
+		// 			MainPanel.getInstance().getCentralPanel().AddSupports();					
+		// 		}
+		// 		if (Assignable.concLoads.equals(assignable))
+		// 		{
+		// 			MainPanel.getInstance().getCentralPanel().AddConcLoads(CentralPanel.loading, CentralPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
+		// 		}
+		// 		if (Assignable.nodalDisps.equals(assignable))
+		// 		{
+		// 			MainPanel.getInstance().getCentralPanel().AddNodalDisps();
+		// 		}
+		// 	}
+		// });
+		// buttons.get(4).addActionListener(new ActionListener()
+		// {
+		// 	@Override
+		// 	public void actionPerformed(ActionEvent e) 
+		// 	{
+		// 		MenuFunctions.DiagramScales[1] += 0.1*MenuFunctions.DiagramScales[1];
+		// 	}
+		// });
+		// buttons.get(5).addActionListener(new ActionListener()
+		// {
+		// 	@Override
+		// 	public void actionPerformed(ActionEvent e) 
+		// 	{
+		// 		MenuFunctions.DiagramScales[1] += -0.1*MenuFunctions.DiagramScales[1];
+		// 	}
+		// });
+		// buttons.get(6).addActionListener(new ActionListener()
+		// {
+		// 	@Override
+		// 	public void actionPerformed(ActionEvent e) 
+		// 	{
+		// 		assignToElement() ;
+		// 	}
+		// });
+		// buttons.get(7).addActionListener(new ActionListener()
+		// {
+		// 	@Override
+		// 	public void actionPerformed(ActionEvent e) 
+		// 	{
+		// 		MenuFunctions.Clean(CentralPanel.structure, assignable);
+		// 	}
+		// });
 		
 		buttons.forEach(this::add) ;
     }

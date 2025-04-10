@@ -815,6 +815,7 @@ public class CentralPanel extends JPanel
 
 	public void activateSnipToClick() { snipToGridIsActive = true ;}
 	public void deactivateSnipToClick() { snipToGridIsActive = false ;}
+	public void setSnipToGridIsActive(boolean snipToGridIsActive) { this.snipToGridIsActive = snipToGridIsActive ;}
 
 	@Override
     public void paintComponent(Graphics graphs) 
