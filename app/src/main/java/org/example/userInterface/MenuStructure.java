@@ -1,7 +1,5 @@
 package org.example.userInterface;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
@@ -49,18 +47,18 @@ public class MenuStructure extends JMenu
     };
     private final JMenuItem DefineElemType = new JMenuItem(StructureMenuItemsNames[0], KeyEvent.VK_E);
     private final JMenu CreateNodes = new JMenu(StructureMenuItemsNames[1]);
-    private final static JMenu CreateMesh = new JMenu(StructureMenuItemsNames[2]);
     private final JMenuItem CreateMaterials = new JMenuItem(StructureMenuItemsNames[3], KeyEvent.VK_M);
     private final JMenuItem CreateSections = new JMenuItem(StructureMenuItemsNames[4], KeyEvent.VK_S);
     private final JMenuItem CreateConcLoads = new JMenuItem(StructureMenuItemsNames[5], KeyEvent.VK_C);
     private final JMenuItem CreateDistLoads = new JMenuItem(StructureMenuItemsNames[6], KeyEvent.VK_D);
     private final JMenuItem CreateNodalDisp = new JMenuItem(StructureMenuItemsNames[7]);
-    private final static JMenuItem AssignMaterials = new JMenuItem(StructureMenuItemsNames[8]);
-    private final static JMenuItem AssignSections = new JMenuItem(StructureMenuItemsNames[9]);
-    private final static JMenuItem AssignSupports = new JMenuItem(StructureMenuItemsNames[10]);
-    private final static JMenuItem AssignConcLoads = new JMenuItem(StructureMenuItemsNames[11]);
-    private final static JMenuItem AssignDistLoads = new JMenuItem(StructureMenuItemsNames[12]);
-    private final static JMenuItem AssignNodalDisp = new JMenuItem(StructureMenuItemsNames[13]);
+    private final JMenu CreateMesh = new JMenu(StructureMenuItemsNames[2]);
+    private final JMenuItem AssignMaterials = new JMenuItem(StructureMenuItemsNames[8]);
+    private final JMenuItem AssignSections = new JMenuItem(StructureMenuItemsNames[9]);
+    private final JMenuItem AssignSupports = new JMenuItem(StructureMenuItemsNames[10]);
+    private final JMenuItem AssignConcLoads = new JMenuItem(StructureMenuItemsNames[11]);
+    private final JMenuItem AssignDistLoads = new JMenuItem(StructureMenuItemsNames[12]);
+    private final JMenuItem AssignNodalDisp = new JMenuItem(StructureMenuItemsNames[13]);
 
 	private static final DefineElementTypeDialog elemTypesInputPanel ;
 	private static final StructureShapeDialog structureShapeInputPanel ;
@@ -90,102 +88,18 @@ public class MenuStructure extends JMenu
         this.setText("Estrutura");
         this.setMnemonic(KeyEvent.VK_S);
     
-		DefineElemType.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				elemTypesInputPanel.activate() ;
-			}
-		});
-		CreateMaterials.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				materialsInputPanel.activate() ;
-			}
-		});
-		CreateSections.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				sectionsInputPanel.activate();
-			}
-		});
-		CreateConcLoads.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				concLoadsInputPanel.activate() ;
-			}
-		});
-		CreateDistLoads.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				distLoadsInputPanel.activate() ;
-			}
-		});
-		CreateNodalDisp.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				nodalDispsInputPanel.activate() ;
-			}
-		});
-		AssignMaterials.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().activateMaterialAssignment();
-			}
-		});
-		AssignSections.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().activateSectionAssignment();
-			}
-		});
-		AssignSupports.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().activateSupportAssignment();
-			}
-		});
-		AssignConcLoads.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().activateConcLoadAssignment();
-			}
-		});
-		AssignDistLoads.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().activateDistLoadAssignment();
-			}
-		});
-		AssignNodalDisp.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				MainPanel.getInstance().getCentralPanel().activateNodalDispAssignment();
-			}
-		});
+		DefineElemType.addActionListener(e -> elemTypesInputPanel.activate()) ;
+		CreateMaterials.addActionListener(e -> materialsInputPanel.activate()) ;
+		CreateSections.addActionListener(e -> sectionsInputPanel.activate()) ;
+		CreateConcLoads.addActionListener(e -> concLoadsInputPanel.activate()) ;
+		CreateDistLoads.addActionListener(e -> distLoadsInputPanel.activate()) ;
+		CreateNodalDisp.addActionListener(e -> nodalDispsInputPanel.activate()) ;
+		AssignMaterials.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateMaterialAssignment()) ;
+		AssignSections.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateSectionAssignment()) ;
+		AssignSupports.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateSupportAssignment()) ;
+		AssignConcLoads.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateConcLoadAssignment()) ;
+		AssignDistLoads.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateDistLoadAssignment()) ;
+		AssignNodalDisp.addActionListener(e -> MainPanel.getInstance().getCentralPanel().activateNodalDispAssignment()) ;
 		
 		CreateMesh.setEnabled(false);
 		AssignMaterials.setEnabled(false);
@@ -227,12 +141,9 @@ public class MenuStructure extends JMenu
 		String[] CreateNodesMenuNames = new String[] {"Digitar", "Clicar"};
 		JMenuItem TypeNodes = new JMenuItem(CreateNodesMenuNames[0], KeyEvent.VK_C);
 		JMenuItem ClickNodes = new JMenuItem(CreateNodesMenuNames[1], KeyEvent.VK_C);
-		TypeNodes.addActionListener(new ActionListener()
+		TypeNodes.addActionListener(e ->
 		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// JLabel[] Labels = new JLabel[] {new JLabel ("x (m)"), new JLabel ("y (m)"), new JLabel ("z (m)")};
+			// JLabel[] Labels = new JLabel[] {new JLabel ("x (m)"), new JLabel ("y (m)"), new JLabel ("z (m)")};
 				// InputPanelType1 CI = new InputPanelType1("Coordenadas", "No", Labels, false);
 				// double[][] StructCoords = CI.retrieveInput();
 				// System.out.println(Arrays.deepToString(StructCoords));
@@ -254,17 +165,9 @@ public class MenuStructure extends JMenu
 				// 	Menus.getInstance().getMainCanvas().setDimension(new double[] {1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y, 0});
 				// 	Menus.getInstance().getMainCanvas().setDrawingPos(new int[2]);
 				// 	MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
-				// }
-			}
-		});
-		ClickNodes.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				structureShapeInputPanel.activate() ;
-			}
-		});
+				// );
+		}) ;
+		ClickNodes.addActionListener(e ->	structureShapeInputPanel.activate() );
 		TypeNodes.setForeground(Main.palette[5]);
 		ClickNodes.setForeground(Main.palette[5]);
 		CreateNodes.add(ClickNodes);
@@ -274,29 +177,15 @@ public class MenuStructure extends JMenu
 		String[] CreateMeshMenuNames = MeshType.valuesAsString();
 		JMenuItem CartesianMesh = new JMenuItem(CreateMeshMenuNames[0], KeyEvent.VK_C);
 		JMenuItem RadialMesh = new JMenuItem(CreateMeshMenuNames[1], KeyEvent.VK_R);
-		CartesianMesh.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				createMeshInputPanel.activate() ;
-			}
-		});
-		RadialMesh.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// createMeshInputPanel.activate() ;
-			}
-		});
+		CartesianMesh.addActionListener(e -> createMeshInputPanel.activate()) ;
+		RadialMesh.addActionListener(e -> {}) ; // createMeshInputPanel.activate() );
 		CartesianMesh.setForeground(Main.palette[5]);
 		RadialMesh.setForeground(Main.palette[5]);
 		CreateMesh.add(CartesianMesh);
 		CreateMesh.add(RadialMesh);
     }
 
-	public static void updateEnabledSubMenus()
+	public void updateEnabledSubMenus()
 	{
 		Structure structure = CentralPanel.structure;
 		List<Node> nodes = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getNodes() : null ;

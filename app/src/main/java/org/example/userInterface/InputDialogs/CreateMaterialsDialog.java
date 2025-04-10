@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 
 import org.example.mainTCC.MainPanel;
 import org.example.structure.Material;
-import org.example.userInterface.MenuStructure;
+import org.example.userInterface.MenuBar;
 
 public class CreateMaterialsDialog extends InputDialogWithGrid
 {
@@ -23,6 +23,6 @@ public class CreateMaterialsDialog extends InputDialogWithGrid
         {
             MainPanel.getInstance().getWestPanel().getListsPanel().addMaterial(new Material(input[i][0], input[i][1], input[i][2])) ;
         }
-        MenuStructure.updateEnabledSubMenus();
+        MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus();
     }
 }

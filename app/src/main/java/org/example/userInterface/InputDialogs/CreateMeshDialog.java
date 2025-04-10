@@ -7,7 +7,7 @@ import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
 import org.example.structure.ElemType;
 import org.example.structure.MeshType;
-import org.example.userInterface.MenuStructure;
+import org.example.userInterface.MenuBar;
 import org.example.utilidades.Util;
 import org.example.view.CentralPanel;
 
@@ -34,14 +34,14 @@ public class CreateMeshDialog extends InputDialogWithGrid
     @Override
     public void onOkClick(double[][] input)
     {        
-			CentralPanel.structure.removeSupports() ;
-			CentralPanel.loading.clearLoads() ;
-			CentralPanel.structure.createMesh(MeshType.cartesian, Util.MatrixDoubleToInt(input), ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase())) ;
-            MainPanel.getInstance().getCentralPanel().updateDrawings() ;
-			MenuViewService.getInstance().switchNodeView();
-			MenuViewService.getInstance().switchElemView();
-			MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
-			MenuStructure.updateEnabledSubMenus();
+        CentralPanel.structure.removeSupports() ;
+        CentralPanel.loading.clearLoads() ;
+        CentralPanel.structure.createMesh(MeshType.cartesian, Util.MatrixDoubleToInt(input), ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase())) ;
+        MainPanel.getInstance().getCentralPanel().updateDrawings() ;
+        MenuViewService.getInstance().switchNodeView();
+        MenuViewService.getInstance().switchElemView();
+        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
+        MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus();
     }
 
 }

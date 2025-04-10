@@ -39,7 +39,7 @@ public class MenuBar extends JMenuBar
 	public void updateEnabledMenus()
 	{
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
-		MenuStructure.updateEnabledSubMenus() ;
+		MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus() ;
 		if (AnalysisIsComplete)
 		{
 			viewMenu.enableDofNumberView() ;

@@ -9,7 +9,7 @@ import javax.swing.JButton;
 
 import org.example.mainTCC.MainPanel;
 import org.example.structure.ElemType;
-import org.example.userInterface.MenuStructure;
+import org.example.userInterface.MenuBar;
 import org.example.view.CentralPanel;
 
 public class DefineElementTypeDialog extends InputDialogWithButtons
@@ -36,6 +36,6 @@ public class DefineElementTypeDialog extends InputDialogWithButtons
         String elemType = clickedButtonText(ae) ;
         CentralPanel.setElemType(elemType) ;
         MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
-        MenuStructure.updateEnabledSubMenus() ;
+        MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus() ;
     }
 }

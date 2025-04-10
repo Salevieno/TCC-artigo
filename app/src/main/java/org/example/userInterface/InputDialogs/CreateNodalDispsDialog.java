@@ -2,7 +2,7 @@ package org.example.userInterface.InputDialogs;
 
 import javax.swing.JLabel;
 
-import org.example.userInterface.MenuStructure;
+import org.example.userInterface.MenuBar;
 import org.example.view.CentralPanel;
 
 public class CreateNodalDispsDialog extends InputDialogWithGrid
@@ -19,8 +19,8 @@ public class CreateNodalDispsDialog extends InputDialogWithGrid
     @Override
     public void onOkClick(double[][] input)
     {
-		CentralPanel.DefineNodalDispTypes(input);
-		MenuStructure.updateEnabledSubMenus();
+      CentralPanel.DefineNodalDispTypes(input);
+      MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus();
     }
 
 }

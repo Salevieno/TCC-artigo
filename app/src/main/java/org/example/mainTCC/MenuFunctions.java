@@ -2,7 +2,6 @@ package org.example.mainTCC;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -530,7 +529,7 @@ public abstract class MenuFunctions
 		
 		/* Define structure parameters */
 		int ConcLoadConfig = 1;
-		int DistLoadConfig = 1;
+		// int DistLoadConfig = 1;
 		
 		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, materials.size(), sections.size(), SupConfig.length, concLoadTypes.size(), DistLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
 		int[] Par = new int[NumPar.length];
