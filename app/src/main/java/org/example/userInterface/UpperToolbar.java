@@ -5,10 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -16,7 +12,6 @@ import javax.swing.JPanel;
 import org.example.Main;
 import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
-import org.example.structure.Element;
 import org.example.structure.Material;
 import org.example.structure.Section;
 import org.example.utilidades.ButtonOnOff;
@@ -27,30 +22,22 @@ import org.example.view.NorthPanel;
 public class UpperToolbar extends JPanel
 {
 
+	private Assignable assignable ;
 	private final ButtonOnOff buttonMagnet ;
+	private final JButton buttonAssign ;
+	private final JButton buttonDone ;
+	private final JButton buttonClean ;
 
-    private static final String[] buttonNames ;
 	private static final Color stdButtonColor ;
 	private static final Font stdButtonFont ;
+	private static final String pathPrefix ;
 
-	private static final String pathPrefix = "./assets/" ;
-
-    private List<JButton> buttons = new ArrayList<>();
-	private Assignable assignable ;
 
 	static
 	{
-		buttonNames = new String[]
-		{
-			"Atribuir aos elementos",
-			"Atribuir aos nos",
-			"+escala",
-			"-escala",
-			"Concluir",
-			"Limpar"
-		};
 		stdButtonColor = Main.palette[8];
 		stdButtonFont = new Font(Font.SANS_SERIF, Font.BOLD, 11) ;
+		pathPrefix = "./assets/" ;
 	}
 
     public UpperToolbar()
@@ -59,174 +46,86 @@ public class UpperToolbar extends JPanel
 		this.setBackground(Main.palette[2]);
 		this.setPreferredSize(new Dimension(580, NorthPanel.stdButtonSize.height));
 
-
 		buttonMagnet = new ButtonOnOff(pathPrefix + "BtnMagnetOff.png", pathPrefix + "BtnMagnetOn.png") ;
-		buttonMagnet.setVisible(true) ;
-		buttons.add(buttonMagnet) ;
-
-		int[] ButtonLength = new int[] {62, 80, 138, 100, 50, 52, 50, 50};
-		
-		for (int b = 0; b <= buttonNames.length - 1; b += 1)
-		{
-			JButton newButton = createStdButton(buttonNames[b], new Dimension(ButtonLength[b], NorthPanel.stdButtonSize.height)) ;
-			buttons.add(newButton) ;
-		}
-
-		// buttons.forEach(button -> button.setEnabled(false)) ;
-		buttons.forEach(button -> button.setVisible(false)) ;
-		buttons.forEach(button -> button.setFocusable(false)) ;
-
-		
-		/* Buttons:
-		* 2: add materials, sections and  dist loads to elements
-		* 3: add supports, concentrated loads and nodal displacements to nodes
-		* 4: increase diagrams scale
-		* 5: decrease diagrams scale
-		* 6: done
-		* 7: clean
-		* */
+		buttonAssign = createStdButton("Atribuir", new Dimension(50, NorthPanel.stdButtonSize.height)) ;
+		buttonDone = createStdButton("Concluir", new Dimension(50, NorthPanel.stdButtonSize.height)) ;
+		buttonClean = createStdButton("Limpar", new Dimension(50, NorthPanel.stdButtonSize.height)) ;
 
 		buttonMagnet.addActionListener(e ->
 		{
 			buttonMagnet.switchState() ;
-			MainPanel.getInstance().getCentralPanel().setSnipToGridIsActive(buttonMagnet.getState()) ;
-		});
+			MainPanel.getInstance().getCentralPanel().setSnipToGridIsActive(buttonMagnet.getActive()) ;
+		}) ;
 
-		// buttons.get(2).addActionListener(new ActionListener()
-		// {
-		// 	@Override
-		// 	public void actionPerformed(ActionEvent e) 
-		// 	{
-		// 		int selectedID = MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() ;
-		// 		if (Assignable.materials.equals(assignable))
-		// 		{
-		// 			Material mat = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes().get(selectedID) ;
-		// 			CentralPanel.structure.getMesh().assignMaterials(mat) ;
-		// 		}
-		// 		if (Assignable.sections.equals(assignable))
-		// 		{
-		// 			Section sec = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes().get(selectedID) ;
-		// 			CentralPanel.structure.getMesh().assignSections(sec) ;
-		// 		}
-		// 		if (Assignable.distLoads.equals(assignable))
-		// 		{
-		// 			MainPanel.getInstance().getCentralPanel().AddDistLoads(CentralPanel.structure, CentralPanel.loading, CentralPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
-		// 		}
-		// 	}
-		// });
-		// buttons.get(3).addActionListener(new ActionListener()
-		// {
-		// 	@Override
-		// 	public void actionPerformed(ActionEvent e) 
-		// 	{
-		// 		if (Assignable.supports.equals(assignable))
-		// 		{
-		// 			MainPanel.getInstance().getCentralPanel().AddSupports();					
-		// 		}
-		// 		if (Assignable.concLoads.equals(assignable))
-		// 		{
-		// 			MainPanel.getInstance().getCentralPanel().AddConcLoads(CentralPanel.loading, CentralPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
-		// 		}
-		// 		if (Assignable.nodalDisps.equals(assignable))
-		// 		{
-		// 			MainPanel.getInstance().getCentralPanel().AddNodalDisps();
-		// 		}
-		// 	}
-		// });
-		// buttons.get(4).addActionListener(new ActionListener()
-		// {
-		// 	@Override
-		// 	public void actionPerformed(ActionEvent e) 
-		// 	{
-		// 		MenuFunctions.DiagramScales[1] += 0.1*MenuFunctions.DiagramScales[1];
-		// 	}
-		// });
-		// buttons.get(5).addActionListener(new ActionListener()
-		// {
-		// 	@Override
-		// 	public void actionPerformed(ActionEvent e) 
-		// 	{
-		// 		MenuFunctions.DiagramScales[1] += -0.1*MenuFunctions.DiagramScales[1];
-		// 	}
-		// });
-		// buttons.get(6).addActionListener(new ActionListener()
-		// {
-		// 	@Override
-		// 	public void actionPerformed(ActionEvent e) 
-		// 	{
-		// 		assignToElement() ;
-		// 	}
-		// });
-		// buttons.get(7).addActionListener(new ActionListener()
-		// {
-		// 	@Override
-		// 	public void actionPerformed(ActionEvent e) 
-		// 	{
-		// 		MenuFunctions.Clean(CentralPanel.structure, assignable);
-		// 	}
-		// });
-		
-		buttons.forEach(this::add) ;
+		buttonAssign.addActionListener(e -> assign(assignable)) ;
+		buttonDone.addActionListener(e -> finishAssignment()) ;
+		buttonClean.addActionListener(e -> MenuFunctions.Clean(CentralPanel.structure, assignable)) ;
+
+		this.add(buttonMagnet) ;
+		this.add(buttonAssign) ;
+		this.add(buttonDone) ;
+		this.add(buttonClean) ;
     }
 	
+	private static void assign(Assignable assignable)
+	{
+		int assignableID = MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() ;
+		switch (assignable)
+		{
+			case materials:
+				Material mat = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes().get(assignableID) ;
+				CentralPanel.structure.getMesh().assignMaterials(mat) ;
+				return ;
+
+			case sections:
+				Section sec = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes().get(assignableID) ;
+				CentralPanel.structure.getMesh().assignSections(sec) ;
+				return ;
+		
+			case supports:			
+				MainPanel.getInstance().getCentralPanel().AddSupports();
+				return ;
+			
+			case concLoads:
+				MainPanel.getInstance().getCentralPanel().AddConcLoads(CentralPanel.loading, CentralPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
+				return ;
+		
+			case distLoads:
+				MainPanel.getInstance().getCentralPanel().AddDistLoads(CentralPanel.structure, CentralPanel.loading, CentralPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
+				return ;
+	
+			case nodalDisps:			
+				MainPanel.getInstance().getCentralPanel().AddNodalDisps();
+				return ;
+
+			default: return ;
+		}
+	}
     
 	public static JButton createStdButton(String Text, Dimension size)
 	{
-		JButton NewButton = new JButton(Text);
-		NewButton.setFont(stdButtonFont);
-		NewButton.setVerticalAlignment(0);
-		NewButton.setHorizontalAlignment(0);
-		NewButton.setBackground(stdButtonColor);
-		NewButton.setPreferredSize(size);
-		NewButton.setMargin(new Insets(2, 2, 2, 2));
-		return NewButton;
+		JButton newButton = new JButton(Text);
+		newButton.setFont(stdButtonFont);
+		newButton.setVerticalAlignment(0);
+		newButton.setHorizontalAlignment(0);
+		newButton.setBackground(stdButtonColor);
+		newButton.setPreferredSize(size);
+		newButton.setMargin(new Insets(2, 2, 2, 2));
+		newButton.setVisible(false) ;
+		newButton.setFocusable(false) ;
+		return newButton;
 	}
 
-    private void assignToElement()
+    private void finishAssignment()
     {
-        // if (!MatAssignmentIsOn && !SecAssignmentIsOn && !DistLoadsAssignmentIsOn) { return ;}
-        
-        buttons.get(2).setEnabled(false);
-        buttons.get(2).setVisible(false);
-        
-        if (Assignable.materials.equals(assignable))
-        {
-            Element.createRandomMatColors(MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes());
-            // for (Element elem : MainPanel.structure.getMesh().getElements())
-            // {
-                // int colorID = MenuFunctions.matTypes.indexOf(elem.getMat()) ;
-                // if (colorID != -1)
-                // {
-                //     elem.setMatColor(Element.matColors[colorID]);
-                // }
-            // }
-        }
-        if (Assignable.sections.equals(assignable))
-        {
-            // Element.setSecColors(MenuFunctions.secTypes);
-            // for (Element elem : MainPanel.structure.getMesh().getElements())
-            // {
-            //     int colorID = MenuFunctions.secTypes.indexOf(elem.getSec()) ;
-            //     elem.setSecColor(Element.SecColors[colorID]);
-            // }
-        }
-    
-        if (Assignable.supports.equals(assignable) | Assignable.concLoads.equals(assignable) | Assignable.nodalDisps.equals(assignable))
-        {
-            buttons.get(3).setEnabled(false);
-            buttons.get(3).setVisible(false);
-        }
-        MainPanel.getInstance().getEastPanel().removeBp1Bp2();
-        MainPanel.getInstance().getEastPanel().removeBp1Bp2();
-        buttons.get(6).setEnabled(false);
-        buttons.get(6).setVisible(false);
-        buttons.get(7).setEnabled(false);
-        buttons.get(7).setVisible(false);
-        CentralPanel.structure.getMesh().unselectAllNodes() ;
-        CentralPanel.structure.getMesh().unselectAllElements() ;
 		assignable = null ;
+        disableAssignmentButtons() ;
         CentralPanel.nodeSelectionIsActive = false;
         CentralPanel.elemSelectionIsActive = false;
+        CentralPanel.structure.getMesh().unselectAllNodes() ;
+        CentralPanel.structure.getMesh().unselectAllElements() ;
+        MainPanel.getInstance().getEastPanel().removeBp1Bp2();
+        MainPanel.getInstance().getEastPanel().removeBp1Bp2();
         MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
         MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(CentralPanel.structure, CentralPanel.loading) ;
     }
@@ -238,54 +137,22 @@ public class UpperToolbar extends JPanel
     public void enableDistLoadAssignment() { assignable = Assignable.distLoads ;}
     public void enableNodalDispAssignment() { assignable = Assignable.nodalDisps ;}
 
-	public void showButtonSnipToGridOn() { buttons.get(0).setVisible(true) ;}
-	
-	public void enableButtonsSnipToGrid()
-	{
-		buttons.get(0).setEnabled(true) ;
-		buttons.get(0).setVisible(true) ;
-		buttons.get(1).setEnabled(true) ;
-		buttons.get(1).setVisible(true) ;
-	}
+	public void enableMagnet() { buttonMagnet.setVisible(true) ;}
+	public void disableMagnet() { buttonMagnet.setVisible(false) ;}
 
-	public void enableButtonsScale()
-	{
-		buttons.get(4).setEnabled(true) ;
-		buttons.get(4).setVisible(true) ;
-		buttons.get(5).setEnabled(true) ;
-		buttons.get(5).setVisible(true) ;
-	}
-
-	public void disableButtonsSnipToGrid()
-	{
-		buttons.get(0).setEnabled(false) ;
-		buttons.get(0).setVisible(false) ;
-		buttons.get(1).setEnabled(false) ;
-		buttons.get(1).setVisible(false) ;
-	}
-
-    public void assignToNodeView()
+    public void enableAssignmentButtons()
     {
-		buttons.get(3).setEnabled(true);
-		buttons.get(3).setVisible(true);
-		buttons.get(6).setEnabled(true);
-		buttons.get(6).setVisible(true);
-		buttons.get(7).setEnabled(true);
-		buttons.get(7).setVisible(true);
+		buttonAssign.setVisible(true);
+		buttonDone.setVisible(true);
+		buttonClean.setVisible(true);
     }
 
-    public void assignToElemView()
+    public void disableAssignmentButtons()
     {
-		buttons.get(2).setEnabled(true);
-		buttons.get(2).setVisible(true);
-		buttons.get(6).setEnabled(true);
-		buttons.get(6).setVisible(true);
-		buttons.get(7).setEnabled(true);
-		buttons.get(7).setVisible(true);
+		buttonAssign.setVisible(false);
+		buttonDone.setVisible(false);
+		buttonClean.setVisible(false);
     }
-
-    
-	// public boolean[] getAqueleBooleanGrande() { return new boolean[] {MatAssignmentIsOn, SecAssignmentIsOn, SupAssignmentIsOn, ConcLoadsAssignmentIsOn, DistLoadsAssignmentIsOn, NodalDispsAssignmentIsOn} ;}
 
 	public Assignable getAssignable() { return assignable ;}
 }

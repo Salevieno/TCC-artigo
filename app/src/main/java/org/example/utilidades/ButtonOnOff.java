@@ -8,7 +8,7 @@ import javax.swing.JButton;
 public class ButtonOnOff extends JButton
 {
 
-    private boolean state ;
+    private boolean active ;
     private final ImageIcon imgOff ;
     private final ImageIcon imgOn ;
 
@@ -27,14 +27,15 @@ public class ButtonOnOff extends JButton
         this.setPreferredSize(size) ;
         this.setBackground(null) ;
         this.setBorder(null) ;
-        this.state = false ;
+        this.setVisible(false) ;
+        this.active = false ;
     }
 
     public void switchState()
     {
-        state = !state ;
-        setIcon(state ? imgOn : imgOff) ;
+        active = !active ;
+        setIcon(active ? imgOn : imgOff) ;
     }
 
-    public boolean getState() { return state ;}
+    public boolean getActive() { return active ;}
 }

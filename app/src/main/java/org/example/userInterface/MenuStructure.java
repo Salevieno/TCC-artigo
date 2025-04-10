@@ -347,7 +347,7 @@ public class MenuStructure extends JMenu
 			// StressContours.setEnabled(true);
 			// StrainContours.setEnabled(true);
 			// InternalForcesContours.setEnabled(true);
-			MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableButtonsScale() ;
+			// MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableButtonsScale() ;
 			// for (int i = 0; i <= elems.get(0).getStrainTypes().length - 1; i += 1)
 			// {
 			// 	if (elems.get(0).getStrainTypes()[i] <= 5)

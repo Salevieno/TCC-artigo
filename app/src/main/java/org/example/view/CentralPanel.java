@@ -67,7 +67,7 @@ public class CentralPanel extends JPanel
 	
 	private boolean snipToGridIsActive ;
 	private static boolean StructureCreationIsOn ;
-	public static boolean nodeSelectionIsActive ;
+	public static boolean nodeSelectionIsActive ; // TODO unificar ou eliminar
 	public static boolean elemSelectionIsActive ;
 	
 	public static int SelectedVar = -1;
@@ -590,7 +590,7 @@ public class CentralPanel extends JPanel
 		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
 		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableMaterialAssignment() ;	
-		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableAssignmentButtons() ;
 	}
 	
 	public void activateSectionAssignment()
@@ -598,7 +598,7 @@ public class CentralPanel extends JPanel
 		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
 		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableSectionAssignment() ;
-		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableAssignmentButtons() ;
 	}
 	
 	public void activateSupportAssignment()
@@ -606,7 +606,7 @@ public class CentralPanel extends JPanel
 		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
 		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableSupportAssignment() ;
-		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableAssignmentButtons() ;
 	}
 	
 	public void activateConcLoadAssignment()
@@ -614,7 +614,7 @@ public class CentralPanel extends JPanel
 		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
 		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableConcLoadAssignment() ;
-		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableAssignmentButtons() ;
 	}
 	
 	public void activateDistLoadAssignment()
@@ -622,7 +622,7 @@ public class CentralPanel extends JPanel
 		CentralPanel.elemSelectionIsActive = !CentralPanel.elemSelectionIsActive;
 		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableDistLoadAssignment() ;
-		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToElemView() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableAssignmentButtons() ;
 	}
 	
 	public void activateNodalDispAssignment()
@@ -630,7 +630,7 @@ public class CentralPanel extends JPanel
 		CentralPanel.nodeSelectionIsActive = !CentralPanel.nodeSelectionIsActive;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableNodalDispAssignment() ;
 		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
-		MainPanel.getInstance().getNorthPanel().getUpperToolbar().assignToNodeView() ;
+		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableAssignmentButtons() ;
 	}
 
 	public static void setElemType(String ElemType)
@@ -771,15 +771,14 @@ public class CentralPanel extends JPanel
 		{
 			if (StructureCreationIsOn)
 			{
-				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, snipToGridIsActive);
-				MenuBar.getInstance().updateEnabledMenus();
-				MainPanel.getInstance().EnableButtons() ;
+				StructureCreation(panelPos, canvas, MenuFunctions.mousePos, snipToGridIsActive) ;
+				MenuBar.getInstance().updateEnabledMenus() ;
 				MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
 			}
 			if (!StructureCreationIsOn)
 			{
 				MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateSteps(CentralPanel.structure, CentralPanel.loading) ;
-				MainPanel.getInstance().getNorthPanel().getUpperToolbar().disableButtonsSnipToGrid() ;
+				MainPanel.getInstance().getNorthPanel().getUpperToolbar().disableMagnet() ;
 			}
 
 			if (selectionWindow != null)

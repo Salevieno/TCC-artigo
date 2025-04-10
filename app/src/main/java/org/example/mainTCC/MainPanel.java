@@ -52,14 +52,6 @@ public class MainPanel extends JPanel
 		blankPanel.setBackground(bgcolor);
 		return blankPanel;
 	}
-    
-	public void EnableButtons()
-	{
-		if (MenuFunctions.AnalysisIsComplete)
-		{
-			northPanel.getUpperToolbar().enableButtonsScale() ;
-		}
-	}
 
 	public void ActivatePostAnalysisView(Structure structure)
 	{
