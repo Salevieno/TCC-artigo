@@ -177,8 +177,16 @@ public class MenuStructure extends JMenu
 		String[] CreateMeshMenuNames = MeshType.valuesAsString();
 		JMenuItem CartesianMesh = new JMenuItem(CreateMeshMenuNames[0], KeyEvent.VK_C);
 		JMenuItem RadialMesh = new JMenuItem(CreateMeshMenuNames[1], KeyEvent.VK_R);
-		CartesianMesh.addActionListener(e -> createMeshInputPanel.activate()) ;
-		RadialMesh.addActionListener(e -> {}) ; // createMeshInputPanel.activate() );
+		CartesianMesh.addActionListener(e ->
+		{
+			createMeshInputPanel.setMeshType(MeshType.cartesian) ;
+			createMeshInputPanel.activate() ;
+		}) ;
+		RadialMesh.addActionListener(e ->
+		{
+			createMeshInputPanel.setMeshType(MeshType.radial) ;
+			createMeshInputPanel.activate() ;
+		}) ;
 		CartesianMesh.setForeground(Main.palette[5]);
 		RadialMesh.setForeground(Main.palette[5]);
 		CreateMesh.add(CartesianMesh);

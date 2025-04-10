@@ -1,5 +1,6 @@
 package org.example.userInterface.InputDialogs;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import org.example.mainTCC.MainPanel;
@@ -24,19 +25,22 @@ public class CreateMeshDialog extends InputDialogWithGrid
     // {
     // 	createMeshLabels = new JLabel[] {new JLabel ("N° camadas"), new JLabel ("N° pontos por camada")};
     // }
+    private MeshType meshType ;
     private static final JLabel[] labels = new JLabel[] {new JLabel ("N° pontos em x"), new JLabel ("N° pontos em y")};
 
     public CreateMeshDialog()
     {
         super("Propriedades da malha", "Malha", labels, false) ;
     }
+    
+    public void setMeshType(MeshType meshType) { this.meshType = meshType ;}
 
     @Override
     public void onOkClick(double[][] input)
     {        
         CentralPanel.structure.removeSupports() ;
         CentralPanel.loading.clearLoads() ;
-        CentralPanel.structure.createMesh(MeshType.cartesian, Util.MatrixDoubleToInt(input), ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase())) ;
+        CentralPanel.structure.createMesh(meshType, Util.MatrixDoubleToInt(input), ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase())) ;
         MainPanel.getInstance().getCentralPanel().updateDrawings() ;
         MenuViewService.getInstance().switchNodeView();
         MenuViewService.getInstance().switchElemView();

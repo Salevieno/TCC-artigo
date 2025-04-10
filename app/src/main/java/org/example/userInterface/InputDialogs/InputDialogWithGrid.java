@@ -1,5 +1,6 @@
 package org.example.userInterface.InputDialogs;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -62,8 +63,10 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 		buttons.forEach(button -> button.addActionListener(this));
 
 		JPanel panel = createPanel();
-		setLocation(location);
-		getContentPane().add(panel);
+		
+		this.setLocation(location) ;
+		this.getContentPane().add(panel) ;
+		this.setLayout(new FlowLayout()) ;
 		pack();
 	}
 
