@@ -284,8 +284,8 @@ public abstract class MenuFunctions
 		view.reactionArrows = true;
 		view.deformedStructure = true;
 
-		CentralPanel.nodeSelectionIsActive = true;
-		CentralPanel.elemSelectionIsActive = true;
+		CentralPanel.activateNodeSelection() ;
+		CentralPanel.activateElemSelection() ;
 		AnalysisIsComplete = true;
 		DiagramScales[1] = 1;
 		double MaxDisp = Util.FindMaxAbs(structure.getU());
@@ -405,24 +405,23 @@ public abstract class MenuFunctions
 	
 	public static void SaveLoadDispCurve(Structure structure)
 	{
-		if (-1 < CentralPanel.SelectedVar)
+		if (structure.getResultDiagrams().getSelectedVar() <= -1) { return ;}
+		
+		int nodeid = structure.getMesh().getSelectedNodes().get(0).getID();
+		double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).getLoadDisp();
+		String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
+		String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).getDofs().length][loaddisp[0][0].length];
+		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
 		{
-			int nodeid = structure.getMesh().getSelectedNodes().get(0).getID();
-			double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).getLoadDisp();
-			String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
-			String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).getDofs().length][loaddisp[0][0].length];
-			for (int sec = 0; sec <= Sections.length - 1; sec += 1)
+			for (int dof = 0; dof <= structure.getMesh().getNodes().get(nodeid).getDofs().length - 1; dof += 1)
 			{
-				for (int dof = 0; dof <= structure.getMesh().getNodes().get(nodeid).getDofs().length - 1; dof += 1)
+				for (int loadinc = 0; loadinc <= loaddisp[dof][sec].length - 1; loadinc += 1)
 				{
-					for (int loadinc = 0; loadinc <= loaddisp[dof][sec].length - 1; loadinc += 1)
-					{
-						vars[sec][dof][loadinc] = String.valueOf(loaddisp[dof][sec][loadinc]);
-					}
+					vars[sec][dof][loadinc] = String.valueOf(loaddisp[dof][sec][loadinc]);
 				}
 			}
-			SaveOutput.SaveOutput(structure.getName(), Sections, vars);
 		}
+		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
 	}
 
 	/* Especial menu functions */
@@ -599,7 +598,8 @@ public abstract class MenuFunctions
 		
 		Structure structure = new Structure(null, null, null);
 		CentralPanel.loading.clearLoads() ;
-		MainPanel.getInstance().getCentralPanel().resetDisplay() ;
+		// TODO reset display Central panel
+		// MainPanel.getInstance().getCentralPanel().resetDisplay() ;
 		view.reset() ;
 		reset() ;
 		if (exampleID == 0)
@@ -670,8 +670,6 @@ public abstract class MenuFunctions
         	elem.setDeformedCoords(CentralPanel.structure.getMesh().getNodes());
 		}
 		CentralPanel.structure.getResults().register(CentralPanel.structure.getMesh(), CentralPanel.structure.getSupports(), CentralPanel.structure.getU(), NonlinearMat, NonlinearGeo);
-		CentralPanel.nodeSelectionIsActive = true;
-		CentralPanel.elemSelectionIsActive = true;
 
 		AnalysisIsComplete = true;
 

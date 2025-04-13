@@ -403,6 +403,13 @@ public class Structure
 		resultDiagrams.display(canvas, mesh, results, DP) ;
 	}
 
+	public void displayDiagrams(MyCanvas canvas, DrawPrimitives DP)
+	{
+		if (resultDiagrams == null) { return ;}
+
+		resultDiagrams.display(canvas, mesh, results, DP) ;
+	}
+
 	public void display(MyCanvas canvas, boolean showmatcolor, boolean showseccolor, boolean showcontour, boolean showdeformed, DrawPrimitives DP)
 	{
 		if (mesh == null && coords != null && !coords.isEmpty())

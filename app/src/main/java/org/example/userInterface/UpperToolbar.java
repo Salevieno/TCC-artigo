@@ -54,12 +54,7 @@ public class UpperToolbar extends JPanel
 		buttonDone = createStdButton("Concluir", new Dimension(50, NorthPanel.stdButtonSize.height)) ;
 		buttonClean = createStdButton("Limpar", new Dimension(50, NorthPanel.stdButtonSize.height)) ;
 
-		buttonMagnet.addActionListener(e ->
-		{
-			buttonMagnet.switchState() ;
-			MainPanel.getInstance().getCentralPanel().setSnipToGridIsActive(buttonMagnet.getActive()) ;
-		}) ;
-
+		buttonMagnet.addActionListener(e -> buttonMagnet.switchState()) ;
 		buttonAssign.addActionListener(e -> assign(assignable)) ;
 		buttonDone.addActionListener(e -> finishAssignment()) ;
 		buttonClean.addActionListener(e -> clean(CentralPanel.structure, CentralPanel.loading, assignable)) ;
@@ -123,8 +118,8 @@ public class UpperToolbar extends JPanel
     {
 		assignable = null ;
         disableAssignmentButtons() ;
-        CentralPanel.nodeSelectionIsActive = false;
-        CentralPanel.elemSelectionIsActive = false;
+        CentralPanel.deactivateNodeSelection() ;
+        CentralPanel.deactivateElemSelection() ;
         CentralPanel.structure.getMesh().unselectAllNodes() ;
         CentralPanel.structure.getMesh().unselectAllElements() ;
         MainPanel.getInstance().getEastPanel().removeBp1Bp2();
@@ -191,4 +186,6 @@ public class UpperToolbar extends JPanel
     }
 
 	public Assignable getAssignable() { return assignable ;}
+
+	public boolean getButtonMagnetState() { return buttonMagnet.getActive() ;}
 }

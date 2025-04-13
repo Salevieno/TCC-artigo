@@ -73,8 +73,8 @@ public class InstructionsPanel extends JPanel
             ImageIcon updatedIcon = stepIsComplete.get(i) ? okIcon : null;
             label.setIcon(updatedIcon);
         }
-
-        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(structure, loading) ;
+        
+        repaint() ;
     }
     
 	public List<Boolean> updateSteps(Structure structure, Loading loading)
@@ -127,7 +127,6 @@ public class InstructionsPanel extends JPanel
 			stepIsComplete.set(8, true) ;
 		}
 
-        repaint() ;
 		return stepIsComplete;
 	}
 

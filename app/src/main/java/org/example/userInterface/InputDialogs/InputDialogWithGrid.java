@@ -70,9 +70,9 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 		pack();
 	}
 
-	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean AddRemoveButtons)
+	public InputDialogWithGrid(String PanelName, String NameLabel, JLabel[] Labels, boolean multiLine)
 	{
-		this(PanelName, NameLabel, MainFrame.getTopLeft(), Labels, AddRemoveButtons);
+		this(PanelName, NameLabel, MainFrame.getTopLeft(), Labels, multiLine);
 	}
 
 	public abstract void onOkClick(double[][] input) ;

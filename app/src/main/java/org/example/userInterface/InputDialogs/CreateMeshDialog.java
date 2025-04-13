@@ -1,6 +1,5 @@
 package org.example.userInterface.InputDialogs;
 
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import org.example.mainTCC.MainPanel;

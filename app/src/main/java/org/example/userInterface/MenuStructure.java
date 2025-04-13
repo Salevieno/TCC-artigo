@@ -167,7 +167,7 @@ public class MenuStructure extends JMenu
 				// 	MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion() ;
 				// );
 		}) ;
-		ClickNodes.addActionListener(e ->	structureShapeInputPanel.activate() );
+		ClickNodes.addActionListener(e ->	structureShapeInputPanel.activate()) ;
 		TypeNodes.setForeground(Main.palette[5]);
 		ClickNodes.setForeground(Main.palette[5]);
 		CreateNodes.add(ClickNodes);

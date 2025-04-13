@@ -42,6 +42,7 @@ public class MenuFileService
 		// Menus.getInstance().getMainCanvas().setDimension(new Point2D.Double(1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y)) ;
 
 		MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(structure, CentralPanel.loading) ;
+        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(CentralPanel.structure, CentralPanel.loading) ;
 	}
 
 	public static void saveStructure(String filename, StructureDTO structureDTO)
