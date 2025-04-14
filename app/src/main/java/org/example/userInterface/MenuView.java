@@ -31,7 +31,8 @@ public class MenuView extends JMenu
     } ;
 
 	private JMenuItem DOFNumberView ;
-    private JMenuItem NodeNumberView, ElemNumberView, MatView, SecView, NodeView, ElemView, ElemContourView, SupView, LoadsValuesView, ConcLoadsView, DistLoadsView, NodalDispsView, ReactionsView;
+    private JMenuItem NodeNumberView, ElemNumberView, MatView, SecView, NodeView, ElemView, ElemContourView ;
+	private JMenuItem SupView, LoadsValuesView, ConcLoadsView, DistLoadsView, NodalDispsView, ReactionsView ;
 	private JMenuItem ReactionValues, ReactionArrows;
 
 	private MenuViewService view = MenuViewService.getInstance() ;

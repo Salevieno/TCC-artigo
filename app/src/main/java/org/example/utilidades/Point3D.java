@@ -44,33 +44,65 @@ public class Point3D
 		translate(delta.x, delta.y, delta.z);
 	}
 
+	private static double[][] rotationMatrixX(Point3D angle)
+	{
+		double cosX = Math.cos(angle.x), sinX = Math.sin(angle.x);
+		return new double[][] {
+			{1, 0, 0},
+			{0, cosX, -sinX},
+			{0, sinX, cosX}
+		} ;
+	}
+
+	private static double[][] rotationMatrixY(Point3D angle)
+	{
+		double cosY = Math.cos(angle.y), sinY = Math.sin(angle.y);
+		return new double[][] {
+			{cosY, 0, sinY},
+			{0, 1, 0},
+			{-sinY, 0, cosY}
+		} ;
+	}
+
+	private static double[][] rotationMatrixZ(Point3D angle)
+	{
+		double cosZ = Math.cos(angle.z), sinZ = Math.sin(angle.z);
+		return new double[][] {
+			{cosZ, -sinZ, 0},
+			{sinZ, cosZ, 0},
+			{0, 0, 1}
+		} ;
+	}
+
 	public static Point3D rotate(Point3D point, Point3D refPoint, Point3D angle)
 	{
+		// Translada o ponto para a origem
+		double x = point.x - refPoint.x;
+		double y = point.y - refPoint.y;
+		double z = point.z - refPoint.z;
 
-		// Rotaciona o ponto informado (OriCoord) ao redor do ponto de referância (RefPoint)
-		Point3D rotatedPoint = new Point3D(point.x, point.y, point.z) ;
-		Point3D originalPoint = new Point3D(point.x, point.y, point.z) ;
-		// Rotation around z
-		rotatedPoint.x = (originalPoint.x - refPoint.x) * Math.cos(angle.z) - (originalPoint.y - refPoint.y) * Math.sin(angle.z);
-		rotatedPoint.y = (originalPoint.x - refPoint.x) * Math.sin(angle.z) + (originalPoint.y - refPoint.y) * Math.cos(angle.z);
-		originalPoint.x = rotatedPoint.x + refPoint.x;
-		originalPoint.y = rotatedPoint.y + refPoint.y;
-		// Rotation around y
-		rotatedPoint.x = (originalPoint.x - refPoint.x) * Math.cos(angle.y) - (originalPoint.z - refPoint.z) * Math.sin(angle.y);
-		rotatedPoint.z = (originalPoint.x - refPoint.x) * Math.sin(angle.y) + (originalPoint.z - refPoint.z) * Math.cos(angle.y);
-		originalPoint.x = rotatedPoint.x + refPoint.x;
-		originalPoint.z = rotatedPoint.z + refPoint.z;
-		// Rotation around x
-		rotatedPoint.y = (originalPoint.y - refPoint.y) * Math.cos(angle.x) - (originalPoint.z - refPoint.z) * Math.sin(angle.x);
-		rotatedPoint.z = (originalPoint.y - refPoint.y) * Math.sin(angle.x) + (originalPoint.z - refPoint.z) * Math.cos(angle.x);
-		originalPoint.y = rotatedPoint.y + refPoint.y;
-		originalPoint.z = rotatedPoint.z + refPoint.z;
-		
-		rotatedPoint.x = originalPoint.x;
-		rotatedPoint.y = originalPoint.y;
-		rotatedPoint.z = originalPoint.z;
+		// Pré-calcula senos e cossenos
+		double cosX = Math.cos(angle.x), sinX = Math.sin(angle.x);
+		double cosY = Math.cos(angle.y), sinY = Math.sin(angle.y);
+		double cosZ = Math.cos(angle.z), sinZ = Math.sin(angle.z);
 
-		return rotatedPoint ;
+		// Rotação em torno de Z (plano XY)
+		double x1 = x * cosZ - y * sinZ;
+		double y1 = x * sinZ + y * cosZ;
+		double z1 = z;
+
+		// Rotação em torno de Y (plano XZ)
+		double x2 = x1 * cosY - z1 * sinY;
+		double y2 = y1;
+		double z2 = x1 * sinY + z1 * cosY;
+
+		// Rotação em torno de X (plano YZ)
+		double x3 = x2;
+		double y3 = y2 * cosX - z2 * sinX;
+		double z3 = y2 * sinX + z2 * cosX;
+
+		// Translada de volta para o ponto de referência
+		return new Point3D(x3 + refPoint.x, y3 + refPoint.y, z3 + refPoint.z);
 	}
 
 	public void rotate(Point3D refPoint, Point3D angle)

@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import org.example.Main;
+import org.example.mainTCC.MenuFunctions;
+import org.example.userInterface.Draw;
 import org.example.view.CentralPanel;
 
 import graphics.Align;
@@ -154,22 +156,56 @@ public class MyCanvas
 	{
 		DP.drawCircle(new Point(center.x, center.y), 10, 1, Main.palette[7], null);
 	}
-
-	public void display(String Title, boolean displayGrid, DrawPrimitives DP)
+	
+	public void drawAxis(Point pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawPrimitives DP)
 	{
-		if (Title != null)
+    	int thickness = 2;
+		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizex, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1], CanvasAngles[2]), true, sizex, sizex / 40.0, Color.red, DP);
+		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizey, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1], CanvasAngles[2] - Math.PI/2.0), true, sizey, sizey / 40.0, Color.green, DP);
+		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizez, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1] - Math.PI/2.0, CanvasAngles[2]), true, sizez, sizez / 40.0, Color.blue, DP);	// z points outward
+	}
+
+	private static void drawMousePosWindow(Point pos, Point2D.Double RealMousePos, Color bgcolor, Color contourcolor, DrawPrimitives DP)
+	{
+		Dimension windowSize = new Dimension(200, 24) ;
+		DP.drawRoundRect(pos, Align.topLeft, windowSize, bgcolor, true);
+		DP.drawText(new Point(pos.x + 5, pos.y + windowSize.height / 2), Align.centerLeft, "Mouse at:", Main.palette[0]) ;
+		DP.drawText(new Point(pos.x + 85, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.x, 2)) + " m", Main.palette[0]) ;
+		DP.drawText(new Point(pos.x + 130, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.y, 2)) + " m", Main.palette[0]) ;
+	}
+
+	public void display(boolean displayGrid, DrawPrimitives DP)
+	{
+
+		Point LittleAxisPos = new Point(pos.x + size.width + 10, pos.y - 10);
+		Point BigAxisPos = new Point(pos.x, pos.y + size.height);
+
+		drawAxis(LittleAxisPos, size.width / 15, size.height / 15, 10, angles.asArray(), DP);
+		drawAxis(BigAxisPos, size.width + 20, size.height + 20, 20, new double[] {0, 0, 0}, DP);
+		
+		Point posCanvasDimX = new Point(pos.x + size.width, pos.y + size.height + 15) ;
+		Point posCanvasDimY = new Point(pos.x + 30, pos.y - 10) ;
+		String canvasDimX = String.valueOf(Util.Round(dimension.x, 3)) + " m" ;
+		String canvasDimY = String.valueOf(Util.Round(dimension.y, 3)) + " m" ;
+
+		DP.drawText(posCanvasDimX, Align.center, canvasDimX, Main.palette[7]) ;
+		DP.drawText(posCanvasDimY, Align.center, canvasDimY, Main.palette[10]) ;
+		if (title != null)
 		{
-			DP.drawText(new Point(pos.x + size.width / 2, pos.y), Align.center, Title, Main.palette[6]) ;
+			DP.drawText(new Point(pos.x + size.width / 2, pos.y), Align.center, title, Main.palette[6]) ;
 		}
 		if (displayGrid)
 		{
 			drawGrid(2, DP) ;
 		}
-	}
 
-	public void display(boolean displayGrid, DrawPrimitives DP)
+		Point2D.Double RealMousePos = inRealCoords(MenuFunctions.mousePos) ;
+		drawMousePosWindow(new Point(BigAxisPos.x + size.width / 2 - 60, BigAxisPos.y + 20), RealMousePos, Main.palette[3], Main.palette[0], DP);
+	}
+	
+	public void display(DrawPrimitives DP)
 	{
-		display(title, displayGrid, DP) ;
+		display(true, DP) ;
 	}
 
 	public Point getPos() {return pos;}

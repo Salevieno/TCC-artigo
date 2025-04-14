@@ -58,13 +58,8 @@ public class CentralPanel extends JPanel
 	private final MyCanvas canvas ;
 	private final int[] panelPos ;
 
-	
-	private boolean showCanvas, showGrid, showMousePos;
-	private boolean showElems, showDeformedStructure ;
-	private boolean showMatColor, showSecColor, showElemContour ;
-
 	private static boolean structureCreationIsOn ;
-	private static boolean nodeSelectionIsActive ; // TODO unificar ou eliminar
+	private static boolean nodeSelectionIsActive ;
 	private static boolean elemSelectionIsActive ;
 
 	private SelectionWindow selectionWindow ;
@@ -74,11 +69,7 @@ public class CentralPanel extends JPanel
 	public static Loading loading ;
 
 	public CentralPanel(Point frameTopLeftPos)
-	{
-		showCanvas = true ;
-		showGrid = true ;
-		showMousePos = true ;
-		
+	{		
 		Point screenTopLeft = new Point() ;
 		Dimension size = new Dimension((int) (0.4 * initialSize.width), (int) (0.8 * initialSize.height)) ;
 		canvas = new MyCanvas(new Point(575, 25), size, new Point2D.Double(10, 10), screenTopLeft);
@@ -88,11 +79,6 @@ public class CentralPanel extends JPanel
 		loading = new Loading() ;
 		
 		selectionWindow = new SelectionWindow() ;
-		showElems = true ;
-		showDeformedStructure = false ;
-		showMatColor = true ;
-		showSecColor = true ;
-		showElemContour = true ;
 
 		this.setBackground(bgColor);
 	    this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -206,52 +192,6 @@ public class CentralPanel extends JPanel
 		}
 	}
 
-
-	public void displayCanvasElements(MyCanvas canvas, boolean ShowCanvas, boolean ShowGrid, boolean ShowMousePos, DrawPrimitives DP)
-	{
-		canvas.setPos(new Point((int) (0.1 * initialSize.width), (int) (0.1 * initialSize.height)));
-		canvas.setSize(new Dimension((int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height))) ;
-		canvas.setCenter(new Point(canvas.getPos().x + canvas.getSize().width / 2, canvas.getPos().y + canvas.getSize().height / 2)) ;
-
-		Point LittleAxisPos = new Point(canvas.getPos().x + canvas.getSize().width + 10, canvas.getPos().y - 10);
-		Point BigAxisPos = new Point(canvas.getPos().x, canvas.getPos().y + canvas.getSize().height);
-
-		DrawAxis(LittleAxisPos, canvas.getSize().width / 15, canvas.getSize().height / 15, 10, canvas.getAngles().asArray(), DP);
-		DrawAxis(BigAxisPos, canvas.getSize().width + 20, canvas.getSize().height + 20, 20, new double[] {0, 0, 0}, DP);
-		
-		Point posCanvasDimX = new Point(canvas.getPos().x + canvas.getSize().width, canvas.getPos().y + canvas.getSize().height + 15) ;
-		Point posCanvasDimY = new Point(canvas.getPos().x + 30, canvas.getPos().y - 10) ;
-		String canvasDimX = String.valueOf(Util.Round(canvas.getDimension().x, 3)) + " m" ;
-		String canvasDimY = String.valueOf(Util.Round(canvas.getDimension().y, 3)) + " m" ;
-
-		DP.drawText(posCanvasDimX, Align.center, canvasDimX, Main.palette[7]) ;
-		DP.drawText(posCanvasDimY, Align.center, canvasDimY, Main.palette[10]) ;
-		if (ShowCanvas)
-		{
-			canvas.display(ShowGrid, DP) ;
-		}
-
-		Point2D.Double RealMousePos = canvas.inRealCoords(MenuFunctions.mousePos) ; // Util.ConvertToRealCoords(MenuFunctions.mousePos, new int[] {canvas.getPos().x, canvas.getPos().y}, canvas.getSize(), canvas.getDimension());
-		drawMousePosWindow(new Point(BigAxisPos.x + canvas.getSize().width / 2 - 60, BigAxisPos.y + 20), RealMousePos, Main.palette[3], Main.palette[0]);
-	}
-	
-	public void DrawAxis(Point pos, int sizex, int sizey, int sizez, double[] CanvasAngles, DrawPrimitives DP)
-	{
-    	int thickness = 2;
-		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizex, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1], CanvasAngles[2]), true, sizex, sizex / 40.0, Color.red, DP);
-		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizey, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1], CanvasAngles[2] - Math.PI/2.0), true, sizey, sizey / 40.0, Color.green, DP);
-		Draw.DrawAxisArrow3D(new Point3D(pos.x + sizez, pos.y, 0.0), thickness, new Point3D(CanvasAngles[0], CanvasAngles[1] - Math.PI/2.0, CanvasAngles[2]), true, sizez, sizez / 40.0, Color.blue, DP);	// z points outward
-	}
-	
-	private static void drawMousePosWindow(Point pos, Point2D.Double RealMousePos, Color bgcolor, Color contourcolor)
-	{
-		Dimension windowSize = new Dimension(200, 24) ;
-		DP.drawRoundRect(pos, Align.topLeft, windowSize, bgcolor, true);
-		DP.drawText(new Point(pos.x + 5, pos.y + windowSize.height / 2), Align.centerLeft, "Mouse at:", Main.palette[0]) ;
-		DP.drawText(new Point(pos.x + 85, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.x, 2)) + " m", Main.palette[0]) ;
-		DP.drawText(new Point(pos.x + 130, pos.y + windowSize.height / 2), Align.centerLeft, String.valueOf(Util.Round(RealMousePos.y, 2)) + " m", Main.palette[0]) ;
-	}
-	
 	public void updateDrawings()
 	{
 		structure.updateDrawings(canvas) ;
@@ -288,7 +228,10 @@ public class CentralPanel extends JPanel
 
 	public void display(Structure structure, int[] MainPanelPos, DrawPrimitives DP)
 	{
-		displayCanvasElements(canvas, showCanvas, showGrid, showMousePos, DP);
+		canvas.setPos(new Point((int) (0.1 * initialSize.width), (int) (0.1 * initialSize.height)));
+		canvas.setSize(new Dimension((int) (0.8 * initialSize.width), (int) (0.8 * initialSize.height))) ;
+		canvas.setCenter(new Point(canvas.getPos().x + canvas.getSize().width / 2, canvas.getPos().y + canvas.getSize().height / 2)) ;
+		canvas.display(DP);
 		// if (structure != null && structure.getCoords() != null && structure.getCenter() != null)
 		// {
 		// 	structure.displayShape(canvas, DP) ;
@@ -296,7 +239,7 @@ public class CentralPanel extends JPanel
 
 		if (structure != null)
 		{
-			structure.display(canvas, showMatColor, showSecColor, showElemContour, showDeformedStructure, DP) ;
+			structure.display(canvas, view.matColor, view.secColor, view.elemContour, view.deformedStructure, DP) ;
 		}
 
 		canvas.drawCenter(DP) ;
@@ -304,9 +247,9 @@ public class CentralPanel extends JPanel
 		{
 			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.mousePos, 2, structure.getShape(), Main.palette[6]);
 		}
-		if (showElems && structure != null && structure.getMesh() != null && structure.getMesh().getElements() != null)
+		if (view.elems && structure != null && structure.getMesh() != null && structure.getMesh().getElements() != null)
 		{
-			if (showDeformedStructure)
+			if (view.deformedStructure)
 			{
 				canvas.setTitle("Estrutura deformada (x " + String.valueOf(Util.Round(MenuFunctions.DiagramScales[1], 3)) + ")");
 			}
@@ -347,32 +290,32 @@ public class CentralPanel extends JPanel
 		}
 		if (view.concLoads && loading != null && loading.getConcLoads() != null)
 		{
-			structure.displayConcLoads(canvas, showDeformedStructure, DP) ;
+			structure.displayConcLoads(canvas, view.deformedStructure, DP) ;
 		}
 		if (view.distLoads && loading != null && loading.getDistLoads() != null)
 		{
 			Draw.DrawDistLoads3D(structure.getMesh(), view.loadsValues,
-							showDeformedStructure, structure.getMesh().getElements().get(0).getDOFs(),
+							view.deformedStructure, structure.getMesh().getElements().get(0).getDOFs(),
 							MenuFunctions.DiagramScales[1], canvas, DP);
 		}
 		if (view.nodalDisps && loading != null && loading.getNodalDisps() != null)
 		{
 			Draw.DrawNodalDisps3D(structure.getMesh().getNodes(), loading.getNodalDisps(),
 							structure.getMesh().getElements().get(0).getDOFs(), view.loadsValues,
-							NodalDisp.color, showDeformedStructure, MenuFunctions.DiagramScales[1]);
+							NodalDisp.color, view.deformedStructure, MenuFunctions.DiagramScales[1]);
 		}
 		if (view.DOFNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
-			Draw.DrawDOFNumbers(structure.getMesh().getNodes(), Node.color, showDeformedStructure, canvas, DP);
+			Draw.DrawDOFNumbers(structure.getMesh().getNodes(), Node.color, view.deformedStructure, canvas, DP);
 		}
 		if (view.nodeNumber && structure != null && structure.getMesh() != null && structure.getMesh().getNodes() != null)
 		{
-			structure.getMesh().getNodes().forEach(node -> node.displayNumber(canvas, showDeformedStructure, DP)) ;
+			structure.getMesh().getNodes().forEach(node -> node.displayNumber(canvas, view.deformedStructure, DP)) ;
 		}
 		if (view.elemNumber && structure != null && structure.getMesh() != null &&  structure.getMesh().getElements() != null)
 		{
-			// DP.DrawElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas);
-			structure.getMesh().displayElemNumbers(structure.getMesh(), Node.color, showDeformedStructure, canvas, DP) ;
+			// DP.DrawElemNumbers(structure.getMesh(), Node.color, view.deformedStructure, canvas);
+			structure.getMesh().displayElemNumbers(structure.getMesh(), Node.color, view.deformedStructure, canvas, DP) ;
 		}
 		if (view.elemDetails && MenuFunctions.SelectedElemType != null)
 		{
