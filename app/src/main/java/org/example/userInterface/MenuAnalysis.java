@@ -73,14 +73,14 @@ public class MenuAnalysis extends JMenu
 	{
 		// geometryIsNonLinear = analysisTypeID == 1 || analysisTypeID == 3 ;
 		// matIsNonLinear = analysisTypeID == 2 || analysisTypeID == 3 ;
-		MenuFunctions.CalcAnalysisParameters(CentralPanel.structure, CentralPanel.loading);
-		Analysis.run(CentralPanel.structure, CentralPanel.loading, MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, qtdIterations, qtdLoadSteps, maxLoadFactor);
-		MenuFunctions.PostAnalysis(CentralPanel.structure);
+		MenuFunctions.CalcAnalysisParameters(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading());
+		Analysis.run(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, qtdIterations, qtdLoadSteps, maxLoadFactor);
+		MenuFunctions.PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure());
 		// for (Element elem : MainPanel.structure.getMesh().getElements())
 		// {
 		// 	elem.RecordResults(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getU(), matIsNonLinear, geometryIsNonLinear);
 		// }
-		MainPanel.getInstance().ActivatePostAnalysisView(CentralPanel.structure);
+		MainPanel.getInstance().ActivatePostAnalysisView(MainPanel.getInstance().getCentralPanel().getStructure());
 		MenuBar.getInstance().updateEnabledMenus() ;
 	}
 

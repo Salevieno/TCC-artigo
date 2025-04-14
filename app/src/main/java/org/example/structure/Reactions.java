@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.example.Main;
 import org.example.loading.ConcLoad;
+import org.example.mainTCC.MainPanel;
 import org.example.userInterface.Draw;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 import graphics.DrawPrimitives;
 
@@ -71,7 +71,7 @@ public class Reactions
 						{
 							RealTextPos[2] += -0.5*Math.signum(LoadIntensity);
 						}
-						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealTextPos, CentralPanel.structure.getCenter().asArray(), canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());						
+						int[] DrawingDefCoords = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(RealTextPos, MainPanel.getInstance().getCentralPanel().getStructure().getCenter().asArray(), canvas.getAngles().asArray()), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());						
 						Draw.DrawLoadValues(DrawingDefCoords, ElemDOFs, r, LoadIntensity, ReactionsColor, DP);
 					}
 				}

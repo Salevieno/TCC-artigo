@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 import graphics.DrawPrimitives;
 
@@ -74,7 +74,7 @@ public class Supports
 		int thick = 2;
 		int suptype = typeFromDOFs();
 		// int[] rotatedCoords = Util.RotateCoord(MainPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords(), Center, canvas.getAngles()) ;
-		Point Coords = canvas.inDrawingCoords(CentralPanel.structure.getMesh().getNodes().get(Node).getOriginalCoords().asDoublePoint()) ;
+		Point Coords = canvas.inDrawingCoords(MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getNodes().get(Node).getOriginalCoords().asDoublePoint()) ;
 		if (suptype == 0)
 		{
 			double[] angles = new double[] {-canvas.getAngles().x, canvas.getAngles().y, -canvas.getAngles().z};

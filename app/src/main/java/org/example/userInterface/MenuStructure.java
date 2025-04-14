@@ -195,9 +195,9 @@ public class MenuStructure extends JMenu
 
 	public void updateEnabledSubMenus()
 	{
-		Structure structure = CentralPanel.structure;
-		List<Node> nodes = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getNodes() : null ;
-		List<Element> elems = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getElements() : null;
+		Structure structure = MainPanel.getInstance().getCentralPanel().getStructure();
+		List<Node> nodes = MainPanel.getInstance().getCentralPanel().getStructure().getMesh() != null ? MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getNodes() : null ;
+		List<Element> elems = MainPanel.getInstance().getCentralPanel().getStructure().getMesh() != null ? MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements() : null;
 		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
 		String SelectedElemType = MenuFunctions.SelectedElemType;
 		List<Material> MatTypes = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes() ;

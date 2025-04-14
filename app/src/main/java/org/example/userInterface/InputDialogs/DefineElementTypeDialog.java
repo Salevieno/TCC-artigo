@@ -35,8 +35,8 @@ public class DefineElementTypeDialog extends InputDialogWithButtons
     {
         String elemType = clickedButtonText(ae) ;
         CentralPanel.setElemType(elemType) ;
-        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
-        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(CentralPanel.structure, CentralPanel.loading) ;
+        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading()) ;
+        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading()) ;
         MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus() ;
     }
 }

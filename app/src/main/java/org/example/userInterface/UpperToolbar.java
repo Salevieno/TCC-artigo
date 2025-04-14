@@ -57,7 +57,7 @@ public class UpperToolbar extends JPanel
 		buttonMagnet.addActionListener(e -> buttonMagnet.switchState()) ;
 		buttonAssign.addActionListener(e -> assign(assignable)) ;
 		buttonDone.addActionListener(e -> finishAssignment()) ;
-		buttonClean.addActionListener(e -> clean(CentralPanel.structure, CentralPanel.loading, assignable)) ;
+		buttonClean.addActionListener(e -> clean(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), assignable)) ;
 
 		this.add(buttonMagnet) ;
 		this.add(buttonAssign) ;
@@ -72,12 +72,12 @@ public class UpperToolbar extends JPanel
 		{
 			case materials:
 				Material mat = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes().get(assignableID) ;
-				CentralPanel.structure.getMesh().assignMaterials(mat) ;
+				MainPanel.getInstance().getCentralPanel().getStructure().getMesh().assignMaterials(mat) ;
 				return ;
 
 			case sections:
 				Section sec = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes().get(assignableID) ;
-				CentralPanel.structure.getMesh().assignSections(sec) ;
+				MainPanel.getInstance().getCentralPanel().getStructure().getMesh().assignSections(sec) ;
 				return ;
 		
 			case supports:			
@@ -85,11 +85,11 @@ public class UpperToolbar extends JPanel
 				return ;
 			
 			case concLoads:
-				MainPanel.getInstance().getCentralPanel().AddConcLoads(CentralPanel.loading, CentralPanel.structure.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
+				MainPanel.getInstance().getCentralPanel().AddConcLoads(MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
 				return ;
 		
 			case distLoads:
-				MainPanel.getInstance().getCentralPanel().AddDistLoads(CentralPanel.structure, CentralPanel.loading, CentralPanel.structure.getMesh().getElements(), MenuFunctions.DistLoadType);
+				MainPanel.getInstance().getCentralPanel().AddDistLoads(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements(), MenuFunctions.DistLoadType);
 				return ;
 	
 			case nodalDisps:			
@@ -120,12 +120,12 @@ public class UpperToolbar extends JPanel
         disableAssignmentButtons() ;
         CentralPanel.deactivateNodeSelection() ;
         CentralPanel.deactivateElemSelection() ;
-        CentralPanel.structure.getMesh().unselectAllNodes() ;
-        CentralPanel.structure.getMesh().unselectAllElements() ;
+        MainPanel.getInstance().getCentralPanel().getStructure().getMesh().unselectAllNodes() ;
+        MainPanel.getInstance().getCentralPanel().getStructure().getMesh().unselectAllElements() ;
         MainPanel.getInstance().getEastPanel().removeBp1Bp2();
         MainPanel.getInstance().getEastPanel().removeBp1Bp2();
-        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
-        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(CentralPanel.structure, CentralPanel.loading) ;
+        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading()) ;
+        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading()) ;
     }
 
 	public static void clean(Structure structure, Loading loading, Assignable assignable)

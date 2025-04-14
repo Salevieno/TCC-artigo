@@ -9,12 +9,12 @@ import java.util.List;
 
 import org.example.Main;
 import org.example.loading.DistLoad;
+import org.example.mainTCC.MainPanel;
 import org.example.output.ResultDiagrams;
 import org.example.userInterface.Draw;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 import org.example.view.SelectionWindow;
 
 import graphics.Align;
@@ -409,18 +409,18 @@ public class Element
 									int[] DOFsPerNode, double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		int size = 6;
-		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] Center = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int node = 0; node <= Node.size() - 1; node += 1)
 		{
 			int[][] DrawingCoords = new int[Node.size()][3];
 			if (deformed)
 			{
 				double[] DeformedCoords = Util.ScaledDefCoords(Node.get(node).getOriginalCoords(), Node.get(node).getDisp(), DOFsPerNode, Defscale);
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, Center, canvas.getAngles().asArray()), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			else
 			{
-				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+				DrawingCoords[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(Util.GetNodePos(Node.get(node), deformed), Center, canvas.getAngles().asArray()), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			}
 			Point drawingCoords = new Point(DrawingCoords[node][0], DrawingCoords[node][1]) ;
 			DP.drawCircle(drawingCoords, size, NodeColor);
@@ -1226,7 +1226,7 @@ public class Element
 						double Defscale, MyCanvas canvas, DrawPrimitives DP)
 	{
 		List<Element> Elem = mesh.getElements();
-		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 		for (int elem = 0; elem <= Elem.size() - 1; elem += 1)
 		{
 			List<Node> Nodes = Elem.get(elem).getExternalNodes();
@@ -1255,12 +1255,12 @@ public class Element
 				if (showdeformed)
 				{
 					double[] DeformedCoords = Util.ScaledDefCoords(Nodes.get(node).getOriginalCoords(), Nodes.get(node).getDisp(), ElemDOFs, Defscale);
-					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(DeformedCoords, RealCanvasCenter, canvas.getAngles().asArray()), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				else
 				{
 					double[] OriginalCoords = Util.GetNodePos(Nodes.get(node), showdeformed);
-					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles().asArray()), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+					DrawingCoord[node] = Util.ConvertToDrawingCoords2Point3D(Util.RotateCoord(OriginalCoords, RealCanvasCenter, canvas.getAngles().asArray()), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 				}
 				xCoords[node] = DrawingCoord[node][0];
 				yCoords[node] = DrawingCoord[node][1];

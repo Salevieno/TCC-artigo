@@ -169,7 +169,7 @@ public abstract class MenuFunctions
 					NewConcLoad.setForce(new Force(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])}));
 					concLoadTypes.add(NewConcLoad.getForce()) ;
 					//  = Util.AddElem(concLoadTypes, new double[] {NewConcLoad.getNodeID(), NewConcLoad.getForce()[0], NewConcLoad.getForce()[1], NewConcLoad.getForce()[2], NewConcLoad.getForce()[3], NewConcLoad.getForce()[4], NewConcLoad.getForce()[5]});
-					CentralPanel.loading.addConcLoad(NewConcLoad);
+					MainPanel.getInstance().getCentralPanel().getLoading().addConcLoad(NewConcLoad);
 				}
 				for (int distload = 0; distload <= Input[8].length - 4; distload += 1)
 				{
@@ -181,7 +181,7 @@ public abstract class MenuFunctions
 					NewDistLoad.setType(Integer.parseInt(Line[2]));
 					NewDistLoad.setIntensity(Double.parseDouble(Line[3]));
 					DistLoadType = Util.AddElem(DistLoadType, new double[] {-1, NewDistLoad.getType(), NewDistLoad.getIntensity()});
-					CentralPanel.loading.addDistLoad(NewDistLoad);
+					MainPanel.getInstance().getCentralPanel().getLoading().addDistLoad(NewDistLoad);
 				}
 				for (int nodaldisp = 0; nodaldisp <= Input[9].length - 4; nodaldisp += 1)
 				{
@@ -192,11 +192,11 @@ public abstract class MenuFunctions
 					NewNodalDisp.setNode(Integer.parseInt(Line[1]));
 					NewNodalDisp.setDisps(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
 					NodalDispType = Util.AddElem(NodalDispType, new double[] {NewNodalDisp.getNode(), NewNodalDisp.getDisps()[0], NewNodalDisp.getDisps()[1], NewNodalDisp.getDisps()[2], NewNodalDisp.getDisps()[3], NewNodalDisp.getDisps()[4], NewNodalDisp.getDisps()[5]});
-					CentralPanel.loading.addNodalDisp(NewNodalDisp);
+					MainPanel.getInstance().getCentralPanel().getLoading().addNodalDisp(NewNodalDisp);
 				}
 
 				System.out.println("Structure loaded successfully");
-				structure.printStructure(matTypes, secTypes, structure.getSupports(), CentralPanel.loading);
+				structure.printStructure(matTypes, secTypes, structure.getSupports(), MainPanel.getInstance().getCentralPanel().getLoading());
 				return structure ;
 			}
 			else
@@ -524,7 +524,7 @@ public abstract class MenuFunctions
 					structure2.getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes, structure2.getMesh().getElements(), MenuFunctions.DistLoadType) ;
 		
 			MenuFunctions.CalcAnalysisParameters(structure2, loading);
-			CentralPanel.structure = structure2 ;
+			MainPanel.getInstance().getCentralPanel().setStructure(structure2) ;
 			MainPanel.getInstance().getCentralPanel().updateDrawings() ;
 
 			// structure2.assignLoads(ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad) ;
@@ -597,7 +597,7 @@ public abstract class MenuFunctions
 	{
 		
 		Structure structure = new Structure(null, null, null);
-		CentralPanel.loading.clearLoads() ;
+		MainPanel.getInstance().getCentralPanel().getLoading().clearLoads() ;
 		// TODO reset display Central panel
 		// MainPanel.getInstance().getCentralPanel().resetDisplay() ;
 		view.reset() ;
@@ -658,18 +658,18 @@ public abstract class MenuFunctions
  		{
 			structure = LoadFile(".\\Exemplos\\", "13-vigadeaco");
  		}
-		CentralPanel.structure = structure ;
- 		CalcAnalysisParameters(CentralPanel.structure, CentralPanel.loading);
+		MainPanel.getInstance().getCentralPanel().setStructure(structure) ;
+ 		CalcAnalysisParameters(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading());
 		long AnalysisTime = System.currentTimeMillis();
-		Analysis.run(CentralPanel.structure, CentralPanel.loading, NonlinearMat, NonlinearGeo, 1, 1, 1);
-		PostAnalysis(CentralPanel.structure);
+		Analysis.run(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), NonlinearMat, NonlinearGeo, 1, 1, 1);
+		PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure());
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
-		for (Element elem : CentralPanel.structure.getMesh().getElements())
+		for (Element elem : MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements())
 		{
-			elem.RecordResults(CentralPanel.structure.getMesh().getNodes(), CentralPanel.structure.getU(), NonlinearMat, NonlinearGeo);
-        	elem.setDeformedCoords(CentralPanel.structure.getMesh().getNodes());
+			elem.RecordResults(MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getNodes(), MainPanel.getInstance().getCentralPanel().getStructure().getU(), NonlinearMat, NonlinearGeo);
+        	elem.setDeformedCoords(MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getNodes());
 		}
-		CentralPanel.structure.getResults().register(CentralPanel.structure.getMesh(), CentralPanel.structure.getSupports(), CentralPanel.structure.getU(), NonlinearMat, NonlinearGeo);
+		MainPanel.getInstance().getCentralPanel().getStructure().getResults().register(MainPanel.getInstance().getCentralPanel().getStructure().getMesh(), MainPanel.getInstance().getCentralPanel().getStructure().getSupports(), MainPanel.getInstance().getCentralPanel().getStructure().getU(), NonlinearMat, NonlinearGeo);
 
 		AnalysisIsComplete = true;
 
@@ -677,7 +677,7 @@ public abstract class MenuFunctions
 		view.reactionValues = true;
 		view.deformedStructure = true;
 
-		double MaxDisp = Util.FindMaxAbs(CentralPanel.structure.getU());
+		double MaxDisp = Util.FindMaxAbs(MainPanel.getInstance().getCentralPanel().getStructure().getU());
 		if (0 < MaxDisp)
 		{
 			DiagramScales[1] = 1 / MaxDisp;

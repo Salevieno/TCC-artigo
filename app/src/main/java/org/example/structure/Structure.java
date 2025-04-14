@@ -11,6 +11,7 @@ import org.example.Main;
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Loading;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.output.Diagram;
 import org.example.output.ResultDiagrams;
@@ -19,7 +20,6 @@ import org.example.service.MenuViewService;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 import graphics.DrawPrimitives;
 
@@ -312,26 +312,26 @@ public class Structure
 			System.out.println("Id	Node	DoFs (Fx Fy Fz Mx My Mz)");
 			sups.forEach(System.out::println);
 		}
-		if (CentralPanel.loading.getConcLoads() != null)
+		if (MainPanel.getInstance().getCentralPanel().getLoading().getConcLoads() != null)
 		{
 			System.out.println();
 			System.out.println("ConcLoads");
 			System.out.println("Id	Node	Loads Fx Fy Fz Mx My Mz (kN)");
-			CentralPanel.loading.getConcLoads().forEach(System.out::println);
+			MainPanel.getInstance().getCentralPanel().getLoading().getConcLoads().forEach(System.out::println);
 		}
-		if (CentralPanel.loading.getDistLoads() != null)
+		if (MainPanel.getInstance().getCentralPanel().getLoading().getDistLoads() != null)
 		{
 			System.out.println();
 			System.out.println("DistLoads");
 			System.out.println("Id	Elem type	Intensity (kN/m)");
-			CentralPanel.loading.getDistLoads().forEach(System.out::println);
+			MainPanel.getInstance().getCentralPanel().getLoading().getDistLoads().forEach(System.out::println);
 		}
-		if (CentralPanel.loading.getNodalDisps() != null)
+		if (MainPanel.getInstance().getCentralPanel().getLoading().getNodalDisps() != null)
 		{
 			System.out.println();
 			System.out.println("NodalDisps");
 			System.out.println("Id	Node	Disp ux uy uz thetax thetay thetaz (m)");
-			CentralPanel.loading.getNodalDisps().forEach(System.out::println);
+			MainPanel.getInstance().getCentralPanel().getLoading().getNodalDisps().forEach(System.out::println);
 		}
 	}
 
@@ -380,7 +380,7 @@ public class Structure
 
 	public void displayConcLoads(MyCanvas canvas, boolean deformed, DrawPrimitives DP)
 	{
-		double maxLoad = Util.FindMaxConcLoad(CentralPanel.loading.getConcLoads());
+		double maxLoad = Util.FindMaxConcLoad(MainPanel.getInstance().getCentralPanel().getLoading().getConcLoads());
 		int[] dofs = mesh.getElements().get(0).getDOFs() ;
 		for (Node node : mesh.getNodes())
 		{

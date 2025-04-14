@@ -6,9 +6,9 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.userInterface.Draw;
-import org.example.view.CentralPanel;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -109,32 +109,32 @@ public class MyCanvas
 	public void incAngles(double dX, double dY, double dZ)
 	{
 		angles.translate(dX, dY, dZ) ;
-		CentralPanel.structure.updateDrawings(this) ;
+		MainPanel.getInstance().getCentralPanel().getStructure().updateDrawings(this) ;
 	}
 
 	public void topView()
 	{
 		angles.translateTo(0, 0, 0) ;
-		CentralPanel.structure.updateDrawings(this) ;
+		MainPanel.getInstance().getCentralPanel().getStructure().updateDrawings(this) ;
 	}
 
 	public void frontView()
 	{
 		angles.translateTo(0, -Math.PI/2, 0) ;
-		CentralPanel.structure.updateDrawings(this) ;
+		MainPanel.getInstance().getCentralPanel().getStructure().updateDrawings(this) ;
 	}
 
 	public void sideView()
 	{
 		angles.translateTo(-Math.PI/2, 0, 0) ;
-		CentralPanel.structure.updateDrawings(this) ;
+		MainPanel.getInstance().getCentralPanel().getStructure().updateDrawings(this) ;
 	}
 
 	public void incDrawingPos(int dx, int dy)
 	{
 		drawingPos.x += dx;
 		drawingPos.y += dy;
-		CentralPanel.structure.updateDrawings(this) ;
+		MainPanel.getInstance().getCentralPanel().getStructure().updateDrawings(this) ;
 	}
 
 	

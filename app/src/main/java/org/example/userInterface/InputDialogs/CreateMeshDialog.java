@@ -37,13 +37,13 @@ public class CreateMeshDialog extends InputDialogWithGrid
     @Override
     public void onOkClick(double[][] input)
     {        
-        CentralPanel.structure.removeSupports() ;
-        CentralPanel.loading.clearLoads() ;
-        CentralPanel.structure.createMesh(meshType, Util.MatrixDoubleToInt(input), ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase())) ;
+        MainPanel.getInstance().getCentralPanel().getStructure().removeSupports() ;
+        MainPanel.getInstance().getCentralPanel().getLoading().clearLoads() ;
+        MainPanel.getInstance().getCentralPanel().getStructure().createMesh(meshType, Util.MatrixDoubleToInt(input), ElemType.valueOf(MenuFunctions.SelectedElemType.toUpperCase())) ;
         MainPanel.getInstance().getCentralPanel().updateDrawings() ;
         MenuViewService.getInstance().switchNodeView();
         MenuViewService.getInstance().switchElemView();
-        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
+        MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading()) ;
         MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus();
     }
 

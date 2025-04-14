@@ -120,9 +120,9 @@ public class DiagramsPanel extends JPanel
 		// 	System.out.println(firstNode.getLoadDisp2().get(DOF.z));
 		// }
 
-		if (!CentralPanel.structure.getMesh().hasNodesSelected()) { return ;}
+		if (!MainPanel.getInstance().getCentralPanel().getStructure().getMesh().hasNodesSelected()) { return ;}
 
-		Node selectedNode = CentralPanel.structure.getMesh().getSelectedNodes().get(0) ;
+		Node selectedNode = MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedNodes().get(0) ;
 		Dataset dataset = selectedNode.getLoadDisp2().get(DOF.z) ;
 		if (dataset != null && 0 < dataset.size())
 		{
@@ -186,7 +186,7 @@ public class DiagramsPanel extends JPanel
 		{
 			DrawPrimitives DP = MainPanel.getInstance().getCentralPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-			display(CentralPanel.structure, selectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
+			display(MainPanel.getInstance().getCentralPanel().getStructure(), selectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
 			repaint();
 		}
     }

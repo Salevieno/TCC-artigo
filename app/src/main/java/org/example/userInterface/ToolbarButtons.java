@@ -98,7 +98,7 @@ public class ToolbarButtons extends JPanel
             if (exampleid != null)
             {
                 MenuFunctions.RunExample(Integer.parseInt(exampleid));
-                MainPanel.getInstance().ActivatePostAnalysisView(CentralPanel.structure);
+                MainPanel.getInstance().ActivatePostAnalysisView(MainPanel.getInstance().getCentralPanel().getStructure());
                 MenuBar.getInstance().updateEnabledMenus() ;
             }
         } ;

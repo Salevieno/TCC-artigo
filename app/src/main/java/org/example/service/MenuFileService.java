@@ -26,11 +26,11 @@ public class MenuFileService
 		// TODO fazer o parse dos materiais numa lista específica e depois atribuir aos elementos. Evita criar 100 materiais idênticos
 		structure.updateMaxCoords() ;
 		// structure.getMesh().getNodes().forEach(node -> node.updateDrawingPos(MainPanel.getInstance().getMainCanvas(), false, 1)) ;
-		CentralPanel.structure = structure ;
+		MainPanel.getInstance().getCentralPanel().setStructure(structure) ;
 		
 		Loading loading = new Loading() ;
 		structure.getMesh().getNodes().stream().filter(node -> node.getConcLoads() != null).forEach(node -> node.getConcLoads().forEach(load -> loading.addConcLoad(load))) ;
-		CentralPanel.loading = loading ;
+		MainPanel.getInstance().getCentralPanel().setLoading(loading) ;
 
 		MenuFunctions.CalcAnalysisParameters(structure, loading) ;
 
@@ -41,8 +41,8 @@ public class MenuFileService
 
 		// Menus.getInstance().getMainCanvas().setDimension(new Point2D.Double(1.2 * MainPanel.structure.getMaxCoords().x, 1.2 * MainPanel.structure.getMaxCoords().y)) ;
 
-		MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(structure, CentralPanel.loading) ;
-        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(CentralPanel.structure, CentralPanel.loading) ;
+		MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(structure, MainPanel.getInstance().getCentralPanel().getLoading()) ;
+        MenuBar.getInstance().getMenuAnalysis().updateIsReadyForAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading()) ;
 	}
 
 	public static void saveStructure(String filename, StructureDTO structureDTO)

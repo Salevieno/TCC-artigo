@@ -7,13 +7,13 @@ import java.util.List;
 
 import org.example.loading.DistLoad;
 import org.example.loading.NodalDisp;
+import org.example.mainTCC.MainPanel;
 import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -95,7 +95,7 @@ public abstract class Draw
     	RealCoords[4] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaArrow), Pos[1], Pos[2] - ArrowSize*Math.sin(thetaArrow)};
     	RealCoords[5] = new double[] {Pos[0] + Size - ArrowSize*Math.cos(thetaArrow), Pos[1], Pos[2] + ArrowSize*Math.sin(thetaArrow)};
     	
-		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+		double[] RealCanvasCenter = Util.ConvertToRealCoordsPoint3D(canvas.getCenter(), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
          	RealCoords[c] = Util.RotateCoord(RealCoords[c], Pos, theta);
@@ -106,7 +106,7 @@ public abstract class Draw
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
-    		DrawingCoords[c] = Util.ConvertToDrawingCoords2Point3D(RealCoords[c], CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+    		DrawingCoords[c] = Util.ConvertToDrawingCoords2Point3D(RealCoords[c], MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
     	}
     	for (int c = 0; c <= RealCoords.length - 1; c += 1)
     	{
@@ -127,7 +127,7 @@ public abstract class Draw
 		for (int node = 0; node <= Node.size() - 1; node += 1)
 		{
 			int[][] DrawingNodePos = new int[Node.size()][];
-			DrawingNodePos[node] = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node.get(node), deformed), CentralPanel.structure.getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
+			DrawingNodePos[node] = Util.ConvertToDrawingCoords2Point3D(Util.GetNodePos(Node.get(node), deformed), MainPanel.getInstance().getCentralPanel().getStructure().getCenter(), canvas.getPos(), canvas.getSize(), canvas.getDimension(), canvas.getCenter(), canvas.getDrawingPos());
 			for (int dof = 0; dof <= Node.get(node).getDofs().length - 1; dof += 1)
 			{
 				double angle = 2 * Math.PI * dof / Node.get(node).getDofs().length;

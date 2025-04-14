@@ -43,14 +43,14 @@ public class EastPanel extends JPanel
 	public void reset()
 	{
 
-		if (CentralPanel.structure.getMesh().hasNodesSelected())
+		if (MainPanel.getInstance().getCentralPanel().getStructure().getMesh().hasNodesSelected())
 		{
-			Node node = CentralPanel.structure.getMesh().getSelectedNodes().get(0) ;
+			Node node = MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedNodes().get(0) ;
 			nodeInfoPanel = createNodeInfoPanel(node) ;
 		}
-		if (CentralPanel.structure.getMesh().hasElementsSelected())
+		if (MainPanel.getInstance().getCentralPanel().getStructure().getMesh().hasElementsSelected())
 		{
-			Element elem = CentralPanel.structure.getMesh().getSelectedElements().get(0) ;
+			Element elem = MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedElements().get(0) ;
 			elemInfoPanel = createElemInfoPanel(elem) ;
 		}
 		// this.removeAll();

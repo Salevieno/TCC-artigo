@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.example.mainTCC.MainFrame;
-import org.example.view.CentralPanel;
+import org.example.mainTCC.MainPanel;
 
 public abstract class InputDialogWithGrid extends JDialog implements ActionListener
 {
@@ -121,7 +121,7 @@ public abstract class InputDialogWithGrid extends JDialog implements ActionListe
 				onOkClick(input) ;
 				// okActionWithInput.act(this.Input) ;
 				// okAction.run() ;
-				System.out.println(CentralPanel.structure);
+				System.out.println(MainPanel.getInstance().getCentralPanel().getStructure());
 				dispose();
 			}
 			if(source == buttons.get(i) && buttons.get(i).getText().equals("Cancel"))

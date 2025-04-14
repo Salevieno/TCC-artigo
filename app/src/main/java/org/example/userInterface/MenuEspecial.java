@@ -30,8 +30,8 @@ public class MenuEspecial extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				CentralPanel.structure = MenuFunctions.Especial();
-				MainPanel.getInstance().ActivatePostAnalysisView(CentralPanel.structure);
+				MainPanel.getInstance().getCentralPanel().setStructure(MenuFunctions.Especial());
+				MainPanel.getInstance().ActivatePostAnalysisView(MainPanel.getInstance().getCentralPanel().getStructure());
 				MenuBar.getInstance().updateEnabledMenus() ;
 			}
 		}) ;	

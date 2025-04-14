@@ -9,11 +9,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.Main;
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
 import org.example.structure.Element;
-import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 public class MenuResults extends JMenu
 {
@@ -70,7 +69,7 @@ public class MenuResults extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.ResultsMenuSaveResults(CentralPanel.structure);
+				MenuFunctions.ResultsMenuSaveResults(MainPanel.getInstance().getCentralPanel().getStructure());
 			}
 		});
 		SaveLoadDispCurve.addActionListener(new ActionListener()
@@ -78,7 +77,7 @@ public class MenuResults extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.SaveLoadDispCurve(CentralPanel.structure);
+				MenuFunctions.SaveLoadDispCurve(MainPanel.getInstance().getCentralPanel().getStructure());
 			}
 		});
 		DeformedShape.setEnabled(false);
@@ -129,7 +128,7 @@ public class MenuResults extends JMenu
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 0;
-					// CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), d2);
+					// CentralPanel.SelectedVar = Util.ElemPosInArray(MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements().get(0).getDOFs(), d2);
 					//DrawDisplacementContours(SelectedVar);
 					//ResetE1Panel();
 				}
@@ -160,7 +159,7 @@ public class MenuResults extends JMenu
 					//SelectedDiagram = 1;
 
 					// TODO check
-					// CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
+					// CentralPanel.SelectedVar = Util.ElemPosInArray(MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements().get(0).getDOFs(), s2);
 					//DrawStressContours(SelectedVar);
 					//ResetE1Panel();
 				}
@@ -189,7 +188,7 @@ public class MenuResults extends JMenu
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 2;
-					// CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), s2);
+					// CentralPanel.SelectedVar = Util.ElemPosInArray(MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements().get(0).getDOFs(), s2);
 					//DrawStrainContours(SelectedVar);
 					//ResetE1Panel();
 				}
@@ -218,7 +217,7 @@ public class MenuResults extends JMenu
 				public void actionPerformed(ActionEvent e) 
 				{
 					//SelectedDiagram = 3;
-					// CentralPanel.SelectedVar = Util.ElemPosInArray(CentralPanel.structure.getMesh().getElements().get(0).getDOFs(), f2);
+					// CentralPanel.SelectedVar = Util.ElemPosInArray(MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements().get(0).getDOFs(), f2);
 					//DrawInternalForcesContours(Util.ElemPosInArray(Elem[0].getDOFs(), f2));
 					//ResetE1Panel();
 				}
@@ -231,7 +230,7 @@ public class MenuResults extends JMenu
 
     public void enableButtons()
     {
-		List<Element> elems = CentralPanel.structure.getMesh() != null ? CentralPanel.structure.getMesh().getElements() : null;
+		List<Element> elems = MainPanel.getInstance().getCentralPanel().getStructure().getMesh() != null ? MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements() : null;
         
         DeformedShape.setEnabled(true);
         DisplacementContours.setEnabled(true);

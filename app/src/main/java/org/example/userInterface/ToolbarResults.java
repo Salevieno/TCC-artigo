@@ -68,8 +68,8 @@ public class ToolbarResults extends JPanel
                     MainPanel.getInstance().getEastPanel().getLegendPanel().switchDisplay(selectedDiagram, selectedVar) ;
                     MainPanel.getInstance().getEastPanel().getDiagramsPanel().setSelectedDOF(selectedVar) ;
                     MainPanel.getInstance().getEastPanel().getDiagramsPanel().updateData() ;
-                    CentralPanel.structure.getResultDiagrams().setDiagram(Diagram.values()[selectedDiagram]); ;
-                    CentralPanel.structure.getResultDiagrams().setSelectedVar(selectedVar) ;
+                    MainPanel.getInstance().getCentralPanel().getStructure().getResultDiagrams().setDiagram(Diagram.values()[selectedDiagram]); ;
+                    MainPanel.getInstance().getCentralPanel().getStructure().getResultDiagrams().setSelectedVar(selectedVar) ;
                 }
             }
         });

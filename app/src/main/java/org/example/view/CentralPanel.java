@@ -62,11 +62,11 @@ public class CentralPanel extends JPanel
 	private static boolean nodeSelectionIsActive ;
 	private static boolean elemSelectionIsActive ;
 
+	private Structure structure ;
+	private Loading loading ;
 	private SelectionWindow selectionWindow ;
 	private MenuViewService view = MenuViewService.getInstance() ;
 
-	public static Structure structure ;
-	public static Loading loading ;
 
 	public CentralPanel(Point frameTopLeftPos)
 	{		
@@ -135,6 +135,14 @@ public class CentralPanel extends JPanel
 
 	public DrawPrimitives getDP() { return DP ;}
 
+	public Structure getStructure() { return structure ;}
+
+	public void setStructure(Structure structure) { this.structure = structure ;}
+
+	public Loading getLoading() { return loading ;}
+
+	public void setLoading(Loading loading) { this.loading = loading ;}
+
 	private void bindKey(int keyCode, Runnable action)
 	{
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyCode, 0), String.valueOf(keyCode));
@@ -151,7 +159,7 @@ public class CentralPanel extends JPanel
         getActionMap().put(String.valueOf(keyCode), abstractAction);
     }
 
-	public static void createStructure(int[] MainPanelPos, MyCanvas canvas, Point mousePos)
+	public void createStructure(int[] MainPanelPos, MyCanvas canvas, Point mousePos)
 	{		   
 		if (!Util.MouseIsInside(mousePos, new int[2], canvas.getPos(), canvas.getSize())) { return ;}
 		
@@ -506,15 +514,15 @@ public class CentralPanel extends JPanel
 
 	public static void startStructureCreation(StructureShape structureShape)
 	{
-		CentralPanel.structure.setShape(structureShape) ;
+		MainPanel.getInstance().getCentralPanel().getStructure().setShape(structureShape) ;
 		structureCreationIsOn = true ;
 	}
 
-	private static void finishStructureCreation()
+	private void finishStructureCreation()
 	{		
 		structureCreationIsOn = false;
 		structure.updateCenter() ;
-		MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(CentralPanel.structure, CentralPanel.loading) ;
+		MainPanel.getInstance().getWestPanel().getInstructionsPanel().updateStepsCompletion(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading()) ;
 		MenuBar.getInstance().updateEnabledMenus() ;
 	}
 
@@ -597,7 +605,7 @@ public class CentralPanel extends JPanel
 	}
 
 	
- 	public static void AddMaterialToElements(List<Element> elems, Material mat)
+ 	public void AddMaterialToElements(List<Element> elems, Material mat)
 	{
 		if (mat == null || elems == null || elems.isEmpty()) { return ;}
 
@@ -621,7 +629,7 @@ public class CentralPanel extends JPanel
 		{
 			// int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
 			Supports newSupport = new Supports(1, node, MenuFunctions.SupType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
-			CentralPanel.structure.addSupport(newSupport) ;
+			MainPanel.getInstance().getCentralPanel().getStructure().addSupport(newSupport) ;
 			node.setSup(MenuFunctions.SupType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
 		}
 
@@ -716,7 +724,7 @@ public class CentralPanel extends JPanel
 
 		if (evt.getButton() == 3)	// Right click
 		{
-			// CentralPanel.structure.printStructure(matTypes, secTypes, CentralPanel.structure.getSupports(), loading);
+			// MainPanel.getInstance().getCentralPanel().getStructure().printStructure(matTypes, secTypes, MainPanel.getInstance().getCentralPanel().getStructure().getSupports(), loading);
 		}
 	}
 
