@@ -17,6 +17,7 @@ import org.example.structure.ElemType;
 import org.example.structure.Material;
 import org.example.structure.Section;
 import org.example.structure.Structure;
+import org.example.userInterface.MenuAnalysis;
 import org.example.utilidades.Util;
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +81,7 @@ public class EspecialTest
         assertEquals(4, loading.getDistLoads().get(0).getType());
         assertEquals(1000, loading.getDistLoads().get(0).getIntensity(), 0.0000001);
 
-        MenuFunctions.CalcAnalysisParameters(structure, loading);
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType);
 
         assertNotNull(structure.getMesh().getNodes().get(0).getDOFType()) ;
         assertNotNull(structure.getMesh().getNodes().get(0).getDOFs()) ;

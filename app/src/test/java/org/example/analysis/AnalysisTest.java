@@ -19,6 +19,7 @@ import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.structure.StructureShape;
 import org.example.structure.Supports;
+import org.example.userInterface.MenuAnalysis;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 import org.junit.jupiter.api.Test;
@@ -157,7 +158,7 @@ public class AnalysisTest
         ConcLoad concLoad = new ConcLoad(new Force(0, 0, loadIntensity, 0, 0, 0)) ;
         structure.getMesh().getNodes().forEach(node -> node.addConcLoad(concLoad)) ;
 
-        MenuFunctions.CalcAnalysisParameters(structure, loading) ;
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
     }
 
     private void addUniDistLoad(Structure structure, double loadIntensity)
@@ -165,7 +166,7 @@ public class AnalysisTest
         Loading loading = new Loading() ;
         structure.getMesh().getElements().forEach(elem -> elem.addDistLoad(new DistLoad(4, loadIntensity))) ;
 
-        MenuFunctions.CalcAnalysisParameters(structure, loading) ;
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
     }
 
 }

@@ -9,8 +9,8 @@ import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Structure;
 import org.example.structure.StructureDTO;
+import org.example.userInterface.MenuAnalysis;
 import org.example.userInterface.MenuBar;
-import org.example.view.CentralPanel;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +32,7 @@ public class MenuFileService
 		structure.getMesh().getNodes().stream().filter(node -> node.getConcLoads() != null).forEach(node -> node.getConcLoads().forEach(load -> loading.addConcLoad(load))) ;
 		MainPanel.getInstance().getCentralPanel().setLoading(loading) ;
 
-		MenuFunctions.CalcAnalysisParameters(structure, loading) ;
+		MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
 
 		MenuViewService.getInstance().switchSupView() ;
 		MenuViewService.getInstance().switchConcLoadsView() ;

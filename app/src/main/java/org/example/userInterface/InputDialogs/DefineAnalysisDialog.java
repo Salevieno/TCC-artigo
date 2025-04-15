@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 
+import org.example.mainTCC.MenuFunctions;
 import org.example.userInterface.MenuBar;
 
 public class DefineAnalysisDialog extends InputDialogWithButtons
@@ -34,7 +35,7 @@ public class DefineAnalysisDialog extends InputDialogWithButtons
         String analysisType = clickedButtonText(ae) ;
         int analysisTypeID = buttonNames.indexOf(analysisType) ;
         MenuBar.getInstance().getMenuAnalysis().setAnalysisTypeID(analysisTypeID) ;        
-        MenuBar.getInstance().getMenuAnalysis().runAnalysis(analysisTypeID) ;
+        MenuBar.getInstance().getMenuAnalysis().runAnalysis(analysisTypeID, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
     }
 
 }
