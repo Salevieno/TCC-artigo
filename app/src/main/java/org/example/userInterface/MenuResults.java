@@ -11,8 +11,11 @@ import javax.swing.JMenuItem;
 import org.example.Main;
 import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
+import org.example.output.SaveOutput;
 import org.example.service.MenuViewService;
 import org.example.structure.Element;
+import org.example.structure.Reactions;
+import org.example.structure.Structure;
 
 public class MenuResults extends JMenu
 {
@@ -69,7 +72,7 @@ public class MenuResults extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.ResultsMenuSaveResults(MainPanel.getInstance().getCentralPanel().getStructure());
+				ResultsMenuSaveResults(MainPanel.getInstance().getCentralPanel().getStructure());
 			}
 		});
 		SaveLoadDispCurve.addActionListener(new ActionListener()
@@ -77,7 +80,7 @@ public class MenuResults extends JMenu
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				MenuFunctions.SaveLoadDispCurve(MainPanel.getInstance().getCentralPanel().getStructure());
+				SaveLoadDispCurve(MainPanel.getInstance().getCentralPanel().getStructure());
 			}
 		});
 		DeformedShape.setEnabled(false);
@@ -227,6 +230,127 @@ public class MenuResults extends JMenu
 			InternalForcesContours.add(SubMenuInternalForces[f]);
 		}
     }
+
+	public static void SaveLoadDispCurve(Structure structure)
+	{
+		if (structure.getResultDiagrams().getSelectedVar() <= -1) { return ;}
+		
+		int nodeid = structure.getMesh().getSelectedNodes().get(0).getID();
+		double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).getLoadDisp();
+		String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
+		String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).getDofs().length][loaddisp[0][0].length];
+		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
+		{
+			for (int dof = 0; dof <= structure.getMesh().getNodes().get(nodeid).getDofs().length - 1; dof += 1)
+			{
+				for (int loadinc = 0; loadinc <= loaddisp[dof][sec].length - 1; loadinc += 1)
+				{
+					vars[sec][dof][loadinc] = String.valueOf(loaddisp[dof][sec][loadinc]);
+				}
+			}
+		}
+		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
+	}
+
+	public static void ResultsMenuSaveResults(Structure structure)
+	{
+		String[] Sections = new String[] {"Min Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Max Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Min Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Max Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Reacoes \nno	Fx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)", "Soma das reacoes \nFx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)"};
+		String[][][] vars = new String[Sections.length][][];
+		vars[0] = new String[1][3];
+		vars[1] = new String[1][3];
+		vars[2] = new String[structure.getMesh().getNodes().size()][];
+		vars[3] = new String[1][3];
+		vars[4] = new String[1][3];
+		vars[5] = new String[structure.getMesh().getNodes().size()][];
+		vars[6] = new String[structure.getReactions().length][];
+		vars[7] = new String[1][Reactions.SumReactions.length];
+		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
+		{
+			if (sec == 0)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMin()[dof]);
+				}
+			}
+			if (sec == 1)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMax()[dof]);
+				}
+			}
+			if (sec == 3)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMin()[dof]);
+				}
+			}
+			if (sec == 4)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMax()[dof]);
+				}
+			}
+			for (int node = 0; node <= vars[sec].length - 1; node += 1)
+			{
+				if (sec == 2)
+				{
+					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node][0] = String.valueOf(node);
+					for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+					{
+						if (-1 < structure.getMesh().getNodes().get(node).getDofs()[dof])
+						{
+							vars[sec][node][dof + 1] = String.valueOf(structure.getU()[structure.getMesh().getNodes().get(node).getDofs()[dof]]);
+						}
+						else
+						{
+							vars[sec][node][dof + 1] = String.valueOf(0);
+						}
+					}
+				}
+				if (sec == 5)
+				{
+					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node][0] = String.valueOf(node);
+					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
+					{
+						Element elem = structure.getMesh().getElements().get(i);
+						for (int elemnode = 0; elemnode <= elem.getExternalNodes().size() - 1; elemnode += 1)
+						{
+							if (node == elem.getExternalNodes().get(elemnode).getID())
+							{
+								for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+								{
+									vars[sec][node][dof + 1] = String.valueOf(elem.getIntForces()[elemnode*structure.getMesh().getNodes().get(node).getDOFType().length + dof]);
+								}
+							}
+						}
+					}
+				}
+				if (sec == 6)
+				{
+					vars[sec][node] = new String[structure.getReactions()[node].getLoads().length + 1];
+					vars[sec][node][0] = String.valueOf(node);
+					for (int dof = 0; dof <= structure.getReactions()[node].getLoads().length - 1; dof += 1)
+					{
+						vars[sec][node][dof + 1] = String.valueOf(structure.getReactions()[node].getLoads()[dof]);
+					}
+				}
+			}
+			if (sec == 7)
+			{
+				for (int dof = 0; dof <= Reactions.SumReactions.length - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(Reactions.SumReactions[dof]);
+				}
+			}
+		}
+		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
+	}
 
     public void enableButtons()
     {

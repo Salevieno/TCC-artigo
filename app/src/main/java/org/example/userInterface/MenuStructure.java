@@ -198,13 +198,13 @@ public class MenuStructure extends JMenu
 		Structure structure = MainPanel.getInstance().getCentralPanel().getStructure();
 		List<Node> nodes = MainPanel.getInstance().getCentralPanel().getStructure().getMesh() != null ? MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getNodes() : null ;
 		List<Element> elems = MainPanel.getInstance().getCentralPanel().getStructure().getMesh() != null ? MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements() : null;
-		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
-		String SelectedElemType = MenuFunctions.SelectedElemType;
+		boolean AnalysisIsComplete = MenuFunctions.isAnalysisIsComplete();
+		String SelectedElemType = MenuFunctions.getSelectedElemType();
 		List<Material> MatTypes = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes() ;
 		List<Section> SecTypes = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes() ;
-		List<Force> ConcLoadTypes = MenuFunctions.concLoadTypes;
-		double[][] DistLoadTypes = MenuFunctions.DistLoadType;
-		double[][] NodalDispTypes = MenuFunctions.NodalDispType;
+		List<Force> ConcLoadTypes = MenuFunctions.getConcLoadTypes();
+		double[][] DistLoadTypes = MenuFunctions.getDistLoadType();
+		double[][] NodalDispTypes = MenuFunctions.getNodalDispType();
 		if ( nodes != null )
 		{
 			AssignSupports.setEnabled(true);

@@ -199,7 +199,7 @@ public class MyCanvas
 			drawGrid(2, DP) ;
 		}
 
-		Point2D.Double RealMousePos = inRealCoords(MenuFunctions.mousePos) ;
+		Point2D.Double RealMousePos = inRealCoords(MenuFunctions.getMousePos()) ;
 		drawMousePosWindow(new Point(BigAxisPos.x + size.width / 2 - 60, BigAxisPos.y + 20), RealMousePos, Main.palette[3], Main.palette[0], DP);
 	}
 	

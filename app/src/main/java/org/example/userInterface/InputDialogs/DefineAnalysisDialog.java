@@ -35,7 +35,7 @@ public class DefineAnalysisDialog extends InputDialogWithButtons
         String analysisType = clickedButtonText(ae) ;
         int analysisTypeID = buttonNames.indexOf(analysisType) ;
         MenuBar.getInstance().getMenuAnalysis().setAnalysisTypeID(analysisTypeID) ;        
-        MenuBar.getInstance().getMenuAnalysis().runAnalysis(analysisTypeID, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
+        MenuBar.getInstance().getMenuAnalysis().runAnalysis(analysisTypeID, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType()) ;
     }
 
 }

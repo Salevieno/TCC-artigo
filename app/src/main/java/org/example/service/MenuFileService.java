@@ -32,7 +32,7 @@ public class MenuFileService
 		structure.getMesh().getNodes().stream().filter(node -> node.getConcLoads() != null).forEach(node -> node.getConcLoads().forEach(load -> loading.addConcLoad(load))) ;
 		MainPanel.getInstance().getCentralPanel().setLoading(loading) ;
 
-		MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
+		MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType()) ;
 
 		MenuViewService.getInstance().switchSupView() ;
 		MenuViewService.getInstance().switchConcLoadsView() ;

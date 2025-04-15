@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.userInterface.Draw;
 import org.example.userInterface.MenuBar;
@@ -599,7 +600,7 @@ public class Mesh
 		}
 		if (nodes != null && !nodes.isEmpty())
 		{
-			displayNodes(showdeformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			displayNodes(showdeformed, MainPanel.getInstance().getCentralPanel().getDiagramScales().y, canvas, DP) ;
 		}
 	}
 

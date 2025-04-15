@@ -186,7 +186,7 @@ public class DiagramsPanel extends JPanel
 		{
 			DrawPrimitives DP = MainPanel.getInstance().getCentralPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-			display(MainPanel.getInstance().getCentralPanel().getStructure(), selectedDiagram, MenuFunctions.AnalysisIsComplete, DP) ;
+			display(MainPanel.getInstance().getCentralPanel().getStructure(), selectedDiagram, MenuFunctions.isAnalysisIsComplete(), DP) ;
 			repaint();
 		}
     }

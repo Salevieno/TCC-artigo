@@ -73,7 +73,10 @@ public class MenuAnalysis extends JMenu
 
 	public void updateIsReadyForAnalysis(Structure structure, Loading loading)
 	{
-        isReadyForAnalysis = MenuFunctions.CheckIfAnalysisIsReady(structure, loading);
+        isReadyForAnalysis = structure.getMesh() != null &&
+							structure.getMesh().getNodes() != null && structure.getMesh().getElements() != null &&
+							structure.getMesh().allElementsHaveMat() && structure.getMesh().allElementsHaveSec() && structure.getSupports() != null &&
+							loading != null;
 		setRunAnalysisEnabled(isReadyForAnalysis) ;
 	}
 
@@ -99,8 +102,8 @@ public class MenuAnalysis extends JMenu
 		CentralPanel.activateNodeSelection() ;
 		CentralPanel.activateElemSelection() ;
 		double MaxDisp = Util.FindMaxAbs(structure.getU());
-		MenuFunctions.updateDiagramScaleY(MaxDisp) ;
-		MenuFunctions.AnalysisIsComplete = true ;
+		MainPanel.getInstance().getCentralPanel().updateDiagramScaleY(MaxDisp) ;
+		MenuFunctions.setAnalysisIsComplete(true) ;
 		Reactions.setSumReactions(Analysis.SumReactions(reactions));
 
 		MainPanel.getInstance().getWestPanel().setStructure(structure) ;
@@ -166,8 +169,8 @@ public class MenuAnalysis extends JMenu
 		// geometryIsNonLinear = analysisTypeID == 1 || analysisTypeID == 3 ;
 		// matIsNonLinear = analysisTypeID == 2 || analysisTypeID == 3 ;
 		CalcAnalysisParameters(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), concLoadTypes, DistLoadType);
-		Analysis.run(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo, qtdIterations, qtdLoadSteps, maxLoadFactor);
-		PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), MenuFunctions.NonlinearMat, MenuFunctions.NonlinearGeo);
+		Analysis.run(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MenuFunctions.isNonlinearMat(), MenuFunctions.isNonlinearGeo(), qtdIterations, qtdLoadSteps, maxLoadFactor);
+		PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), MenuFunctions.isNonlinearMat(), MenuFunctions.isNonlinearGeo());
 		// for (Element elem : MainPanel.structure.getMesh().getElements())
 		// {
 		// 	elem.RecordResults(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getU(), matIsNonLinear, geometryIsNonLinear);

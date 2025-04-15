@@ -158,7 +158,7 @@ public class AnalysisTest
         ConcLoad concLoad = new ConcLoad(new Force(0, 0, loadIntensity, 0, 0, 0)) ;
         structure.getMesh().getNodes().forEach(node -> node.addConcLoad(concLoad)) ;
 
-        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType()) ;
     }
 
     private void addUniDistLoad(Structure structure, double loadIntensity)
@@ -166,7 +166,7 @@ public class AnalysisTest
         Loading loading = new Loading() ;
         structure.getMesh().getElements().forEach(elem -> elem.addDistLoad(new DistLoad(4, loadIntensity))) ;
 
-        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType) ;
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType()) ;
     }
 
 }

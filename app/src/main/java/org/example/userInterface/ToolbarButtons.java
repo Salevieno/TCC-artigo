@@ -18,7 +18,7 @@ import org.example.Main;
 import org.example.mainTCC.MainPanel;
 import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
-import org.example.view.CentralPanel;
+import org.example.service.ToolbarButtonsService;
 
 public class ToolbarButtons extends JPanel
 {
@@ -97,7 +97,7 @@ public class ToolbarButtons extends JPanel
         Runnable updateInstructionsPanel = () -> {
             if (exampleid != null)
             {
-                MenuFunctions.RunExample(Integer.parseInt(exampleid));
+                ToolbarButtonsService.RunExample(Integer.parseInt(exampleid));
                 MainPanel.getInstance().ActivatePostAnalysisView(MainPanel.getInstance().getCentralPanel().getStructure());
                 MenuBar.getInstance().updateEnabledMenus() ;
             }

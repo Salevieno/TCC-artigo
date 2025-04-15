@@ -385,7 +385,7 @@ public class Structure
 		for (Node node : mesh.getNodes())
 		{
 			if (node.getConcLoads() == null) { continue ;}
-			node.displayConcLoads(dofs, MenuViewService.getInstance().loadsValues, maxLoad, deformed, MenuFunctions.DiagramScales[1], canvas, DP) ;
+			node.displayConcLoads(dofs, MenuViewService.getInstance().loadsValues, maxLoad, deformed, MainPanel.getInstance().getCentralPanel().getDiagramScales().y, canvas, DP) ;
 			// for (ConcLoad concLoad : node.getConcLoads())
 			// {
 			// 	int[] dofs = mesh.getElements().get(0).getDOFs() ;
@@ -468,7 +468,7 @@ public class Structure
 			{
 				nodesToReceiveLoads.forEach(node ->
 				{
-					ConcLoad concLoad = new ConcLoad(MenuFunctions.concLoadTypes.get(concLoadsID)) ;
+					ConcLoad concLoad = new ConcLoad(MenuFunctions.getConcLoadTypes().get(concLoadsID)) ;
 					if (concLoad != null)
 					{
 						node.addConcLoad(concLoad) ;
@@ -482,8 +482,8 @@ public class Structure
 			mesh.getElements().forEach(elem -> 
 			{
 				
-				int distLoadType = (int) MenuFunctions.DistLoadType[distLoadID][0] ;
-				double distLoadIntensity = MenuFunctions.DistLoadType[distLoadID][1] ;
+				int distLoadType = (int) MenuFunctions.getDistLoadType()[distLoadID][0] ;
+				double distLoadIntensity = MenuFunctions.getDistLoadType()[distLoadID][1] ;
 				DistLoad distLoad = new DistLoad(distLoadType, distLoadIntensity) ;
 				if (distLoad != null)
 				{

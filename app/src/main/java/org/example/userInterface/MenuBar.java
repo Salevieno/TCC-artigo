@@ -38,7 +38,7 @@ public class MenuBar extends JMenuBar
 		
 	public void updateEnabledMenus()
 	{
-		boolean AnalysisIsComplete = MenuFunctions.AnalysisIsComplete;
+		boolean AnalysisIsComplete = MenuFunctions.isAnalysisIsComplete();
 		MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus() ;
 		if (AnalysisIsComplete)
 		{

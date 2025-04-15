@@ -85,11 +85,11 @@ public class UpperToolbar extends JPanel
 				return ;
 			
 			case concLoads:
-				MainPanel.getInstance().getCentralPanel().AddConcLoads(MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedNodes(), MenuFunctions.concLoadTypes);
+				MainPanel.getInstance().getCentralPanel().AddConcLoads(MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedNodes(), MenuFunctions.getConcLoadTypes());
 				return ;
 		
 			case distLoads:
-				MainPanel.getInstance().getCentralPanel().AddDistLoads(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements(), MenuFunctions.DistLoadType);
+				MainPanel.getInstance().getCentralPanel().AddDistLoads(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements(), MenuFunctions.getDistLoadType());
 				return ;
 	
 			case nodalDisps:			

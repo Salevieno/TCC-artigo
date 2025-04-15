@@ -87,7 +87,7 @@ public class InstructionsPanel extends JPanel
     			stepIsComplete.set(0, true) ;
     		}
         }
-		if (MenuFunctions.SelectedElemType != null)
+		if (MenuFunctions.getSelectedElemType() != null)
 		{
 			stepIsComplete.set(0, true) ;
 		}

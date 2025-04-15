@@ -59,7 +59,7 @@ public class ListPanel extends JPanel
 
 	public void handleMouseWheel(MouseWheelEvent evt)
 	{
-		// boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);
+		// boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.getMousePos(), panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);
 		Assignable assignable = MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
 		double qtdRotation = evt.getWheelRotation() ;
 
@@ -73,13 +73,13 @@ public class ListPanel extends JPanel
 
 				case sections: selectedID = Util.clamp(selectedID, 0, secTypes.size() - 1) ; return ;
 
-				case supports: selectedID = Util.clamp(selectedID, 0, MenuFunctions.SupType.length - 1) ; return ;
+				case supports: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getSupType().length - 1) ; return ;
 
-				case concLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.concLoadTypes.size() - 1) ; return ;
+				case concLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getConcLoadTypes().size() - 1) ; return ;
 
-				case distLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.DistLoadType.length - 1) ; return ;
+				case distLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getDistLoadType().length - 1) ; return ;
 
-				case nodalDisps: selectedID = Util.clamp(selectedID, 0, MenuFunctions.NodalDispType.length - 1) ; return ;
+				case nodalDisps: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getNodalDispType().length - 1) ; return ;
 			
 				default: System.out.println("Warn: No assignable selected when moving mouse wheel") ; break ;
 			}
@@ -125,7 +125,7 @@ public class ListPanel extends JPanel
 				"Tetaz"
 			};
 		List<String[]> supTypes = new ArrayList<>() ;
-		for (int[] supType : MenuFunctions.SupType)
+		for (int[] supType : MenuFunctions.getSupType())
 		{
 			String[] stringArray = Arrays.stream(supType).mapToObj(String::valueOf).toArray(String[]::new) ;
 			supTypes.add(stringArray) ;
@@ -144,7 +144,7 @@ public class ListPanel extends JPanel
 				"My (kN)",
 				"Mz (kN)"
 			};
-		List<Force> ConcLoadTypes = MenuFunctions.concLoadTypes;
+		List<Force> ConcLoadTypes = MenuFunctions.getConcLoadTypes();
 		List<String[]> loadTypes = new ArrayList<>() ;
 		for (Force load : ConcLoadTypes)
 		{
@@ -164,7 +164,7 @@ public class ListPanel extends JPanel
 				"Distfin (m)"
 			};
 		List<String[]> distLoadTypes = new ArrayList<>() ;
-		for (double[] loadType : MenuFunctions.DistLoadType)
+		for (double[] loadType : MenuFunctions.getDistLoadType())
 		{
 			String[] stringArray = Arrays.stream(loadType).mapToObj(String::valueOf).toArray(String[]::new) ;
 			distLoadTypes.add(stringArray) ;
@@ -184,7 +184,7 @@ public class ListPanel extends JPanel
 				"rot z"
 			};
 		List<String[]> nodalDispTypes = new ArrayList<>() ;
-		for (double[] dispType : MenuFunctions.NodalDispType)
+		for (double[] dispType : MenuFunctions.getNodalDispType())
 		{
 			String[] stringArray = Arrays.stream(dispType).mapToObj(String::valueOf).toArray(String[]::new) ;
 			nodalDispTypes.add(stringArray) ;

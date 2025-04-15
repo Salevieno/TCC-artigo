@@ -82,7 +82,7 @@ public class EspecialTest
         assertEquals(4, loading.getDistLoads().get(0).getType());
         assertEquals(1000, loading.getDistLoads().get(0).getIntensity(), 0.0000001);
 
-        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.concLoadTypes, MenuFunctions.DistLoadType);
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType());
 
         assertNotNull(structure.getMesh().getNodes().get(0).getDOFType()) ;
         assertNotNull(structure.getMesh().getNodes().get(0).getDOFs()) ;
