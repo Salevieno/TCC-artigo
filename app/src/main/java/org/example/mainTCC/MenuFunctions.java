@@ -85,8 +85,130 @@ public abstract class MenuFunctions
 		
 	}
 
-	/* Results toolbar functions */
 	
+	/* Results menu functions */
+	public static void ResultsMenuSaveResults(Structure structure)
+	{
+		String[] Sections = new String[] {"Min Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Max Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Min Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Max Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Reacoes \nno	Fx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)", "Soma das reacoes \nFx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)"};
+		String[][][] vars = new String[Sections.length][][];
+		vars[0] = new String[1][3];
+		vars[1] = new String[1][3];
+		vars[2] = new String[structure.getMesh().getNodes().size()][];
+		vars[3] = new String[1][3];
+		vars[4] = new String[1][3];
+		vars[5] = new String[structure.getMesh().getNodes().size()][];
+		vars[6] = new String[structure.getReactions().length][];
+		vars[7] = new String[1][Reactions.SumReactions.length];
+		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
+		{
+			if (sec == 0)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMin()[dof]);
+				}
+			}
+			if (sec == 1)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMax()[dof]);
+				}
+			}
+			if (sec == 3)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMin()[dof]);
+				}
+			}
+			if (sec == 4)
+			{
+				for (int dof = 0; dof <= 3 - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMax()[dof]);
+				}
+			}
+			for (int node = 0; node <= vars[sec].length - 1; node += 1)
+			{
+				if (sec == 2)
+				{
+					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node][0] = String.valueOf(node);
+					for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+					{
+						if (-1 < structure.getMesh().getNodes().get(node).getDofs()[dof])
+						{
+							vars[sec][node][dof + 1] = String.valueOf(structure.getU()[structure.getMesh().getNodes().get(node).getDofs()[dof]]);
+						}
+						else
+						{
+							vars[sec][node][dof + 1] = String.valueOf(0);
+						}
+					}
+				}
+				if (sec == 5)
+				{
+					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
+					vars[sec][node][0] = String.valueOf(node);
+					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
+					{
+						Element elem = structure.getMesh().getElements().get(i);
+						for (int elemnode = 0; elemnode <= elem.getExternalNodes().size() - 1; elemnode += 1)
+						{
+							if (node == elem.getExternalNodes().get(elemnode).getID())
+							{
+								for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
+								{
+									vars[sec][node][dof + 1] = String.valueOf(elem.getIntForces()[elemnode*structure.getMesh().getNodes().get(node).getDOFType().length + dof]);
+								}
+							}
+						}
+					}
+				}
+				if (sec == 6)
+				{
+					vars[sec][node] = new String[structure.getReactions()[node].getLoads().length + 1];
+					vars[sec][node][0] = String.valueOf(node);
+					for (int dof = 0; dof <= structure.getReactions()[node].getLoads().length - 1; dof += 1)
+					{
+						vars[sec][node][dof + 1] = String.valueOf(structure.getReactions()[node].getLoads()[dof]);
+					}
+				}
+			}
+			if (sec == 7)
+			{
+				for (int dof = 0; dof <= Reactions.SumReactions.length - 1; dof += 1)
+				{
+					vars[sec][0][dof] = String.valueOf(Reactions.SumReactions[dof]);
+				}
+			}
+		}
+		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
+	}
+	
+	public static void SaveLoadDispCurve(Structure structure)
+	{
+		if (structure.getResultDiagrams().getSelectedVar() <= -1) { return ;}
+		
+		int nodeid = structure.getMesh().getSelectedNodes().get(0).getID();
+		double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).getLoadDisp();
+		String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
+		String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).getDofs().length][loaddisp[0][0].length];
+		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
+		{
+			for (int dof = 0; dof <= structure.getMesh().getNodes().get(nodeid).getDofs().length - 1; dof += 1)
+			{
+				for (int loadinc = 0; loadinc <= loaddisp[dof][sec].length - 1; loadinc += 1)
+				{
+					vars[sec][dof][loadinc] = String.valueOf(loaddisp[dof][sec][loadinc]);
+				}
+			}
+		}
+		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
+	}
+
+
 	public static Structure LoadFile(String Path, String FileName)
 	{
 		if (!FileName.equals("")) 
@@ -211,297 +333,6 @@ public abstract class MenuFunctions
 			return null ;
 		}
 	}
-	
-	/* Results menu functions */
-	public static void ResultsMenuSaveResults(Structure structure)
-	{
-		String[] Sections = new String[] {"Min Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Max Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Deslocamentos \nno	w (m)	Tx (rad)	Ty (rad)", "Min Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Max Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Forcas Internas \nno	Fz (kN)	Mx (kNm)	My (kNm)", "Reacoes \nno	Fx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)", "Soma das reacoes \nFx (kN)	Fy (kN)	Fz (kN)	Mx (kNm)	My (kNm)	Mz (kNm)"};
-		String[][][] vars = new String[Sections.length][][];
-		vars[0] = new String[1][3];
-		vars[1] = new String[1][3];
-		vars[2] = new String[structure.getMesh().getNodes().size()][];
-		vars[3] = new String[1][3];
-		vars[4] = new String[1][3];
-		vars[5] = new String[structure.getMesh().getNodes().size()][];
-		vars[6] = new String[structure.getReactions().length][];
-		vars[7] = new String[1][Reactions.SumReactions.length];
-		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
-		{
-			if (sec == 0)
-			{
-				for (int dof = 0; dof <= 3 - 1; dof += 1)
-				{
-					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMin()[dof]);
-				}
-			}
-			if (sec == 1)
-			{
-				for (int dof = 0; dof <= 3 - 1; dof += 1)
-				{
-					vars[sec][0][dof] = String.valueOf(structure.getResults().getDispMax()[dof]);
-				}
-			}
-			if (sec == 3)
-			{
-				for (int dof = 0; dof <= 3 - 1; dof += 1)
-				{
-					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMin()[dof]);
-				}
-			}
-			if (sec == 4)
-			{
-				for (int dof = 0; dof <= 3 - 1; dof += 1)
-				{
-					vars[sec][0][dof] = String.valueOf(structure.getResults().getInternalForcesMax()[dof]);
-				}
-			}
-			for (int node = 0; node <= vars[sec].length - 1; node += 1)
-			{
-				if (sec == 2)
-				{
-					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
-					vars[sec][node][0] = String.valueOf(node);
-					for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
-					{
-						if (-1 < structure.getMesh().getNodes().get(node).getDofs()[dof])
-						{
-							vars[sec][node][dof + 1] = String.valueOf(structure.getU()[structure.getMesh().getNodes().get(node).getDofs()[dof]]);
-						}
-						else
-						{
-							vars[sec][node][dof + 1] = String.valueOf(0);
-						}
-					}
-				}
-				if (sec == 5)
-				{
-					vars[sec][node] = new String[structure.getMesh().getNodes().get(node).getDOFType().length + 1];
-					vars[sec][node][0] = String.valueOf(node);
-					for (int i = 0; i <= structure.getMesh().getElements().size() - 1; i += 1)
-					{
-						Element elem = structure.getMesh().getElements().get(i);
-						for (int elemnode = 0; elemnode <= elem.getExternalNodes().size() - 1; elemnode += 1)
-						{
-							if (node == elem.getExternalNodes().get(elemnode).getID())
-							{
-								for (int dof = 0; dof <= structure.getMesh().getNodes().get(node).getDOFType().length - 1; dof += 1)
-								{
-									vars[sec][node][dof + 1] = String.valueOf(elem.getIntForces()[elemnode*structure.getMesh().getNodes().get(node).getDOFType().length + dof]);
-								}
-							}
-						}
-					}
-				}
-				if (sec == 6)
-				{
-					vars[sec][node] = new String[structure.getReactions()[node].getLoads().length + 1];
-					vars[sec][node][0] = String.valueOf(node);
-					for (int dof = 0; dof <= structure.getReactions()[node].getLoads().length - 1; dof += 1)
-					{
-						vars[sec][node][dof + 1] = String.valueOf(structure.getReactions()[node].getLoads()[dof]);
-					}
-				}
-			}
-			if (sec == 7)
-			{
-				for (int dof = 0; dof <= Reactions.SumReactions.length - 1; dof += 1)
-				{
-					vars[sec][0][dof] = String.valueOf(Reactions.SumReactions[dof]);
-				}
-			}
-		}
-		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
-	}
-	
-	public static void SaveLoadDispCurve(Structure structure)
-	{
-		if (structure.getResultDiagrams().getSelectedVar() <= -1) { return ;}
-		
-		int nodeid = structure.getMesh().getSelectedNodes().get(0).getID();
-		double[][][] loaddisp = structure.getMesh().getNodes().get(nodeid).getLoadDisp();
-		String[] Sections = new String[] {"Deslocamentos", "Fator de carga"};
-		String[][][] vars = new String[Sections.length][structure.getMesh().getNodes().get(nodeid).getDofs().length][loaddisp[0][0].length];
-		for (int sec = 0; sec <= Sections.length - 1; sec += 1)
-		{
-			for (int dof = 0; dof <= structure.getMesh().getNodes().get(nodeid).getDofs().length - 1; dof += 1)
-			{
-				for (int loadinc = 0; loadinc <= loaddisp[dof][sec].length - 1; loadinc += 1)
-				{
-					vars[sec][dof][loadinc] = String.valueOf(loaddisp[dof][sec][loadinc]);
-				}
-			}
-		}
-		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
-	}
-
-	/* Especial menu functions */
-	
-	public static Loading createLoading(Structure structure, int ConcLoadConfig, int[] MeshSizes, int SelConcLoad, int SelDistLoad,
-										List<Node> selectedNodes, List<Force> ConcLoadType, List<Element> SelectedElems, double[][] distLoadType)
-	{
-		Loading loading = new Loading() ;
-
-		if (ConcLoadConfig == 1)
-		{
-			selectedNodes = new ArrayList<Node>();
-			if (structure.getMesh().getElements().get(0).getShape().equals(ElemShape.rectangular))
-			{
-				int nodeID = (MeshSizes[1] / 2 * (MeshSizes[0] + 1) + MeshSizes[0] / 2) ;
-				selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
-			}
-			else if (structure.getMesh().getElements().get(0).getShape().equals(ElemShape.r8))
-			{
-				int nodeID = (MeshSizes[1] / 2 * (2 * MeshSizes[0] + 1 + MeshSizes[0] + 1) + MeshSizes[0]) ;
-				selectedNodes.add(structure.getMesh().getNodes().get(nodeID));
-			}
-		}
-		MainPanel.getInstance().getWestPanel().getListsPanel().setSelectedID(SelConcLoad);
-		MainPanel.getInstance().getCentralPanel().AddConcLoads(loading, selectedNodes, ConcLoadType);
-
-
-		MainPanel.getInstance().getWestPanel().getListsPanel().setSelectedID(SelDistLoad);
-		if (-1 < SelDistLoad)
-		{
-			// SelectedElems = null;
-			// for (int elem = 0; elem <= structure.getMesh().getElements().size() - 1; elem += 1)
-			// {
-			// 	SelectedElems = Util.AddElem(SelectedElems, elem);
-			// }
-			MainPanel.getInstance().getCentralPanel().AddDistLoads(structure, loading, SelectedElems, distLoadType);
-		}
-
-		return loading ;
-	}
-
-	public static Structure Especial()
-	{
-		/* Load input */
-		InputDTO inputDTO = Util.LoadEspecialInput("examples/Especial.txt");
-		List<Material> materials = new ArrayList<>() ;
-		List<Section> sections = new ArrayList<>() ;
-
-		for (int i = 0 ; i <= inputDTO.getInputMatTypes().length - 1 ; i += 1)
-		{
-			materials.add(new Material(inputDTO.getInputMatTypes()[i][0], inputDTO.getInputMatTypes()[i][1], inputDTO.getInputMatTypes()[i][2])) ;
-		}
-		
-		for (int i = 0 ; i <= inputDTO.getInputSecTypes().length - 1 ; i += 1)
-		{
-			sections.add(new Section(inputDTO.getInputSecTypes()[i][0])) ;
-		}
-		List<Force> concLoadTypes = new ArrayList<>() ;
-		for (double[] forceType : inputDTO.getConcLoadType())
-		{
-			concLoadTypes.add(new Force(forceType)) ;
-		}
-		double[][] distLoadType = inputDTO.getDistLoadType() ;
-		int[] SupConfig = inputDTO.getSupConfig() ;
-		
-		/* Define structure parameters */
-		int ConcLoadConfig = 1;
-		// int DistLoadConfig = 1;
-		
-		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, materials.size(), sections.size(), SupConfig.length, concLoadTypes.size(), distLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
-		int[] Par = new int[NumPar.length];
-		if (concLoadTypes.size() == 0)
-		{
-			Par[5] = -1;
-		}
-		if (distLoadType.length == 0)
-		{
-			Par[6] = -1;
-		}
-		int NumberOfRuns = Util.ProdVec(NumPar);
-		
-		ElemType elemType = ElemType.valueOf(inputDTO.getEspecialElemTypes()[Par[0]].toUpperCase());
-		String[] Sections = new String[] {"Anâlise		Elem	Malha (nx x ny)	Mat		Sec		Apoio		Carga		Min deslocamento (m)		Max deslocamento (m)		Desl. sob a carga (m)		Tempo (seg)"};
-		String[][][] vars = new String[Sections.length][][];
-		
-		vars[0] = new String[NumberOfRuns][11];
-		Structure structure2 = null ;
-		for (int run = 0; run <= NumberOfRuns - 1; run += 1)
-		{				
-			int[] MeshSize = inputDTO.getEspecialMeshSizes()[Par[1]];
-			int Mat = Par[2];
-			int Sec = Par[3];
-			int supConfig = SupConfig[Par[4]];
-			int SelConcLoad = Par[5];
-			int SelDistLoad = Par[6];
-			
-			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
-					materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
-			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-					structure2.getMesh().getSelectedNodes(), concLoadTypes, structure2.getMesh().getElements(), distLoadType) ;
-		
-			MenuAnalysis.CalcAnalysisParameters(structure2, loading, concLoadTypes, DistLoadType);
-			MainPanel.getInstance().getCentralPanel().setStructure(structure2) ;
-			MainPanel.getInstance().getCentralPanel().updateDrawings() ;
-
-			// structure2.assignLoads(ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad) ;
-			MainPanel.getInstance().getEastPanel().getLegendPanel().setStructure(structure2) ;
-
-			System.out.println("\nStructure 2");
-			System.out.println(structure2.getMesh().toString());
-			
-			System.out.println("\nloading");
-			System.out.println(loading);
-
-			System.out.print("Anâlise num " + run + ": ");
-
-			boolean nonlinearMat = true;
-			boolean nonlinearGeo = false;
-			Analysis.run(structure2, loading, nonlinearMat, nonlinearGeo, 10, 5, 15.743);
-
-			System.out.println("\nresults structure 2");
-			System.out.println(Arrays.toString(structure2.getU()));
-			
-			/* Analysis is complete */
-			MenuAnalysis.PostAnalysis(structure2, nonlinearMat, nonlinearGeo);
-
-			/*vars[0][run][0] = String.valueOf(run) + "	";
-			vars[0][run][1] = ElemType + "	";
-			vars[0][run][2] = MeshSize[0] + " x " + MeshSize[1] + "	";
-			vars[0][run][3] = Mat + "	";
-			vars[0][run][4] = Sec + "	";
-			vars[0][run][5] = supConfig + "	";
-			vars[0][run][6] = ConcLoadConfig + "	";
-
-	        System.out.println(Arrays.toString(ConcLoadNodes));
-	        System.out.println(Arrays.deepToString(Struct.getnodeDOF()));
-	        System.out.println(Struct.getnodeDOF()[ConcLoadNodes[0]][0]);
-			vars[0][run][7] = String.valueOf(Util.FindMinDisps(Struct.getU(), Elem[0].getDOFs(), Analysis.DefineFreeDoFTypes(Node, Elem, Sup, Struct.getnodeDOF()))[0]) + "	";
-			vars[0][run][8] = String.valueOf(Util.FindMaxDisps(Struct.getU(), Elem[0].getDOFs(), Analysis.DefineFreeDoFTypes(Node, Elem, Sup, Struct.getnodeDOF()))[0]) + "	";
-			if (0 < NumPar[5])
-			{
-				vars[0][run][9] = String.valueOf(Struct.getU()[Struct.getnodeDOF()[ConcLoadNodes[0]][0]] + "	");
-			}
-			else
-			{
-				vars[0][run][9] = String.valueOf("-	");
-			}*/
-			//vars[0][run][10] = String.valueOf(AnalysisTime / 1000.0);
-
-
-			for (int par = 0; par <= NumPar.length - 1; par += 1)
-			{
-				if (Par[par] < NumPar[par] - 1)
-				{
-					Par[par] += 1;
-					for (int i = 0; i <= par - 1; i += 1)
-					{
-						Par[i] = 0;
-					}
-					par = NumPar.length - 1;
-				}
-			}
-		}
-		MainPanel.getInstance().ActivatePostAnalysisView(structure2);
-		MenuBar.getInstance().updateEnabledMenus() ;
-
-		//Re.SaveOutput("Especial", Sections, vars);
-		
-		return structure2;
-	}
 
 	public static void RunExample(int exampleID)
 	{
@@ -590,6 +421,8 @@ public abstract class MenuFunctions
 		double MaxDisp = Util.FindMaxAbs(MainPanel.getInstance().getCentralPanel().getStructure().getU());
 		updateDiagramScaleY(MaxDisp) ;
 	}
+
+
 
 	public static void updateDiagramScaleY(double maxDisp)
 	{

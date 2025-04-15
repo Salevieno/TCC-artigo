@@ -18,6 +18,7 @@ import org.example.structure.Material;
 import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.userInterface.MenuAnalysis;
+import org.example.userInterface.MenuEspecial;
 import org.example.utilidades.Util;
 import org.junit.jupiter.api.Test;
 
@@ -73,7 +74,7 @@ public class EspecialTest
             forces.add(new Force(force)) ;
         }
 
-        Loading loading = MenuFunctions.createLoading(structure, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
+        Loading loading = MenuEspecial.createLoading(structure, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
                                         structure.getMesh().getNodes(), forces, structure.getMesh().getElements(), inputDTO.getDistLoadType()) ;
 
         assertNotNull(loading) ;
