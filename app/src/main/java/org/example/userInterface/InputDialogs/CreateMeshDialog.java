@@ -3,13 +3,11 @@ package org.example.userInterface.InputDialogs;
 import javax.swing.JLabel;
 
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
 import org.example.structure.ElemType;
 import org.example.structure.MeshType;
 import org.example.userInterface.MenuBar;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 
 public class CreateMeshDialog extends InputDialogWithGrid
@@ -39,7 +37,7 @@ public class CreateMeshDialog extends InputDialogWithGrid
     {        
         MainPanel.getInstance().getCentralPanel().getStructure().removeSupports() ;
         MainPanel.getInstance().getCentralPanel().getLoading().clearLoads() ;
-        MainPanel.getInstance().getCentralPanel().getStructure().createMesh(meshType, Util.MatrixDoubleToInt(input), ElemType.valueOf(MenuFunctions.getSelectedElemType().toUpperCase())) ;
+        MainPanel.getInstance().getCentralPanel().getStructure().createMesh(meshType, Util.MatrixDoubleToInt(input), ElemType.valueOf(MainPanel.getInstance().getCentralPanel().getElemType().toUpperCase())) ;
         MainPanel.getInstance().getCentralPanel().updateDrawings() ;
         MenuViewService.getInstance().switchNodeView();
         MenuViewService.getInstance().switchElemView();

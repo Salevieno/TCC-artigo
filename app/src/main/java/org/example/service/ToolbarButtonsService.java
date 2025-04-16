@@ -1,6 +1,7 @@
 package org.example.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.example.analysis.Analysis;
@@ -9,7 +10,6 @@ import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.NodalDisp;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.mainTCC.ReadInput;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
@@ -19,6 +19,7 @@ import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.structure.Supports;
 import org.example.userInterface.MenuAnalysis;
+import org.example.userInterface.MenuBar;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
 
@@ -114,7 +115,7 @@ public class ToolbarButtonsService
 					MainPanel.getInstance().getCentralPanel().getLoading().addConcLoad(NewConcLoad);
 				}
 
-                double[][] DistLoadType = new double[0][] ;
+                List<Double[]> distLoadTypes = new ArrayList<>() ;
 				for (int distload = 0; distload <= Input[8].length - 4; distload += 1)
 				{
 					String[] Line = Input[8][distload + 2].split("	");
@@ -125,29 +126,32 @@ public class ToolbarButtonsService
 					// NewDistLoad.setElem(Integer.parseInt(Line[1]));
 					NewDistLoad.setType(Integer.parseInt(Line[2]));
 					NewDistLoad.setIntensity(Double.parseDouble(Line[3]));
-					DistLoadType = Util.AddElem(DistLoadType, new double[] {-1, NewDistLoad.getType(), NewDistLoad.getIntensity()});
+					distLoadTypes.add(new Double[] {(Double) (double) NewDistLoad.getType(), NewDistLoad.getIntensity()});
 					
                     MainPanel.getInstance().getCentralPanel().getLoading().addDistLoad(NewDistLoad);
 				}
 
-                double[][] NodalDispType = new double[0][] ;
+                List<Double[]> nodalDispTypes = new ArrayList<>() ;
 				for (int nodaldisp = 0; nodaldisp <= Input[9].length - 4; nodaldisp += 1)
 				{
 					String[] Line = Input[9][nodaldisp + 2].split("	");
 					NodalDisp NewNodalDisp;
 					
+					double[] dispValues = new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])} ;
+
                     NewNodalDisp = new NodalDisp(-1, -1, null);
 					NewNodalDisp.setID(Integer.parseInt(Line[0]));
 					NewNodalDisp.setNode(Integer.parseInt(Line[1]));
-					NewNodalDisp.setDisps(new double[] {Double.parseDouble(Line[2]), Double.parseDouble(Line[3]), Double.parseDouble(Line[4]), Double.parseDouble(Line[5]), Double.parseDouble(Line[6]), Double.parseDouble(Line[7])});
-					NodalDispType = Util.AddElem(NodalDispType, new double[] {NewNodalDisp.getNode(), NewNodalDisp.getDisps()[0], NewNodalDisp.getDisps()[1], NewNodalDisp.getDisps()[2], NewNodalDisp.getDisps()[3], NewNodalDisp.getDisps()[4], NewNodalDisp.getDisps()[5]});
+					NewNodalDisp.setDisps(dispValues);
+
+					nodalDispTypes.add(Arrays.stream(dispValues).boxed().toArray(Double[]::new));
 					
                     MainPanel.getInstance().getCentralPanel().getLoading().addNodalDisp(NewNodalDisp);
 				}
-                
-                MenuFunctions.setConcLoadTypes(concLoadTypes) ;
-                MenuFunctions.setDistLoadType(DistLoadType) ;
-                MenuFunctions.setNodalDispType(NodalDispType) ;
+
+				concLoadTypes.forEach(force -> ConcLoad.addType(force)) ;
+                distLoadTypes.forEach(loadType -> DistLoad.addType(loadType)) ;
+				nodalDispTypes.forEach(nodalDispType -> NodalDisp.addType(nodalDispType)) ;
 
 				System.out.println("Structure loaded successfully");
 				structure.printStructure(matTypes, secTypes, structure.getSupports(), MainPanel.getInstance().getCentralPanel().getLoading());
@@ -174,7 +178,10 @@ public class ToolbarButtonsService
 		// TODO reset display Central panel
 		// MainPanel.getInstance().getCentralPanel().resetDisplay() ;
 		view.reset() ;
-		reset() ;
+        ConcLoad.resetTypes() ;
+        DistLoad.resetTypes() ;
+       	NodalDisp.resetTypes() ;
+        MenuBar.getInstance().getMenuAnalysis().setAnalysisIsComplete(false) ;
 		if (exampleID == 0)
 		{
  			structure = LoadFile(".\\Exemplos\\", "0-KR1");
@@ -231,18 +238,15 @@ public class ToolbarButtonsService
  		{
 			structure = LoadFile(".\\Exemplos\\", "13-vigadeaco");
  		}
-        boolean NonlinearMat = MenuFunctions.isNonlinearMat() ;
-        boolean NonlinearGeo = MenuFunctions.isNonlinearGeo() ;
-        List<Force> concLoadTypes = MenuFunctions.getConcLoadTypes() ;
-        double[][] DistLoadType = MenuFunctions.getDistLoadType() ;
-
+        boolean NonlinearMat = false ;
+        boolean NonlinearGeo = false ;
 
 		MainPanel.getInstance().getCentralPanel().setStructure(structure) ;
- 		MenuAnalysis.CalcAnalysisParameters(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), concLoadTypes, DistLoadType);
+ 		MenuAnalysis.CalcAnalysisParameters(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), ConcLoad.getTypes(), DistLoad.getTypes());
 		
         long AnalysisTime = System.currentTimeMillis();
 		Analysis.run(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), NonlinearMat, NonlinearGeo, 1, 1, 1);
-		MenuAnalysis.PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), NonlinearMat, NonlinearGeo);
+		MenuBar.getInstance().getMenuAnalysis().PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), NonlinearMat, NonlinearGeo) ;
 		AnalysisTime = System.currentTimeMillis() - AnalysisTime;
 		for (Element elem : MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements())
 		{
@@ -251,7 +255,7 @@ public class ToolbarButtonsService
 		}
 		MainPanel.getInstance().getCentralPanel().getStructure().getResults().register(MainPanel.getInstance().getCentralPanel().getStructure().getMesh(), MainPanel.getInstance().getCentralPanel().getStructure().getSupports(), MainPanel.getInstance().getCentralPanel().getStructure().getU(), NonlinearMat, NonlinearGeo);
 
-        MenuFunctions.setAnalysisIsComplete(true) ;
+        MenuBar.getInstance().getMenuAnalysis().setAnalysisIsComplete(true) ;
 
 		view.reactionArrows = true;
 		view.reactionValues = true;
@@ -261,12 +265,5 @@ public class ToolbarButtonsService
 		MainPanel.getInstance().getCentralPanel().updateDiagramScaleY(MaxDisp) ;
 	}
 
-	public static void reset()
-	{
-        MenuFunctions.setConcLoadTypes(null) ;
-        MenuFunctions.setDistLoadType(null) ;
-        MenuFunctions.setNodalDispType(null) ;
-        MenuFunctions.setAnalysisIsComplete(false) ;
-	}
 
 }

@@ -15,11 +15,14 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 import org.example.Main;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Force;
+import org.example.loading.NodalDisp;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Material;
 import org.example.structure.Section;
+import org.example.structure.Supports;
 import org.example.userInterface.MenuBar;
 import org.example.utilidades.Util;
 
@@ -59,7 +62,7 @@ public class ListPanel extends JPanel
 
 	public void handleMouseWheel(MouseWheelEvent evt)
 	{
-		// boolean MouseIsInMainCanvas = Util.MouseIsInside(MenuFunctions.getMousePos(), panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);
+		// boolean MouseIsInMainCanvas = Util.MouseIsInside(CentralPanel.getMousePos(), panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height);
 		Assignable assignable = MainPanel.getInstance().getNorthPanel().getUpperToolbar().getAssignable() ;
 		double qtdRotation = evt.getWheelRotation() ;
 
@@ -73,13 +76,13 @@ public class ListPanel extends JPanel
 
 				case sections: selectedID = Util.clamp(selectedID, 0, secTypes.size() - 1) ; return ;
 
-				case supports: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getSupType().length - 1) ; return ;
+				case supports: selectedID = Util.clamp(selectedID, 0, Supports.Types.length - 1) ; return ;
 
-				case concLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getConcLoadTypes().size() - 1) ; return ;
+				case concLoads: selectedID = Util.clamp(selectedID, 0, ConcLoad.getTypes().size() - 1) ; return ;
 
-				case distLoads: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getDistLoadType().length - 1) ; return ;
+				case distLoads: selectedID = Util.clamp(selectedID, 0, DistLoad.getTypes().size() - 1) ; return ;
 
-				case nodalDisps: selectedID = Util.clamp(selectedID, 0, MenuFunctions.getNodalDispType().length - 1) ; return ;
+				case nodalDisps: selectedID = Util.clamp(selectedID, 0, NodalDisp.getTypes().size() - 1) ; return ;
 			
 				default: System.out.println("Warn: No assignable selected when moving mouse wheel") ; break ;
 			}
@@ -115,17 +118,17 @@ public class ListPanel extends JPanel
 
 	private void displaySupportOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
 	{
-		String[] SupNames = new String[] {
-				"Nome",
-				"Rx",
-				"Ry",
-				"Rz",
-				"Tetax",
-				"Tetay",
-				"Tetaz"
-			};
+		// String[] SupNames = new String[] {
+		// 		"Nome",
+		// 		"Rx",
+		// 		"Ry",
+		// 		"Rz",
+		// 		"Tetax",
+		// 		"Tetay",
+		// 		"Tetaz"
+		// 	};
 		List<String[]> supTypes = new ArrayList<>() ;
-		for (int[] supType : MenuFunctions.getSupType())
+		for (int[] supType : Supports.Types)
 		{
 			String[] stringArray = Arrays.stream(supType).mapToObj(String::valueOf).toArray(String[]::new) ;
 			supTypes.add(stringArray) ;
@@ -144,7 +147,7 @@ public class ListPanel extends JPanel
 				"My (kN)",
 				"Mz (kN)"
 			};
-		List<Force> ConcLoadTypes = MenuFunctions.getConcLoadTypes();
+		List<Force> ConcLoadTypes = ConcLoad.getTypes();
 		List<String[]> loadTypes = new ArrayList<>() ;
 		for (Force load : ConcLoadTypes)
 		{
@@ -155,18 +158,18 @@ public class ListPanel extends JPanel
 
 	private void displayDistLoadOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
 	{
-		String[] DistLoadNames = new String[] {
-				"Nome",
-				"Tipo",
-				"Pini (kN/m)",
-				"Pfin (kN/m)",
-				"Distini (m)",
-				"Distfin (m)"
-			};
+		// String[] DistLoadNames = new String[] {
+		// 		"Nome",
+		// 		"Tipo",
+		// 		"Pini (kN/m)",
+		// 		"Pfin (kN/m)",
+		// 		"Distini (m)",
+		// 		"Distfin (m)"
+		// 	};
 		List<String[]> distLoadTypes = new ArrayList<>() ;
-		for (double[] loadType : MenuFunctions.getDistLoadType())
+		for (Double[] loadType : DistLoad.getTypes())
 		{
-			String[] stringArray = Arrays.stream(loadType).mapToObj(String::valueOf).toArray(String[]::new) ;
+			String[] stringArray = Arrays.stream(loadType).map(String::valueOf).toArray(String[]::new) ;
 			distLoadTypes.add(stringArray) ;
 		}
 		// displayTable(panelSize, selectedItemID, DistLoadNames, "Dist loads list", "Dist load", distLoadTypes, DP);
@@ -174,19 +177,19 @@ public class ListPanel extends JPanel
 
 	private void displayNodalDispOptions(Dimension panelSize, int selectedItemID, DrawPrimitives DP)
 	{
-		String[] NodalDispNames = new String[] {
-				"Nome",
-				"desl x (m)",
-				"desl y (m)",
-				"desl z (m)",
-				"rot x",
-				"rot y",
-				"rot z"
-			};
+		// String[] NodalDispNames = new String[] {
+		// 		"Nome",
+		// 		"desl x (m)",
+		// 		"desl y (m)",
+		// 		"desl z (m)",
+		// 		"rot x",
+		// 		"rot y",
+		// 		"rot z"
+		// 	};
 		List<String[]> nodalDispTypes = new ArrayList<>() ;
-		for (double[] dispType : MenuFunctions.getNodalDispType())
+		for (Double[] dispType : NodalDisp.getTypes())
 		{
-			String[] stringArray = Arrays.stream(dispType).mapToObj(String::valueOf).toArray(String[]::new) ;
+			String[] stringArray = Arrays.stream(dispType).map(String::valueOf).toArray(String[]::new) ;
 			nodalDispTypes.add(stringArray) ;
 		}
 		// displayTable(panelSize, selectedItemID, NodalDispNames, "Nodal disps list", "Nodal disp", nodalDispTypes, DP);

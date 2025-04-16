@@ -7,8 +7,8 @@ import java.awt.geom.Point2D;
 
 import org.example.Main;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.userInterface.Draw;
+import org.example.view.CentralPanel;
 
 import graphics.Align;
 import graphics.DrawPrimitives;
@@ -199,7 +199,7 @@ public class MyCanvas
 			drawGrid(2, DP) ;
 		}
 
-		Point2D.Double RealMousePos = inRealCoords(MenuFunctions.getMousePos()) ;
+		Point2D.Double RealMousePos = inRealCoords(CentralPanel.getMousePos()) ;
 		drawMousePosWindow(new Point(BigAxisPos.x + size.width / 2 - 60, BigAxisPos.y + 20), RealMousePos, Main.palette[3], Main.palette[0], DP);
 	}
 	

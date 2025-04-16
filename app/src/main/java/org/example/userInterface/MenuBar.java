@@ -1,8 +1,6 @@
 package org.example.userInterface;
 import javax.swing.JMenuBar;
 
-import org.example.mainTCC.MenuFunctions;
-
 public class MenuBar extends JMenuBar
 {
 
@@ -38,7 +36,7 @@ public class MenuBar extends JMenuBar
 		
 	public void updateEnabledMenus()
 	{
-		boolean AnalysisIsComplete = MenuFunctions.isAnalysisIsComplete();
+		boolean AnalysisIsComplete = MenuBar.getInstance().getMenuAnalysis().isAnalysisIsComplete();
 		MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus() ;
 		if (AnalysisIsComplete)
 		{

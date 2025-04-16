@@ -3,10 +3,11 @@ package org.example.service;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Loading;
 import org.example.mainTCC.InputFunctions;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Structure;
 import org.example.structure.StructureDTO;
 import org.example.userInterface.MenuAnalysis;
@@ -32,7 +33,7 @@ public class MenuFileService
 		structure.getMesh().getNodes().stream().filter(node -> node.getConcLoads() != null).forEach(node -> node.getConcLoads().forEach(load -> loading.addConcLoad(load))) ;
 		MainPanel.getInstance().getCentralPanel().setLoading(loading) ;
 
-		MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType()) ;
+		MenuAnalysis.CalcAnalysisParameters(structure, loading, ConcLoad.getTypes(), DistLoad.getTypes()) ;
 
 		MenuViewService.getInstance().switchSupView() ;
 		MenuViewService.getInstance().switchConcLoadsView() ;

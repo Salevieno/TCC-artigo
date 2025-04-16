@@ -1,7 +1,10 @@
 package org.example.userInterface.InputDialogs;
 
+import java.util.Arrays;
+
 import javax.swing.JLabel;
 
+import org.example.loading.DistLoad;
 import org.example.userInterface.MenuBar;
 import org.example.view.CentralPanel;
 
@@ -18,7 +21,7 @@ public class CreateDistLoadsDialog extends InputDialogWithGrid
     @Override
     public void onOkClick(double[][] input)
     {
-      CentralPanel.DefineDistLoadTypes(input);
+      Arrays.stream(input).forEach(row -> DistLoad.addType(Arrays.stream(row).boxed().toArray(Double[]::new))) ;
       MenuBar.getInstance().getMenuStructure().updateEnabledSubMenus();
     }
 }

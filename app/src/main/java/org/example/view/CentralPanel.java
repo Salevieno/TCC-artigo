@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -29,7 +30,6 @@ import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
@@ -57,11 +57,13 @@ public class CentralPanel extends JPanel
 	
 	private final MyCanvas canvas ;
 	private final int[] panelPos ;
-
+	
+	private static Point mousePos = new Point();
 	private static boolean structureCreationIsOn ;
 	private static boolean nodeSelectionIsActive ;
 	private static boolean elemSelectionIsActive ;
 
+	private String elemType; // at this moment, only 1 elem type can be used
 	private Structure structure ;
 	private Loading loading ;
 	private SelectionWindow selectionWindow ;
@@ -280,7 +282,7 @@ public class CentralPanel extends JPanel
 		canvas.drawCenter(DP) ;
 		if (structureCreationIsOn && structure != null && structure.getCoords() != null)
 		{
-			drawStructureCreationWindow(structure.getCoords(), MenuFunctions.getMousePos(), 2, structure.getShape(), Main.palette[6]);
+			drawStructureCreationWindow(structure.getCoords(), mousePos, 2, structure.getShape(), Main.palette[6]);
 		}
 		if (view.elems && structure != null && structure.getMesh() != null && structure.getMesh().getElements() != null)
 		{
@@ -295,7 +297,7 @@ public class CentralPanel extends JPanel
 			// DP.DrawNodes3D(structure.getMesh().getNodes(), MenuFunctions.selectedNodes, Node.color, showDeformedStructure,
 			// structure.getMesh().getElements().get(0).getDOFs(), DiagramScales.y, canvas);
 		}
-		if (MenuFunctions.isAnalysisIsComplete())
+		if (MenuBar.getInstance().getMenuAnalysis().isAnalysisIsComplete())
 		{
 			// DrawResults(canvas, structure, MenuFunctions.SelectedElems, SelectedVar,
 			// view.ElemContour, showDeformedStructure,
@@ -352,14 +354,14 @@ public class CentralPanel extends JPanel
 			// DP.DrawElemNumbers(structure.getMesh(), Node.color, view.deformedStructure, canvas);
 			structure.getMesh().displayElemNumbers(structure.getMesh(), Node.color, view.deformedStructure, canvas, DP) ;
 		}
-		if (view.elemDetails && MenuFunctions.getSelectedElemType() != null)
+		if (view.elemDetails && elemType != null)
 		{
-			Element.displayTypeDetails(ElemType.valueOf(MenuFunctions.getSelectedElemType().toUpperCase()), canvas, DP);
+			Element.displayTypeDetails(ElemType.valueOf(elemType.toUpperCase()), canvas, DP);
 		}
 
 		if (selectionWindow != null && selectionWindow.isActive())
 		{
-			selectionWindow.display(MenuFunctions.getMousePos(), DP) ;
+			selectionWindow.display(mousePos, DP) ;
 		}
 
 	}
@@ -605,10 +607,10 @@ public class CentralPanel extends JPanel
 		MainPanel.getInstance().getWestPanel().getListsPanel().resetSelectedID() ;
 		MainPanel.getInstance().getNorthPanel().getUpperToolbar().enableAssignmentButtons() ;
 	}
-
-	public static void setElemType(String ElemType)
+	public String getElemType() { return elemType ;}
+	public void setElemType(String ElemType)
 	{
-		MenuFunctions.setSelectedElemType(ElemType) ;
+		this.elemType = ElemType ;
 	}
 
 	private void handleSelectionWindow()
@@ -617,16 +619,16 @@ public class CentralPanel extends JPanel
 
 		if (!selectionWindow.isActive())
 		{
-			selectionWindow.setTopLeft(MenuFunctions.getMousePos()) ;
+			selectionWindow.setTopLeft(mousePos) ;
 			return ;
 		}
 		if (nodeSelectionIsActive)
 		{
-			selectionWindow.selectNodesInside(structure.getMesh(), canvas, MenuFunctions.getMousePos()) ;
+			selectionWindow.selectNodesInside(structure.getMesh(), canvas, mousePos) ;
 		}
 		if (elemSelectionIsActive)
 		{
-			selectionWindow.selectElementsInside(structure.getMesh(), canvas, MenuFunctions.getMousePos()) ;
+			selectionWindow.selectElementsInside(structure.getMesh(), canvas, mousePos) ;
 		}
 		MainPanel.getInstance().getEastPanel().reset() ;
 	}
@@ -650,14 +652,14 @@ public class CentralPanel extends JPanel
 	
 	public void AddSupports()
 	{
-		if (MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.getSupType() == null) { return ;}
+		if (MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() <= -1 || !structure.getMesh().hasNodesSelected() || Supports.Types == null) { return ;}
 
 		for (Node node : structure.getMesh().getSelectedNodes())
 		{
 			// int supid = MainPanel.structure.getSupports().size() - MenuFunctions.selectedNodes.size() + i;
-			Supports newSupport = new Supports(1, node, MenuFunctions.getSupType()[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
+			Supports newSupport = new Supports(1, node, Supports.Types[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
 			MainPanel.getInstance().getCentralPanel().getStructure().addSupport(newSupport) ;
-			node.setSup(MenuFunctions.getSupType()[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
+			node.setSup(Supports.Types[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]);
 		}
 
 		view.sup = true;
@@ -682,15 +684,15 @@ public class CentralPanel extends JPanel
 		}
 	}
 	
-	public void AddDistLoads(Structure structure, Loading loading, List<Element> selectedElems, double[][] DistLoadType)
+	public void AddDistLoads(Structure structure, Loading loading, List<Element> selectedElems, List<Double[]> DistLoadType)
 	{
 		if (-1 < MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() && selectedElems != null && DistLoadType != null)
 		{
 			for (int i = 0; i <= selectedElems.size() - 1; i += 1)
 			{
 				Element elem = selectedElems.get(i);
-				int LoadType = (int) DistLoadType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()][0];
-				double Intensity = DistLoadType[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()][1];
+				int LoadType = (int) (double) DistLoadType.get(MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID())[0];
+				double Intensity = DistLoadType.get(MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID())[1];
 				DistLoad newDistLoad = new DistLoad(LoadType, Intensity) ;
 				loading.getDistLoads().add(newDistLoad);
 				elem.addDistLoad(newDistLoad) ;
@@ -703,34 +705,18 @@ public class CentralPanel extends JPanel
 	
 	public void AddNodalDisps()
 	{
-		if (MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() <= -1 || !structure.getMesh().hasNodesSelected() || MenuFunctions.getNodalDispType() == null ) { return ;}
+		if (MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID() <= -1 || !structure.getMesh().hasNodesSelected() || NodalDisp.getTypes() == null || NodalDisp.getTypes().isEmpty() ) { return ;}
 		
 		for (Node node : structure.getMesh().getSelectedNodes())
 		{
 			// int dispid = loading.getNodalDisps().size() - MenuFunctions.selectedNodes.size() + i;			
-			NodalDisp newNodalDisp = new NodalDisp(1, node, MenuFunctions.getNodalDispType()[MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID()]) ;
+			NodalDisp newNodalDisp = new NodalDisp(1, node, NodalDisp.getTypes().get(MainPanel.getInstance().getWestPanel().getListsPanel().getSelectedID())) ;
 			loading.getNodalDisps().add(newNodalDisp);
 			node.addNodalDisp(newNodalDisp);
 		}
 		view.nodalDisps = true;
 		structure.getMesh().unselectAllNodes() ;
 	}
-	public static void setConcLoadTypes(List<Force> ConcLoads)
-	{
-		MenuFunctions.setConcLoadTypes(ConcLoads) ;
-	}
-
-	public static void DefineDistLoadTypes(double[][] DistLoads)
-	{
-		MenuFunctions.setDistLoadType(DistLoads) ;
-	}
-
-	public static void DefineNodalDispTypes(double[][] NodalDisps)
-	{
-		MenuFunctions.setNodalDispType(NodalDisps) ;
-	}
-
-
 
 
 	private void handleMousePress(MouseEvent evt)
@@ -739,7 +725,7 @@ public class CentralPanel extends JPanel
 		{
 			if (structureCreationIsOn)
 			{
-				createStructure(panelPos, canvas, MenuFunctions.getMousePos()) ;
+				createStructure(panelPos, canvas, mousePos) ;
 			}
 
 			if (selectionWindow != null)
@@ -760,7 +746,7 @@ public class CentralPanel extends JPanel
 		double qtdRotation = evt.getWheelRotation() ;
 		MainPanel.getInstance().getWestPanel().getListsPanel().handleMouseWheel(evt) ;
 
-		if (Util.MouseIsInside(MenuFunctions.getMousePos(), panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height))
+		if (Util.MouseIsInside(mousePos, panelPos, canvas.getPos(), canvas.getSize().width, canvas.getSize().height))
 		{
 			// canvas.getDimension()[0] += Util.Round(0.2*Math.log10(canvas.getDimension()[0])*qtdRotation, 1);
 			// canvas.getDimension()[1] += Util.Round(0.2*Math.log10(canvas.getDimension()[1])*qtdRotation, 1);
@@ -770,18 +756,27 @@ public class CentralPanel extends JPanel
 			}
 		}		
 
-		updateDiagramScale(canvas, evt.getWheelRotation(), MenuFunctions.getMousePos(), MenuFunctions.isAnalysisIsComplete());
+		updateDiagramScale(canvas, evt.getWheelRotation(), mousePos, MenuBar.getInstance().getMenuAnalysis().isAnalysisIsComplete());
 	}
 
 	// public void activateSnipToClick() { snipToGridIsActive = true ;}
 	// public void deactivateSnipToClick() { snipToGridIsActive = false ;}
 	// public void setSnipToGridIsActive(boolean snipToGridIsActive) { this.snipToGridIsActive = snipToGridIsActive ;}
 
+	private static Point GetRelMousePos(int[] PanelPos)
+ 	{
+		return new Point(MouseInfo.getPointerInfo().getLocation().x - PanelPos[0], MouseInfo.getPointerInfo().getLocation().y - PanelPos[1]) ;
+ 	}
+
+	public static void updateMousePosRelToPanelPos(int[] panelPos) { mousePos = GetRelMousePos(panelPos) ;}
+
+	public static Point getMousePos() { return mousePos ;}
+
 	@Override
     public void paintComponent(Graphics graphs) 
     {
         super.paintComponent(graphs);
-        MenuFunctions.updateMousePosRelToPanelPos(panelPos) ;
+        updateMousePosRelToPanelPos(panelPos) ;
 		DP.setGraphics((Graphics2D) graphs) ;
 		this.display(structure, panelPos, DP);
 		repaint();

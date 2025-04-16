@@ -15,7 +15,6 @@ import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.service.MenuViewService;
 import org.example.structure.Element;
 import org.example.structure.Node;
@@ -30,9 +29,10 @@ public class MenuAnalysis extends JMenu
     
 	private JMenuItem runAnalysis;
     private boolean isReadyForAnalysis;
+    private boolean analysisIsComplete;
 	private int analysisTypeID = -1 ;
-	// private static boolean geometryIsNonLinear ;
-	// private static boolean matIsNonLinear ;
+	private static boolean geometryIsNonLinear ;
+	private static boolean matIsNonLinear ;
 	private static int qtdIterations = 1 ;
 	private static int qtdLoadSteps = 1;
 	private static double maxLoadFactor = 1;
@@ -44,6 +44,7 @@ public class MenuAnalysis extends JMenu
 	{
 		analysisTypeInputPanel = new DefineAnalysisDialog() ;
 	}
+
     public MenuAnalysis()
     {
         this.setText("Analysis") ;
@@ -81,7 +82,7 @@ public class MenuAnalysis extends JMenu
 	}
 
 	
-	public static void PostAnalysis(Structure structure, boolean nonlinearMat, boolean nonlinearGeo)
+	public void PostAnalysis(Structure structure, boolean nonlinearMat, boolean nonlinearGeo)
 	{
 		/* Record results and set up their view*/
 		structure.setU(structure.getU());
@@ -103,7 +104,7 @@ public class MenuAnalysis extends JMenu
 		CentralPanel.activateElemSelection() ;
 		double MaxDisp = Util.FindMaxAbs(structure.getU());
 		MainPanel.getInstance().getCentralPanel().updateDiagramScaleY(MaxDisp) ;
-		MenuFunctions.setAnalysisIsComplete(true) ;
+		analysisIsComplete = true ;
 		Reactions.setSumReactions(Analysis.SumReactions(reactions));
 
 		MainPanel.getInstance().getWestPanel().setStructure(structure) ;
@@ -112,7 +113,7 @@ public class MenuAnalysis extends JMenu
 				
 		System.out.println("Max disp: " + MaxDisp);
 	}	
-	public static void CalcAnalysisParameters(Structure structure, Loading loading, List<Force> concLoadTypes, double[][] DistLoadType)
+	public static void CalcAnalysisParameters(Structure structure, Loading loading, List<Force> concLoadTypes, List<Double[]> DistLoadType)
 	{
 		structure.calcAndAssignDOFs() ;
 		structure.getMesh().assignElementDOFs() ;
@@ -149,11 +150,11 @@ public class MenuAnalysis extends JMenu
 
 		if (DistLoadType != null)
 		{
-			for (int loadid = 0; loadid <= DistLoadType.length - 1; loadid += 1)
+			for (int loadid = 0; loadid <= DistLoadType.size() - 1; loadid += 1)
 			{
-				int elemid = (int) DistLoadType[loadid][0];
-				int LoadType = (int) DistLoadType[loadid][1];
-				double Intensity = DistLoadType[loadid][2];
+				int elemid = (int) (double) DistLoadType.get(loadid)[0];
+				int LoadType = (int) (double) DistLoadType.get(loadid)[1];
+				double Intensity = DistLoadType.get(loadid)[2];
 				if (-1 < elemid)
 				{
 					DistLoad distLoad = new DistLoad(LoadType, Intensity) ;
@@ -164,13 +165,13 @@ public class MenuAnalysis extends JMenu
 		}
 	}
 
-	public void runAnalysis(int analysisTypeID, List<Force> concLoadTypes, double[][] DistLoadType)
+	public void runAnalysis(int analysisTypeID, List<Force> concLoadTypes, List<Double[]> DistLoadType)
 	{
 		// geometryIsNonLinear = analysisTypeID == 1 || analysisTypeID == 3 ;
 		// matIsNonLinear = analysisTypeID == 2 || analysisTypeID == 3 ;
 		CalcAnalysisParameters(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), concLoadTypes, DistLoadType);
-		Analysis.run(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MenuFunctions.isNonlinearMat(), MenuFunctions.isNonlinearGeo(), qtdIterations, qtdLoadSteps, maxLoadFactor);
-		PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), MenuFunctions.isNonlinearMat(), MenuFunctions.isNonlinearGeo());
+		Analysis.run(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), matIsNonLinear, geometryIsNonLinear, qtdIterations, qtdLoadSteps, maxLoadFactor);
+		PostAnalysis(MainPanel.getInstance().getCentralPanel().getStructure(), matIsNonLinear, geometryIsNonLinear);
 		// for (Element elem : MainPanel.structure.getMesh().getElements())
 		// {
 		// 	elem.RecordResults(MainPanel.structure.getMesh().getNodes(), MainPanel.structure.getU(), matIsNonLinear, geometryIsNonLinear);
@@ -179,6 +180,10 @@ public class MenuAnalysis extends JMenu
 		MenuBar.getInstance().updateEnabledMenus() ;
 	}
 
+	
+	public boolean isAnalysisIsComplete() { return analysisIsComplete ;}
+	public void setAnalysisIsComplete(boolean analysisIsComplete) { this.analysisIsComplete = analysisIsComplete ;}
+	
 	public void setAnalysisTypeID(int analysisTypeID) { this.analysisTypeID = analysisTypeID ;}
 	public void setRunAnalysisEnabled(boolean state) { runAnalysis.setEnabled(state) ;}
 

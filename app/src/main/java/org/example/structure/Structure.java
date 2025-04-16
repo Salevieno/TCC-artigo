@@ -12,7 +12,6 @@ import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Loading;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.output.Diagram;
 import org.example.output.ResultDiagrams;
 import org.example.output.Results;
@@ -468,7 +467,7 @@ public class Structure
 			{
 				nodesToReceiveLoads.forEach(node ->
 				{
-					ConcLoad concLoad = new ConcLoad(MenuFunctions.getConcLoadTypes().get(concLoadsID)) ;
+					ConcLoad concLoad = new ConcLoad(ConcLoad.getTypes().get(concLoadsID)) ;
 					if (concLoad != null)
 					{
 						node.addConcLoad(concLoad) ;
@@ -482,8 +481,8 @@ public class Structure
 			mesh.getElements().forEach(elem -> 
 			{
 				
-				int distLoadType = (int) MenuFunctions.getDistLoadType()[distLoadID][0] ;
-				double distLoadIntensity = MenuFunctions.getDistLoadType()[distLoadID][1] ;
+				int distLoadType = (int) (double) DistLoad.getTypes().get(distLoadID)[0] ;
+				double distLoadIntensity = DistLoad.getTypes().get(distLoadID)[1] ;
 				DistLoad distLoad = new DistLoad(distLoadType, distLoadIntensity) ;
 				if (distLoad != null)
 				{

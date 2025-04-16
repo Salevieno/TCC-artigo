@@ -16,7 +16,6 @@ import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.mainTCC.InputDTO;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.ElemShape;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
@@ -25,7 +24,6 @@ import org.example.structure.Node;
 import org.example.structure.Section;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 public class MenuEspecial extends JMenu
 {
@@ -33,7 +31,7 @@ public class MenuEspecial extends JMenu
 	private JMenuItem Star;
 
 	public static Loading createLoading(Structure structure, int ConcLoadConfig, int[] MeshSizes, int SelConcLoad, int SelDistLoad,
-										List<Node> selectedNodes, List<Force> ConcLoadType, List<Element> SelectedElems, double[][] distLoadType)
+										List<Node> selectedNodes, List<Force> ConcLoadType, List<Element> SelectedElems, List<Double[]> distLoadType)
 	{
 		Loading loading = new Loading() ;
 
@@ -85,25 +83,34 @@ public class MenuEspecial extends JMenu
 		{
 			sections.add(new Section(inputDTO.getInputSecTypes()[i][0])) ;
 		}
+
 		List<Force> concLoadTypes = new ArrayList<>() ;
 		for (double[] forceType : inputDTO.getConcLoadType())
 		{
 			concLoadTypes.add(new Force(forceType)) ;
 		}
-		double[][] distLoadType = inputDTO.getDistLoadType() ;
+
+		List<Double[]> distLoadTypes = new ArrayList<>() ;
+		for (double[] distLoadType : inputDTO.getDistLoadType())
+		{
+			Double[] boxedArray = Arrays.stream(distLoadType).boxed().toArray(Double[]::new);
+			distLoadTypes.add(boxedArray) ;
+		}
+
+
 		int[] SupConfig = inputDTO.getSupConfig() ;
 		
 		/* Define structure parameters */
 		int ConcLoadConfig = 1;
 		// int DistLoadConfig = 1;
 		
-		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, materials.size(), sections.size(), SupConfig.length, concLoadTypes.size(), distLoadType.length};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
+		int[] NumPar = new int[] {inputDTO.getEspecialElemTypes().length, inputDTO.getEspecialMeshSizes().length, materials.size(), sections.size(), SupConfig.length, concLoadTypes.size(), distLoadTypes.size()};	// 0: Elem, 1: Mesh, 2: Mat, 3: Sec, 4: Sup, 5: Conc load, 6: Dist load
 		int[] Par = new int[NumPar.length];
 		if (concLoadTypes.size() == 0)
 		{
 			Par[5] = -1;
 		}
-		if (distLoadType.length == 0)
+		if (distLoadTypes.size() == 0)
 		{
 			Par[6] = -1;
 		}
@@ -127,9 +134,9 @@ public class MenuEspecial extends JMenu
 			structure2 = Structure.create(inputDTO.getEspecialCoords(), inputDTO.getMeshType(), MeshSize, elemType,
 					materials.get(Mat), materials, sections.get(Sec), sections, supConfig) ;
 			Loading loading = createLoading(structure2, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-					structure2.getMesh().getSelectedNodes(), concLoadTypes, structure2.getMesh().getElements(), distLoadType) ;
+					structure2.getMesh().getSelectedNodes(), concLoadTypes, structure2.getMesh().getElements(), distLoadTypes) ;
 		
-			MenuAnalysis.CalcAnalysisParameters(structure2, loading, concLoadTypes, distLoadType);
+			MenuAnalysis.CalcAnalysisParameters(structure2, loading, concLoadTypes, distLoadTypes);
 			MainPanel.getInstance().getCentralPanel().setStructure(structure2) ;
 			MainPanel.getInstance().getCentralPanel().updateDrawings() ;
 
@@ -152,7 +159,7 @@ public class MenuEspecial extends JMenu
 			System.out.println(Arrays.toString(structure2.getU()));
 			
 			/* Analysis is complete */
-			MenuAnalysis.PostAnalysis(structure2, nonlinearMat, nonlinearGeo);
+			MenuBar.getInstance().getMenuAnalysis().PostAnalysis(structure2, nonlinearMat, nonlinearGeo);
 
 			/*vars[0][run][0] = String.valueOf(run) + "	";
 			vars[0][run][1] = ElemType + "	";

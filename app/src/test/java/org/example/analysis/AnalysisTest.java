@@ -10,7 +10,6 @@ import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.Loading;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.ElemType;
 import org.example.structure.Element;
 import org.example.structure.Material;
@@ -158,7 +157,7 @@ public class AnalysisTest
         ConcLoad concLoad = new ConcLoad(new Force(0, 0, loadIntensity, 0, 0, 0)) ;
         structure.getMesh().getNodes().forEach(node -> node.addConcLoad(concLoad)) ;
 
-        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType()) ;
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, ConcLoad.getTypes(), DistLoad.getTypes()) ;
     }
 
     private void addUniDistLoad(Structure structure, double loadIntensity)
@@ -166,7 +165,7 @@ public class AnalysisTest
         Loading loading = new Loading() ;
         structure.getMesh().getElements().forEach(elem -> elem.addDistLoad(new DistLoad(4, loadIntensity))) ;
 
-        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType()) ;
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, ConcLoad.getTypes(), DistLoad.getTypes()) ;
     }
 
 }

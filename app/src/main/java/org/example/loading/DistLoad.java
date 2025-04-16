@@ -2,6 +2,8 @@ package org.example.loading;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.example.Main;
 import org.example.structure.Element;
@@ -23,6 +25,8 @@ public class DistLoad
 	private static Point nArrows = new Point(4, 4) ;
 	public static Color color = Main.palette[7];
 
+	private static List<Double[]> types ; // TODO criar classe
+
 	public DistLoad(int Type, double Intensity)
 	{
 		this.id = currentID;
@@ -30,6 +34,11 @@ public class DistLoad
 		this.Intensity = Intensity;
 		currentID += 1;
 	}
+
+	public static List<Double[]> getTypes() { return types ;}
+	public static void resetTypes() { types = new ArrayList<>() ;}
+	public static void addType(Double[] type) { types.add(type) ;}
+	public static void removeType(Double[] type) { types.remove(type) ;}
 
 	public int getId() {return id;}
 	public int getType() {return Type;}

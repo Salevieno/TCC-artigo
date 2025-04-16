@@ -2,6 +2,8 @@ package org.example.loading;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.example.Main;
 import org.example.structure.Mesh;
@@ -16,10 +18,20 @@ public class ConcLoad
 	private int id ;
 	private Force force ;
 
-	private static int currentID = 1;
-	private static int maxDisplaySize = 1;
-	private static int stroke = 2;
-	public static Color color = Main.palette[7];
+	private static int currentID ;
+	private static int maxDisplaySize ;
+	private static int stroke ;
+	public static Color color ;
+	private static List<Force> types ;
+
+	static
+	{
+		currentID = 1;
+		maxDisplaySize = 1;
+		stroke = 2;
+		color = Main.palette[7];
+		types = new ArrayList<>() ;
+	}
 
 	public ConcLoad(Force force)
 	{
@@ -32,6 +44,11 @@ public class ConcLoad
 	{
 		this(new Force(loads)) ;
 	}
+	
+	public static List<Force> getTypes() { return types ;}
+	public static void resetTypes() { types = new ArrayList<>() ;}
+	public static void addType(Force type) { types.add(type) ;}
+	public static void removeType(Force type) { types.remove(type) ;}
 
 
 	public static void DrawPL3D(Point3D RealPos, double size, int thickness, double[] CanvasAngles, int dof, Color color, MyCanvas canvas, DrawPrimitives DP)

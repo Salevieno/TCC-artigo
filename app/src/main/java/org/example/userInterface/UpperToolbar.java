@@ -11,9 +11,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.example.Main;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Loading;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Material;
 import org.example.structure.Section;
 import org.example.structure.Structure;
@@ -85,11 +86,13 @@ public class UpperToolbar extends JPanel
 				return ;
 			
 			case concLoads:
-				MainPanel.getInstance().getCentralPanel().AddConcLoads(MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedNodes(), MenuFunctions.getConcLoadTypes());
+				MainPanel.getInstance().getCentralPanel().AddConcLoads(MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getSelectedNodes(), ConcLoad.getTypes());
 				return ;
 		
 			case distLoads:
-				MainPanel.getInstance().getCentralPanel().AddDistLoads(MainPanel.getInstance().getCentralPanel().getStructure(), MainPanel.getInstance().getCentralPanel().getLoading(), MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements(), MenuFunctions.getDistLoadType());
+				MainPanel.getInstance().getCentralPanel().AddDistLoads(MainPanel.getInstance().getCentralPanel().getStructure(),
+										MainPanel.getInstance().getCentralPanel().getLoading(),
+										MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements(), DistLoad.getTypes());
 				return ;
 	
 			case nodalDisps:			

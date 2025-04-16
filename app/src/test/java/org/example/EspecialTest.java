@@ -6,13 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.example.analysis.Analysis;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.mainTCC.InputDTO;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.ElemType;
 import org.example.structure.Material;
 import org.example.structure.Section;
@@ -74,15 +76,22 @@ public class EspecialTest
             forces.add(new Force(force)) ;
         }
 
+        List<Double[]> distLoadTypes = new ArrayList<>() ;
+        for (double[] distLoadType : inputDTO.getDistLoadType())
+        {
+            Double[] boxedArray = Arrays.stream(distLoadType).boxed().toArray(Double[]::new) ;
+            distLoadTypes.add(boxedArray) ;
+        }
+        
         Loading loading = MenuEspecial.createLoading(structure, ConcLoadConfig, MeshSize, SelConcLoad, SelDistLoad,
-                                        structure.getMesh().getNodes(), forces, structure.getMesh().getElements(), inputDTO.getDistLoadType()) ;
+                                        structure.getMesh().getNodes(), forces, structure.getMesh().getElements(), distLoadTypes) ;
 
         assertNotNull(loading) ;
         assertTrue(!loading.getDistLoads().isEmpty());
         assertEquals(4, loading.getDistLoads().get(0).getType());
         assertEquals(1000, loading.getDistLoads().get(0).getIntensity(), 0.0000001);
 
-        MenuAnalysis.CalcAnalysisParameters(structure, loading, MenuFunctions.getConcLoadTypes(), MenuFunctions.getDistLoadType());
+        MenuAnalysis.CalcAnalysisParameters(structure, loading, ConcLoad.getTypes(), DistLoad.getTypes());
 
         assertNotNull(structure.getMesh().getNodes().get(0).getDOFType()) ;
         assertNotNull(structure.getMesh().getNodes().get(0).getDOFs()) ;

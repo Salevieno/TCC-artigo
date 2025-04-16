@@ -16,7 +16,6 @@ import javax.swing.border.TitledBorder;
 import org.example.Main;
 import org.example.loading.DOF;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Node;
 import org.example.structure.Structure;
 import org.example.userInterface.MenuBar;
@@ -186,7 +185,7 @@ public class DiagramsPanel extends JPanel
 		{
 			DrawPrimitives DP = MainPanel.getInstance().getCentralPanel().getDP() ;
 			DP.setGraphics((Graphics2D) graphs);
-			display(MainPanel.getInstance().getCentralPanel().getStructure(), selectedDiagram, MenuFunctions.isAnalysisIsComplete(), DP) ;
+			display(MainPanel.getInstance().getCentralPanel().getStructure(), selectedDiagram, MenuBar.getInstance().getMenuAnalysis().isAnalysisIsComplete(), DP) ;
 			repaint();
 		}
     }

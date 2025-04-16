@@ -7,9 +7,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.Main;
-import org.example.loading.Force;
+import org.example.loading.ConcLoad;
+import org.example.loading.DistLoad;
+import org.example.loading.NodalDisp;
 import org.example.mainTCC.MainPanel;
-import org.example.mainTCC.MenuFunctions;
 import org.example.structure.Element;
 import org.example.structure.Material;
 import org.example.structure.MeshType;
@@ -24,7 +25,6 @@ import org.example.userInterface.InputDialogs.CreateNodalDispsDialog;
 import org.example.userInterface.InputDialogs.CreateSectionsDialog;
 import org.example.userInterface.InputDialogs.DefineElementTypeDialog;
 import org.example.userInterface.InputDialogs.StructureShapeDialog;
-import org.example.view.CentralPanel;
 
 public class MenuStructure extends JMenu
 {
@@ -198,21 +198,19 @@ public class MenuStructure extends JMenu
 		Structure structure = MainPanel.getInstance().getCentralPanel().getStructure();
 		List<Node> nodes = MainPanel.getInstance().getCentralPanel().getStructure().getMesh() != null ? MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getNodes() : null ;
 		List<Element> elems = MainPanel.getInstance().getCentralPanel().getStructure().getMesh() != null ? MainPanel.getInstance().getCentralPanel().getStructure().getMesh().getElements() : null;
-		boolean AnalysisIsComplete = MenuFunctions.isAnalysisIsComplete();
-		String SelectedElemType = MenuFunctions.getSelectedElemType();
+		boolean AnalysisIsComplete = MenuBar.getInstance().getMenuAnalysis().isAnalysisIsComplete();
+		String SelectedElemType = MainPanel.getInstance().getCentralPanel().getElemType();
 		List<Material> MatTypes = MainPanel.getInstance().getWestPanel().getListsPanel().getMatTypes() ;
 		List<Section> SecTypes = MainPanel.getInstance().getWestPanel().getListsPanel().getSecTypes() ;
-		List<Force> ConcLoadTypes = MenuFunctions.getConcLoadTypes();
-		double[][] DistLoadTypes = MenuFunctions.getDistLoadType();
-		double[][] NodalDispTypes = MenuFunctions.getNodalDispType();
+		
 		if ( nodes != null )
 		{
 			AssignSupports.setEnabled(true);
-			if (ConcLoadTypes != null)
+			if (ConcLoad.getTypes() != null && !ConcLoad.getTypes().isEmpty())
 			{
 				AssignConcLoads.setEnabled(true);
 			}
-			if (NodalDispTypes != null)
+			if (NodalDisp.getTypes() != null && !NodalDisp.getTypes().isEmpty())
 			{
 				AssignNodalDisp.setEnabled(true);
 			}
@@ -227,7 +225,7 @@ public class MenuStructure extends JMenu
 			{
 				AssignSections.setEnabled(true);
 			}
-			if (DistLoadTypes != null)
+			if (DistLoad.getTypes() != null && !DistLoad.getTypes().isEmpty())
 			{
 				AssignDistLoads.setEnabled(true);
 			}
