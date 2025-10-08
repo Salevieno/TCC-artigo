@@ -8,10 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.structure.Element;
 import org.example.structure.Node;
-import org.example.userInterface.MenuBar;
 import org.example.utilidades.Util;
 
 public class EastPanel extends JPanel

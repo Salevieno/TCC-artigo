@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Point3D;
 import org.example.utilidades.Util;
@@ -81,7 +81,7 @@ public class Mesh
     public List<Node> getNodes()  { return nodes ;}
     public List<Element> getElements() { return elems ;}
 
-	private boolean hasNodes() { return nodes != null && !nodes.isEmpty() ;}
+	// private boolean hasNodes() { return nodes != null && !nodes.isEmpty() ;}
 
 	public boolean hasNodesSelected()
 	{
@@ -299,7 +299,7 @@ public class Mesh
 
 	private static List<Node> getNodesByID(List<Node> meshNodes, int[] nodeIDs)
 	{
-		List<Node> nodes = new ArrayList() ;
+		List<Node> nodes = new ArrayList<>() ;
 		for (int nodeID : nodeIDs)
 		{
 			Node nodeFound = meshNodes.stream().filter(node -> node.getID() == nodeID).findFirst().get() ;

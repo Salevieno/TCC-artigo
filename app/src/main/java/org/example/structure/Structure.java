@@ -11,7 +11,7 @@ import org.example.Main;
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Loading;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.output.Diagram;
 import org.example.output.ResultDiagrams;
 import org.example.output.Results;
@@ -153,20 +153,20 @@ public class Structure
 		/* 3. Atribuir materiais */
 		structure.getMesh().getElements().forEach(elem -> elem.setMat(currentMatType)) ;
 		Element.createRandomMatColors(matTypes);
-		for (Element elem : structure.getMesh().getElements())
-		{
-			int matColorID = matTypes.indexOf(elem.getMat()) ;
-			// elem.setMatColor(Element.matColors[matColorID]);
-		}
+		// for (Element elem : structure.getMesh().getElements())
+		// {
+		// 	// int matColorID = matTypes.indexOf(elem.getMat()) ;
+		// 	// elem.setMatColor(Element.matColors[matColorID]);
+		// }
 
 		/* 4. Atribuir seções */		
 		structure.getMesh().getElements().forEach(elem -> elem.setSec(currentSecType)) ;
 		Element.createRandomSecColors(secTypes);
-		for (Element elem : structure.getMesh().getElements())
-		{
-			int secID = secTypes.indexOf(elem.getSec()) ;
-			// elem.setSecColor(Element.SecColors[secID]);
-		}
+		// for (Element elem : structure.getMesh().getElements())
+		// {
+		// 	// int secID = secTypes.indexOf(elem.getSec()) ;
+		// 	// elem.setSecColor(Element.SecColors[secID]);
+		// }
 		
 		/* 5. Atribuir apoios */
 		Supports[] supports = Util.AddEspecialSupports(structure.getMesh().getNodes(), Element.typeToShape(elemType), meshType, new int[] {meshSizes[0], meshSizes[1]}, supConfig);

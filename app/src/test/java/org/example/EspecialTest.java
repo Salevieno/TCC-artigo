@@ -14,7 +14,7 @@ import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.Loading;
-import org.example.mainTCC.InputDTO;
+import org.example.main.InputDTO;
 import org.example.structure.ElemType;
 import org.example.structure.Material;
 import org.example.structure.Section;

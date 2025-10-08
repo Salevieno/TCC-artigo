@@ -29,7 +29,7 @@ import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.Loading;
 import org.example.loading.NodalDisp;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.service.MenuViewService;
 import org.example.structure.ElemType;
 import org.example.structure.Element;

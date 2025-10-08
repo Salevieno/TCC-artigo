@@ -44,35 +44,35 @@ public class Point3D
 		translate(delta.x, delta.y, delta.z);
 	}
 
-	private static double[][] rotationMatrixX(Point3D angle)
-	{
-		double cosX = Math.cos(angle.x), sinX = Math.sin(angle.x);
-		return new double[][] {
-			{1, 0, 0},
-			{0, cosX, -sinX},
-			{0, sinX, cosX}
-		} ;
-	}
+	// private static double[][] rotationMatrixX(Point3D angle)
+	// {
+	// 	double cosX = Math.cos(angle.x), sinX = Math.sin(angle.x);
+	// 	return new double[][] {
+	// 		{1, 0, 0},
+	// 		{0, cosX, -sinX},
+	// 		{0, sinX, cosX}
+	// 	} ;
+	// }
 
-	private static double[][] rotationMatrixY(Point3D angle)
-	{
-		double cosY = Math.cos(angle.y), sinY = Math.sin(angle.y);
-		return new double[][] {
-			{cosY, 0, sinY},
-			{0, 1, 0},
-			{-sinY, 0, cosY}
-		} ;
-	}
+	// private static double[][] rotationMatrixY(Point3D angle)
+	// {
+	// 	double cosY = Math.cos(angle.y), sinY = Math.sin(angle.y);
+	// 	return new double[][] {
+	// 		{cosY, 0, sinY},
+	// 		{0, 1, 0},
+	// 		{-sinY, 0, cosY}
+	// 	} ;
+	// }
 
-	private static double[][] rotationMatrixZ(Point3D angle)
-	{
-		double cosZ = Math.cos(angle.z), sinZ = Math.sin(angle.z);
-		return new double[][] {
-			{cosZ, -sinZ, 0},
-			{sinZ, cosZ, 0},
-			{0, 0, 1}
-		} ;
-	}
+	// private static double[][] rotationMatrixZ(Point3D angle)
+	// {
+	// 	double cosZ = Math.cos(angle.z), sinZ = Math.sin(angle.z);
+	// 	return new double[][] {
+	// 		{cosZ, -sinZ, 0},
+	// 		{sinZ, cosZ, 0},
+	// 		{0, 0, 1}
+	// 	} ;
+	// }
 
 	public static Point3D rotate(Point3D point, Point3D refPoint, Point3D angle)
 	{

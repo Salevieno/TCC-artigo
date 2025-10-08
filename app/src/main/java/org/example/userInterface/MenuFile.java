@@ -8,7 +8,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.service.MenuFileService;
 import org.example.structure.StructureDTO;
 

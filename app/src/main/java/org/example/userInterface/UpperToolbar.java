@@ -14,7 +14,7 @@ import org.example.Main;
 import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Loading;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.structure.Material;
 import org.example.structure.Section;
 import org.example.structure.Structure;

@@ -14,7 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.example.mainTCC.MainFrame;
+import org.example.main.MainFrame;
 import org.example.userInterface.ActionWithString;
 
 public abstract class InputDialogWithButtons extends JDialog implements ActionListener
@@ -22,8 +22,8 @@ public abstract class InputDialogWithButtons extends JDialog implements ActionLi
 	private static final long serialVersionUID = 1L;
 	private JLabel[] Labels;
 	protected List<JButton> buttons;
-	private ActionWithString okActionWithInput ;
-	private Runnable okAction ;
+	// private ActionWithString okActionWithInput ;
+	// private Runnable okAction ;
 
 	protected static final Dimension stdButtonDimension = new Dimension(30, 20) ;
 
@@ -32,8 +32,8 @@ public abstract class InputDialogWithButtons extends JDialog implements ActionLi
 		setTitle(PanelName);
 		this.Labels = Labels;
 		this.buttons = buttons ;
-		this.okActionWithInput = okActionWithInput ;
-		this.okAction = okAction ;
+		// this.okActionWithInput = okActionWithInput ;
+		// this.okAction = okAction ;
 		// buttons.forEach(button -> button.addActionListener(this)) ;
 		// JPanel panel = createDialog();
 		this.setLocation(location);

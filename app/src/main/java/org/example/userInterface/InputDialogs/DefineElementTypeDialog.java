@@ -7,10 +7,9 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.structure.ElemType;
 import org.example.userInterface.MenuBar;
-import org.example.view.CentralPanel;
 
 public class DefineElementTypeDialog extends InputDialogWithButtons
 {

@@ -9,8 +9,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
-import org.example.output.SaveOutput;
+import org.example.main.MainPanel;
+import org.example.output.Output;
 import org.example.service.MenuViewService;
 import org.example.structure.Element;
 import org.example.structure.Reactions;
@@ -114,7 +114,7 @@ public class MenuResults extends JMenu
 		/* Defining subitems in the menu DisplacementContour */
 		for (int d = 0; d <= SubMenuDisp.length - 1; d += 1)
 		{
-			int d2 = d;
+			// int d2 = d;
 			String[] DisplacementContourMenuNames = new String[] {
 				    "ux",
 				    "uy",
@@ -143,7 +143,7 @@ public class MenuResults extends JMenu
 		/* Defining subitems in the menu StressContours */
 		for (int s = 0; s <= SubMenuStresses.length - 1; s += 1)
 		{
-			int s2 = s;
+			// int s2 = s;
 			String[] StressContoursMenuNames = new String[] {
 				    "Sigma x",
 				    "Sigma y",
@@ -174,7 +174,7 @@ public class MenuResults extends JMenu
 		/* Defining subitems in the menu StrainContours */
 		for (int s = 0; s <= SubMenuStrains.length - 1; s += 1)
 		{
-			int s2 = s;
+			// int s2 = s;
 			String[] StrainContoursMenuNames = new String[] {
 				    "Deformacao x",
 				    "Deformacao y",
@@ -203,7 +203,7 @@ public class MenuResults extends JMenu
 		/* Defining subitems in the menu InternalForcesContours */
 		for (int f = 0; f <= SubMenuInternalForces.length - 1; f += 1)
 		{
-			int f2 = f;
+			// int f2 = f;
 			String[] InternalForcesContoursMenuNames = new String[] {
 				    "Fx",
 				    "Fy",
@@ -248,7 +248,7 @@ public class MenuResults extends JMenu
 				}
 			}
 		}
-		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
+		Output.save(structure.getName(), Sections, vars);
 	}
 
 	public static void ResultsMenuSaveResults(Structure structure)
@@ -348,7 +348,7 @@ public class MenuResults extends JMenu
 				}
 			}
 		}
-		SaveOutput.SaveOutput(structure.getName(), Sections, vars);
+		Output.save(structure.getName(), Sections, vars);
 	}
 
     public void enableButtons()

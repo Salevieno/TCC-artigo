@@ -2,7 +2,7 @@ package org.example.userInterface.InputDialogs;
 
 import javax.swing.JLabel;
 
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.structure.Section;
 import org.example.userInterface.MenuBar;
 

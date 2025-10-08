@@ -15,22 +15,21 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.service.MenuViewService;
-import org.example.service.ToolbarButtonsService;
 
 public class ToolbarButtons extends JPanel
 {
     private static final Color buttonsBGColor ;
     
     private static final JButton buttonEspecial ;
-    private static final JButton buttonExample ;
+    // private static final JButton buttonExample ;
     private static final JButton buttonCreateMesh ;
-    private static final JButton buttonCreateMat ;
-    private static final JButton buttonCreateSec ;
-    private static final JButton buttonCreateConcLoad ;
-    private static final JButton buttonCreateDistLoad ;
-    private static final JButton buttonCreateNodalDisp ;
+    // private static final JButton buttonCreateMat ;
+    // private static final JButton buttonCreateSec ;
+    // private static final JButton buttonCreateConcLoad ;
+    // private static final JButton buttonCreateDistLoad ;
+    // private static final JButton buttonCreateNodalDisp ;
     private static final JButton buttonAddMat ;
     private static final JButton buttonAddSec ;
     private static final JButton buttonAddSup ;
@@ -51,7 +50,7 @@ public class ToolbarButtons extends JPanel
     private static final JButton buttonShowLoadsReactions ;
     private static final JButton buttonShowReactions ;
     
-    private static String exampleid ;
+    // private static String exampleid ;
     // private static final InputDialogWithButtons exampleInputPanel ;
     private static final String assetsPath = "./assets/Tb1B" ;
     private static final MenuViewService view = MenuViewService.getInstance() ;
@@ -60,13 +59,13 @@ public class ToolbarButtons extends JPanel
     {
         buttonsBGColor = Main.palette[1];
         buttonEspecial = new ButtonToolbarButtons("Especial");
-        buttonExample = new ButtonToolbarButtons("Exemplo");
+        // buttonExample = new ButtonToolbarButtons("Exemplo");
         buttonCreateMesh = new ButtonToolbarButtons("Criar malha");
-        buttonCreateMat = new ButtonToolbarButtons("Criar materiais");
-        buttonCreateSec = new ButtonToolbarButtons("Criar seções");
-        buttonCreateConcLoad = new ButtonToolbarButtons("Criar cargas concentradas");
-        buttonCreateDistLoad = new ButtonToolbarButtons("Criar cargas distribuídas");
-        buttonCreateNodalDisp = new ButtonToolbarButtons("Criar deslocamentos nodais");
+        // buttonCreateMat = new ButtonToolbarButtons("Criar materiais");
+        // buttonCreateSec = new ButtonToolbarButtons("Criar seções");
+        // buttonCreateConcLoad = new ButtonToolbarButtons("Criar cargas concentradas");
+        // buttonCreateDistLoad = new ButtonToolbarButtons("Criar cargas distribuídas");
+        // buttonCreateNodalDisp = new ButtonToolbarButtons("Criar deslocamentos nodais");
         buttonAddMat = new ButtonToolbarButtons("Adicionar materiais aos elementos");
         buttonAddSec = new ButtonToolbarButtons("Adicionar seções aos elementos");
         buttonAddSup = new ButtonToolbarButtons("Adicionar apoios aos nós");
@@ -93,15 +92,15 @@ public class ToolbarButtons extends JPanel
             Buttons.add(new JButton (String.valueOf(b))) ;
         }
 
-        Runnable updateInstructionsPanel = () -> {
-            if (exampleid != null)
-            {
-                ToolbarButtonsService.RunExample(Integer.parseInt(exampleid));
-                MainPanel.getInstance().ActivatePostAnalysisView(MainPanel.getInstance().getCentralPanel().getStructure());
-                MenuBar.getInstance().updateEnabledMenus() ;
-            }
-        } ;
-		ActionWithString defineExampleID = (String exampleID) -> exampleid = exampleID ;
+        // Runnable updateInstructionsPanel = () -> {
+        //     if (exampleid != null)
+        //     {
+        //         ToolbarButtonsService.RunExample(Integer.parseInt(exampleid));
+        //         MainPanel.getInstance().ActivatePostAnalysisView(MainPanel.getInstance().getCentralPanel().getStructure());
+        //         MenuBar.getInstance().updateEnabledMenus() ;
+        //     }
+        // } ;
+		// ActionWithString defineExampleID = (String exampleID) -> exampleid = exampleID ;
         // exampleInputPanel = new InputDialogWithButtons("Example input panel", Buttons, defineExampleID, updateInstructionsPanel) ;
     }
 

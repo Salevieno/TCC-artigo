@@ -14,7 +14,7 @@ import org.example.loading.ConcLoad;
 import org.example.loading.DistLoad;
 import org.example.loading.Force;
 import org.example.loading.Loading;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.service.MenuViewService;
 import org.example.structure.Element;
 import org.example.structure.Node;
@@ -30,7 +30,7 @@ public class MenuAnalysis extends JMenu
 	private JMenuItem runAnalysis;
     private boolean isReadyForAnalysis;
     private boolean analysisIsComplete;
-	private int analysisTypeID = -1 ;
+	// private int analysisTypeID = -1 ;
 	private static boolean geometryIsNonLinear ;
 	private static boolean matIsNonLinear ;
 	private static int qtdIterations = 1 ;
@@ -184,7 +184,7 @@ public class MenuAnalysis extends JMenu
 	public boolean isAnalysisIsComplete() { return analysisIsComplete ;}
 	public void setAnalysisIsComplete(boolean analysisIsComplete) { this.analysisIsComplete = analysisIsComplete ;}
 	
-	public void setAnalysisTypeID(int analysisTypeID) { this.analysisTypeID = analysisTypeID ;}
+	// public void setAnalysisTypeID(int analysisTypeID) { this.analysisTypeID = analysisTypeID ;}
 	public void setRunAnalysisEnabled(boolean state) { runAnalysis.setEnabled(state) ;}
 
 }

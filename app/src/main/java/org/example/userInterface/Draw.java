@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.example.loading.DistLoad;
 import org.example.loading.NodalDisp;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.structure.Element;
 import org.example.structure.Mesh;
 import org.example.structure.Node;

@@ -2,7 +2,7 @@ package org.example.userInterface.InputDialogs;
 
 import javax.swing.JLabel;
 
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.service.MenuViewService;
 import org.example.structure.ElemType;
 import org.example.structure.MeshType;

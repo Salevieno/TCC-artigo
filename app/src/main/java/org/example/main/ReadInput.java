@@ -1,4 +1,4 @@
-package org.example.mainTCC;
+package org.example.main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

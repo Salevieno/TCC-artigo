@@ -16,8 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.example.mainTCC.MainFrame;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainFrame;
+import org.example.main.MainPanel;
 
 public abstract class InputDialogWithGrid extends JDialog implements ActionListener
 {

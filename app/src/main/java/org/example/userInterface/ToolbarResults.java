@@ -11,12 +11,11 @@ import javax.swing.JPanel;
 
 import org.example.Main;
 import org.example.analysis.Analysis;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.output.Diagram;
 import org.example.output.Results;
 import org.example.structure.Structure;
 import org.example.utilidades.Util;
-import org.example.view.CentralPanel;
 
 public class ToolbarResults extends JPanel
 {

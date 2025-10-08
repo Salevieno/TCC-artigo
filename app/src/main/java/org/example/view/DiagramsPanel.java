@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -15,11 +14,10 @@ import javax.swing.border.TitledBorder;
 
 import org.example.Main;
 import org.example.loading.DOF;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.structure.Node;
 import org.example.structure.Structure;
 import org.example.userInterface.MenuBar;
-import org.example.utilidades.Util;
 
 import charts.Chart;
 import charts.ChartType;
@@ -54,37 +52,37 @@ public class DiagramsPanel extends JPanel
 
     }
 
-    private static void DrawArrow2D(int[] Pos, int thickness, double[] theta, double Size, double ArrowSize, String dir, Color color, DrawPrimitives DP)
-    {
-    	int[] PointPos = Arrays.copyOf(Pos, Pos.length);
-    	double thetaop = Math.PI/8.0;	// opening
-    	double[][] Coords = new double[6][2];
-    	int[] xCoords = new int[Coords.length], yCoords = new int[Coords.length];
-    	if (dir.equals("FromPoint"))
-    	{
-    		PointPos[0] += Size;
-    	}
-    	Coords[0][0] = PointPos[0] - Size;
-    	Coords[0][1] = PointPos[1];
-    	Coords[1][0] = PointPos[0];
-    	Coords[1][1] = PointPos[1];
-    	Coords[2][0] = (int)(PointPos[0] - ArrowSize*Math.cos(thetaop));
-    	Coords[2][1] = (int)(PointPos[1] - ArrowSize*Math.sin(thetaop));
-    	Coords[3][0] = (int)(PointPos[0] - ArrowSize*Math.cos(thetaop));
-    	Coords[3][1] = (int)(PointPos[1] + ArrowSize*Math.sin(thetaop));
-    	for (int c = 0; c <= Coords.length - 1; c += 1)
-    	{
-         	Coords[c] = Util.RotateCoord(Coords[c], new double[] {PointPos[0] - Size, PointPos[1], 0}, theta);
-         	xCoords[c] = (int) Coords[c][0];
-         	yCoords[c] = (int) Coords[c][1];
-    	}
-     	// DrawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, thickness, color);
-     	// DrawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, thickness, color);
-     	// DrawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, thickness, color);
-		DP.drawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, color);
-		DP.drawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, color);
-		DP.drawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, color);
-    }
+    // private static void DrawArrow2D(int[] Pos, int thickness, double[] theta, double Size, double ArrowSize, String dir, Color color, DrawPrimitives DP)
+    // {
+    // 	int[] PointPos = Arrays.copyOf(Pos, Pos.length);
+    // 	double thetaop = Math.PI/8.0;	// opening
+    // 	double[][] Coords = new double[6][2];
+    // 	int[] xCoords = new int[Coords.length], yCoords = new int[Coords.length];
+    // 	if (dir.equals("FromPoint"))
+    // 	{
+    // 		PointPos[0] += Size;
+    // 	}
+    // 	Coords[0][0] = PointPos[0] - Size;
+    // 	Coords[0][1] = PointPos[1];
+    // 	Coords[1][0] = PointPos[0];
+    // 	Coords[1][1] = PointPos[1];
+    // 	Coords[2][0] = (int)(PointPos[0] - ArrowSize*Math.cos(thetaop));
+    // 	Coords[2][1] = (int)(PointPos[1] - ArrowSize*Math.sin(thetaop));
+    // 	Coords[3][0] = (int)(PointPos[0] - ArrowSize*Math.cos(thetaop));
+    // 	Coords[3][1] = (int)(PointPos[1] + ArrowSize*Math.sin(thetaop));
+    // 	for (int c = 0; c <= Coords.length - 1; c += 1)
+    // 	{
+    //      	Coords[c] = Util.RotateCoord(Coords[c], new double[] {PointPos[0] - Size, PointPos[1], 0}, theta);
+    //      	xCoords[c] = (int) Coords[c][0];
+    //      	yCoords[c] = (int) Coords[c][1];
+    // 	}
+    //  	// DrawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, thickness, color);
+    //  	// DrawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, thickness, color);
+    //  	// DrawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, thickness, color);
+	// 	DP.drawPolyLine(new int[] {xCoords[0], xCoords[1]}, new int[] {yCoords[0], yCoords[1]}, color);
+	// 	DP.drawPolyLine(new int[] {xCoords[1], xCoords[2]}, new int[] {yCoords[1], yCoords[2]}, color);
+	// 	DP.drawPolyLine(new int[] {xCoords[1], xCoords[3]}, new int[] {yCoords[1], yCoords[3]}, color);
+    // }
 	    
 	public void updateData(List<Double> xData, List<Double> yData)
 	{

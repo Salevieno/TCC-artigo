@@ -1,4 +1,4 @@
-package org.example.mainTCC;
+package org.example.main;
 
 import java.io.FileReader;
 import java.io.IOException;

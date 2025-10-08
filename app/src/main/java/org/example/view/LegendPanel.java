@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.output.ColorSystem;
 import org.example.structure.Structure;
 import org.example.userInterface.MenuBar;
@@ -25,7 +25,7 @@ public class LegendPanel extends JPanel
     private static final long serialVersionUID = 1L;
 
     private static final Dimension initialSize = new Dimension(10, 100) ;
-	private static final int titleSize = 13;
+	// private static final int titleSize = 13;
 	private static final int fontSize = 13;
 	private Structure structure ;
 

@@ -2,7 +2,7 @@ package org.example.structure;
 
 import java.awt.Color;
 
-import org.example.mainTCC.InputFunctions;
+import org.example.main.InputFunctions;
 import org.example.utilidades.Util;
 
 public class Material

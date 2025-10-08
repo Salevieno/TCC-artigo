@@ -6,7 +6,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.userInterface.Draw;
 import org.example.view.CentralPanel;
 

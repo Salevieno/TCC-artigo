@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.utilidades.MyCanvas;
 import org.example.utilidades.Util;
 

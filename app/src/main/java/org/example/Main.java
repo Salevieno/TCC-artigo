@@ -8,7 +8,7 @@ package org.example;
 import java.awt.Color;
 import java.awt.EventQueue;
 
-import org.example.mainTCC.MainFrame;
+import org.example.main.MainFrame;
 
 public class Main
 {

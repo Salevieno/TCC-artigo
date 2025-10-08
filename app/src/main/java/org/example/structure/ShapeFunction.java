@@ -3,7 +3,6 @@ package org.example.structure;
 import java.util.List;
 
 import org.example.output.ResultDiagrams;
-import org.example.utilidades.Util;
 
 public abstract class ShapeFunction
 {

@@ -4,9 +4,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public abstract class SaveOutput 
+public abstract class Output 
 {
-	public static void SaveOutput(String filename, String[] sections, String[][][] vars)
+	public static void save(String filename, String[] sections, String[][][] vars)
 	{
 		try
 		{	

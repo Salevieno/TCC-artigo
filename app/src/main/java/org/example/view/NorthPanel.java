@@ -6,7 +6,7 @@ import java.awt.GridBagLayout ;
 import javax.swing.JPanel;
 
 import org.example.Main;
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.userInterface.UpperToolbar;
 
 public class NorthPanel extends JPanel

@@ -6,7 +6,6 @@ import javax.swing.JLabel;
 
 import org.example.loading.DistLoad;
 import org.example.userInterface.MenuBar;
-import org.example.view.CentralPanel;
 
 public class CreateDistLoadsDialog extends InputDialogWithGrid
 {

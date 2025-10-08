@@ -1,4 +1,4 @@
-package org.example.mainTCC;
+package org.example.main;
 
 /*
  Prâximas adiçõs

@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import org.example.mainTCC.MainPanel;
+import org.example.main.MainPanel;
 import org.example.structure.StructureShape;
 import org.example.userInterface.MenuBar;
 import org.example.view.CentralPanel;
