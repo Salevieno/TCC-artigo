@@ -52,7 +52,7 @@ public class ToolbarButtons extends JPanel
     
     // private static String exampleid ;
     // private static final InputDialogWithButtons exampleInputPanel ;
-    private static final String assetsPath = "./assets/Tb1B" ;
+    private static final String ASSETS_PATH = "./assets/" ;
     private static final MenuViewService view = MenuViewService.getInstance() ;
 
     static
@@ -113,7 +113,7 @@ public class ToolbarButtons extends JPanel
     
         ButtonToolbarButtons.getAll().forEach(button -> {
             button.setToolTipText(button.getText());
-            button.setIcon(new ImageIcon(assetsPath + button.getText() + ".png"));
+            button.setIcon(new ImageIcon(ASSETS_PATH + button.getText() + ".png"));
             button.setFocusable(false);
             button.setHorizontalAlignment(SwingConstants.CENTER);
             button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));

@@ -12,21 +12,6 @@ import org.example.main.MainFrame;
 
 public class Main
 {
-		/*
-			* Neutral: 0, 1, 2, 3
-			* Primary: 4, 5, 6, 7, 8, 9, 10
-			* Contrast: 5 w 9, 4 w 9, 5 w 8, 6 w 9, 6 w 7, 6 w 8
-			* 
-			* Main background: 3
-			* Menu background: 6
-			* 
-			* Unselected: 0
-			* Selection: 10
-			* Loads: 7
-			* Supports: 7
-			* Displacements: 4
-			* Reactions: 8
-		*/
 	public static final Color[] palette = new Color[]		
 	{
 		new Color(35, 31, 31),	// black
@@ -43,7 +28,6 @@ public class Main
 		new Color(237, 91, 176)	// light blue
 	};
   	private static final MainFrame mainFrame = MainFrame.getInstance() ;
-
 
     public static void main(String[] args)
     {
